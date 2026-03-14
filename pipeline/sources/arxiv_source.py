@@ -50,7 +50,7 @@ def fetch_arxiv(hours: int = 48) -> list[NewsItem]:
                     url=paper.entry_id,
                     source_type=SourceType.ARXIV,
                     source_name=f"ArXiv {primary_cat}",
-                    content=paper.summary.replace("\n", " ")[:2000],
+                    content=paper.summary.replace("\n", " ")[:5000],
                     published_at=pub_date,
                     metadata={
                         "arxiv_id": paper.entry_id,

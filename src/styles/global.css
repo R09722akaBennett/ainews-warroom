@@ -129,6 +129,18 @@
     @apply prose-pre:overflow-x-auto;
     @apply prose-img:w-full prose-img:max-w-full prose-img:rounded-sm;
     color: var(--color-text);
+    --tw-prose-body: var(--color-text);
+    --tw-prose-headings: var(--color-text);
+    --tw-prose-links: var(--color-accent-cool);
+    --tw-prose-bold: var(--color-text);
+    --tw-prose-counters: var(--color-text-muted);
+    --tw-prose-bullets: var(--color-text-muted);
+    --tw-prose-hr: var(--color-border);
+    --tw-prose-quotes: var(--color-text);
+    --tw-prose-quote-borders: var(--color-accent-warm);
+    --tw-prose-code: var(--color-text);
+    --tw-prose-th-borders: var(--color-border);
+    --tw-prose-td-borders: var(--color-border);
   }
   article h1, article h2, article h3, article h4 {
     color: var(--color-text);
@@ -136,6 +148,7 @@
   article a {
     @apply font-sans underline underline-offset-[3px];
     @apply transition-colors duration-200;
+    color: var(--color-accent-cool);
     text-decoration-color: var(--color-border);
   }
   article a:hover {
@@ -382,4 +395,34 @@ pre {
 }
 .dark .section-title {
   color: var(--color-text-muted);
+}
+
+/* Tags (shared across reports, archive pages) */
+.tag {
+  display: inline-block;
+  border-radius: 2px;
+  padding: 2px 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+}
+.tag-company {
+  color: #9333ea;
+  background-color: color-mix(in srgb, #9333ea 8%, transparent);
+  border: 1px solid color-mix(in srgb, #9333ea 20%, transparent);
+}
+.dark .tag-company {
+  color: #c084fc;
+  background-color: color-mix(in srgb, #c084fc 10%, transparent);
+  border-color: color-mix(in srgb, #c084fc 20%, transparent);
+}
+.tag-model {
+  color: var(--color-accent-cool);
+  background-color: color-mix(in srgb, var(--color-accent-cool) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent-cool) 20%, transparent);
+}
+.tag-topic {
+  color: var(--color-accent-warm);
+  background-color: color-mix(in srgb, var(--color-accent-warm) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent-warm) 20%, transparent);
 }

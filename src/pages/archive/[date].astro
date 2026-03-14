@@ -40,7 +40,7 @@ const nextIssue = idx > 0 ? legacyData[idx - 1] : null;
       </a>
 
       <!-- Header -->
-      <header class="space-y-3" style="border-left: 3px solid var(--color-accent-cool); padding-left: 1.25rem;">
+      <div class="space-y-3" style="border-left: 3px solid var(--color-accent-cool); padding-left: 1.25rem;">
         <div class="flex items-center gap-3">
           <span class="meta">{issue.date}</span>
         </div>
@@ -57,7 +57,7 @@ const nextIssue = idx > 0 ? legacyData[idx - 1] : null;
             ))}
           </div>
         )}
-      </header>
+      </div>
 
       <!-- Content -->
       <article set:html={htmlContent} />
@@ -79,33 +79,3 @@ const nextIssue = idx > 0 ? legacyData[idx - 1] : null;
   </Container>
 </Layout>
 
-<style>
-  .tag {
-    display: inline-block;
-    border-radius: 2px;
-    padding: 2px 6px;
-    font-family: var(--font-mono);
-    font-size: 10px;
-    font-weight: 500;
-  }
-  .tag-company {
-    color: #9333ea;
-    background-color: color-mix(in srgb, #9333ea 8%, transparent);
-    border: 1px solid color-mix(in srgb, #9333ea 20%, transparent);
-  }
-  :global(.dark) .tag-company {
-    color: #c084fc;
-    background-color: color-mix(in srgb, #c084fc 10%, transparent);
-    border-color: color-mix(in srgb, #c084fc 20%, transparent);
-  }
-  .tag-model {
-    color: var(--color-accent-cool);
-    background-color: color-mix(in srgb, var(--color-accent-cool) 8%, transparent);
-    border: 1px solid color-mix(in srgb, var(--color-accent-cool) 20%, transparent);
-  }
-  :global(.dark) .tag-model {
-    color: var(--color-accent-cool);
-    background-color: color-mix(in srgb, var(--color-accent-cool) 10%, transparent);
-    border-color: color-mix(in srgb, var(--color-accent-cool) 20%, transparent);
-  }
-</style>

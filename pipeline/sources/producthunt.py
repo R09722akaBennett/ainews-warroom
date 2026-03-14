@@ -61,7 +61,7 @@ def fetch_producthunt(hours: int = 48) -> list[NewsItem]:
                 url=link,
                 source_type=SourceType.PRODUCTHUNT,
                 source_name="Product Hunt",
-                content=summary[:500],
+                content=summary[:3000],
                 published_at=pub_date,
                 metadata={},
             ))

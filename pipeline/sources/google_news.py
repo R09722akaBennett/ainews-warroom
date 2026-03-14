@@ -57,7 +57,7 @@ def fetch_google_news(hours: int = 48) -> list[NewsItem]:
                     url=link,
                     source_type=SourceType.GOOGLE_NEWS,
                     source_name=source_name,
-                    content=entry.get("summary", "")[:500],
+                    content=entry.get("summary", "")[:3000],
                     published_at=pub_date,
                     metadata={"query": query[:50]},
                 ))

@@ -46,7 +46,7 @@ def fetch_reddit() -> list[NewsItem]:
                     url=f"https://reddit.com{post.permalink}" if not post.url.startswith("http") else post.url,
                     source_type=SourceType.REDDIT,
                     source_name=f"r/{sub_name}",
-                    content=post.selftext[:2000] if post.selftext else "",
+                    content=post.selftext[:5000] if post.selftext else "",
                     score=post.score,
                     comments_count=post.num_comments,
                     published_at=datetime.fromtimestamp(post.created_utc, tz=timezone.utc),

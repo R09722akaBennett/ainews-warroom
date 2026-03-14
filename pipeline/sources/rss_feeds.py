@@ -39,13 +39,13 @@ def _extract_content(entry: dict) -> str:
     """Extract the best available content/summary from a feed entry."""
     # Try content first
     if entry.get("content"):
-        return entry["content"][0].get("value", "")[:2000]
+        return entry["content"][0].get("value", "")[:5000]
     # Then summary
     if entry.get("summary"):
-        return entry["summary"][:2000]
+        return entry["summary"][:5000]
     # Then description
     if entry.get("description"):
-        return entry["description"][:2000]
+        return entry["description"][:5000]
     return ""
 
 

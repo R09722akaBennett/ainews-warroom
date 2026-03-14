@@ -1,0 +1,232 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+
+const sources = [
+  {
+    category: "AI Company Blogs",
+    icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4",
+    items: [
+      { name: "OpenAI Blog", url: "https://openai.com/news" },
+      { name: "Anthropic News", url: "https://anthropic.com" },
+      { name: "Anthropic Research", url: "https://anthropic.com/research" },
+      { name: "Google AI Blog", url: "https://blog.google/technology/ai" },
+      { name: "Google DeepMind", url: "https://deepmind.google/blog" },
+      { name: "Google Developers Blog", url: "https://developers.googleblog.com" },
+      { name: "Hugging Face Blog", url: "https://huggingface.co/blog" },
+      { name: "Mistral AI News", url: "https://mistral.ai" },
+      { name: "NVIDIA AI Blog", url: "https://blogs.nvidia.com" },
+      { name: "xAI News", url: "https://x.ai" },
+      { name: "Meta AI Blog", url: "https://ai.meta.com/blog" },
+      { name: "Microsoft AI Blog", url: "https://blogs.microsoft.com/ai" },
+      { name: "Apple ML Research", url: "https://machinelearning.apple.com" },
+      { name: "Stability AI Blog", url: "https://stability.ai/blog" },
+      { name: "Cohere Blog", url: "https://cohere.com/blog" },
+    ]
+  },
+  {
+    category: "Tech News",
+    icon: "M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2",
+    items: [
+      { name: "TechCrunch AI", url: "https://techcrunch.com/category/artificial-intelligence" },
+      { name: "VentureBeat AI", url: "https://venturebeat.com/category/ai" },
+      { name: "The Verge AI", url: "https://theverge.com/ai-artificial-intelligence" },
+      { name: "Ars Technica", url: "https://arstechnica.com" },
+      { name: "MIT Technology Review", url: "https://technologyreview.com" },
+      { name: "TechMeme", url: "https://techmeme.com" },
+      { name: "Wired AI", url: "https://wired.com/tag/ai" },
+      { name: "CNBC Tech", url: "https://cnbc.com" },
+      { name: "InfoQ AI/ML", url: "https://infoq.com" },
+      { name: "The New Stack", url: "https://thenewstack.io" },
+    ]
+  },
+  {
+    category: "Newsletters & Analysis",
+    icon: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z",
+    items: [
+      { name: "Import AI", desc: "Jack Clark" },
+      { name: "The Rundown AI", desc: "Daily digest" },
+      { name: "TLDR AI", desc: "Concise news" },
+      { name: "Interconnects", desc: "Research analysis" },
+      { name: "Latent Space", desc: "AI engineering" },
+      { name: "Ahead of AI", desc: "Sebastian Raschka" },
+      { name: "Ben's Bites", desc: "Product news" },
+      { name: "Simon Willison", desc: "AI tools" },
+      { name: "The Gradient", desc: "Research perspectives" },
+      { name: "Lil'Log", desc: "Lilian Weng" },
+    ]
+  },
+  {
+    category: "Community",
+    icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z",
+    items: [
+      { name: "Hacker News", desc: "AI-filtered top stories", url: "https://news.ycombinator.com" },
+      { name: "Lobsters", desc: "AI & ML tags", url: "https://lobste.rs" },
+      { name: "Product Hunt", desc: "Daily launches", url: "https://www.producthunt.com" },
+    ]
+  },
+  {
+    category: "Reddit",
+    icon: "M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z",
+    items: [
+      { name: "r/MachineLearning" },
+      { name: "r/LocalLLaMA" },
+      { name: "r/artificial" },
+      { name: "r/ChatGPT" },
+      { name: "r/ClaudeAI" },
+      { name: "r/singularity" },
+      { name: "r/StableDiffusion" },
+      { name: "r/OpenAI" },
+      { name: "r/LangChain" },
+      { name: "r/MLOps" },
+      { name: "r/deeplearning" },
+      { name: "r/LanguageTechnology" },
+    ]
+  },
+  {
+    category: "Research",
+    icon: "M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z",
+    items: [
+      { name: "ArXiv cs.AI", desc: "Artificial Intelligence" },
+      { name: "ArXiv cs.CL", desc: "NLP" },
+      { name: "ArXiv cs.CV", desc: "Computer Vision" },
+      { name: "ArXiv cs.LG", desc: "Machine Learning" },
+      { name: "ArXiv cs.MA", desc: "Multi-Agent Systems" },
+      { name: "ArXiv stat.ML", desc: "Statistical ML" },
+      { name: "MIT Research", url: "https://news.mit.edu" },
+    ]
+  },
+  {
+    category: "AI Tools & Platforms",
+    icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.573-1.066z",
+    items: [
+      { name: "Cursor Blog", url: "https://cursor.com" },
+      { name: "LangChain Blog", url: "https://blog.langchain.com" },
+      { name: "Replicate Blog", url: "https://replicate.com/blog" },
+      { name: "Vercel Blog", url: "https://vercel.com/blog" },
+      { name: "AWS ML Blog", url: "https://aws.amazon.com/blogs/machine-learning" },
+    ]
+  },
+  {
+    category: "Startups & VC",
+    icon: "M13 7h8m0 0v8m0-8l-8 8-4-4-6 6",
+    items: [
+      { name: "TechCrunch Startups", url: "https://techcrunch.com/category/startups" },
+      { name: "Crunchbase News", url: "https://news.crunchbase.com" },
+      { name: "a16z Blog", url: "https://a16z.com" },
+      { name: "Sequoia Blog", url: "https://sequoiacap.com" },
+      { name: "Y Combinator Blog", url: "https://ycombinator.com/blog" },
+      { name: "Stratechery", url: "https://stratechery.com" },
+    ]
+  },
+  {
+    category: "Infrastructure & Security",
+    icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",
+    items: [
+      { name: "GitHub Trending", desc: "Python, Jupyter, all languages", url: "https://github.com/trending" },
+      { name: "Google News", desc: "3 AI-focused queries" },
+      { name: "SemiAnalysis", desc: "Semiconductor analysis" },
+      { name: "Tom's Hardware", desc: "Hardware benchmarks" },
+      { name: "Krebs on Security", desc: "Security & AI" },
+      { name: "The Hacker News", desc: "Cybersecurity" },
+      { name: "Politico Tech", desc: "AI policy" },
+      { name: "Tech in Asia", desc: "APAC tech" },
+      { name: "EU Startups", desc: "European ecosystem" },
+    ]
+  },
+];
+
+const totalSources = sources.reduce((sum, cat) => sum + cat.items.length, 0);
+const totalCategories = sources.length;
+---
+
+<Layout title="About — KDAN AI War Room" description="Data sources and methodology behind the KDAN AI War Room intelligence dashboard.">
+  <Container>
+    <div class="mx-auto max-w-4xl space-y-10">
+
+      <!-- Page Header -->
+      <div class="space-y-2">
+        <div class="section-title">About</div>
+        <h1 class="text-2xl font-semibold tracking-tight lg:text-3xl" style="color: var(--color-text);">
+          Data Sources
+        </h1>
+        <p class="text-sm" style="color: var(--color-text-muted);">
+          Our pipeline monitors <strong style="color: var(--color-text);">{totalSources} sources</strong> across
+          {totalCategories} categories, collecting <strong style="color: var(--color-text);">500+ items daily</strong> at 16:00 TST.
+        </p>
+      </div>
+
+      <!-- Source Grid -->
+      <section class="space-y-8">
+        <h2 class="section-title">All Sources</h2>
+
+        <div class="grid gap-6 md:grid-cols-2">
+          {sources.map((group) => (
+            <div class="card p-5 space-y-3">
+              <div class="flex items-center gap-2.5">
+                <div class="flex h-8 w-8 items-center justify-center rounded-md"
+                     style="background-color: color-mix(in srgb, var(--color-accent-cool) 12%, transparent);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                       class="h-4 w-4" style="color: var(--color-accent-cool);">
+                    <path d={group.icon} />
+                  </svg>
+                </div>
+                <div>
+                  <h3 class="text-sm font-semibold" style="color: var(--color-text);">{group.category}</h3>
+                  <span class="text-[10px] font-mono" style="color: var(--color-text-muted);">{group.items.length} sources</span>
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-1.5">
+                {group.items.map((item: any) => (
+                  item.url ? (
+                    <a href={item.url} target="_blank" rel="noopener noreferrer"
+                       class="source-chip source-chip-link" title={item.desc || item.name}>
+                      {item.name}
+                    </a>
+                  ) : (
+                    <span class="source-chip" title={item.desc || item.name}>
+                      {item.name}
+                    </span>
+                  )
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Footer Note -->
+      <div class="text-center text-xs leading-relaxed" style="color: var(--color-text-muted);">
+        Built by <a href="https://www.kdanmobile.com" target="_blank" rel="noopener noreferrer"
+                    class="no-underline hover:underline" style="color: var(--color-accent-warm);">KDAN </a>.
+      </div>
+
+    </div>
+  </Container>
+</Layout>
+
+<style>
+  .source-chip {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    color: var(--color-text-muted);
+    background-color: var(--color-surface-muted);
+    border: 1px solid var(--color-border);
+    transition: all 0.15s ease;
+    line-height: 1.4;
+  }
+  .source-chip-link {
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .source-chip-link:hover {
+    color: var(--color-accent-cool);
+    border-color: var(--color-accent-cool);
+    background-color: color-mix(in srgb, var(--color-accent-cool) 8%, transparent);
+  }
+</style>
