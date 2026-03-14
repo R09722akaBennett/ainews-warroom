@@ -65,10 +65,9 @@ async def collect_news(date: str) -> tuple[list[NewsItem], int]:
     ])
     console.print(f"  [green]✓[/] Raw: {len(all_items)} items → {raw_path}")
 
-    # Sort by score, return top 50
+    # Sort by score, return all items for LLM analysis
     total_count = len(all_items)
     all_items.sort(key=lambda x: x.score, reverse=True)
-    top = all_items[:50]
-    console.print(f"  [green]✓[/] Top {len(top)} items ready for report")
+    console.print(f"  [green]✓[/] {total_count} items ready for report")
 
-    return top, total_count
+    return all_items, total_count

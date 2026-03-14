@@ -50,7 +50,7 @@ def _build_user_prompt(
         if item.score:
             line += f"\n    Score: {item.score}"
         if item.content:
-            line += f"\n    {item.content[:300]}"
+            line += f"\n    {item.content}"
         parts.append(line)
     parts.append("")
 
@@ -58,7 +58,7 @@ def _build_user_prompt(
     if recent_digests:
         parts.append("## 過去 7 天的報告摘要（用於延續性分析）\n")
         for d in recent_digests:
-            insights_preview = d.insights[:800] if d.insights else "(無)"
+            insights_preview = d.insights if d.insights else "(無)"
             parts.append(f"### {d.date} — {d.title}\n{insights_preview}\n")
         parts.append("")
 
@@ -71,7 +71,7 @@ def _build_user_prompt(
                 has_history = True
             parts.append(
                 f"### {period}（{summary.start_date} ~ {summary.end_date}）— {summary.title}\n"
-                f"{summary.content[:1500]}\n"
+                f"{summary.content}\n"
             )
     if has_history:
         parts.append("")
@@ -156,7 +156,7 @@ async def run_daily(date: str, dry_run: bool = False):
     console.print("[bold]Step 4/4:[/] Saving...")
 
     # Save to DB
-    news_items = [{"title": it.title, "url": it.url, "source": it.source_name} for it in items[:20]]
+    news_items = [{"title": it.title, "url": it.url, "source": it.source_name} for it in items]
     save_digest(date, title, news_items, markdown, raw_count, topics, tags)
     console.print(f"  [green]✓[/] Saved to DB")
 
