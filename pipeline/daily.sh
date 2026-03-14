@@ -3,13 +3,13 @@
 #
 # Setup:
 #   crontab -e
-#   0 16 * * * /Users/kdanmobile/ainews-web-2025/pipeline/daily.sh >> /Users/kdanmobile/ainews-web-2025/pipeline/logs/daily.log 2>&1
+#   0 16 * * * /Users/kdanmobile/ainews-warroom/pipeline/daily.sh >> /Users/kdanmobile/ainews-warroom/pipeline/logs/daily.log 2>&1
 #
 # This runs at 16:00 (4 PM) Taiwan time every day.
 
 set -euo pipefail
 
-REPO_DIR="/Users/kdanmobile/ainews-web-2025"
+REPO_DIR="/Users/kdanmobile/ainews-warroom"
 PIPELINE_DIR="$REPO_DIR/pipeline"
 LOG_DIR="$PIPELINE_DIR/logs"
 
