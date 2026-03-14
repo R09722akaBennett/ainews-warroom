@@ -3,7 +3,8 @@ import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
 import { marked } from "marked";
 
-const legacyData = (await import("../../data/legacy.json")).default as any[];
+import legacyDataRaw from "../../data/legacy.json";
+const legacyData = legacyDataRaw as any[];
 
 const contentFiles = import.meta.glob("../../data/legacy-content.json", { eager: true });
 const legacyContent: Record<string, string> =
