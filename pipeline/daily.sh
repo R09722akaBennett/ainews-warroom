@@ -40,7 +40,7 @@ uv run python -m export
 # Step 4: Push to git → triggers Vercel deploy
 echo "[4/4] Pushing to git..."
 cd "$REPO_DIR"
-git add src/data/*.json
+git add src/data/reports.json src/data/sources.json src/data/summaries.json src/data/legacy.json
 if git diff --cached --quiet; then
     echo "No changes to push."
 else
