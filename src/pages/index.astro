@@ -1,0 +1,186 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+import { SITE, HOME } from "@consts";
+
+import reportsData from "../data/reports.json";
+import summariesData from "../data/summaries.json";
+
+const latestReport = reportsData[0];
+const recentReports = reportsData.slice(1, 11);
+
+const warWeekly = summariesData.find((s: any) => s.period === "weekly");
+const warMonthly = summariesData.find((s: any) => s.period === "monthly");
+const warQuarterly = summariesData.find((s: any) => s.period === "quarterly");
+const industryWeekly = summariesData.find((s: any) => s.period === "raw_weekly");
+const industryMonthly = summariesData.find((s: any) => s.period === "raw_monthly");
+const industryQuarterly = summariesData.find((s: any) => s.period === "raw_quarterly");
+
+function truncate(text: string, n: number): string {
+  if (!text || text.length <= n) return text || "";
+  return text.slice(0, n).trimEnd() + "...";
+}
+
+---
+
+<Layout title={HOME.TITLE} description={HOME.DESCRIPTION}>
+  <Container>
+    <div class="space-y-14">
+
+      <!-- Hero / Branding -->
+      <div class="space-y-3">
+        <div class="flex items-center gap-3">
+          <div class="h-px flex-1" style="background: linear-gradient(to right, var(--color-accent-warm), transparent);"></div>
+          <span class="section-title">Intelligence Dashboard</span>
+          <div class="h-px flex-1" style="background: linear-gradient(to left, var(--color-accent-warm), transparent);"></div>
+        </div>
+        <h1 class="text-center text-3xl font-semibold tracking-tight lg:text-4xl" style="color: var(--color-text);">
+          {SITE.TITLE}
+        </h1>
+        <p class="text-center text-sm" style="color: var(--color-text-muted);">
+          {SITE.DESCRIPTION}
+        </p>
+      </div>
+
+      <!-- Latest Report (hero card) -->
+      {latestReport && (
+        <section class="space-y-4">
+          <div class="section-title">Latest Briefing</div>
+          <a href={`/reports/${latestReport.date}`} class="card card-accent-warm block p-6 no-underline">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex-1 space-y-3">
+                <div class="flex items-center gap-3">
+                  <span class="period-label period-warroom">Report</span>
+                  <span class="meta">{latestReport.date}</span>
+                </div>
+                <h2 class="text-xl font-semibold tracking-tight" style="color: var(--color-text);">
+                  {latestReport.title}
+                </h2>
+                <p class="text-sm leading-relaxed line-clamp-3" style="color: var(--color-text-muted);">
+                  {latestReport.content
+                    ?.split("\n")
+                    .filter((l: string) => l.trim() && !l.startsWith("#") && !l.startsWith("---") && !l.startsWith("*Source"))
+                    .slice(0, 2)
+                    .join(" ")
+                    .replace(/\*\*/g, "")
+                    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+                    .slice(0, 300)}
+                </p>
+                <div class="flex items-center gap-4 pt-1">
+                  <span class="meta">{latestReport.rawCount} sources collected</span>
+                  <span class="text-xs font-medium" style="color: var(--color-accent-warm);">Read briefing →</span>
+                </div>
+              </div>
+            </div>
+          </a>
+        </section>
+      )}
+
+      <!-- Trend Cards -->
+      <section class="space-y-6">
+        <div class="section-title">Trend Signals</div>
+
+        <!-- KDAN Warroom -->
+        <div class="space-y-2">
+          <div class="text-xs font-semibold uppercase tracking-wider" style="color: var(--color-accent-warm);">KDAN Warroom</div>
+          <div class="grid gap-4 md:grid-cols-3">
+            {warWeekly && (
+              <a href="/trends#warroom" class="card card-accent-warm block p-5 no-underline space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <span class="period-label period-weekly">Weekly</span>
+                  <span class="meta">{warWeekly.startDate?.slice(5)}</span>
+                </div>
+                <p class="text-sm font-medium leading-snug" style="color: var(--color-text);">
+                  {truncate(warWeekly.title, 90)}
+                </p>
+              </a>
+            )}
+            {warMonthly && (
+              <a href="/trends#warroom" class="card card-accent-warm block p-5 no-underline space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <span class="period-label period-monthly">Monthly</span>
+                  <span class="meta">{warMonthly.startDate?.slice(0,7)}</span>
+                </div>
+                <p class="text-sm font-medium leading-snug" style="color: var(--color-text);">
+                  {truncate(warMonthly.title, 90)}
+                </p>
+              </a>
+            )}
+            {warQuarterly && (
+              <a href="/trends#warroom" class="card card-accent-warm block p-5 no-underline space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <span class="period-label period-quarterly">Quarterly</span>
+                  <span class="meta">{warQuarterly.startDate?.slice(0,7)}</span>
+                </div>
+                <p class="text-sm font-medium leading-snug" style="color: var(--color-text);">
+                  {truncate(warQuarterly.title, 90)}
+                </p>
+              </a>
+            )}
+          </div>
+        </div>
+
+        <!-- Industry -->
+        <div class="space-y-2">
+          <div class="text-xs font-semibold uppercase tracking-wider" style="color: var(--color-accent-cool);">Industry</div>
+          <div class="grid gap-4 md:grid-cols-3">
+            {industryWeekly && (
+              <a href="/trends#industry" class="card card-accent-cool block p-5 no-underline space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <span class="period-label period-weekly">Weekly</span>
+                  <span class="meta">{industryWeekly.startDate?.slice(5)}</span>
+                </div>
+                <p class="text-sm font-medium leading-snug" style="color: var(--color-text);">
+                  {truncate(industryWeekly.title, 90)}
+                </p>
+              </a>
+            )}
+            {industryMonthly && (
+              <a href="/trends#industry" class="card card-accent-cool block p-5 no-underline space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <span class="period-label period-monthly">Monthly</span>
+                  <span class="meta">{industryMonthly.startDate?.slice(0,7)}</span>
+                </div>
+                <p class="text-sm font-medium leading-snug" style="color: var(--color-text);">
+                  {truncate(industryMonthly.title, 90)}
+                </p>
+              </a>
+            )}
+            {industryQuarterly && (
+              <a href="/trends#industry" class="card card-accent-cool block p-5 no-underline space-y-2.5">
+                <div class="flex items-center justify-between">
+                  <span class="period-label period-quarterly">Quarterly</span>
+                  <span class="meta">{industryQuarterly.startDate?.slice(0,7)}</span>
+                </div>
+                <p class="text-sm font-medium leading-snug" style="color: var(--color-text);">
+                  {truncate(industryQuarterly.title, 90)}
+                </p>
+              </a>
+            )}
+          </div>
+        </div>
+      </section>
+
+      <!-- Recent Reports -->
+      <section class="space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="section-title">Recent Reports</div>
+          <a href="/reports/" class="text-xs font-medium no-underline transition-colors" style="color: var(--color-text-muted);">
+            View all →
+          </a>
+        </div>
+        <div class="space-y-2">
+          {recentReports.map((report: any) => (
+            <a href={`/reports/${report.date}`}
+               class="card flex items-center gap-5 px-5 py-3.5 no-underline">
+              <span class="meta min-w-[5.5rem]">{report.date}</span>
+              <span class="flex-1 text-sm font-medium" style="color: var(--color-text);">{report.title}</span>
+              <span class="meta hidden sm:inline">{report.rawCount} src</span>
+            </a>
+          ))}
+        </div>
+      </section>
+
+    </div>
+  </Container>
+</Layout>

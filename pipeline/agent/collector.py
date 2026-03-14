@@ -1,0 +1,73 @@
+"""News collection — gathers from all sources and deduplicates."""
+
+from __future__ import annotations
+
+import asyncio
+from datetime import datetime, timezone
+
+from rich.console import Console
+
+from models import NewsItem
+from sources.hackernews import fetch_hackernews
+from sources.reddit import fetch_reddit
+from sources.rss_feeds import fetch_rss_feeds
+from sources.arxiv_source import fetch_arxiv
+from sources.github_trending import fetch_github_trending
+from sources.lobsters import fetch_lobsters
+from sources.google_news import fetch_google_news
+from sources.producthunt import fetch_producthunt
+from agent.utils import deduplicate
+from agent.raw_exporter import export_raw_markdown
+from db import save_raw_items
+
+console = Console()
+
+
+async def collect_news(date: str) -> list[NewsItem]:
+    """Collect AI news from all sources, deduplicate, save raw, return sorted items."""
+    all_items: list[NewsItem] = []
+
+    # Async source
+    hn_items = await fetch_hackernews()
+    all_items.extend(hn_items)
+    console.print(f"    HN: {len(hn_items)}")
+
+    # Sync sources — run in parallel via thread pool
+    loop = asyncio.get_event_loop()
+    sources = [
+        ("Reddit", fetch_reddit),
+        ("RSS", fetch_rss_feeds),
+        ("ArXiv", fetch_arxiv),
+        ("GitHub", fetch_github_trending),
+        ("Lobsters", fetch_lobsters),
+        ("Google News", fetch_google_news),
+        ("Product Hunt", fetch_producthunt),
+    ]
+
+    tasks = [loop.run_in_executor(None, fn) for _, fn in sources]
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+
+    for (name, _), result in zip(sources, results):
+        if isinstance(result, Exception):
+            console.print(f"    [red]{name}: error — {result}[/]")
+        else:
+            all_items.extend(result)
+            console.print(f"    {name}: {len(result)}")
+
+    all_items = deduplicate(all_items)
+    console.print(f"    Total (deduped): {len(all_items)}")
+
+    # Save raw items as markdown audit trail + condensed to DB
+    raw_path = export_raw_markdown(all_items, date)
+    save_raw_items(date, [
+        {"title": i.title, "url": i.url, "source": i.source_name, "score": i.score}
+        for i in all_items
+    ])
+    console.print(f"  [green]✓[/] Raw: {len(all_items)} items → {raw_path}")
+
+    # Sort by score, return top 50
+    all_items.sort(key=lambda x: x.score, reverse=True)
+    top = all_items[:50]
+    console.print(f"  [green]✓[/] Top {len(top)} items ready for report")
+
+    return top

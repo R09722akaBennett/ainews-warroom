@@ -1,0 +1,122 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+
+import reportsData from "../../data/reports.json";
+
+type Grouped = Record<string, Record<string, any[]>>;
+
+const grouped = reportsData.reduce((acc: Grouped, report: any) => {
+  const year = report.date.slice(0, 4);
+  const month = report.date.slice(0, 7);
+  if (!acc[year]) acc[year] = {};
+  if (!acc[year][month]) acc[year][month] = [];
+  acc[year][month].push(report);
+  return acc;
+}, {} as Grouped);
+
+const years = Object.keys(grouped).sort().reverse();
+
+const monthNames: Record<string, string> = {
+  "01": "Jan", "02": "Feb", "03": "Mar", "04": "Apr",
+  "05": "May", "06": "Jun", "07": "Jul", "08": "Aug",
+  "09": "Sep", "10": "Oct", "11": "Nov", "12": "Dec",
+};
+---
+
+<Layout title="Reports" description="All daily AI war room reports">
+  <Container>
+    <div class="space-y-10">
+      <div>
+        <div class="section-title mb-2">Daily Briefings</div>
+        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">All Reports</h1>
+        <p class="mt-1 text-sm" style="color: var(--color-text-muted);">{reportsData.length} reports</p>
+      </div>
+
+      {years.map((year) => (
+        <section class="space-y-6">
+          <h2 class="text-lg font-semibold" style="color: var(--color-text);">{year}</h2>
+          {Object.keys(grouped[year]).sort().reverse().map((monthKey) => {
+            const mm = monthKey.split("-")[1];
+            const reports = grouped[year][monthKey];
+            return (
+              <div class="space-y-2">
+                <div class="flex items-center gap-3">
+                  <span class="section-title">{monthNames[mm]}</span>
+                  <div class="h-px flex-1" style="background-color: var(--color-border);"></div>
+                  <span class="meta">{reports.length}</span>
+                </div>
+                <div class="space-y-1.5">
+                  {reports.map((report: any) => (
+                    <a href={`/reports/${report.date}`}
+                       class="card block px-5 py-3 no-underline space-y-1.5">
+                      <div class="flex items-center gap-5">
+                        <span class="meta min-w-[5.5rem]">{report.date}</span>
+                        <span class="flex-1 text-sm font-medium" style="color: var(--color-text);">{report.title}</span>
+                        <span class="meta hidden sm:inline">{report.rawCount} src</span>
+                      </div>
+                      {report.tags && (Object.keys(report.tags).length > 0) && (
+                        <div class="flex flex-wrap gap-1 pl-[5.5rem]">
+                          {(report.tags.companies || []).slice(0, 4).map((c: string) => (
+                            <span class="tag tag-company">{c}</span>
+                          ))}
+                          {(report.tags.models || []).slice(0, 3).map((m: string) => (
+                            <span class="tag tag-model">{m}</span>
+                          ))}
+                          {(report.tags.topics || []).slice(0, 3).map((t: string) => (
+                            <span class="tag tag-topic">{t}</span>
+                          ))}
+                        </div>
+                      )}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </section>
+      ))}
+    </div>
+  </Container>
+</Layout>
+
+<style>
+  .tag {
+    display: inline-block;
+    border-radius: 2px;
+    padding: 2px 6px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+  }
+  .tag-company {
+    color: #9333ea;
+    background-color: color-mix(in srgb, #9333ea 8%, transparent);
+    border: 1px solid color-mix(in srgb, #9333ea 20%, transparent);
+  }
+  :global(.dark) .tag-company {
+    color: #c084fc;
+    background-color: color-mix(in srgb, #c084fc 10%, transparent);
+    border-color: color-mix(in srgb, #c084fc 20%, transparent);
+  }
+  .tag-model {
+    color: var(--color-accent-cool);
+    background-color: color-mix(in srgb, var(--color-accent-cool) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent-cool) 20%, transparent);
+  }
+  :global(.dark) .tag-model {
+    color: var(--color-accent-cool-dark);
+    background-color: color-mix(in srgb, var(--color-accent-cool-dark) 10%, transparent);
+    border-color: color-mix(in srgb, var(--color-accent-cool-dark) 20%, transparent);
+  }
+  .tag-topic {
+    color: var(--color-accent-warm);
+    background-color: color-mix(in srgb, var(--color-accent-warm) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent-warm) 20%, transparent);
+  }
+  :global(.dark) .tag-topic {
+    color: var(--color-accent-warm-dark, var(--color-accent-warm));
+    background-color: color-mix(in srgb, var(--color-accent-warm) 10%, transparent);
+    border-color: color-mix(in srgb, var(--color-accent-warm) 20%, transparent);
+  }
+</style>

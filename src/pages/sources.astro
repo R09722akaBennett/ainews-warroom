@@ -1,0 +1,121 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+
+import sourcesData from "../data/sources.json";
+
+type SourceItem = { date: string; title: string; url: string; source: string; score: number };
+
+// Group by date → source
+type ByDate = Record<string, Record<string, SourceItem[]>>;
+const byDate: ByDate = {};
+for (const item of sourcesData as SourceItem[]) {
+  if (!byDate[item.date]) byDate[item.date] = {};
+  const src = item.source || "Other";
+  if (!byDate[item.date][src]) byDate[item.date][src] = [];
+  byDate[item.date][src].push(item);
+}
+
+const dates = Object.keys(byDate).sort().reverse();
+const totalItems = (sourcesData as SourceItem[]).length;
+---
+
+<Layout title="Sources" description="Daily raw AI news sources collected by the pipeline">
+  <Container>
+    <div class="space-y-10">
+      <div>
+        <div class="section-title mb-2">Raw Data</div>
+        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Sources</h1>
+        <p class="mt-1 text-sm" style="color: var(--color-text-muted);">
+          {totalItems} items collected across {dates.length} days
+        </p>
+      </div>
+
+      {dates.map((date) => {
+        const sources = byDate[date];
+        const sortedSources = Object.entries(sources).sort((a, b) => b[1].length - a[1].length);
+        const dayTotal = sortedSources.reduce((sum, [, items]) => sum + items.length, 0);
+        return (
+          <section>
+            <details class="group" open={date === dates[0]}>
+              <summary class="flex cursor-pointer items-center gap-3 rounded-md px-4 py-2.5 transition-colors day-summary" style="color: var(--color-text);">
+                <svg class="size-3.5 shrink-0 transition-transform duration-200 group-open:rotate-90" viewBox="0 0 16 16" style="color: var(--color-text-muted);">
+                  <path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <span class="font-semibold">{date}</span>
+                <span class="meta">{dayTotal} items from {sortedSources.length} sources</span>
+                <a href={`/reports/${date}`} class="ml-auto text-xs font-medium no-underline" style="color: var(--color-accent-warm);">
+                  View report →
+                </a>
+              </summary>
+
+              <div class="mt-3 space-y-2 pl-4">
+                {sortedSources.map(([source, items]) => (
+                  <details class="group/src">
+                    <summary class="flex cursor-pointer items-center gap-3 rounded-md px-4 py-2 transition-colors src-summary">
+                      <svg class="size-3 shrink-0 transition-transform duration-200 group-open/src:rotate-90" viewBox="0 0 16 16" style="color: var(--color-text-muted);">
+                        <path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                      </svg>
+                      <span class="source-tag">{source}</span>
+                      <span class="meta">{items.length}</span>
+                    </summary>
+                    <div class="mt-1 space-y-0.5 pl-7">
+                      {items.map((item: SourceItem) => (
+                        <a href={item.url} target="_blank" rel="noopener"
+                           class="flex items-baseline gap-2 rounded px-3 py-1.5 text-sm no-underline transition-colors item-row">
+                          <span class="flex-1" style="color: var(--color-text);">{item.title}</span>
+                          {item.score > 0 && (
+                            <span class="meta shrink-0">⭐ {item.score}</span>
+                          )}
+                        </a>
+                      ))}
+                    </div>
+                  </details>
+                ))}
+              </div>
+            </details>
+          </section>
+        );
+      })}
+
+      {dates.length === 0 && (
+        <p class="text-sm" style="color: var(--color-text-muted);">
+          No source data collected yet. Run the pipeline to start collecting.
+        </p>
+      )}
+    </div>
+  </Container>
+</Layout>
+
+<style>
+  .day-summary:hover,
+  .src-summary:hover {
+    background-color: var(--color-surface-muted);
+  }
+  :global(.dark) .day-summary:hover,
+  :global(.dark) .src-summary:hover {
+    background-color: var(--color-surface-muted-dark);
+  }
+  .source-tag {
+    display: inline-block;
+    border-radius: 2px;
+    padding: 1px 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--color-accent-cool);
+    background-color: color-mix(in srgb, var(--color-accent-cool) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-accent-cool) 20%, transparent);
+  }
+  :global(.dark) .source-tag {
+    color: var(--color-accent-cool-dark);
+    background-color: color-mix(in srgb, var(--color-accent-cool-dark) 10%, transparent);
+    border-color: color-mix(in srgb, var(--color-accent-cool-dark) 20%, transparent);
+  }
+  .item-row:hover {
+    background-color: var(--color-surface-muted);
+  }
+  :global(.dark) .item-row:hover {
+    background-color: var(--color-surface-muted-dark);
+  }
+</style>

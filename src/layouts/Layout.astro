@@ -1,0 +1,84 @@
+---
+import Head from "@components/Head.astro";
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import Pagefind from "@components/PageFind.astro";
+import { SITE } from "@consts";
+
+type Props = {
+  title: string;
+  description: string;
+};
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <Head
+      title={`${title} | ${SITE.TITLE}`}
+      description={description}
+    />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+    <Pagefind />
+  </body>
+</html>
+
+<script>
+  // Anchor links with header offset (no smooth scrolling)
+  document.addEventListener('DOMContentLoaded', () => {
+    const navLinks = document.querySelectorAll('aside a[href^="#"]');
+    
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        
+        const targetId = link.getAttribute('href')?.substring(1) || '';
+        if (!targetId) return;
+        
+        const targetElement = document.getElementById(targetId);
+        if (!targetElement) return;
+        
+        // Get the header height for offset (add some extra padding)
+        const headerEl = document.querySelector('header');
+        if (!headerEl) return;
+        
+        const headerHeight = headerEl.offsetHeight + 16;
+        
+        // Scroll to the element with offset - no smooth behavior
+        window.scrollTo({
+          top: targetElement.offsetTop - headerHeight
+        });
+        
+        // Update URL without refreshing the page
+        history.pushState('', '', `#${targetId}`);
+      });
+    });
+
+    // Handle direct hash navigation on page load
+    if (window.location.hash) {
+      setTimeout(() => {
+        const targetId = window.location.hash.substring(1);
+        const targetElement = document.getElementById(targetId);
+        
+        if (targetElement) {
+          const headerEl = document.querySelector('header');
+          if (!headerEl) return;
+          
+          const headerHeight = headerEl.offsetHeight + 16;
+          
+          window.scrollTo({
+            top: targetElement.offsetTop - headerHeight
+          });
+        }
+      }, 100); // Small delay to ensure the page has fully loaded
+    }
+  });
+</script>

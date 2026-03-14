@@ -1,0 +1,353 @@
+@import 'tailwindcss' source(none);
+@source "../pages";
+@source "../components";
+@source "../layouts";
+@source "../lib";
+@source "../styles";
+
+@plugin '@tailwindcss/typography';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans: Geist Sans, ui-sans-serif, system-ui, sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-mono: Geist Mono, ui-monospace, SFMono-Regular, Menlo, Monaco,
+    Consolas, 'Liberation Mono', 'Courier New', monospace;
+
+  /* Command-center palette */
+  --color-surface: #fafaf9;
+  --color-surface-dark: #0c0f1a;
+  --color-surface-raised: #ffffff;
+  --color-surface-raised-dark: #141825;
+  --color-surface-muted: #f0efed;
+  --color-surface-muted-dark: #1a1e2e;
+
+  --color-border: #e2e0dc;
+  --color-border-dark: #252a3a;
+
+  --color-text: #1c1917;
+  --color-text-dark: #e7e5e4;
+  --color-text-muted: #78716c;
+  --color-text-muted-dark: #78859b;
+
+  /* Accent: amber for KDAN/strategic */
+  --color-accent-warm: #d97706;
+  --color-accent-warm-muted: #fef3c7;
+  --color-accent-warm-dark: #f59e0b;
+  --color-accent-warm-muted-dark: #451a03;
+
+  /* Accent: cyan for industry */
+  --color-accent-cool: #0891b2;
+  --color-accent-cool-muted: #e0f7fa;
+  --color-accent-cool-dark: #22d3ee;
+  --color-accent-cool-muted-dark: #083344;
+
+  /* Status colors for periods */
+  --color-quarterly: #059669;
+  --color-monthly: #2563eb;
+  --color-weekly: #0891b2;
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-border);
+  }
+  .dark *,
+  .dark ::after,
+  .dark ::before {
+    border-color: var(--color-border-dark);
+  }
+}
+
+@layer utilities {
+  html {
+    overflow-y: auto;
+    color-scheme: light;
+    scroll-padding-top: 100px;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+
+  html, body {
+    @apply size-full;
+  }
+
+  body {
+    @apply font-sans antialiased;
+    @apply flex flex-col;
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    @apply break-words;
+  }
+  .dark body {
+    background-color: var(--color-surface-dark);
+    color: var(--color-text-dark);
+  }
+
+  header {
+    @apply fixed left-0 right-0 top-0 z-50;
+    @apply py-4;
+    background-color: color-mix(in srgb, var(--color-surface) 85%, transparent);
+    backdrop-filter: blur(12px) saturate(1.5);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .dark header {
+    background-color: color-mix(in srgb, var(--color-surface-dark) 85%, transparent);
+    border-bottom-color: var(--color-border-dark);
+  }
+
+  main {
+    @apply flex-1;
+    padding-top: 6rem;
+    padding-bottom: 4rem;
+  }
+
+  footer {
+    @apply py-6 text-sm;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+  }
+  .dark footer {
+    border-top-color: var(--color-border-dark);
+    color: var(--color-text-muted-dark);
+  }
+
+  /* Article / prose styling */
+  article {
+    @apply prose max-w-none;
+    @apply prose-headings:font-semibold prose-headings:tracking-tight;
+    @apply prose-a:break-words prose-code:break-words;
+    @apply prose-pre:overflow-x-auto;
+    @apply prose-img:w-full prose-img:max-w-full prose-img:rounded-sm;
+    color: var(--color-text);
+  }
+  .dark article {
+    color: var(--color-text-dark);
+  }
+  article h1, article h2, article h3, article h4 {
+    color: var(--color-text);
+  }
+  .dark article h1, .dark article h2, .dark article h3, .dark article h4 {
+    color: var(--color-text-dark);
+  }
+  article a {
+    @apply font-sans underline underline-offset-[3px];
+    @apply transition-colors duration-200;
+    text-decoration-color: var(--color-border);
+  }
+  .dark article a {
+    text-decoration-color: var(--color-border-dark);
+  }
+  article a:hover {
+    color: var(--color-accent-cool);
+    text-decoration-color: var(--color-accent-cool);
+  }
+  .dark article a:hover {
+    color: var(--color-accent-cool-dark);
+    text-decoration-color: var(--color-accent-cool-dark);
+  }
+  article blockquote {
+    quotes: none;
+    border-left-color: var(--color-accent-warm);
+  }
+  .dark article blockquote {
+    border-left-color: var(--color-accent-warm-dark);
+  }
+  article strong {
+    color: var(--color-text);
+    font-weight: 600;
+  }
+  .dark article strong {
+    color: var(--color-text-dark);
+  }
+  article hr {
+    border-color: var(--color-border);
+  }
+  .dark article hr {
+    border-color: var(--color-border-dark);
+  }
+
+  img {
+    @apply max-w-full h-auto object-contain;
+  }
+  table {
+    @apply min-w-full table-auto;
+  }
+  td, th {
+    @apply break-words whitespace-normal;
+  }
+}
+
+/* Animate */
+.animate {
+  @apply -translate-y-2 opacity-0;
+  @apply transition-all duration-500 ease-out;
+}
+.animate.show {
+  @apply translate-y-0 opacity-100;
+}
+
+html #back-to-top {
+  @apply pointer-events-none opacity-0;
+}
+html.scrolled #back-to-top {
+  @apply pointer-events-auto opacity-100;
+}
+
+/* Code blocks */
+pre {
+  @apply py-5 rounded-md;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface-muted) !important;
+}
+.dark pre {
+  border-color: var(--color-border-dark);
+  background-color: var(--color-surface-muted-dark) !important;
+}
+
+:root {
+  --astro-code-foreground: #1c1917;
+  --astro-code-background: #f0efed;
+  --astro-code-token-comment: #a19595;
+  --astro-code-token-keyword: #c2410c;
+  --astro-code-token-string: #047857;
+  --astro-code-token-function: #0e7490;
+  --astro-code-token-constant: #1d4ed8;
+  --astro-code-token-parameter: #4e8fdf;
+  --astro-code-token-string-expression: #9333ea;
+  --astro-code-token-punctuation: #78716c;
+  --astro-code-token-link: #7c3aed;
+}
+.dark {
+  --astro-code-foreground: #e7e5e4;
+  --astro-code-background: #1a1e2e;
+  --astro-code-token-comment: #78859b;
+  --astro-code-token-keyword: #f97316;
+  --astro-code-token-string: #34d399;
+  --astro-code-token-function: #22d3ee;
+  --astro-code-token-constant: #93c5fd;
+  --astro-code-token-parameter: #67e8f9;
+  --astro-code-token-string-expression: #c084fc;
+  --astro-code-token-punctuation: #78859b;
+  --astro-code-token-link: #a78bfa;
+}
+
+.copy-code {
+  @apply absolute right-3 top-3 grid size-9 place-content-center rounded-sm text-center duration-200;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+}
+.dark .copy-code {
+  border-color: var(--color-border-dark);
+  background-color: var(--color-surface-dark);
+}
+.copy-code:hover {
+  background-color: var(--color-surface-muted);
+}
+.dark .copy-code:hover {
+  background-color: var(--color-surface-muted-dark);
+}
+.copy-code:active {
+  @apply scale-90 transition-transform;
+}
+
+/* Card system */
+.card {
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background-color: var(--color-surface-raised);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.dark .card {
+  border-color: var(--color-border-dark);
+  background-color: var(--color-surface-raised-dark);
+}
+.card:hover {
+  border-color: color-mix(in srgb, var(--color-border) 50%, var(--color-text) 20%);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.dark .card:hover {
+  border-color: color-mix(in srgb, var(--color-border-dark) 50%, var(--color-text-dark) 15%);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+
+/* Accent bar on left side of cards */
+.card-accent-warm {
+  border-left: 3px solid var(--color-accent-warm);
+}
+.dark .card-accent-warm {
+  border-left-color: var(--color-accent-warm-dark);
+}
+.card-accent-cool {
+  border-left: 3px solid var(--color-accent-cool);
+}
+.dark .card-accent-cool {
+  border-left-color: var(--color-accent-cool-dark);
+}
+.card-accent-quarterly {
+  border-left: 3px solid var(--color-quarterly);
+}
+.card-accent-monthly {
+  border-left: 3px solid var(--color-monthly);
+}
+.card-accent-weekly {
+  border-left: 3px solid var(--color-weekly);
+}
+
+/* Period labels */
+.period-label {
+  @apply inline-block rounded-sm px-2 py-0.5 text-xs font-mono font-medium uppercase tracking-widest;
+}
+.period-quarterly {
+  color: var(--color-quarterly);
+  background-color: color-mix(in srgb, var(--color-quarterly) 10%, transparent);
+}
+.period-monthly {
+  color: var(--color-monthly);
+  background-color: color-mix(in srgb, var(--color-monthly) 10%, transparent);
+}
+.period-weekly {
+  color: var(--color-weekly);
+  background-color: color-mix(in srgb, var(--color-weekly) 10%, transparent);
+}
+.period-warroom {
+  color: var(--color-accent-warm);
+  background-color: color-mix(in srgb, var(--color-accent-warm) 10%, transparent);
+}
+.dark .period-warroom {
+  color: var(--color-accent-warm-dark);
+  background-color: color-mix(in srgb, var(--color-accent-warm-dark) 10%, transparent);
+}
+.period-industry {
+  color: var(--color-accent-cool);
+  background-color: color-mix(in srgb, var(--color-accent-cool) 10%, transparent);
+}
+.dark .period-industry {
+  color: var(--color-accent-cool-dark);
+  background-color: color-mix(in srgb, var(--color-accent-cool-dark) 10%, transparent);
+}
+
+/* Meta text */
+.meta {
+  @apply font-mono text-xs;
+  color: var(--color-text-muted);
+}
+.dark .meta {
+  color: var(--color-text-muted-dark);
+}
+
+/* Section headers */
+.section-title {
+  @apply text-xs font-mono font-semibold uppercase tracking-[0.2em];
+  color: var(--color-text-muted);
+  letter-spacing: 0.15em;
+}
+.dark .section-title {
+  color: var(--color-text-muted-dark);
+}
