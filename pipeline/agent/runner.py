@@ -123,7 +123,7 @@ async def run_daily(date: str, dry_run: bool = False):
 
     # Step 1: Collect news (deterministic)
     console.print("[bold]Step 1/4:[/] Collecting news...")
-    items = await collect_news(date)
+    items, raw_count = await collect_news(date)
 
     # Step 2: Load context (deterministic)
     console.print("[bold]Step 2/4:[/] Loading context...")
@@ -157,7 +157,7 @@ async def run_daily(date: str, dry_run: bool = False):
 
     # Save to DB
     news_items = [{"title": it.title, "url": it.url, "source": it.source_name} for it in items[:20]]
-    save_digest(date, title, news_items, markdown, len(items), topics, tags)
+    save_digest(date, title, news_items, markdown, raw_count, topics, tags)
     console.print(f"  [green]✓[/] Saved to DB")
 
     # Write markdown file

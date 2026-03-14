@@ -23,7 +23,7 @@ from db import save_raw_items
 console = Console()
 
 
-async def collect_news(date: str) -> list[NewsItem]:
+async def collect_news(date: str) -> tuple[list[NewsItem], int]:
     """Collect AI news from all sources, deduplicate, save raw, return sorted items."""
     all_items: list[NewsItem] = []
 
@@ -66,8 +66,9 @@ async def collect_news(date: str) -> list[NewsItem]:
     console.print(f"  [green]✓[/] Raw: {len(all_items)} items → {raw_path}")
 
     # Sort by score, return top 50
+    total_count = len(all_items)
     all_items.sort(key=lambda x: x.score, reverse=True)
     top = all_items[:50]
     console.print(f"  [green]✓[/] Top {len(top)} items ready for report")
 
-    return top
+    return top, total_count
