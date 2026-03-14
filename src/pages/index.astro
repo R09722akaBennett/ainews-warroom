@@ -9,12 +9,13 @@ import summariesData from "../data/summaries.json";
 const latestReport = reportsData[0];
 const recentReports = reportsData.slice(1, 11);
 
-const warWeekly = summariesData.find((s: any) => s.period === "weekly");
-const warMonthly = summariesData.find((s: any) => s.period === "monthly");
-const warQuarterly = summariesData.find((s: any) => s.period === "quarterly");
-const industryWeekly = summariesData.find((s: any) => s.period === "raw_weekly");
-const industryMonthly = summariesData.find((s: any) => s.period === "raw_monthly");
-const industryQuarterly = summariesData.find((s: any) => s.period === "raw_quarterly");
+const summaries = summariesData as any[];
+const warWeekly = summaries.find((s) => s.period === "weekly");
+const warMonthly = summaries.find((s) => s.period === "monthly");
+const warQuarterly = summaries.find((s) => s.period === "quarterly");
+const industryWeekly = summaries.find((s) => s.period === "raw_weekly");
+const industryMonthly = summaries.find((s) => s.period === "raw_monthly");
+const industryQuarterly = summaries.find((s) => s.period === "raw_quarterly");
 
 function truncate(text: string, n: number): string {
   if (!text || text.length <= n) return text || "";
