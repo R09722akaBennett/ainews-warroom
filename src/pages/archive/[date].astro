@@ -4,21 +4,21 @@ import Container from "@components/Container.astro";
 import { marked } from "marked";
 
 import legacyDataRaw from "../../data/legacy.json";
-const legacyData = legacyDataRaw as any[];
 
 const contentFiles = import.meta.glob("../../data/legacy-content.json", { eager: true });
 const legacyContent: Record<string, string> =
   (Object.values(contentFiles)[0] as any)?.default ?? {};
 
 export function getStaticPaths() {
-  return legacyData
-    .filter((issue: any) => issue.hasContent)
-    .map((issue: any) => ({
+  return (legacyDataRaw as any[])
+    .filter((issue) => issue.hasContent)
+    .map((issue) => ({
       params: { date: issue.date },
       props: { issue },
     }));
 }
 
+const legacyData = legacyDataRaw as any[];
 const { issue } = Astro.props;
 const content = legacyContent[issue.date] || "";
 const htmlContent = await marked.parse(content);
