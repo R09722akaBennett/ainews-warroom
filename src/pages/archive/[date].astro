@@ -4,7 +4,10 @@ import Container from "@components/Container.astro";
 import { marked } from "marked";
 
 import legacyData from "../../data/legacy.json";
-import legacyContent from "../../data/legacy-content.json";
+
+const contentFiles = import.meta.glob("../../data/legacy-content.json", { eager: true });
+const legacyContent: Record<string, string> =
+  (Object.values(contentFiles)[0] as any)?.default ?? {};
 
 export function getStaticPaths() {
   return legacyData
@@ -16,7 +19,7 @@ export function getStaticPaths() {
 }
 
 const { issue } = Astro.props;
-const content = (legacyContent as Record<string, string>)[issue.date] || "";
+const content = legacyContent[issue.date] || "";
 const htmlContent = await marked.parse(content);
 
 const idx = legacyData.findIndex((i: any) => i.date === issue.date);
