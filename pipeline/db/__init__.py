@@ -18,7 +18,7 @@ from db.summaries import (
     SummaryRecord,
     SummaryPeriod,
 )
-from db.raw_items import save_raw_items, get_raw_items
+from db.raw_items import save_raw_items, get_raw_items, get_recent_urls
 
 __all__ = [
     "get_conn",
@@ -36,4 +36,5 @@ __all__ = [
     "SummaryPeriod",
     "save_raw_items",
     "get_raw_items",
+    "get_recent_urls",
 ]

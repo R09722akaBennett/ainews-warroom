@@ -15,3 +15,15 @@ def deduplicate(items: list[NewsItem]) -> list[NewsItem]:
             seen.add(key)
             unique.append(item)
     return unique
+
+
+def filter_seen_urls(items: list[NewsItem], seen_urls: set[str]) -> tuple[list[NewsItem], int]:
+    """Filter out items whose URL appeared in recent days. Returns (filtered, removed_count)."""
+    filtered = []
+    removed = 0
+    for item in items:
+        if item.relevance_key() in seen_urls:
+            removed += 1
+        else:
+            filtered.append(item)
+    return filtered, removed

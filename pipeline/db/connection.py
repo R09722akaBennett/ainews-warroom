@@ -66,6 +66,7 @@ def init_db():
             score REAL DEFAULT 0
         );
         CREATE INDEX IF NOT EXISTS idx_raw_date ON raw_daily_items(date);
+        CREATE INDEX IF NOT EXISTS idx_raw_url ON raw_daily_items(url);
 
         CREATE TABLE IF NOT EXISTS legacy_issues (
             date TEXT PRIMARY KEY,

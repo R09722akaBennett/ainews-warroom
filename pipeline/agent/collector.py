@@ -16,9 +16,9 @@ from sources.github_trending import fetch_github_trending
 from sources.lobsters import fetch_lobsters
 from sources.google_news import fetch_google_news
 from sources.producthunt import fetch_producthunt
-from agent.utils import deduplicate
+from agent.utils import deduplicate, filter_seen_urls
 from agent.raw_exporter import export_raw_markdown
-from db import save_raw_items
+from db import save_raw_items, get_recent_urls
 
 console = Console()
 
@@ -56,6 +56,14 @@ async def collect_news(date: str) -> tuple[list[NewsItem], int]:
 
     all_items = deduplicate(all_items)
     console.print(f"    Total (deduped): {len(all_items)}")
+
+    # Cross-day dedup: remove URLs already seen in past 7 days
+    seen_urls = get_recent_urls(date, days=7)
+    if seen_urls:
+        all_items, removed = filter_seen_urls(all_items, seen_urls)
+        if removed:
+            console.print(f"    [yellow]Filtered {removed} items seen in past 7 days[/]")
+        console.print(f"    Total (cross-day deduped): {len(all_items)}")
 
     # Save raw items as markdown audit trail + condensed to DB
     raw_path = export_raw_markdown(all_items, date)
