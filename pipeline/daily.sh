@@ -26,19 +26,23 @@ cd "$PIPELINE_DIR"
 source .env 2>/dev/null || true
 
 # Step 1: Collect news + generate report
-echo "[1/4] Running agent..."
+echo "[1/5] Running agent..."
 uv run python -m agent
 
 # Step 2: Auto-compress (weekly on Mon, monthly on 1st, quarterly on quarter start)
-echo "[2/4] Running compress..."
+echo "[2/5] Running compress..."
 uv run python -m compress auto
 
 # Step 3: Export DB → JSON for website
-echo "[3/4] Exporting site data..."
+echo "[3/5] Exporting site data..."
 uv run python -m export
 
-# Step 4: Push to git → triggers Vercel deploy
-echo "[4/4] Pushing to git..."
+# Step 4: Notify Mattermost
+echo "[4/5] Sending to Mattermost..."
+uv run python -m notify
+
+# Step 5: Push to git → triggers Vercel deploy
+echo "[5/5] Pushing to git..."
 cd "$REPO_DIR"
 git add src/data/reports.json src/data/sources.json src/data/summaries.json src/data/legacy.json
 if git diff --cached --quiet; then
