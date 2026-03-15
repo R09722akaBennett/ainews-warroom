@@ -66,7 +66,7 @@ def format_message(row: dict, content: str) -> str:
     header = (
         f":globe_with_meridians: [AI War Room Dashboard]({SITE_URL})"
         f"| :bar_chart: [完整報告與歷史資料]({report_url})\n"
-        f"### :rotating_light: KDAN AI 戰情報告 ({date})\n"
+        f":rotating_light: KDAN AI 戰情報告 ({date})\n"
     )
 
     # Remove duplicate title if insights already starts with # title
