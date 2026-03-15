@@ -65,7 +65,14 @@ import { SITE } from "@consts";
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
           </svg>
         </button>
-        <button id="menu-toggle" aria-label="Toggle menu" class="theme-btn">
+        <button
+          id="menu-toggle"
+          type="button"
+          aria-label="Toggle menu"
+          aria-controls="mobile-menu"
+          aria-expanded="false"
+          class="theme-btn"
+        >
           <svg id="menu-open-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
             <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
           </svg>
@@ -77,7 +84,7 @@ import { SITE } from "@consts";
     </div>
 
     <!-- Mobile dropdown menu -->
-    <nav id="mobile-menu" class="mobile-menu hidden lg:hidden">
+    <nav id="mobile-menu" class="mobile-menu lg:hidden" hidden>
       <a href="/sources" class="mobile-nav-link">News</a>
       <a href="/reports/" class="mobile-nav-link">Reports</a>
       <a href="/trends" class="mobile-nav-link">Insights</a>
@@ -192,21 +199,41 @@ import { SITE } from "@consts";
 
     if (!toggle || !menu || !openIcon || !closeIcon) return;
 
+    const syncMenuState = (isOpen: boolean) => {
+      menu.classList.toggle("show", isOpen);
+      menu.toggleAttribute("hidden", !isOpen);
+      toggle.setAttribute("aria-expanded", String(isOpen));
+      openIcon.style.display = isOpen ? "none" : "block";
+      closeIcon.style.display = isOpen ? "block" : "none";
+    };
+
+    if (toggle.dataset.mobileMenuBound === "true") {
+      syncMenuState(menu.classList.contains("show"));
+      return;
+    }
+
+    syncMenuState(false);
+
     toggle.addEventListener("click", () => {
-      const isOpen = menu.classList.contains("show");
-      menu.classList.toggle("show", !isOpen);
-      openIcon.style.display = isOpen ? "block" : "none";
-      closeIcon.style.display = isOpen ? "none" : "block";
+      syncMenuState(!menu.classList.contains("show"));
+    });
+
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (!menu.classList.contains("show")) return;
+      if (menu.contains(target) || toggle.contains(target)) return;
+      syncMenuState(false);
     });
 
     // Close menu on link click
     menu.querySelectorAll("a").forEach(link => {
       link.addEventListener("click", () => {
-        menu.classList.remove("show");
-        openIcon.style.display = "block";
-        closeIcon.style.display = "none";
+        syncMenuState(false);
       });
     });
+
+    toggle.dataset.mobileMenuBound = "true";
   }
 
   setupMobileMenu();
