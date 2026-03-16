@@ -159,7 +159,7 @@ const tokenChartData = {
         <div class="section-title mb-2">Analytics</div>
         <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Analytics</h1>
         <p class="mt-1 text-sm" style="color: var(--color-text-muted);">
-          Source quality metrics and tag trend analysis across {reports.length} reports
+          LLM token cost, tag trends, and source quality across {reports.length} reports
         </p>
       </div>
 
@@ -181,20 +181,22 @@ const tokenChartData = {
 
       <!-- Token Cost Dashboard -->
       <section class="space-y-4">
-        <h2 class="text-lg font-semibold" style="color: var(--color-text);">Token Usage & Cost</h2>
-        <p class="text-xs" style="color: var(--color-text-muted);">
-          Gemini 3 Flash Preview: ${PRICE_INPUT}/1M input · ${PRICE_OUTPUT}/1M output
-        </p>
-
-        {/* Task type filter */}
-        <div class="flex gap-1.5 flex-wrap" id="token-type-filters">
-          <button data-ttype="all" class="tag-filter tag-filter-active">All</button>
-          <button data-ttype="daily" class="tag-filter" title="Daily Report">Daily Report</button>
-          <button data-ttype="weekly" class="tag-filter" title="Warroom Weekly">Weekly</button>
-          <button data-ttype="monthly" class="tag-filter" title="Warroom Monthly">Monthly</button>
-          <button data-ttype="quarterly" class="tag-filter" title="Warroom Quarterly">Quarterly</button>
-          <button data-ttype="competitor_classify" class="tag-filter" title="Competitor Classify">Comp. Classify</button>
-          <button data-ttype="competitor_weekly" class="tag-filter" title="Competitor Weekly">Comp. Weekly</button>
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div>
+            <h2 class="text-lg font-semibold" style="color: var(--color-text);">Token Usage & Cost</h2>
+            <p class="text-xs mt-0.5" style="color: var(--color-text-muted);">
+              Gemini 3 Flash Preview: ${PRICE_INPUT}/1M input · ${PRICE_OUTPUT}/1M output
+            </p>
+          </div>
+          <div class="flex gap-1.5 flex-wrap" id="token-type-filters">
+            <button data-ttype="all" class="tag-filter tag-filter-active">All</button>
+            <button data-ttype="daily" class="tag-filter" title="Daily Report">Daily Report</button>
+            <button data-ttype="weekly" class="tag-filter" title="Warroom Weekly">Weekly</button>
+            <button data-ttype="monthly" class="tag-filter" title="Warroom Monthly">Monthly</button>
+            <button data-ttype="quarterly" class="tag-filter" title="Warroom Quarterly">Quarterly</button>
+            <button data-ttype="competitor_classify" class="tag-filter" title="Competitor Classify">Comp. Classify</button>
+            <button data-ttype="competitor_weekly" class="tag-filter" title="Competitor Weekly">Comp. Weekly</button>
+          </div>
         </div>
 
         {/* Summary cards (JS-driven) */}
@@ -251,7 +253,12 @@ const tokenChartData = {
       <!-- Tag Trend Timeline -->
       <section class="space-y-4">
         <div class="flex items-center justify-between flex-wrap gap-2">
-          <h2 class="text-lg font-semibold" style="color: var(--color-text);">Tag Trends</h2>
+          <div>
+            <h2 class="text-lg font-semibold" style="color: var(--color-text);">Tag Trends</h2>
+            <p class="text-xs mt-0.5" style="color: var(--color-text-muted);">
+              {allTags.length} tags · {reports.length} reports. Click tags below to show/hide.
+            </p>
+          </div>
           <div class="flex gap-1.5" id="tag-type-filters">
             <button data-type="all" class="tag-filter tag-filter-active">All</button>
             <button data-type="companies" class="tag-filter" style="--filter-color: #9333ea;">Companies</button>
@@ -259,9 +266,6 @@ const tokenChartData = {
             <button data-type="topics" class="tag-filter" style="--filter-color: var(--color-accent-warm);">Topics</button>
           </div>
         </div>
-        <p class="text-xs" style="color: var(--color-text-muted);">
-          {allTags.length} tags · {reports.length} reports. Click tags below to show/hide.
-        </p>
         {allTags.length > 0 ? (
           <>
             <div class="card p-4" style="position: relative; height: 400px;">
@@ -295,10 +299,12 @@ const tokenChartData = {
 
       <!-- Source Quality -->
       <section class="space-y-4">
-        <h2 class="text-lg font-semibold" style="color: var(--color-text);">Source Quality</h2>
-        <p class="text-xs" style="color: var(--color-text-muted);">
-          How often each source's items get referenced in daily reports. High collection + low reference = noise source.
-        </p>
+        <div>
+          <h2 class="text-lg font-semibold" style="color: var(--color-text);">Source Quality</h2>
+          <p class="text-xs mt-0.5" style="color: var(--color-text-muted);">
+            How often each source's items get referenced in daily reports. High collection + low reference = noise source.
+          </p>
+        </div>
         <div class="overflow-x-auto">
           <table class="source-table">
             <thead>
