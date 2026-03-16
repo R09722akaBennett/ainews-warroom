@@ -13,6 +13,9 @@ REPO_DIR="/Users/kdanmobile/ainews-warroom"
 PIPELINE_DIR="$REPO_DIR/pipeline"
 LOG_DIR="$PIPELINE_DIR/logs"
 
+# Ensure uv and other tools are on PATH (cron has minimal PATH)
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:/usr/local/bin:/opt/homebrew/bin:$PATH"
+
 mkdir -p "$LOG_DIR"
 
 echo ""
@@ -37,9 +40,13 @@ uv run python -m compress auto
 echo "[3/5] Exporting site data..."
 uv run python -m export
 
-# Step 4: Notify Mattermost
+# Step 4: Notify Mattermost (skip if env vars not set)
 echo "[4/5] Sending to Mattermost..."
-uv run python -m notify
+if [[ -n "${MATTERMOST_URL:-}" && -n "${MATTERMOST_TOKEN:-}" ]]; then
+    uv run python -m notify
+else
+    echo "Skipping — MATTERMOST_URL or MATTERMOST_TOKEN not set"
+fi
 
 # Step 5: Push to git → triggers Vercel deploy
 echo "[5/5] Pushing to git..."
