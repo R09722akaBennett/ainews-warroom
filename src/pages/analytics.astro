@@ -324,11 +324,11 @@ const tokenChartData = {
           <table class="source-table">
             <thead>
               <tr>
-                <th>Source</th>
-                <th class="text-right">Collected</th>
-                <th class="text-right">Referenced</th>
-                <th class="text-right">Rate</th>
-                <th class="w-48">Distribution</th>
+                <th style="width: 14rem;">Source</th>
+                <th style="text-align: right; width: 7rem;" title="Total items collected from this source across all days">Collected</th>
+                <th style="text-align: right; width: 7rem;" title="How many of those items were referenced in LLM-generated daily reports">Referenced</th>
+                <th style="text-align: right; width: 6rem;" title="Referenced / Collected — higher = more valuable source, lower = more noise">Rate</th>
+                <th style="width: 10rem;" title="Visual bar showing the reference rate percentage">Distribution</th>
               </tr>
             </thead>
             <tbody>
@@ -456,6 +456,14 @@ const tokenChartData = {
     letter-spacing: 0.05em;
     color: var(--color-text-muted);
     border-bottom: 2px solid var(--color-border);
+    white-space: nowrap;
+  }
+  .source-table th[title] {
+    cursor: help;
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--color-text-muted);
   }
   .source-table td {
     padding: 0.4rem 0.75rem;
