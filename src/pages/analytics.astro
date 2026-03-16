@@ -163,6 +163,22 @@ const tokenChartData = {
         </p>
       </div>
 
+      {/* Global Time Range */}
+      <div class="flex flex-wrap items-center gap-3" style="border-bottom: 1px solid var(--color-border); padding-bottom: 0.75rem;">
+        <span class="meta">Time Range:</span>
+        <div class="flex gap-1" id="global-range-btns">
+          <button data-grange="7" class="tag-filter">7d</button>
+          <button data-grange="30" class="tag-filter">30d</button>
+          <button data-grange="90" class="tag-filter">90d</button>
+          <button data-grange="all" class="tag-filter tag-filter-active">All</button>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <input type="date" id="global-date-from" class="date-input" />
+          <span class="meta">~</span>
+          <input type="date" id="global-date-to" class="date-input" />
+        </div>
+      </div>
+
       <!-- Token Cost Dashboard -->
       <section class="space-y-4">
         <h2 class="text-lg font-semibold" style="color: var(--color-text);">Token Usage & Cost</h2>
@@ -170,27 +186,6 @@ const tokenChartData = {
           Gemini 3 Flash Preview: ${PRICE_INPUT}/1M input · ${PRICE_OUTPUT}/1M output
         </p>
 
-        {/* Summary cards */}
-        <div class="grid gap-4 grid-cols-2 md:grid-cols-4">
-          <div class="card p-4 text-center">
-            <div class="meta mb-1">Total Input</div>
-            <div class="text-lg font-mono font-bold" style="color: var(--color-text);">{(totalInput / 1_000_000).toFixed(2)}M</div>
-          </div>
-          <div class="card p-4 text-center">
-            <div class="meta mb-1">Total Output</div>
-            <div class="text-lg font-mono font-bold" style="color: var(--color-text);">{(totalOutput / 1_000_000).toFixed(2)}M</div>
-          </div>
-          <div class="card p-4 text-center">
-            <div class="meta mb-1">Total Tokens</div>
-            <div class="text-lg font-mono font-bold" style="color: var(--color-text);">{(totalTokens / 1_000_000).toFixed(2)}M</div>
-          </div>
-          <div class="card p-4 text-center">
-            <div class="meta mb-1">Est. Cost</div>
-            <div class="text-lg font-mono font-bold" style="color: var(--color-quarterly);">${totalCost.toFixed(4)}</div>
-          </div>
-        </div>
-
-        {/* Token chart */}
         {/* Task type filter */}
         <div class="flex gap-1.5 flex-wrap" id="token-type-filters">
           <button data-ttype="all" class="tag-filter tag-filter-active">All</button>
@@ -202,76 +197,60 @@ const tokenChartData = {
           <button data-ttype="competitor_weekly" class="tag-filter" title="Competitor Weekly">Comp. Weekly</button>
         </div>
 
-        {tokenEntries.length > 0 ? (
-          <div class="card p-4" style="position: relative; height: 300px;">
-            <canvas id="token-chart"></canvas>
+        {/* Summary cards (JS-driven) */}
+        <div class="grid gap-4 grid-cols-2 md:grid-cols-4" id="token-cards">
+          <div class="card p-4 text-center">
+            <div class="meta mb-1">Total Input</div>
+            <div class="text-lg font-mono font-bold" style="color: var(--color-text);" id="card-input">—</div>
           </div>
-        ) : (
-          <div class="card p-8 text-center">
-            <p class="text-sm" style="color: var(--color-text-muted);">No token data yet. Data will appear after the next pipeline run with token tracking enabled.</p>
+          <div class="card p-4 text-center">
+            <div class="meta mb-1">Total Output</div>
+            <div class="text-lg font-mono font-bold" style="color: var(--color-text);" id="card-output">—</div>
           </div>
-        )}
+          <div class="card p-4 text-center">
+            <div class="meta mb-1">Total Tokens</div>
+            <div class="text-lg font-mono font-bold" style="color: var(--color-text);" id="card-total">—</div>
+          </div>
+          <div class="card p-4 text-center">
+            <div class="meta mb-1">Est. Cost</div>
+            <div class="text-lg font-mono font-bold" style="color: var(--color-quarterly);" id="card-cost">—</div>
+          </div>
+        </div>
 
-        {/* Detailed table */}
-        {tokenEntries.length > 0 && (
-          <details class="group">
-            <summary class="flex cursor-pointer items-center gap-3 py-2 text-sm font-semibold" style="color: var(--color-text);">
-              <svg class="size-3.5 shrink-0 transition-transform duration-200 group-open:rotate-90" viewBox="0 0 16 16" style="color: var(--color-text-muted);">
-                <path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-              </svg>
-              Detailed breakdown ({tokenEntries.length} LLM calls)
-            </summary>
-            <div class="overflow-x-auto mt-2">
-              <table class="source-table">
-                <thead>
-                  <tr>
-                    <th style="width: 7rem;">Date</th>
-                    <th style="width: 3rem;">Type</th>
-                    <th style="text-align: right; width: 7rem;">Input</th>
-                    <th style="text-align: right; width: 7rem;">Output</th>
-                    <th style="text-align: right; width: 7rem;">Total</th>
-                    <th style="text-align: right; width: 6rem;">Cost</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {tokenEntries.map(e => (
-                    <tr>
-                      <td class="meta">{e.date}</td>
-                      <td>
-                        <span
-                          class={`period-label period-${e.type === "daily" ? "warroom" : e.type.includes("classify") ? "industry" : e.type.includes("weekly") ? "weekly" : e.type.includes("monthly") ? "monthly" : "quarterly"}`}
-                          title={
-                            e.type === "daily" ? "Daily Report" :
-                            e.type === "competitor_classify" ? "Competitor Classify (daily)" :
-                            e.type === "competitor_weekly" ? "Competitor Weekly Report" :
-                            e.type === "raw_weekly" ? "Industry Weekly" :
-                            e.type === "raw_monthly" ? "Industry Monthly" :
-                            e.type === "raw_quarterly" ? "Industry Quarterly" :
-                            e.type === "weekly" ? "Warroom Weekly" :
-                            e.type === "monthly" ? "Warroom Monthly" :
-                            e.type === "quarterly" ? "Warroom Quarterly" :
-                            e.type
-                          }
-                        >
-                          {e.type === "daily" ? "D" : e.type.includes("classify") ? "CC" : e.type.includes("competitor") ? "CW" : e.type.replace("raw_", "").charAt(0).toUpperCase()}
-                        </span>
-                      </td>
-                      <td class="text-right meta">{e.input.toLocaleString()}</td>
-                      <td class="text-right meta">{e.output.toLocaleString()}</td>
-                      <td class="text-right font-mono text-xs font-semibold" style="color: var(--color-text);">{e.total.toLocaleString()}</td>
-                      <td class="text-right font-mono text-xs" style="color: var(--color-quarterly);">${e.cost.toFixed(4)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </details>
-        )}
+        {/* Chart */}
+        <div class="card p-4" style="position: relative; height: 300px;">
+          <canvas id="token-chart"></canvas>
+        </div>
+
+        {/* Detailed table (JS-driven) */}
+        <details class="group">
+          <summary class="flex cursor-pointer items-center gap-3 py-2 text-sm font-semibold" style="color: var(--color-text);">
+            <svg class="size-3.5 shrink-0 transition-transform duration-200 group-open:rotate-90" viewBox="0 0 16 16" style="color: var(--color-text-muted);">
+              <path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <span id="breakdown-title">Detailed breakdown</span>
+          </summary>
+          <div class="overflow-x-auto mt-2">
+            <table class="source-table">
+              <thead>
+                <tr>
+                  <th style="width: 7rem;">Date</th>
+                  <th style="width: 3rem;">Type</th>
+                  <th style="text-align: right; width: 7rem;">Input</th>
+                  <th style="text-align: right; width: 7rem;">Output</th>
+                  <th style="text-align: right; width: 7rem;">Total</th>
+                  <th style="text-align: right; width: 6rem;">Cost</th>
+                </tr>
+              </thead>
+              <tbody id="breakdown-body"></tbody>
+            </table>
+          </div>
+        </details>
       </section>
 
       <!-- Tag Trend Timeline -->
       <section class="space-y-4">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between flex-wrap gap-2">
           <h2 class="text-lg font-semibold" style="color: var(--color-text);">Tag Trends</h2>
           <div class="flex gap-1.5" id="tag-type-filters">
             <button data-type="all" class="tag-filter tag-filter-active">All</button>
@@ -281,7 +260,7 @@ const tokenChartData = {
           </div>
         </div>
         <p class="text-xs" style="color: var(--color-text-muted);">
-          {allTags.length} tags across {reports.length} reports. Click tags below to show/hide on chart.
+          {allTags.length} tags · {reports.length} reports. Click tags below to show/hide.
         </p>
         {allTags.length > 0 ? (
           <>
@@ -385,6 +364,21 @@ const tokenChartData = {
     font-weight: 600;
   }
 
+  /* === Date input === */
+  .date-input {
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.375rem;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface-raised);
+    color: var(--color-text);
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    outline: none;
+  }
+  .date-input:focus {
+    border-color: var(--color-accent-cool);
+  }
+
   /* === Tag list (custom legend) === */
   .tag-list-container {
     display: flex;
@@ -485,15 +479,107 @@ const tokenChartData = {
   }
 </style>
 
-<script define:vars={{ chartData, tokenChartData }}>
-  // Store data globally for use after Chart.js loads
-  window.__analyticsData = { chartData, tokenChartData };
+<script define:vars={{ chartData, tokenChartData, tokenEntries, PRICE_INPUT, PRICE_OUTPUT, sourceRows }}>
+  window.__analyticsData = { chartData, tokenChartData, tokenEntries, PRICE_INPUT, PRICE_OUTPUT, sourceRows };
 </script>
 
 <script is:inline src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 
 <script is:inline>
-  const { chartData, tokenChartData } = window.__analyticsData || {};
+  var ad = window.__analyticsData || {};
+  var chartData = ad.chartData;
+  var tokenChartData = ad.tokenChartData;
+  var tokenEntries = ad.tokenEntries || [];
+  var sourceRows = ad.sourceRows || [];
+  var PRICE_INPUT = ad.PRICE_INPUT || 0.05;
+  var PRICE_OUTPUT = ad.PRICE_OUTPUT || 3;
+
+  // === Global filter state ===
+  var globalDateFrom = "";
+  var globalDateTo = "";
+  var tokenFilterType = "all";
+
+  function getTypeBadge(type) {
+    if (type === "daily") return "D";
+    if (type.indexOf("classify") >= 0) return "CC";
+    if (type.indexOf("competitor") >= 0) return "CW";
+    return type.replace("raw_", "").charAt(0).toUpperCase();
+  }
+  function getTypePeriodClass(type) {
+    if (type === "daily") return "warroom";
+    if (type.indexOf("classify") >= 0) return "industry";
+    if (type.indexOf("weekly") >= 0) return "weekly";
+    if (type.indexOf("monthly") >= 0) return "monthly";
+    return "quarterly";
+  }
+  function getTypeTitle(type) {
+    var m = { daily: "Daily Report", competitor_classify: "Competitor Classify (daily)",
+      competitor_weekly: "Competitor Weekly Report", raw_weekly: "Industry Weekly",
+      raw_monthly: "Industry Monthly", raw_quarterly: "Industry Quarterly",
+      weekly: "Warroom Weekly", monthly: "Warroom Monthly", quarterly: "Warroom Quarterly" };
+    return m[type] || type;
+  }
+
+  function filteredTokenEntries() {
+    return tokenEntries.filter(function(e) {
+      if (tokenFilterType !== "all" && e.type !== tokenFilterType) return false;
+      if (globalDateFrom && e.date < globalDateFrom) return false;
+      if (globalDateTo && e.date > globalDateTo) return false;
+      return true;
+    });
+  }
+
+  function updateTokenCards() {
+    var entries = filteredTokenEntries();
+    var inp = 0, out = 0, tot = 0, cost = 0;
+    entries.forEach(function(e) { inp += e.input; out += e.output; tot += e.total; cost += e.cost; });
+    var ci = document.getElementById("card-input");
+    var co = document.getElementById("card-output");
+    var ct = document.getElementById("card-total");
+    var cc = document.getElementById("card-cost");
+    if (ci) ci.textContent = (inp / 1000000).toFixed(2) + "M";
+    if (co) co.textContent = (out / 1000000).toFixed(2) + "M";
+    if (ct) ct.textContent = (tot / 1000000).toFixed(2) + "M";
+    if (cc) cc.textContent = "$" + cost.toFixed(4);
+  }
+
+  function updateBreakdownTable() {
+    var entries = filteredTokenEntries();
+    var tbody = document.getElementById("breakdown-body");
+    var title = document.getElementById("breakdown-title");
+    if (!tbody) return;
+    if (title) title.textContent = "Detailed breakdown (" + entries.length + " LLM calls)";
+    tbody.innerHTML = entries.map(function(e) {
+      return '<tr><td class="meta">' + e.date + '</td>' +
+        '<td><span class="period-label period-' + getTypePeriodClass(e.type) + '" title="' + getTypeTitle(e.type) + '">' + getTypeBadge(e.type) + '</span></td>' +
+        '<td style="text-align:right" class="meta">' + e.input.toLocaleString() + '</td>' +
+        '<td style="text-align:right" class="meta">' + e.output.toLocaleString() + '</td>' +
+        '<td style="text-align:right;font-family:var(--font-mono);font-size:0.75rem;font-weight:600;color:var(--color-text)">' + e.total.toLocaleString() + '</td>' +
+        '<td style="text-align:right;font-family:var(--font-mono);font-size:0.75rem;color:var(--color-quarterly)">$' + e.cost.toFixed(4) + '</td></tr>';
+    }).join("");
+  }
+
+  function updateTokenChartData() {
+    if (!window.__tokenChart) return;
+    var entries = filteredTokenEntries();
+    var dateMap = {};
+    entries.forEach(function(e) {
+      if (!dateMap[e.date]) dateMap[e.date] = { input: 0, output: 0 };
+      dateMap[e.date].input += e.input;
+      dateMap[e.date].output += e.output;
+    });
+    var dates = Object.keys(dateMap).sort();
+    window.__tokenChart.data.labels = dates;
+    window.__tokenChart.data.datasets[0].data = dates.map(function(d) { return dateMap[d].input / 1000; });
+    window.__tokenChart.data.datasets[1].data = dates.map(function(d) { return dateMap[d].output / 1000; });
+    window.__tokenChart.update();
+  }
+
+  function updateAllTokenViews() {
+    updateTokenCards();
+    updateBreakdownTable();
+    updateTokenChartData();
+  }
 
   const TYPE_COLORS = {
     companies: { border: "#9333ea", bg: "rgba(147, 51, 234, 0.1)" },
@@ -502,7 +588,6 @@ const tokenChartData = {
   };
 
   function initTokenChart() {
-    if (!tokenChartData || !tokenChartData.dates.length) return;
     var canvas = document.getElementById("token-chart");
     if (!canvas || canvas.dataset.bound) return;
     canvas.dataset.bound = "true";
@@ -510,100 +595,49 @@ const tokenChartData = {
     var isDark = document.documentElement.classList.contains("dark");
     var gridColor = isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)";
     var textColor = isDark ? "#78859b" : "#78716c";
-    var dates = tokenChartData.dates;
 
-    function buildData(filterType) {
-      var inputData = dates.map(function(d) {
-        var total = 0;
-        for (var t in tokenChartData.byType) {
-          if (filterType !== "all" && t !== filterType) continue;
-          var v = tokenChartData.byType[t][d];
-          if (v) total += v.input;
-        }
-        return total / 1000;
-      });
-      var outputData = dates.map(function(d) {
-        var total = 0;
-        for (var t in tokenChartData.byType) {
-          if (filterType !== "all" && t !== filterType) continue;
-          var v = tokenChartData.byType[t][d];
-          if (v) total += v.output;
-        }
-        return total / 1000;
-      });
-      return { inputData: inputData, outputData: outputData };
-    }
-
-    var initial = buildData("all");
-    var tokenChart = new Chart(canvas, {
+    window.__tokenChart = new Chart(canvas, {
       type: "bar",
-      data: {
-        labels: dates,
-        datasets: [
-          {
-            label: "Input (K)",
-            data: initial.inputData,
-            backgroundColor: isDark ? "rgba(34, 211, 238, 0.5)" : "rgba(8, 145, 178, 0.5)",
-            borderColor: isDark ? "#22d3ee" : "#0891b2",
-            borderWidth: 1,
-          },
-          {
-            label: "Output (K)",
-            data: initial.outputData,
-            backgroundColor: isDark ? "rgba(245, 158, 11, 0.5)" : "rgba(217, 119, 6, 0.5)",
-            borderColor: isDark ? "#f59e0b" : "#d97706",
-            borderWidth: 1,
-          },
-        ],
-      },
+      data: { labels: [], datasets: [
+        { label: "Input (K)", data: [],
+          backgroundColor: isDark ? "rgba(34, 211, 238, 0.5)" : "rgba(8, 145, 178, 0.5)",
+          borderColor: isDark ? "#22d3ee" : "#0891b2", borderWidth: 1 },
+        { label: "Output (K)", data: [],
+          backgroundColor: isDark ? "rgba(245, 158, 11, 0.5)" : "rgba(217, 119, 6, 0.5)",
+          borderColor: isDark ? "#f59e0b" : "#d97706", borderWidth: 1 },
+      ]},
       options: {
-        responsive: true,
-        maintainAspectRatio: false,
+        responsive: true, maintainAspectRatio: false,
         plugins: {
-          legend: {
-            position: "bottom",
-            labels: { color: textColor, font: { size: 11, family: "Geist Mono, monospace" }, boxWidth: 12 },
-          },
+          legend: { position: "bottom", labels: { color: textColor, font: { size: 11, family: "Geist Mono, monospace" }, boxWidth: 12 } },
           tooltip: {
             backgroundColor: isDark ? "#141825" : "#fff",
             titleColor: isDark ? "#e7e5e4" : "#1c1917",
             bodyColor: isDark ? "#78859b" : "#78716c",
-            borderColor: isDark ? "#252a3a" : "#e2e0dc",
-            borderWidth: 1,
-            callbacks: {
-              label: function(ctx) { return ctx.dataset.label + ": " + ctx.parsed.y.toFixed(1) + "K tokens"; },
-            },
+            borderColor: isDark ? "#252a3a" : "#e2e0dc", borderWidth: 1,
+            callbacks: { label: function(ctx) { return ctx.dataset.label + ": " + ctx.parsed.y.toFixed(1) + "K"; } },
           },
         },
         scales: {
-          x: {
-            stacked: true,
-            grid: { color: gridColor },
-            ticks: { color: textColor, font: { size: 10, family: "Geist Mono, monospace" } },
-          },
-          y: {
-            stacked: true,
-            grid: { color: gridColor },
-            ticks: { color: textColor, font: { size: 10, family: "Geist Mono, monospace" } },
-            title: { display: true, text: "Tokens (K)", color: textColor, font: { size: 11 } },
-          },
+          x: { stacked: true, grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10, family: "Geist Mono, monospace" } } },
+          y: { stacked: true, grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10, family: "Geist Mono, monospace" } },
+            title: { display: true, text: "Tokens (K)", color: textColor, font: { size: 11 } } },
         },
       },
     });
 
-    // Token type filter buttons
+    // Wire up type filter only (time range is global)
     document.querySelectorAll("[data-ttype]").forEach(function(btn) {
       btn.addEventListener("click", function() {
-        var filterType = btn.dataset.ttype;
+        tokenFilterType = btn.dataset.ttype;
         document.querySelectorAll("#token-type-filters .tag-filter").forEach(function(b) {
-          b.classList.toggle("tag-filter-active", b.dataset.ttype === filterType);
+          b.classList.toggle("tag-filter-active", b.dataset.ttype === tokenFilterType);
         });
-        var d = buildData(filterType);
-        tokenChart.data.datasets[0].data = d.inputData;
-        tokenChart.data.datasets[1].data = d.outputData;
-        tokenChart.update();
+        updateAllTokenViews();
       });
     });
+
+    updateAllTokenViews();
   }
 
   function initAnalytics() {
@@ -646,7 +680,7 @@ const tokenChartData = {
     var gridColor = isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)";
     var textColor = isDark ? "#78859b" : "#78716c";
 
-    var chart = new Chart(canvas, {
+    window.__tagChart = new Chart(canvas, {
       type: "line",
       data: {
         labels: chartData.dates,
@@ -697,7 +731,7 @@ const tokenChartData = {
     function syncTagList() {
       document.querySelectorAll(".tag-list-item").forEach(function(item) {
         var idx = parseInt(item.dataset.tagIdx);
-        var ds = chart.data.datasets[idx];
+        var ds = window.__tagChart.data.datasets[idx];
         if (ds) item.classList.toggle("tag-active", !ds.hidden);
       });
     }
@@ -707,10 +741,10 @@ const tokenChartData = {
     document.querySelectorAll(".tag-list-item").forEach(function(item) {
       item.addEventListener("click", function() {
         var idx = parseInt(item.dataset.tagIdx);
-        var ds = chart.data.datasets[idx];
+        var ds = window.__tagChart.data.datasets[idx];
         if (ds) {
           ds.hidden = !ds.hidden;
-          chart.update();
+          window.__tagChart.update();
           syncTagList();
         }
       });
@@ -726,14 +760,14 @@ const tokenChartData = {
         });
 
         // Show/hide datasets by type
-        chart.data.datasets.forEach(function(ds) {
+        window.__tagChart.data.datasets.forEach(function(ds) {
           if (activeType === "all") {
             ds.hidden = false;
           } else {
             ds.hidden = ds._type !== activeType;
           }
         });
-        chart.update();
+        window.__tagChart.update();
 
         // Show/hide tag list items by type
         document.querySelectorAll(".tag-list-item").forEach(function(item) {
@@ -748,10 +782,77 @@ const tokenChartData = {
     });
   }
 
+  // === Global time range controller ===
+  function initGlobalRange() {
+    var fromEl = document.getElementById("global-date-from");
+    var toEl = document.getElementById("global-date-to");
+
+    function updateAll() {
+      updateAllTokenViews();
+      updateTagChart();
+    }
+
+    // Quick buttons
+    document.querySelectorAll("[data-grange]").forEach(function(btn) {
+      btn.addEventListener("click", function() {
+        document.querySelectorAll("#global-range-btns .tag-filter").forEach(function(b) {
+          b.classList.toggle("tag-filter-active", b.dataset.grange === btn.dataset.grange);
+        });
+        if (btn.dataset.grange === "all") {
+          globalDateFrom = "";
+          globalDateTo = "";
+        } else {
+          var days = parseInt(btn.dataset.grange);
+          var to = new Date();
+          var from = new Date(to.getTime() - days * 86400000);
+          globalDateFrom = from.toISOString().slice(0, 10);
+          globalDateTo = to.toISOString().slice(0, 10);
+        }
+        if (fromEl) fromEl.value = globalDateFrom;
+        if (toEl) toEl.value = globalDateTo;
+        updateAll();
+      });
+    });
+
+    // Custom date inputs
+    function onDateChange() {
+      globalDateFrom = fromEl ? fromEl.value : "";
+      globalDateTo = toEl ? toEl.value : "";
+      document.querySelectorAll("#global-range-btns .tag-filter").forEach(function(b) {
+        b.classList.remove("tag-filter-active");
+      });
+      updateAll();
+    }
+    if (fromEl) fromEl.addEventListener("change", onDateChange);
+    if (toEl) toEl.addEventListener("change", onDateChange);
+  }
+
+  // Update tag chart by global date range
+  function updateTagChart() {
+    if (!window.__tagChart || !chartData) return;
+    // Find date indices within range
+    var indices = [];
+    chartData.dates.forEach(function(d, i) {
+      if (globalDateFrom && d < globalDateFrom) return;
+      if (globalDateTo && d > globalDateTo) return;
+      indices.push(i);
+    });
+    var filteredDates = indices.map(function(i) { return chartData.dates[i]; });
+    window.__tagChart.data.labels = filteredDates;
+    window.__tagChart.data.datasets.forEach(function(ds, di) {
+      var tag = chartData.tags[di];
+      if (!tag) return;
+      var cumulative = 0;
+      ds.data = indices.map(function(i) { cumulative += tag.data[i]; return cumulative; });
+    });
+    window.__tagChart.update();
+  }
+
   // Retry until Chart.js is loaded
   function tryInit() {
     if (typeof Chart !== "undefined") {
       initAnalytics();
+      initGlobalRange();
     } else {
       setTimeout(tryInit, 100);
     }
