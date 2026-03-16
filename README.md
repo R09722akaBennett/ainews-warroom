@@ -1,6 +1,6 @@
 # KDAN AI War Room
 
-AI intelligence dashboard for KDAN Mobile. Automatically collects AI news from 80+ sources, generates strategic reports with LLM analysis, and compresses insights into weekly/monthly/quarterly summaries.
+AI intelligence dashboard for KDAN Mobile. Automatically collects AI news from 80+ sources, generates strategic reports with LLM analysis, tracks competitors, and compresses insights into weekly/monthly/quarterly summaries.
 
 ## Architecture
 
@@ -8,7 +8,8 @@ AI intelligence dashboard for KDAN Mobile. Automatically collects AI news from 8
 Mac Studio (cron daily)              Vercel (static site)
 ───────────────────────              ───────────────────
 python -m agent                      src/data/*.json → Astro SSG
-python -m compress auto                    ↑
+python -m competitor                       ↑
+python -m compress auto                    │
 python -m export                           │
 python -m leaderboard ─────────────────────┘ (git push triggers deploy)
         ↓
@@ -34,6 +35,7 @@ uv sync
 
 # Full daily run
 uv run python -m agent            # collect news + generate report
+uv run python -m competitor       # collect + classify competitor news
 uv run python -m compress auto    # compress weekly/monthly/quarterly
 uv run python -m export           # DB → JSON for website
 uv run python -m leaderboard      # arena.ai leaderboard + alphaxiv papers
@@ -49,7 +51,9 @@ uv run python -m leaderboard      # arena.ai leaderboard + alphaxiv papers
 │   │   ├── sources.astro         # Raw news sources by date
 │   │   ├── leaderboard.astro     # Arena AI rankings + Lab Ranking (F1 scoring)
 │   │   ├── trending.astro        # GitHub Repos + Product Hunt + Papers (tabbed)
+│   │   ├── competitors.astro     # Competitor intelligence + weekly reports
 │   │   ├── trends.astro          # Industry / KDAN Warroom W/M/Q sub-tabs
+│   │   ├── analytics.astro       # Token cost + tag trends + source quality
 │   │   ├── archive/              # Historical issues (2023-2026)
 │   │   └── about.astro
 │   ├── components/
@@ -60,9 +64,10 @@ uv run python -m leaderboard      # arena.ai leaderboard + alphaxiv papers
 │   ├── data/                     # JSON exported from pipeline
 │   │   ├── reports.json          # Daily reports with refs + token usage
 │   │   ├── sources.json          # Raw news items
-│   │   ├── summaries.json        # W/M/Q summaries with token usage
+│   │   ├── summaries.json        # W/M/Q summaries + competitor weekly
 │   │   ├── leaderboard.json      # Arena AI model rankings (9 categories)
 │   │   ├── papers.json           # alphaxiv Hot/Likes top 20
+│   │   ├── competitors.json      # Classified competitor items
 │   │   ├── legacy.json           # Historical issue metadata
 │   │   └── legacy-content.json   # Historical issue full content
 │   └── styles/
@@ -73,6 +78,11 @@ uv run python -m leaderboard      # arena.ai leaderboard + alphaxiv papers
 │   │   ├── runner.py             # Main workflow (collect → LLM → save)
 │   │   ├── collector.py          # News collection + dedup + 3-day age filter
 │   │   └── context.py            # Historical context loading
+│   ├── competitor/               # Competitor intelligence
+│   │   ├── config.py             # 14 competitors + queries + RSS feeds
+│   │   ├── collector.py          # Google News + RSS per company
+│   │   ├── classifier.py         # Gemini batch classify (1 call/company)
+│   │   └── weekly.py             # Per-company summaries → combined report
 │   ├── compress/                 # Periodic compression (W/M/Q)
 │   │   ├── warroom.py            # KDAN-focused track
 │   │   ├── industry.py           # Industry-wide track
@@ -84,17 +94,9 @@ uv run python -m leaderboard      # arena.ai leaderboard + alphaxiv papers
 │   ├── export/                   # DB → JSON for website
 │   ├── prompts/                  # All LLM prompts
 │   ├── sources/                  # News source modules
-│   │   ├── hackernews.py
-│   │   ├── reddit.py
-│   │   ├── rss_feeds.py          # 55 RSS feeds
-│   │   ├── arxiv_source.py       # 6 categories
-│   │   ├── github_trending.py
-│   │   ├── google_news.py        # 3 AI search queries
-│   │   ├── lobsters.py
-│   │   └── producthunt.py
 │   ├── config.py                 # Source definitions
 │   ├── models.py                 # Pydantic data models
-│   └── daily.sh                  # Cron orchestrator (6 steps)
+│   └── daily.sh                  # Cron orchestrator (7 steps)
 ```
 
 ## Data Flow
@@ -107,6 +109,12 @@ raw_daily_items → sources.json         ← browsable on /sources
 daily_digests → reports.json           ← daily reports with ref-N on /reports
     ↓ compress (python -m compress)
 periodic_summaries → summaries.json    ← W/M/Q trends on /trends
+
+14 Competitors (Google News + RSS)
+    ↓ collect + classify daily (python -m competitor)
+competitor_items → competitors.json    ← classified items on /competitors
+    ↓ weekly report (Mon)
+competitor_weekly → summaries.json     ← weekly reports on /competitors
 
 Arena AI (arena.ai/leaderboard/*)
     ↓ scrape 9 categories (python -m leaderboard)
@@ -133,7 +141,7 @@ MATTERMOST_TOKEN=...
 
 ## Tech Stack
 
-- **Website**: Astro 5, Tailwind CSS v4, Vercel
+- **Website**: Astro 5, Tailwind CSS v4, Chart.js, Vercel
 - **Pipeline**: Python 3.12, Google Gemini, SQLite, BeautifulSoup
 - **LLM**: `gemini-3-flash-preview` (configurable)
-- **Data**: arena.ai (leaderboard), alphaxiv.org (papers), 80+ news sources
+- **Data**: arena.ai (leaderboard), alphaxiv.org (papers), 14 competitors, 80+ news sources
