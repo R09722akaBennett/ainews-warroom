@@ -16,35 +16,53 @@ const industry = {
   monthly: summariesData.filter((s: any) => s.period === "raw_monthly").sort((a: any, b: any) => b.endDate.localeCompare(a.endDate)),
   weekly: summariesData.filter((s: any) => s.period === "raw_weekly").sort((a: any, b: any) => b.endDate.localeCompare(a.endDate)),
 };
+
+type PeriodKey = "weekly" | "monthly" | "quarterly";
+const periodMeta: Record<PeriodKey, { label: string; badge: string; accent: string }> = {
+  weekly: { label: "Weekly", badge: "W", accent: "weekly" },
+  monthly: { label: "Monthly", badge: "M", accent: "monthly" },
+  quarterly: { label: "Quarterly", badge: "Q", accent: "quarterly" },
+};
+const periods: PeriodKey[] = ["weekly", "monthly", "quarterly"];
 ---
 
 <Layout title="Trends" description="AI industry and KDAN strategic trend summaries">
   <Container>
-    <div class="space-y-10">
+    <div class="space-y-8">
       <div>
         <div class="section-title mb-2">Analysis</div>
         <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Trends & Summaries</h1>
       </div>
 
-      <!-- Tabs -->
+      <!-- Top-level tabs: Industry / Warroom -->
       <div class="flex gap-1" id="trend-tabs" style="border-bottom: 1px solid var(--color-border);">
-        <button data-tab="industry" class="tab-btn tab-active">
+        <button data-tab="industry" class="tab-pill tab-pill-active">
           <span class="period-label period-industry">Industry</span>
         </button>
-        <button data-tab="warroom" class="tab-btn">
+        <button data-tab="warroom" class="tab-pill">
           <span class="period-label period-warroom">KDAN Warroom</span>
         </button>
       </div>
 
       <!-- Industry -->
-      <div id="tab-industry" class="tab-content space-y-10">
-        {industry.quarterly.length > 0 && (
-          <section class="space-y-3">
-            <div class="section-title">Quarterly</div>
-            {industry.quarterly.map((s: any) => (
-              <details class="card card-accent-quarterly group">
+      <div id="tab-industry" class="tab-content">
+        <!-- Period sub-tabs -->
+        <div class="flex gap-1.5 mb-6" data-period-tabs="industry">
+          {periods.map((p, i) => (
+            <button data-period={p} class:list={["tab-pill", { "tab-pill-active": i === 0 }]}>
+              <span class={`period-label period-${periodMeta[p].accent}`}>{periodMeta[p].badge}</span>
+              <span>{periodMeta[p].label}</span>
+              <span class="tab-pill-count">{industry[p].length}</span>
+            </button>
+          ))}
+        </div>
+
+        {periods.map((p, i) => (
+          <div data-period-content={p} class:list={["period-content space-y-3", { hidden: i !== 0 }]} data-track="industry">
+            {industry[p].length > 0 ? industry[p].map((s: any) => (
+              <details class={`card card-accent-${periodMeta[p].accent} group`}>
                 <summary class="flex cursor-pointer items-center gap-4 px-5 py-4">
-                  <span class="period-label period-quarterly">Q</span>
+                  <span class={`period-label period-${periodMeta[p].accent}`}>{periodMeta[p].badge}</span>
                   <span class="meta min-w-[10rem]">{s.startDate} ~ {s.endDate}</span>
                   <span class="flex-1 text-sm font-medium" style="color: var(--color-text);">{s.title}</span>
                   {s.tokenUsage && <span class="meta hidden sm:inline">In: {s.tokenUsage.input?.toLocaleString()} · Out: {s.tokenUsage.output?.toLocaleString()}</span>}
@@ -56,175 +74,99 @@ const industry = {
                   <article set:html={marked.parse(s.content)} />
                 </div>
               </details>
-            ))}
-          </section>
-        )}
-        {industry.monthly.length > 0 && (
-          <section class="space-y-3">
-            <div class="section-title">Monthly</div>
-            {industry.monthly.map((s: any) => (
-              <details class="card card-accent-monthly group">
-                <summary class="flex cursor-pointer items-center gap-4 px-5 py-4">
-                  <span class="period-label period-monthly">M</span>
-                  <span class="meta min-w-[10rem]">{s.startDate} ~ {s.endDate}</span>
-                  <span class="flex-1 text-sm font-medium" style="color: var(--color-text);">{s.title}</span>
-                  {s.tokenUsage && <span class="meta hidden sm:inline">In: {s.tokenUsage.input?.toLocaleString()} · Out: {s.tokenUsage.output?.toLocaleString()}</span>}
-                  <svg class="size-4 shrink-0 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 16 16" fill="currentColor" style="color: var(--color-text-muted);">
-                    <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                  </svg>
-                </summary>
-                <div class="px-5 pb-5 pt-2" style="border-top: 1px solid var(--color-border);">
-                  <article set:html={marked.parse(s.content)} />
-                </div>
-              </details>
-            ))}
-          </section>
-        )}
-        {industry.weekly.length > 0 && (
-          <section class="space-y-3">
-            <div class="section-title">Weekly</div>
-            {industry.weekly.map((s: any) => (
-              <details class="card card-accent-weekly group">
-                <summary class="flex cursor-pointer items-center gap-4 px-5 py-4">
-                  <span class="period-label period-weekly">W</span>
-                  <span class="meta min-w-[10rem]">{s.startDate} ~ {s.endDate}</span>
-                  <span class="flex-1 text-sm font-medium" style="color: var(--color-text);">{s.title}</span>
-                  {s.tokenUsage && <span class="meta hidden sm:inline">In: {s.tokenUsage.input?.toLocaleString()} · Out: {s.tokenUsage.output?.toLocaleString()}</span>}
-                  <svg class="size-4 shrink-0 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 16 16" fill="currentColor" style="color: var(--color-text-muted);">
-                    <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                  </svg>
-                </summary>
-                <div class="px-5 pb-5 pt-2" style="border-top: 1px solid var(--color-border);">
-                  <article set:html={marked.parse(s.content)} />
-                </div>
-              </details>
-            ))}
-          </section>
-        )}
+            )) : (
+              <p class="text-sm" style="color: var(--color-text-muted);">No {periodMeta[p].label.toLowerCase()} summaries yet.</p>
+            )}
+          </div>
+        ))}
       </div>
 
       <!-- Warroom -->
-      <div id="tab-warroom" class="tab-content hidden space-y-10">
-        {warroom.quarterly.length > 0 && (
-          <section class="space-y-3">
-            <div class="section-title">Quarterly</div>
-            {warroom.quarterly.map((s: any) => (
-              <details class="card card-accent-quarterly group">
-                <summary class="flex cursor-pointer items-center gap-4 px-5 py-4">
-                  <span class="period-label period-quarterly">Q</span>
-                  <span class="meta min-w-[10rem]">{s.startDate} ~ {s.endDate}</span>
-                  <span class="flex-1 text-sm font-medium" style="color: var(--color-text);">{s.title}</span>
-                  {s.tokenUsage && <span class="meta hidden sm:inline">In: {s.tokenUsage.input?.toLocaleString()} · Out: {s.tokenUsage.output?.toLocaleString()}</span>}
-                  <svg class="size-4 shrink-0 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 16 16" fill="currentColor" style="color: var(--color-text-muted);">
-                    <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                  </svg>
-                </summary>
-                <div class="px-5 pb-5 pt-2" style="border-top: 1px solid var(--color-border);">
-                  <article set:html={marked.parse(s.content)} />
-                </div>
-              </details>
-            ))}
-          </section>
-        )}
-        {warroom.monthly.length > 0 && (
-          <section class="space-y-3">
-            <div class="section-title">Monthly</div>
-            {warroom.monthly.map((s: any) => (
-              <details class="card card-accent-monthly group">
-                <summary class="flex cursor-pointer items-center gap-4 px-5 py-4">
-                  <span class="period-label period-monthly">M</span>
-                  <span class="meta min-w-[10rem]">{s.startDate} ~ {s.endDate}</span>
-                  <span class="flex-1 text-sm font-medium" style="color: var(--color-text);">{s.title}</span>
-                  {s.tokenUsage && <span class="meta hidden sm:inline">In: {s.tokenUsage.input?.toLocaleString()} · Out: {s.tokenUsage.output?.toLocaleString()}</span>}
-                  <svg class="size-4 shrink-0 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 16 16" fill="currentColor" style="color: var(--color-text-muted);">
-                    <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                  </svg>
-                </summary>
-                <div class="px-5 pb-5 pt-2" style="border-top: 1px solid var(--color-border);">
-                  <article set:html={marked.parse(s.content)} />
-                </div>
-              </details>
-            ))}
-          </section>
-        )}
-        {warroom.weekly.length > 0 && (
-          <section class="space-y-3">
-            <div class="section-title">Weekly</div>
-            {warroom.weekly.map((s: any) => (
-              <details class="card card-accent-weekly group">
-                <summary class="flex cursor-pointer items-center gap-4 px-5 py-4">
-                  <span class="period-label period-weekly">W</span>
-                  <span class="meta min-w-[10rem]">{s.startDate} ~ {s.endDate}</span>
-                  <span class="flex-1 text-sm font-medium" style="color: var(--color-text);">{s.title}</span>
-                  {s.tokenUsage && <span class="meta hidden sm:inline">In: {s.tokenUsage.input?.toLocaleString()} · Out: {s.tokenUsage.output?.toLocaleString()}</span>}
-                  <svg class="size-4 shrink-0 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 16 16" fill="currentColor" style="color: var(--color-text-muted);">
-                    <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                  </svg>
-                </summary>
-                <div class="px-5 pb-5 pt-2" style="border-top: 1px solid var(--color-border);">
-                  <article set:html={marked.parse(s.content)} />
-                </div>
-              </details>
-            ))}
-          </section>
-        )}
-      </div>
+      <div id="tab-warroom" class="tab-content hidden">
+        <!-- Period sub-tabs -->
+        <div class="flex gap-1.5 mb-6" data-period-tabs="warroom">
+          {periods.map((p, i) => (
+            <button data-period={p} class:list={["tab-pill", { "tab-pill-active": i === 0 }]}>
+              <span class={`period-label period-${periodMeta[p].accent}`}>{periodMeta[p].badge}</span>
+              <span>{periodMeta[p].label}</span>
+              <span class="tab-pill-count">{warroom[p].length}</span>
+            </button>
+          ))}
+        </div>
 
+        {periods.map((p, i) => (
+          <div data-period-content={p} class:list={["period-content space-y-3", { hidden: i !== 0 }]} data-track="warroom">
+            {warroom[p].length > 0 ? warroom[p].map((s: any) => (
+              <details class={`card card-accent-${periodMeta[p].accent} group`}>
+                <summary class="flex cursor-pointer items-center gap-4 px-5 py-4">
+                  <span class={`period-label period-${periodMeta[p].accent}`}>{periodMeta[p].badge}</span>
+                  <span class="meta min-w-[10rem]">{s.startDate} ~ {s.endDate}</span>
+                  <span class="flex-1 text-sm font-medium" style="color: var(--color-text);">{s.title}</span>
+                  {s.tokenUsage && <span class="meta hidden sm:inline">In: {s.tokenUsage.input?.toLocaleString()} · Out: {s.tokenUsage.output?.toLocaleString()}</span>}
+                  <svg class="size-4 shrink-0 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 16 16" fill="currentColor" style="color: var(--color-text-muted);">
+                    <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </summary>
+                <div class="px-5 pb-5 pt-2" style="border-top: 1px solid var(--color-border);">
+                  <article set:html={marked.parse(s.content)} />
+                </div>
+              </details>
+            )) : (
+              <p class="text-sm" style="color: var(--color-text-muted);">No {periodMeta[p].label.toLowerCase()} summaries yet.</p>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   </Container>
 </Layout>
 
-<style>
-  .tab-btn {
-    cursor: pointer;
-    border-radius: 0.375rem 0.375rem 0 0;
-    padding: 0.625rem 1rem;
-    transition: background-color 0.15s;
-    border: 1px solid transparent;
-    border-bottom: none;
-    background: transparent;
-    margin-bottom: -1px;
-  }
-  .tab-btn:hover {
-    background-color: var(--color-surface-muted);
-  }
-  :global(.dark) .tab-btn:hover {
-    background-color: var(--color-surface-muted);
-  }
-  .tab-active {
-    background-color: var(--color-surface-raised);
-    border-color: var(--color-border);
-  }
-  :global(.dark) .tab-active {
-    background-color: var(--color-surface-raised);
-    border-color: var(--color-border);
-  }
-</style>
-
 <script>
-  function switchTab(tab: string) {
-    const buttons = document.querySelectorAll<HTMLButtonElement>('.tab-btn');
-    const contents = document.querySelectorAll<HTMLElement>('.tab-content');
-    buttons.forEach(b => b.classList.toggle('tab-active', b.dataset.tab === tab));
-    contents.forEach(c => c.classList.toggle('hidden', c.id !== `tab-${tab}`));
-  }
-
-  function initTabs() {
-    const buttons = document.querySelectorAll<HTMLButtonElement>('.tab-btn');
-
-    buttons.forEach(btn => {
+  function initTrends() {
+    // === Top-level tabs (Industry / Warroom) ===
+    const topBtns = document.querySelectorAll<HTMLButtonElement>('#trend-tabs .tab-pill');
+    topBtns.forEach(btn => {
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = "true";
       btn.addEventListener('click', () => {
         const tab = btn.dataset.tab!;
-        switchTab(tab);
+        topBtns.forEach(b => b.classList.toggle('tab-pill-active', b.dataset.tab === tab));
+        document.querySelectorAll<HTMLElement>('.tab-content').forEach(c =>
+          c.classList.toggle('hidden', c.id !== `tab-${tab}`)
+        );
         history.replaceState(null, '', `#${tab}`);
       });
     });
 
+    // === Period sub-tabs (W / M / Q) per track ===
+    document.querySelectorAll<HTMLElement>('[data-period-tabs]').forEach(container => {
+      if (container.dataset.bound) return;
+      container.dataset.bound = "true";
+      const track = container.dataset.periodTabs!;
+      const btns = container.querySelectorAll<HTMLButtonElement>('[data-period]');
+
+      btns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const period = btn.dataset.period!;
+          btns.forEach(b => b.classList.toggle('tab-pill-active', b.dataset.period === period));
+          // Show/hide period content within same track
+          document.querySelectorAll<HTMLElement>(`.period-content[data-track="${track}"]`).forEach(c =>
+            c.classList.toggle('hidden', c.dataset.periodContent !== period)
+          );
+        });
+      });
+    });
+
+    // Restore from hash
     const hash = location.hash.replace('#', '');
     if (hash === 'industry' || hash === 'warroom') {
-      switchTab(hash);
+      topBtns.forEach(b => b.classList.toggle('tab-pill-active', b.dataset.tab === hash));
+      document.querySelectorAll<HTMLElement>('.tab-content').forEach(c =>
+        c.classList.toggle('hidden', c.id !== `tab-${hash}`)
+      );
     }
   }
-  initTabs();
-  document.addEventListener('astro:page-load', initTabs);
+
+  initTrends();
+  document.addEventListener('astro:page-load', initTrends);
 </script>

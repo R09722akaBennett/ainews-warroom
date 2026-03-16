@@ -50,6 +50,12 @@
   --color-monthly-dark: #60a5fa;
   --color-weekly: #0891b2;
   --color-weekly-dark: #22d3ee;
+
+  /* Extra accents for trending/products */
+  --color-accent-purple: #8b5cf6;
+  --color-accent-purple-dark: #a78bfa;
+  --color-accent-orange: #f97316;
+  --color-accent-orange-dark: #fb923c;
 }
 
 @layer base {
@@ -220,6 +226,8 @@ pre {
   --color-quarterly: #059669;
   --color-monthly: #2563eb;
   --color-weekly: #0891b2;
+  --color-accent-purple: #8b5cf6;
+  --color-accent-orange: #f97316;
 
   --astro-code-foreground: #1c1917;
   --astro-code-background: #f0efed;
@@ -248,6 +256,8 @@ pre {
   --color-quarterly: #34d399;
   --color-monthly: #60a5fa;
   --color-weekly: #22d3ee;
+  --color-accent-purple: #a78bfa;
+  --color-accent-orange: #fb923c;
 
   --astro-code-foreground: #e7e5e4;
   --astro-code-background: #1a1e2e;
@@ -332,6 +342,21 @@ pre {
 .dark .card-accent-weekly {
   border-left-color: var(--color-weekly);
 }
+.card-accent-purple {
+  border-left: 3px solid var(--color-accent-purple);
+}
+.card-accent-orange {
+  border-left: 3px solid var(--color-accent-orange);
+}
+
+/* Rank colors (used in leaderboard) */
+.rank-gold { color: #d97706; font-weight: 700; }
+.dark .rank-gold { color: #f59e0b; }
+.rank-silver { color: #6b7280; font-weight: 600; }
+.dark .rank-silver { color: #9ca3af; }
+.rank-bronze { color: #b45309; font-weight: 600; }
+.dark .rank-bronze { color: #d97706; }
+.rank-top10 { color: var(--color-accent-cool); }
 
 /* Period labels */
 .period-label {
@@ -395,6 +420,41 @@ pre {
 }
 .dark .section-title {
   color: var(--color-text-muted);
+}
+
+/* Shared tab styles */
+.tab-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  transition: all 0.15s;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+.tab-pill:hover {
+  background-color: var(--color-surface-muted);
+  color: var(--color-text);
+}
+.tab-pill-active {
+  background-color: var(--color-surface-raised);
+  border-color: var(--color-border);
+  color: var(--color-text);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.tab-pill-count {
+  font-size: 0.6875rem;
+  font-family: var(--font-mono);
+  color: var(--color-text-muted);
+  background: var(--color-surface-muted);
+  padding: 0.05rem 0.3rem;
+  border-radius: 0.25rem;
 }
 
 /* Tags (shared across reports, archive pages) */

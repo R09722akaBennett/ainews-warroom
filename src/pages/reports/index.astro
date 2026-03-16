@@ -31,6 +31,14 @@ const monthNames: Record<string, string> = {
         <div class="section-title mb-2">Daily Briefings</div>
         <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">All Reports</h1>
         <p class="mt-1 text-sm" style="color: var(--color-text-muted);">{reportsData.length} reports</p>
+        <div class="mt-4">
+          <input
+            type="text"
+            id="report-search"
+            placeholder="Search reports by title, company, model, topic..."
+            class="report-search-input"
+          />
+        </div>
       </div>
 
       {years.map((year) => (
@@ -47,29 +55,50 @@ const monthNames: Record<string, string> = {
                   <span class="meta">{reports.length}</span>
                 </div>
                 <div class="space-y-1.5">
-                  {reports.map((report: any) => (
+                  {reports.map((report: any) => {
+                    const searchText = [
+                      report.title,
+                      report.date,
+                      ...(report.tags?.companies || []),
+                      ...(report.tags?.models || []),
+                      ...(report.tags?.topics || []),
+                    ].join(" ").toLowerCase();
+                    return (
                     <a href={`/reports/${report.date}`}
-                       class="card block px-5 py-3 no-underline space-y-1.5">
+                       class="card report-card block px-5 py-3 no-underline space-y-1.5"
+                       data-search-text={searchText}>
                       <div class="flex items-center gap-5">
                         <span class="meta min-w-[5.5rem]">{report.date}</span>
                         <span class="flex-1 text-sm font-medium" style="color: var(--color-text);">{report.title}</span>
                         <span class="meta hidden sm:inline">{report.rawCount} src</span>
                       </div>
-                      {report.tags && (Object.keys(report.tags).length > 0) && (
-                        <div class="flex flex-wrap gap-1 pl-[5.5rem]">
-                          {(report.tags.companies || []).slice(0, 4).map((c: string) => (
-                            <span class="tag tag-company">{c}</span>
-                          ))}
-                          {(report.tags.models || []).slice(0, 3).map((m: string) => (
-                            <span class="tag tag-model">{m}</span>
-                          ))}
-                          {(report.tags.topics || []).slice(0, 3).map((t: string) => (
-                            <span class="tag tag-topic">{t}</span>
-                          ))}
-                        </div>
-                      )}
+                      {report.tags && (Object.keys(report.tags).length > 0) && (() => {
+                        const companies = report.tags.companies || [];
+                        const models = report.tags.models || [];
+                        const topics = report.tags.topics || [];
+                        const total = companies.length + models.length + topics.length;
+                        const shown = Math.min(companies.length, 4) + Math.min(models.length, 3) + Math.min(topics.length, 3);
+                        const overflow = total - shown;
+                        return (
+                          <div class="flex flex-wrap gap-1 pl-[5.5rem]">
+                            {companies.slice(0, 4).map((c: string) => (
+                              <span class="tag tag-company">{c}</span>
+                            ))}
+                            {models.slice(0, 3).map((m: string) => (
+                              <span class="tag tag-model">{m}</span>
+                            ))}
+                            {topics.slice(0, 3).map((t: string) => (
+                              <span class="tag tag-topic">{t}</span>
+                            ))}
+                            {overflow > 0 && (
+                              <span class="meta" style="line-height: 1.6;">+{overflow}</span>
+                            )}
+                          </div>
+                        );
+                      })()}
                     </a>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             );
@@ -79,4 +108,49 @@ const monthNames: Record<string, string> = {
     </div>
   </Container>
 </Layout>
+
+<style>
+  .report-search-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface-raised);
+    color: var(--color-text);
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .report-search-input:focus {
+    border-color: var(--color-accent-cool);
+    box-shadow: 0 0 0 3px rgba(8,145,178,0.1);
+  }
+  .report-search-input::placeholder {
+    color: var(--color-text-muted);
+  }
+</style>
+
+<script>
+  function initReportSearch() {
+    const input = document.getElementById("report-search") as HTMLInputElement | null;
+    if (!input || input.dataset.bound) return;
+    input.dataset.bound = "true";
+
+    input.addEventListener("input", () => {
+      const q = input.value.toLowerCase();
+      document.querySelectorAll<HTMLElement>(".report-card").forEach(card => {
+        const text = card.dataset.searchText || "";
+        card.style.display = (!q || text.includes(q)) ? "" : "none";
+      });
+      // Hide empty month/year sections
+      document.querySelectorAll<HTMLElement>("section.space-y-6").forEach(section => {
+        const visible = section.querySelectorAll<HTMLElement>(".report-card:not([style*='display: none'])").length;
+        section.style.display = (!q || visible > 0) ? "" : "none";
+      });
+    });
+  }
+
+  initReportSearch();
+  document.addEventListener("astro:page-load", initReportSearch);
+</script>
 

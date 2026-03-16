@@ -55,7 +55,7 @@ fi
 # Step 6: Push to git → triggers Vercel deploy
 echo "[6/6] Pushing to git..."
 cd "$REPO_DIR"
-git add src/data/reports.json src/data/sources.json src/data/summaries.json src/data/legacy.json src/data/leaderboard.json
+git add src/data/reports.json src/data/sources.json src/data/summaries.json src/data/legacy.json src/data/leaderboard.json src/data/papers.json
 if git diff --cached --quiet; then
     echo "No changes to push."
 else

@@ -10,8 +10,40 @@ import BackToTop from "@components/BackToTop.astro";
         <BackToTop />
       </div>
     </div>
-    <div class="flex items-center justify-center">
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="/sources">Daily News</a>
+        <a href="/reports/">Reports</a>
+        <a href="/trends">Insights</a>
+        <a href="/leaderboard">Leaderboard</a>
+        <a href="/trending">Trending</a>
+        <a href="/archive">Archive</a>
+      </div>
       <div class="meta">KDAN AI War Room</div>
     </div>
   </Container>
 </footer>
+
+<style>
+  .footer-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .footer-links {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .footer-links a {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .footer-links a:hover {
+    color: var(--color-text);
+  }
+</style>

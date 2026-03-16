@@ -1,6 +1,12 @@
 ---
 import Container from "@components/Container.astro";
 import { SITE } from "@consts";
+
+const pathname = Astro.url.pathname.replace(/\/$/, "") || "/";
+function isActive(href: string): boolean {
+  const h = href.replace(/\/$/, "") || "/";
+  return pathname === h || (h !== "/" && pathname.startsWith(h));
+}
 ---
 
 <header transition:persist>
@@ -15,19 +21,19 @@ import { SITE } from "@consts";
 
       <!-- Desktop nav -->
       <nav class="hidden lg:flex items-center gap-1">
-        <a href="/sources" class="nav-link">Daily News</a>
+        <a href="/sources" class:list={["nav-link", { "nav-active": isActive("/sources") }]}>Daily News</a>
         <span class="nav-sep">/</span>
-        <a href="/reports/" class="nav-link">Reports</a>
+        <a href="/reports/" class:list={["nav-link", { "nav-active": isActive("/reports") }]}>Reports</a>
         <span class="nav-sep">/</span>
-        <a href="/trends" class="nav-link">Insights</a>
+        <a href="/trends" class:list={["nav-link", { "nav-active": isActive("/trends") }]}>Insights</a>
         <span class="nav-sep">/</span>
-        <a href="/leaderboard" class="nav-link">Leaderboard</a>
+        <a href="/leaderboard" class:list={["nav-link", { "nav-active": isActive("/leaderboard") }]}>Leaderboard</a>
         <span class="nav-sep">/</span>
-        <a href="/trending" class="nav-link">Trending</a>
+        <a href="/trending" class:list={["nav-link", { "nav-active": isActive("/trending") }]}>Trending</a>
         <span class="nav-sep">/</span>
-        <a href="/archive" class="nav-link">Archive</a>
+        <a href="/archive" class:list={["nav-link", { "nav-active": isActive("/archive") }]}>Archive</a>
         <span class="nav-sep">/</span>
-        <a href="/about" class="nav-link">About</a>
+        <a href="/about" class:list={["nav-link", { "nav-active": isActive("/about") }]}>About</a>
 
         <!-- Hidden theme buttons (used by Head.astro script) -->
         <button id="light-theme-button" class="hidden"></button>
@@ -85,13 +91,13 @@ import { SITE } from "@consts";
 
     <!-- Mobile dropdown menu -->
     <nav id="mobile-menu" class="mobile-menu lg:hidden" hidden>
-      <a href="/sources" class="mobile-nav-link">News</a>
-      <a href="/reports/" class="mobile-nav-link">Reports</a>
-      <a href="/trends" class="mobile-nav-link">Insights</a>
-      <a href="/leaderboard" class="mobile-nav-link">Leaderboard</a>
-      <a href="/trending" class="mobile-nav-link">Trending</a>
-      <a href="/archive" class="mobile-nav-link">Archive</a>
-      <a href="/about" class="mobile-nav-link">About</a>
+      <a href="/sources" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/sources") }]}>News</a>
+      <a href="/reports/" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/reports") }]}>Reports</a>
+      <a href="/trends" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/trends") }]}>Insights</a>
+      <a href="/leaderboard" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/leaderboard") }]}>Leaderboard</a>
+      <a href="/trending" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/trending") }]}>Trending</a>
+      <a href="/archive" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/archive") }]}>Archive</a>
+      <a href="/about" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/about") }]}>About</a>
     </nav>
   </Container>
 </header>
@@ -108,6 +114,10 @@ import { SITE } from "@consts";
     color: var(--color-text-muted);
   }
   .nav-link:hover {
+    color: var(--color-text);
+    background-color: var(--color-surface-muted);
+  }
+  .nav-active {
     color: var(--color-text);
     background-color: var(--color-surface-muted);
   }
@@ -156,6 +166,10 @@ import { SITE } from "@consts";
     transition: color 0.15s, background-color 0.15s;
   }
   .mobile-nav-link:hover {
+    color: var(--color-text);
+    background-color: var(--color-surface-muted);
+  }
+  .mobile-nav-active {
     color: var(--color-text);
     background-color: var(--color-surface-muted);
   }

@@ -6,6 +6,9 @@ import { SITE, HOME } from "@consts";
 import reportsData from "../data/reports.json";
 import summariesData from "../data/summaries.json";
 import leaderboardData from "../data/leaderboard.json";
+import papersData from "../data/papers.json";
+
+const topPapers = ((papersData as any).hot || []).slice(0, 3);
 
 const latestReport = reportsData[0];
 const recentReports = reportsData.slice(1, 11);
@@ -30,18 +33,25 @@ const topModels = (lb.full as any[])
   .sort((a: any, b: any) => a.overall - b.overall)
   .slice(0, 3);
 
-const labMap = new Map<string, { org: string; bestRank: number; bestModel: string }>();
+const F1_PTS = [25, 18, 15, 12, 10, 8, 6, 4, 2, 1];
+const labMap = new Map<string, { org: string; points: number; bestModel: string }>();
 for (const m of lb.full as any[]) {
   const org = m.org || "";
   if (!org) continue;
   const rank = m.overall as number;
   if (!rank || rank < 1) continue;
-  if (!labMap.has(org) || rank < labMap.get(org)!.bestRank) {
-    labMap.set(org, { org, bestRank: rank, bestModel: m.model });
+  const pts = rank < 11 ? F1_PTS[rank - 1] : 0;
+  if (!labMap.has(org)) {
+    labMap.set(org, { org, points: 0, bestModel: m.model });
+  }
+  const entry = labMap.get(org)!;
+  entry.points += pts;
+  if (rank < (lb.full as any[]).find((x: any) => x.model === entry.bestModel)?.overall) {
+    entry.bestModel = m.model;
   }
 }
 const topLabs = Array.from(labMap.values())
-  .sort((a, b) => a.bestRank - b.bestRank)
+  .sort((a, b) => b.points - a.points)
   .slice(0, 3);
 
 const lbUpdated = new Date(lb.updatedAt).toLocaleDateString("en-US", {
@@ -124,9 +134,10 @@ try {
           <div class="section-title">At a Glance</div>
           <span class="meta">{lbUpdated}</span>
         </div>
-        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {/* Row 1: Top Models + Top Labs (2 big cards) */}
+        <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
           <!-- Top Models -->
-          <a href="/leaderboard" class="card block p-5 no-underline snapshot-card" style="border-left: 3px solid var(--color-accent-cool);">
+          <a href="/leaderboard#overview" class="card block p-5 no-underline snapshot-card" style="border-left: 3px solid var(--color-accent-cool);">
             <div class="snapshot-header">
               <span class="snapshot-label" style="color: var(--color-accent-cool);">Top Models</span>
               <span class="snapshot-link">rankings →</span>
@@ -145,7 +156,7 @@ try {
           </a>
 
           <!-- Top Labs -->
-          <a href="/leaderboard" class="card block p-5 no-underline snapshot-card" style="border-left: 3px solid var(--color-accent-warm);">
+          <a href="/leaderboard#orgs" class="card block p-5 no-underline snapshot-card" style="border-left: 3px solid var(--color-accent-warm);">
             <div class="snapshot-header">
               <span class="snapshot-label" style="color: var(--color-accent-warm);">Top Labs</span>
               <span class="snapshot-link">lab ranking →</span>
@@ -156,18 +167,21 @@ try {
                   <span class="snapshot-medal">{lbMedal(i + 1)}</span>
                   <div class="flex-1 min-w-0">
                     <div class="snapshot-name">{lab.org}</div>
-                    <div class="snapshot-sub">{lab.bestModel}</div>
+                    <div class="snapshot-sub">{lab.points} pts</div>
                   </div>
                 </div>
               ))}
             </div>
           </a>
+        </div>
 
+        {/* Row 2: Repos + Products + Papers (3 smaller cards) */}
+        <div class="grid gap-4 grid-cols-1 sm:grid-cols-3">
           <!-- Trending Repos -->
-          <a href="/trending#repos" class="card block p-5 no-underline snapshot-card" style="border-left: 3px solid #8b5cf6;">
+          <a href="/trending#repos" class="card card-accent-purple block p-5 no-underline snapshot-card">
             <div class="snapshot-header">
-              <span class="snapshot-label" style="color: #8b5cf6;">Trending Repos</span>
-              <span class="snapshot-link">all repos →</span>
+              <span class="snapshot-label" style="color: var(--color-accent-purple);">Trending Repos</span>
+              <span class="snapshot-link">all →</span>
             </div>
             <div class="space-y-2.5">
               {trendingRepos.length > 0 ? trendingRepos.map((repo, i: number) => (
@@ -175,7 +189,7 @@ try {
                   <span class="snapshot-medal">{lbMedal(i + 1)}</span>
                   <div class="flex-1 min-w-0">
                     <div class="snapshot-name">{repo.name}</div>
-                    {repo.description && <div class="snapshot-sub">{truncate(repo.description, 60)}</div>}
+                    {repo.description && <div class="snapshot-sub">{truncate(repo.description, 50)}</div>}
                   </div>
                 </div>
               )) : (
@@ -185,10 +199,10 @@ try {
           </a>
 
           <!-- Product Hunt -->
-          <a href="/trending#products" class="card block p-5 no-underline snapshot-card" style="border-left: 3px solid #f97316;">
+          <a href="/trending#products" class="card card-accent-orange block p-5 no-underline snapshot-card">
             <div class="snapshot-header">
-              <span class="snapshot-label" style="color: #f97316;">Product Hunt</span>
-              <span class="snapshot-link">all products →</span>
+              <span class="snapshot-label" style="color: var(--color-accent-orange);">Product Hunt</span>
+              <span class="snapshot-link">all →</span>
             </div>
             <div class="space-y-2.5">
               {topProducts.length > 0 ? topProducts.map((p, i: number) => (
@@ -196,7 +210,28 @@ try {
                   <span class="snapshot-medal">{lbMedal(i + 1)}</span>
                   <div class="flex-1 min-w-0">
                     <div class="snapshot-name">{p.name}</div>
-                    {p.tagline && <div class="snapshot-sub">{p.tagline}</div>}
+                    {p.tagline && <div class="snapshot-sub">{truncate(p.tagline, 50)}</div>}
+                  </div>
+                </div>
+              )) : (
+                <div class="snapshot-sub">Loading at next build...</div>
+              )}
+            </div>
+          </a>
+
+          <!-- Hot Papers -->
+          <a href="/trending#papers" class="card card-accent-cool block p-5 no-underline snapshot-card">
+            <div class="snapshot-header">
+              <span class="snapshot-label" style="color: var(--color-accent-cool);">Hot Papers</span>
+              <span class="snapshot-link">all →</span>
+            </div>
+            <div class="space-y-2.5">
+              {topPapers.length > 0 ? topPapers.map((p: any, i: number) => (
+                <div class="flex items-center gap-2.5">
+                  <span class="snapshot-medal">{lbMedal(i + 1)}</span>
+                  <div class="flex-1 min-w-0">
+                    <div class="snapshot-name">{truncate(p.title, 45)}</div>
+                    <div class="snapshot-sub">{p.votes} votes · {p.visits?.toLocaleString()} visits</div>
                   </div>
                 </div>
               )) : (
