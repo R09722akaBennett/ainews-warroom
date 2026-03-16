@@ -28,18 +28,20 @@ class SummaryRecord:
 def save_summary(
     period: str, start_date: str, end_date: str, title: str, content: str,
     tags: dict | None = None,
+    token_usage: dict | None = None,
 ):
     """Save a periodic summary."""
     import json
     conn = get_conn()
     tags_json = json.dumps(tags, ensure_ascii=False) if tags else None
+    token_json = json.dumps(token_usage) if token_usage else None
     conn.execute(
         """
         INSERT OR REPLACE INTO periodic_summaries
-        (period, start_date, end_date, title, content, tags)
-        VALUES (?, ?, ?, ?, ?, ?)
+        (period, start_date, end_date, title, content, tags, token_usage)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
         """,
-        (period, start_date, end_date, title, content, tags_json),
+        (period, start_date, end_date, title, content, tags_json, token_json),
     )
     conn.commit()
     conn.close()

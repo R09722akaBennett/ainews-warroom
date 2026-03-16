@@ -1,33 +1,171 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
+
+// === Product Hunt: build-time fetch ===
+type Product = { name: string; tagline: string; url: string; author: string; date: string };
+let products: Product[] = [];
+try {
+  const resp = await fetch("https://www.producthunt.com/feed");
+  const text = await resp.text();
+  const entries = text.match(/<entry>[\s\S]*?<\/entry>/g) || [];
+  for (const entry of entries.slice(0, 50)) {
+    const title = entry.match(/<title>(.*?)<\/title>/)?.[1] || "";
+    const link = entry.match(/<link[^>]*href="([^"]*)"[^>]*\/>/)?.[1]
+              || entry.match(/<link[^>]*rel="alternate"[^>]*href="([^"]*)"[^>]*\/>/)?.[1]
+              || "";
+    const content = entry.match(/<content[^>]*>([\s\S]*?)<\/content>/)?.[1] || "";
+    const author = entry.match(/<name>(.*?)<\/name>/)?.[1] || "";
+    const published = entry.match(/<published>(.*?)<\/published>/)?.[1] || "";
+    const taglineMatch = content.match(/&lt;p&gt;\s*([\s\S]*?)\s*&lt;\/p&gt;/);
+    const tagline = taglineMatch
+      ? taglineMatch[1].replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").trim()
+      : "";
+    if (title && link) {
+      const dateStr = published ? new Date(published).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "";
+      products.push({ name: title.trim(), tagline, url: link, author, date: dateStr });
+    }
+  }
+} catch (e) {
+  console.error("[Products] Fetch error:", e);
+}
 ---
 
-<Layout title="GitHub Trending" description="Daily trending repositories on GitHub">
+<Layout title="Trending" description="Trending GitHub repos and Product Hunt products">
   <Container>
     <div class="space-y-8">
       <div>
-        <div class="section-title mb-2">Live Data</div>
-        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">GitHub Trending</h1>
+        <div class="section-title mb-2">Trending</div>
+        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Trending</h1>
         <p class="mt-1 text-sm" style="color: var(--color-text-muted);">
-          Daily trending repositories · <span id="update-time">Loading...</span>
+          GitHub trending repos &amp; Product Hunt latest products
         </p>
       </div>
 
-      <!-- Language Tabs -->
-      <div class="flex gap-1 flex-wrap" id="lang-tabs" style="border-bottom: 1px solid var(--color-border);"></div>
+      <!-- Top-level Tabs -->
+      <div class="top-tabs" id="top-tabs">
+        <button data-top="repos" class="top-tab top-tab-active">
+          <span class="top-tab-icon">{"\u{1F4BB}"}</span>
+          GitHub Repos
+        </button>
+        <button data-top="products" class="top-tab">
+          <span class="top-tab-icon">{"\u{1F680}"}</span>
+          Product Hunt
+          <span class="top-tab-count">{products.length}</span>
+        </button>
+      </div>
 
-      <!-- Content Area -->
-      <div id="repos-container">
-        <div class="flex items-center justify-center py-12">
-          <span class="text-sm" style="color: var(--color-text-muted);">Fetching trending repos...</span>
+      <!-- === Repos Section === -->
+      <div data-section="repos" class="section-content">
+        <!-- Language sub-tabs -->
+        <div class="flex gap-1 flex-wrap" id="lang-tabs" style="border-bottom: 1px solid var(--color-border);"></div>
+
+        <div id="repos-container" class="mt-4">
+          <div class="flex items-center justify-center py-12">
+            <span class="text-sm" style="color: var(--color-text-muted);">Fetching trending repos...</span>
+          </div>
         </div>
+
+        <div class="mt-2">
+          <span id="update-time" class="meta"></span>
+        </div>
+      </div>
+
+      <!-- === Products Section === -->
+      <div data-section="products" class="section-content hidden">
+        {products.length === 0 ? (
+          <div class="text-center py-12">
+            <p class="text-sm" style="color: var(--color-text-muted);">Could not load products.</p>
+            <a href="https://www.producthunt.com" target="_blank" rel="noopener noreferrer"
+               class="inline-block mt-2 text-xs no-underline" style="color: var(--color-accent-warm);">
+              Visit Product Hunt →
+            </a>
+          </div>
+        ) : (
+          <div class="space-y-0.5">
+            {products.map((p, i) => (
+              <a href={p.url} target="_blank" rel="noopener noreferrer" class="product-row">
+                <span class:list={["product-rank", { "product-rank-top": i < 3 }]}>{i + 1}</span>
+                <div style="flex: 1; min-width: 0;">
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-semibold" style="color: var(--color-text);">{p.name}</span>
+                    <svg class="h-3 w-3 flex-shrink-0" viewBox="0 0 16 16" style="color: var(--color-text-muted);">
+                      <path d="M4 12L12 4M12 4H6M12 4v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                  {p.tagline && (
+                    <p class="text-xs mt-0.5 leading-relaxed" style="color: var(--color-text-muted);">{p.tagline}</p>
+                  )}
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="text-[10px] font-mono" style="color: var(--color-text-muted);">{p.author}</span>
+                    {p.date && (
+                      <>
+                        <span class="text-[10px]" style="color: var(--color-border);">·</span>
+                        <span class="text-[10px] font-mono" style="color: var(--color-text-muted);">{p.date}</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </a>
+            ))}
+            <div class="text-center pt-6 pb-2">
+              <a href="https://www.producthunt.com" target="_blank" rel="noopener noreferrer"
+                 class="text-xs no-underline hover:underline" style="color: var(--color-accent-warm);">
+                View more on Product Hunt →
+              </a>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   </Container>
 </Layout>
 
 <style>
+  /* === Top-level Tabs === */
+  .top-tabs {
+    display: flex;
+    gap: 0.375rem;
+  }
+  .top-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+  .top-tab:hover {
+    background-color: var(--color-surface-muted);
+    color: var(--color-text);
+  }
+  .top-tab-active {
+    background-color: var(--color-surface-raised);
+    border-color: var(--color-border);
+    color: var(--color-text);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+  .top-tab-icon {
+    font-size: 1rem;
+    line-height: 1;
+  }
+  .top-tab-count {
+    font-size: 0.6875rem;
+    font-family: var(--font-mono, "Geist Mono", monospace);
+    color: var(--color-text-muted);
+    background: var(--color-surface-muted);
+    padding: 0.05rem 0.3rem;
+    border-radius: 0.25rem;
+  }
+
+  /* === Language sub-tabs === */
   .tab-btn {
     cursor: pointer;
     border-radius: 0.375rem 0.375rem 0 0;
@@ -44,19 +182,13 @@ import Container from "@components/Container.astro";
   .tab-btn:hover {
     background-color: var(--color-surface-muted);
   }
-  :global(.dark) .tab-btn:hover {
-    background-color: var(--color-surface-muted);
-  }
   .tab-active {
     background-color: var(--color-surface-raised);
     border-color: var(--color-border);
     color: var(--color-text);
   }
-  :global(.dark) .tab-active {
-    background-color: var(--color-surface-raised);
-    border-color: var(--color-border);
-    color: var(--color-text);
-  }
+
+  /* === Repo rows === */
   .repo-row {
     display: flex;
     align-items: flex-start;
@@ -69,12 +201,60 @@ import Container from "@components/Container.astro";
   .repo-row:hover {
     background-color: var(--color-surface-muted);
   }
-  :global(.dark) .repo-row:hover {
+
+  /* === Product rows === */
+  .product-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.875rem;
+    padding: 0.75rem 1rem;
+    text-decoration: none;
+    border-radius: 0.375rem;
+    transition: background-color 0.15s;
+  }
+  .product-row:hover {
     background-color: var(--color-surface-muted);
   }
+  .product-rank {
+    min-width: 1.75rem;
+    height: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    background-color: var(--color-surface-muted);
+    flex-shrink: 0;
+    margin-top: 0.125rem;
+  }
+  .product-rank-top {
+    color: var(--color-accent-warm);
+    background-color: color-mix(in srgb, var(--color-accent-warm) 12%, transparent);
+  }
+
+  .hidden { display: none; }
 </style>
 
 <script>
+  // === Top-level tab switching ===
+  function initTopTabs() {
+    const topTabs = document.getElementById("top-tabs");
+    if (!topTabs || topTabs.dataset.bound) return;
+    topTabs.dataset.bound = "true";
+
+    topTabs.addEventListener("click", (e) => {
+      const btn = (e.target as HTMLElement).closest("[data-top]") as HTMLElement | null;
+      if (!btn) return;
+      const key = btn.dataset.top!;
+      switchTopTab(key);
+      history.replaceState(null, "", `#${key}`);
+    });
+  }
+
+  // === GitHub trending (client-side RSS) ===
   const FEEDS = [
     { key: "all", label: "All Languages", url: "https://mshibanami.github.io/GitHubTrendingRSS/daily/all.xml" },
     { key: "python", label: "Python", url: "https://mshibanami.github.io/GitHubTrendingRSS/daily/python.xml" },
@@ -129,13 +309,12 @@ import Container from "@components/Container.astro";
   }
 
   async function loadTrending() {
-    const tabsEl = document.getElementById("lang-tabs")!;
-    const containerEl = document.getElementById("repos-container")!;
-    const timeEl = document.getElementById("update-time")!;
+    const tabsEl = document.getElementById("lang-tabs");
+    const containerEl = document.getElementById("repos-container");
+    const timeEl = document.getElementById("update-time");
+    if (!tabsEl || !containerEl || !timeEl) return;
 
     const results: FeedResult[] = [];
-
-    // Fetch all feeds in parallel
     const fetches = FEEDS.map(async (feed) => {
       try {
         const resp = await fetch(feed.url);
@@ -149,26 +328,23 @@ import Container from "@components/Container.astro";
     const settled = await Promise.all(fetches);
     results.push(...settled);
 
-    // Render tabs
     tabsEl.innerHTML = results.map((feed, i) => `
       <button data-tab="${feed.key}" class="tab-btn ${i === 0 ? "tab-active" : ""}">
         ${feed.label} <span class="meta" style="margin-left: 0.25rem;">(${feed.repos.length})</span>
       </button>
     `).join("");
 
-    // Render all tab contents
     containerEl.innerHTML = results.map((feed, i) => `
       <div data-tab-content="${feed.key}" style="display: ${i === 0 ? "flex" : "none"}; flex-direction: column; gap: 0.25rem;">
         ${renderRepos(feed.repos)}
       </div>
     `).join("");
 
-    // Wire up tab clicks
     function switchTab(activeKey: string) {
-      tabsEl.querySelectorAll(".tab-btn").forEach(b => {
+      tabsEl!.querySelectorAll(".tab-btn").forEach(b => {
         b.classList.toggle("tab-active", b.getAttribute("data-tab") === activeKey);
       });
-      containerEl.querySelectorAll<HTMLElement>("[data-tab-content]").forEach(c => {
+      containerEl!.querySelectorAll<HTMLElement>("[data-tab-content]").forEach(c => {
         c.style.display = c.getAttribute("data-tab-content") === activeKey ? "flex" : "none";
       });
     }
@@ -179,11 +355,34 @@ import Container from "@components/Container.astro";
       });
     });
 
-    // Update timestamp
     const now = new Date();
     timeEl.textContent = `Live · ${now.toLocaleString()}`;
   }
 
-  loadTrending();
-  document.addEventListener("astro:page-load", loadTrending);
+  function switchTopTab(key: string) {
+    const topTabs = document.getElementById("top-tabs");
+    if (!topTabs) return;
+    topTabs.querySelectorAll(".top-tab").forEach(b =>
+      b.classList.toggle("top-tab-active", (b as HTMLElement).dataset.top === key)
+    );
+    document.querySelectorAll(".section-content").forEach(s =>
+      s.classList.toggle("hidden", (s as HTMLElement).dataset.section !== key)
+    );
+  }
+
+  function restoreFromHash() {
+    const hash = window.location.hash.replace("#", "");
+    if (hash === "repos" || hash === "products") {
+      switchTopTab(hash);
+    }
+  }
+
+  function init() {
+    initTopTabs();
+    loadTrending();
+    restoreFromHash();
+  }
+
+  init();
+  document.addEventListener("astro:page-load", init);
 </script>

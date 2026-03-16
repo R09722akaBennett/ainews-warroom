@@ -5,6 +5,7 @@ import { SITE, HOME } from "@consts";
 
 import reportsData from "../data/reports.json";
 import summariesData from "../data/summaries.json";
+import leaderboardData from "../data/leaderboard.json";
 
 const latestReport = reportsData[0];
 const recentReports = reportsData.slice(1, 11);
@@ -22,6 +23,80 @@ function truncate(text: string, n: number): string {
   return text.slice(0, n).trimEnd() + "...";
 }
 
+// === Leaderboard snapshot ===
+const lb = leaderboardData as any;
+const topModels = (lb.full as any[])
+  .filter((m: any) => m.overall && m.overall > 0)
+  .sort((a: any, b: any) => a.overall - b.overall)
+  .slice(0, 3);
+
+const labMap = new Map<string, { org: string; bestRank: number; bestModel: string }>();
+for (const m of lb.full as any[]) {
+  const org = m.org || "";
+  if (!org) continue;
+  const rank = m.overall as number;
+  if (!rank || rank < 1) continue;
+  if (!labMap.has(org) || rank < labMap.get(org)!.bestRank) {
+    labMap.set(org, { org, bestRank: rank, bestModel: m.model });
+  }
+}
+const topLabs = Array.from(labMap.values())
+  .sort((a, b) => a.bestRank - b.bestRank)
+  .slice(0, 3);
+
+const lbUpdated = new Date(lb.updatedAt).toLocaleDateString("en-US", {
+  month: "short", day: "numeric",
+});
+
+function lbMedal(rank: number): string {
+  if (rank === 1) return "\u{1F947}";
+  if (rank === 2) return "\u{1F948}";
+  if (rank === 3) return "\u{1F949}";
+  return `#${rank}`;
+}
+
+// === Trending repos (build-time RSS fetch) ===
+type TrendingRepo = { name: string; url: string; description: string };
+let trendingRepos: TrendingRepo[] = [];
+try {
+  const resp = await fetch("https://mshibanami.github.io/GitHubTrendingRSS/daily/all.xml");
+  const xml = await resp.text();
+  const items = xml.match(/<item>[\s\S]*?<\/item>/g) || [];
+  for (const item of items.slice(0, 3)) {
+    const title = item.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/)?.[1]
+               || item.match(/<title>(.*?)<\/title>/)?.[1] || "";
+    const link = item.match(/<link>(.*?)<\/link>/)?.[1] || "";
+    const desc = item.match(/<description>([\s\S]*?)<\/description>/)?.[1] || "";
+    // Description is HTML-escaped: &lt;p&gt;...&lt;/p&gt;
+    const unescaped = desc.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"');
+    const pMatch = unescaped.match(/<p>(.*?)<\/p>/s);
+    const cleanDesc = pMatch ? pMatch[1].replace(/<[^>]+>/g, "").trim().slice(0, 120) : "";
+    if (title && link) {
+      trendingRepos.push({ name: title, url: link, description: cleanDesc });
+    }
+  }
+} catch { /* silently skip */ }
+
+// === Product Hunt (build-time fetch) ===
+type PHProduct = { name: string; tagline: string; url: string };
+let topProducts: PHProduct[] = [];
+try {
+  const resp = await fetch("https://www.producthunt.com/feed");
+  const text = await resp.text();
+  const entries = text.match(/<entry>[\s\S]*?<\/entry>/g) || [];
+  for (const entry of entries.slice(0, 3)) {
+    const title = entry.match(/<title>(.*?)<\/title>/)?.[1] || "";
+    const link = entry.match(/<link[^>]*href="([^"]*)"[^>]*\/>/)?.[1] || "";
+    const content = entry.match(/<content[^>]*>([\s\S]*?)<\/content>/)?.[1] || "";
+    const taglineMatch = content.match(/&lt;p&gt;\s*([\s\S]*?)\s*&lt;\/p&gt;/);
+    const tagline = taglineMatch
+      ? taglineMatch[1].replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").trim()
+      : "";
+    if (title && link) {
+      topProducts.push({ name: title.trim(), tagline: truncate(tagline, 80), url: link });
+    }
+  }
+} catch { /* silently skip */ }
 ---
 
 <Layout title={HOME.TITLE} description={HOME.DESCRIPTION}>
@@ -42,6 +117,95 @@ function truncate(text: string, n: number): string {
           {SITE.DESCRIPTION}
         </p>
       </div>
+
+      <!-- Snapshot Grid: Leaderboard + Trending + Products -->
+      <section class="space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="section-title">At a Glance</div>
+          <span class="meta">{lbUpdated}</span>
+        </div>
+        <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <!-- Top Models -->
+          <a href="/leaderboard" class="card block p-5 no-underline snapshot-card" style="border-left: 3px solid var(--color-accent-cool);">
+            <div class="snapshot-header">
+              <span class="snapshot-label" style="color: var(--color-accent-cool);">Top Models</span>
+              <span class="snapshot-link">rankings →</span>
+            </div>
+            <div class="space-y-2.5">
+              {topModels.map((m: any, i: number) => (
+                <div class="flex items-center gap-2.5">
+                  <span class="snapshot-medal">{lbMedal(i + 1)}</span>
+                  <div class="flex-1 min-w-0">
+                    <div class="snapshot-name">{m.model}</div>
+                    {m.org && <div class="snapshot-sub">{m.org}</div>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </a>
+
+          <!-- Top Labs -->
+          <a href="/leaderboard" class="card block p-5 no-underline snapshot-card" style="border-left: 3px solid var(--color-accent-warm);">
+            <div class="snapshot-header">
+              <span class="snapshot-label" style="color: var(--color-accent-warm);">Top Labs</span>
+              <span class="snapshot-link">lab ranking →</span>
+            </div>
+            <div class="space-y-2.5">
+              {topLabs.map((lab, i: number) => (
+                <div class="flex items-center gap-2.5">
+                  <span class="snapshot-medal">{lbMedal(i + 1)}</span>
+                  <div class="flex-1 min-w-0">
+                    <div class="snapshot-name">{lab.org}</div>
+                    <div class="snapshot-sub">{lab.bestModel}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </a>
+
+          <!-- Trending Repos -->
+          <a href="/trending#repos" class="card block p-5 no-underline snapshot-card" style="border-left: 3px solid #8b5cf6;">
+            <div class="snapshot-header">
+              <span class="snapshot-label" style="color: #8b5cf6;">Trending Repos</span>
+              <span class="snapshot-link">all repos →</span>
+            </div>
+            <div class="space-y-2.5">
+              {trendingRepos.length > 0 ? trendingRepos.map((repo, i: number) => (
+                <div class="flex items-center gap-2.5">
+                  <span class="snapshot-medal">{lbMedal(i + 1)}</span>
+                  <div class="flex-1 min-w-0">
+                    <div class="snapshot-name">{repo.name}</div>
+                    {repo.description && <div class="snapshot-sub">{truncate(repo.description, 60)}</div>}
+                  </div>
+                </div>
+              )) : (
+                <div class="snapshot-sub">Loading at next build...</div>
+              )}
+            </div>
+          </a>
+
+          <!-- Product Hunt -->
+          <a href="/trending#products" class="card block p-5 no-underline snapshot-card" style="border-left: 3px solid #f97316;">
+            <div class="snapshot-header">
+              <span class="snapshot-label" style="color: #f97316;">Product Hunt</span>
+              <span class="snapshot-link">all products →</span>
+            </div>
+            <div class="space-y-2.5">
+              {topProducts.length > 0 ? topProducts.map((p, i: number) => (
+                <div class="flex items-center gap-2.5">
+                  <span class="snapshot-medal">{lbMedal(i + 1)}</span>
+                  <div class="flex-1 min-w-0">
+                    <div class="snapshot-name">{p.name}</div>
+                    {p.tagline && <div class="snapshot-sub">{p.tagline}</div>}
+                  </div>
+                </div>
+              )) : (
+                <div class="snapshot-sub">Loading at next build...</div>
+              )}
+            </div>
+          </a>
+        </div>
+      </section>
 
       <!-- Latest Report (hero card) -->
       {latestReport && (
@@ -185,3 +349,50 @@ function truncate(text: string, n: number): string {
     </div>
   </Container>
 </Layout>
+
+<style>
+  .snapshot-card {
+    transition: box-shadow 0.15s, border-color 0.15s;
+  }
+  .snapshot-card:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .snapshot-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
+  .snapshot-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .snapshot-link {
+    font-size: 0.6875rem;
+    color: var(--color-text-muted);
+  }
+  .snapshot-medal {
+    font-size: 0.875rem;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .snapshot-name {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-text);
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .snapshot-sub {
+    font-size: 0.6875rem;
+    color: var(--color-text-muted);
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+</style>

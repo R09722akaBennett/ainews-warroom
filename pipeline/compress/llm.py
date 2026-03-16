@@ -10,14 +10,25 @@ import google.genai as genai
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3-flash-preview")
 
 
-def compress_with_llm(prompt: str) -> tuple[str, str, dict | None]:
-    """Send prompt to Gemini and parse JSON response. Returns (title, content, tags)."""
+def compress_with_llm(prompt: str) -> tuple[str, str, dict | None, dict | None]:
+    """Send prompt to Gemini and parse JSON response. Returns (title, content, tags, token_usage)."""
     client = genai.Client()
     response = client.models.generate_content(
         model=GEMINI_MODEL,
         contents=prompt,
     )
-    return parse_json_response(response.text)
+    title, content, tags = parse_json_response(response.text)
+
+    token_usage = None
+    um = getattr(response, "usage_metadata", None)
+    if um:
+        token_usage = {
+            "input": getattr(um, "prompt_token_count", 0) or 0,
+            "output": getattr(um, "candidates_token_count", 0) or 0,
+            "total": getattr(um, "total_token_count", 0) or 0,
+        }
+
+    return title, content, tags, token_usage
 
 
 def parse_json_response(text: str) -> tuple[str, str, dict | None]:

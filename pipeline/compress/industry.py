@@ -56,8 +56,10 @@ def run_raw_weekly(ref_date: datetime):
     source_text = _raw_items_to_text(items)
 
     prompt = build_industry_compress_prompt(source_text, "weekly", start, end)
-    title, content, tags = compress_with_llm(prompt)
-    save_summary(RAW_WEEKLY, start, end, title, content, tags)
+    title, content, tags, token_usage = compress_with_llm(prompt)
+    if token_usage:
+        console.print(f"  Tokens: input={token_usage['input']:,} output={token_usage['output']:,} total={token_usage['total']:,}")
+    save_summary(RAW_WEEKLY, start, end, title, content, tags, token_usage)
     console.print(f"  [green]✓[/] Saved: {title}")
 
 
@@ -83,8 +85,10 @@ def run_raw_monthly(ref_date: datetime):
         source_text = _raw_items_to_text(items)
 
     prompt = build_industry_compress_prompt(source_text, "monthly", start, end)
-    title, content, tags = compress_with_llm(prompt)
-    save_summary(RAW_MONTHLY, start, end, title, content, tags)
+    title, content, tags, token_usage = compress_with_llm(prompt)
+    if token_usage:
+        console.print(f"  Tokens: input={token_usage['input']:,} output={token_usage['output']:,} total={token_usage['total']:,}")
+    save_summary(RAW_MONTHLY, start, end, title, content, tags, token_usage)
     console.print(f"  [green]✓[/] Saved: {title}")
 
 
@@ -118,6 +122,8 @@ def run_raw_quarterly(ref_date: datetime):
             source_text = _raw_items_to_text(items)
 
     prompt = build_industry_compress_prompt(source_text, "quarterly", start, end)
-    title, content, tags = compress_with_llm(prompt)
-    save_summary(RAW_QUARTERLY, start, end, title, content, tags)
+    title, content, tags, token_usage = compress_with_llm(prompt)
+    if token_usage:
+        console.print(f"  Tokens: input={token_usage['input']:,} output={token_usage['output']:,} total={token_usage['total']:,}")
+    save_summary(RAW_QUARTERLY, start, end, title, content, tags, token_usage)
     console.print(f"  [green]✓[/] Saved: {title}")

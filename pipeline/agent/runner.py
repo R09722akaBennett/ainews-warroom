@@ -41,10 +41,18 @@ def _build_user_prompt(
     """Build the user prompt with all collected data."""
     parts = [f"今天是 {date}。請根據以下資料產出今日 AI 戰情報告。\n"]
 
-    # Today's news
-    parts.append("## 今日收集的 AI 新聞\n")
-    for i, item in enumerate(items):
+    # Today's news — sorted by published_at descending (newest first)
+    sorted_items = sorted(
+        items,
+        key=lambda x: x.published_at or datetime.min,
+        reverse=True,
+    )
+    parts.append("## 今日收集的 AI 新聞（按發佈日期排序，最新在前）\n")
+    for i, item in enumerate(sorted_items):
+        date_str = item.published_at.strftime("%Y-%m-%d %H:%M") if item.published_at else ""
         line = f"[{i}] [{item.source_name}] {item.title}"
+        if date_str:
+            line += f"\n    Published: {date_str}"
         if item.url:
             line += f"\n    URL: {item.url}"
         if item.score:
@@ -143,6 +151,16 @@ async def run_daily(date: str, dry_run: bool = False):
         ],
     )
 
+    # Extract token usage
+    token_usage = None
+    um = getattr(response, "usage_metadata", None)
+    if um:
+        token_usage = {
+            "input": getattr(um, "prompt_token_count", 0) or 0,
+            "output": getattr(um, "candidates_token_count", 0) or 0,
+            "total": getattr(um, "total_token_count", 0) or 0,
+        }
+
     result = _parse_report_response(response.text)
     title = result.get("title", f"KDAN AI 戰情報告 ({date})")
     topics = result.get("topics", [])
@@ -151,13 +169,15 @@ async def run_daily(date: str, dry_run: bool = False):
 
     console.print(f"  [green]✓[/] Report generated: {title}")
     console.print(f"  [green]✓[/] Topics: {len(topics)}, Tags: {tags.keys() if tags else 'none'}")
+    if token_usage:
+        console.print(f"  [green]✓[/] Tokens: input={token_usage['input']:,} output={token_usage['output']:,} total={token_usage['total']:,}")
 
     # Step 4: Save (deterministic)
     console.print("[bold]Step 4/4:[/] Saving...")
 
     # Save to DB
     news_items = [{"title": it.title, "url": it.url, "source": it.source_name} for it in items]
-    save_digest(date, title, news_items, markdown, raw_count, topics, tags)
+    save_digest(date, title, news_items, markdown, raw_count, topics, tags, token_usage)
     console.print(f"  [green]✓[/] Saved to DB")
 
     # Write markdown file

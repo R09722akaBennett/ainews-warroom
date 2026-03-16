@@ -39,7 +39,10 @@ def fetch_producthunt(hours: int = 48) -> list[NewsItem]:
                 try:
                     pub_date = parsedate_to_datetime(raw_date).astimezone(timezone.utc)
                 except Exception:
-                    pass
+                    try:
+                        pub_date = datetime.fromisoformat(raw_date).astimezone(timezone.utc)
+                    except Exception:
+                        pass
 
             if pub_date and pub_date < cutoff:
                 continue

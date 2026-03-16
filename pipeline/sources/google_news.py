@@ -46,20 +46,20 @@ def fetch_google_news(hours: int = 48) -> list[NewsItem]:
 
                 # Google News titles often have " - Source" suffix
                 title = entry.get("title", "")
-                source_name = "Google News"
+                original_source = ""
                 if " - " in title:
                     parts = title.rsplit(" - ", 1)
                     title = parts[0]
-                    source_name = f"Google News ({parts[1]})"
+                    original_source = parts[1].strip()
 
                 items.append(NewsItem(
                     title=title,
                     url=link,
                     source_type=SourceType.GOOGLE_NEWS,
-                    source_name=source_name,
+                    source_name="Google News",
                     content=entry.get("summary", "")[:3000],
                     published_at=pub_date,
-                    metadata={"query": query[:50]},
+                    metadata={"query": query[:50], "via": original_source},
                 ))
 
         except Exception as e:

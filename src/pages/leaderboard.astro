@@ -1,0 +1,780 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+import leaderboard from "@data/leaderboard.json";
+
+const { updatedAt, categoryLabels, categories, full } = leaderboard as any;
+const updatedDate = new Date(updatedAt).toLocaleDateString("en-US", {
+  year: "numeric", month: "short", day: "numeric",
+  hour: "2-digit", minute: "2-digit", timeZoneName: "short",
+});
+
+const categoryIcons: Record<string, string> = {
+  "overview": "\u{1F3C6}",
+  "text": "Aa",
+  "code": "</>",
+  "vision": "\u{1F441}",
+  "document": "\u{1F4C4}",
+  "text-to-image": "\u{1F3A8}",
+  "image-edit": "\u{2702}",
+  "search": "\u{1F50D}",
+  "text-to-video": "\u{1F3AC}",
+  "image-to-video": "\u{1F4F9}",
+};
+
+const categoryKeys = Object.keys(categories);
+// All tabs: overview first, then per-category
+const allTabKeys = ["overview", ...categoryKeys];
+
+function medal(rank: number): string {
+  if (rank === 1) return "\u{1F947}";
+  if (rank === 2) return "\u{1F948}";
+  if (rank === 3) return "\u{1F949}";
+  return String(rank);
+}
+
+function hasPricing(key: string): boolean {
+  const models = categories[key] as any[];
+  return models.some((m: any) => m.price);
+}
+
+const fullColumns = [
+  { key: "overall", label: "Overall" },
+  { key: "expert", label: "Expert" },
+  { key: "hard_prompts", label: "Hard" },
+  { key: "coding", label: "Code" },
+  { key: "math", label: "Math" },
+  { key: "creative_writing", label: "Creative" },
+  { key: "instruction_following", label: "Instruct" },
+  { key: "longer_query", label: "Long" },
+];
+
+// === Org Rankings ===
+// Group models by org, find each org's best rank per sub-category
+const subCatKeys = fullColumns.map(c => c.key);
+type OrgEntry = {
+  org: string;
+  bestOverall: number;
+  bestModel: string;
+  modelCount: number;
+  topModels: { model: string; rank: number }[];
+  bestPerCat: Record<string, { rank: number; model: string }>;
+};
+
+const orgMap = new Map<string, OrgEntry>();
+for (const m of full as any[]) {
+  const org = m.org || "";
+  if (!org) continue;
+  const overall = m.overall as number;
+  if (!overall || overall < 1) continue; // skip unranked
+
+  if (!orgMap.has(org)) {
+    orgMap.set(org, {
+      org,
+      bestOverall: overall,
+      bestModel: m.model,
+      modelCount: 0,
+      topModels: [],
+      bestPerCat: {},
+    });
+  }
+  const entry = orgMap.get(org)!;
+  entry.modelCount++;
+  entry.topModels.push({ model: m.model, rank: overall });
+  if (overall < entry.bestOverall) {
+    entry.bestOverall = overall;
+    entry.bestModel = m.model;
+  }
+  // Track best per sub-category
+  for (const key of subCatKeys) {
+    const val = m[key] as number;
+    if (!val || val < 1) continue;
+    if (!entry.bestPerCat[key] || val < entry.bestPerCat[key].rank) {
+      entry.bestPerCat[key] = { rank: val, model: m.model };
+    }
+  }
+}
+
+const orgRankings: OrgEntry[] = Array.from(orgMap.values())
+  .sort((a, b) => a.bestOverall - b.bestOverall);
+
+// Sort each org's top models
+for (const entry of orgRankings) {
+  entry.topModels.sort((a, b) => a.rank - b.rank);
+}
+---
+
+<Layout title="Leaderboard" description="AI model rankings from Arena AI">
+  <Container>
+    <div class="space-y-8">
+      <!-- Header -->
+      <div>
+        <div class="section-title mb-2">Rankings</div>
+        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">
+          AI Leaderboard
+        </h1>
+        <p class="mt-1 text-sm" style="color: var(--color-text-muted);">
+          Model rankings from <a href="https://arena.ai/leaderboard" target="_blank" rel="noopener"
+            class="link-cool">arena.ai</a>
+          &middot; Updated {updatedDate}
+        </p>
+      </div>
+
+      <!-- All Tabs -->
+      <div>
+        <div class="cat-tabs" id="cat-tabs">
+          <!-- Primary row: Overview + Lab Ranking -->
+          <div class="tab-row tab-row-primary">
+            <button data-tab="overview" class="cat-tab cat-tab-active">
+              <span class="cat-icon">{categoryIcons["overview"]}</span>
+              <span>Overview</span>
+              <span class="cat-count">{full.length}</span>
+            </button>
+            <button data-tab="orgs" class="cat-tab">
+              <span class="cat-icon">{"\u{1F3E2}"}</span>
+              <span>Lab Ranking</span>
+              <span class="cat-count">{orgRankings.length}</span>
+            </button>
+          </div>
+          <!-- Secondary row: Category tabs -->
+          <div class="tab-row tab-row-secondary">
+            {categoryKeys.map((key) => (
+              <button data-tab={key} class="cat-tab">
+                <span class="cat-icon">{categoryIcons[key]}</span>
+                <span>{categoryLabels[key]}</span>
+                <span class="cat-count">{(categories[key] as any[]).length}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <!-- Overview Tab Content -->
+        <div data-cat="overview" class="cat-content">
+          <div class="mb-4">
+            <p class="text-sm mb-3" style="color: var(--color-text-muted);">
+              {full.length} models &middot; Rank position per sub-category (lower is better) &middot; Click headers to sort
+            </p>
+            <input
+              type="text"
+              data-search="overview"
+              placeholder="Search models or orgs..."
+              class="search-input"
+            />
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="lb-table searchable-table" data-search-target="overview">
+              <thead>
+                <tr>
+                  <th class="sticky-col">Model</th>
+                  {fullColumns.map(col => (
+                    <th class="text-center cursor-pointer sort-header" data-sort={col.key}>
+                      <span class="sort-label">{col.label}</span>
+                      <span class="sort-arrow"></span>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {full.map((m: any) => (
+                  <tr data-model={m.model.toLowerCase()} data-org={(m.org || "").toLowerCase()}>
+                    <td class="sticky-col">
+                      <span class="model-name">{m.model}</span>
+                      {m.org && <span class="org-badge">{m.org}</span>}
+                    </td>
+                    {fullColumns.map(col => {
+                      const val: number | null = m[col.key] ?? null;
+                      const isTop10 = (typeof val === "number" && val > 3 && val < 11);
+                      const cls = [
+                        "text-center font-mono text-sm",
+                        val === 1 ? "rank-gold" : "",
+                        val === 2 ? "rank-silver" : "",
+                        val === 3 ? "rank-bronze" : "",
+                        isTop10 ? "rank-top10" : "",
+                      ].filter(Boolean).join(" ");
+                      return <td class={cls}>{val ?? "\u2014"}</td>;
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Org Rankings Tab Content -->
+        <div data-cat="orgs" class="cat-content hidden">
+          <div class="mb-4">
+            <p class="text-sm mb-3" style="color: var(--color-text-muted);">
+              {orgRankings.length} organizations &middot; Ranked by best model's overall position
+            </p>
+            <input
+              type="text"
+              data-search="orgs"
+              placeholder="Search organizations..."
+              class="search-input"
+            />
+          </div>
+
+          {/* Org Podium: Top 3 */}
+          <div class="podium">
+            {orgRankings.slice(0, 3).map((entry, i) => (
+              <div class:list={["podium-card", `podium-${i + 1}`]}>
+                <div class="podium-medal">{medal(i + 1)}</div>
+                <div class="podium-model">{entry.org}</div>
+                <div class="podium-meta" style="margin-top: 0.375rem;">
+                  <span>{entry.modelCount} models</span>
+                </div>
+                <div style="margin-top: 0.75rem; font-size: 0.75rem; color: var(--color-text-muted);">
+                  Best model
+                </div>
+                <div style="font-weight: 600; font-size: 0.8125rem; color: var(--color-text);">
+                  #{entry.bestOverall} {entry.bestModel}
+                </div>
+                <div class="org-subcats" style="margin-top: 0.75rem;">
+                  {fullColumns.map(col => {
+                    const best = entry.bestPerCat[col.key];
+                    if (!best) return null;
+                    const cls = [
+                      "org-subcat-rank",
+                      best.rank === 1 ? "rank-gold" : "",
+                      best.rank === 2 ? "rank-silver" : "",
+                      best.rank === 3 ? "rank-bronze" : "",
+                    ].filter(Boolean).join(" ");
+                    return (
+                      <div class="org-subcat-item">
+                        <span class="org-subcat-label">{col.label}</span>
+                        <span class={cls}>#{best.rank}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Full Org Table */}
+          <div class="overflow-x-auto">
+            <table class="lb-table searchable-table" data-search-target="orgs">
+              <thead>
+                <tr>
+                  <th class="w-12">#</th>
+                  <th>Organization</th>
+                  <th class="text-center">Models</th>
+                  <th>Best Model</th>
+                  {fullColumns.map(col => (
+                    <th class="text-center">{col.label}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {orgRankings.slice(3).map((entry, i) => (
+                  <tr data-model={entry.org.toLowerCase()} data-org={entry.org.toLowerCase()}>
+                    <td class="rank-cell">{i + 4}</td>
+                    <td>
+                      <span class="model-name">{entry.org}</span>
+                    </td>
+                    <td class="text-center meta">{entry.modelCount}</td>
+                    <td>
+                      <span class="text-sm" style="color: var(--color-text);">#{entry.bestOverall}</span>
+                      <span class="text-sm" style="color: var(--color-text-muted); margin-left: 0.25rem;">{entry.bestModel}</span>
+                    </td>
+                    {fullColumns.map(col => {
+                      const best = entry.bestPerCat[col.key];
+                      if (!best) return <td class="text-center font-mono text-sm" style="color: var(--color-text-muted);">{"\u2014"}</td>;
+                      const val = best.rank;
+                      const cls = [
+                        "text-center font-mono text-sm",
+                        val === 1 ? "rank-gold" : "",
+                        val === 2 ? "rank-silver" : "",
+                        val === 3 ? "rank-bronze" : "",
+                        (val > 3 && val < 11) ? "rank-top10" : "",
+                      ].filter(Boolean).join(" ");
+                      return <td class={cls} title={best.model}>#{val}</td>;
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Per-Category Tab Contents -->
+        {categoryKeys.map((key) => {
+          const models = categories[key] as any[];
+          const showPrice = hasPricing(key);
+          return (
+            <div data-cat={key} class="cat-content hidden">
+              {/* Podium: Top 3 */}
+              <div class="podium">
+                {models.slice(0, 3).map((m: any) => (
+                  <div class:list={["podium-card", `podium-${m.rank}`]}>
+                    <div class="podium-medal">{medal(m.rank)}</div>
+                    <div class="podium-model">{m.model}</div>
+                    <div class="podium-org">{m.org}</div>
+                    <div class="podium-score">
+                      <span class="podium-score-value">{m.score}</span>
+                      {m.ci && <span class="podium-ci">{m.ci}</span>}
+                    </div>
+                    <div class="podium-meta">
+                      <span>{m.votes.toLocaleString()} votes</span>
+                      {m.context && <span>&middot; {m.context} ctx</span>}
+                    </div>
+                    {m.price && <div class="podium-price">{m.price}</div>}
+                  </div>
+                ))}
+              </div>
+
+              {/* Search */}
+              <div class="mb-4">
+                <input
+                  type="text"
+                  data-search={key}
+                  placeholder="Search models or orgs..."
+                  class="search-input"
+                />
+              </div>
+
+              {/* Full category table */}
+              <div class="overflow-x-auto">
+                <table class="lb-table searchable-table" data-search-target={key}>
+                  <thead>
+                    <tr>
+                      <th class="w-12">#</th>
+                      <th>Model</th>
+                      <th class="text-right">ELO</th>
+                      <th class="text-right">Votes</th>
+                      {showPrice && <th class="text-right">Price $/M</th>}
+                      {showPrice && <th class="text-right">Context</th>}
+                      <th class="text-center w-16">Spread</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {models.slice(3).map((m: any) => (
+                      <tr data-model={m.model.toLowerCase()} data-org={(m.org || "").toLowerCase()}>
+                        <td class="rank-cell">{m.rank}</td>
+                        <td>
+                          <span class="model-name">{m.model}</span>
+                          {m.org && <span class="org-badge">{m.org}</span>}
+                          {m.license && <span class="license-badge">{m.license}</span>}
+                        </td>
+                        <td class="text-right">
+                          <span class="font-mono text-sm font-semibold">{m.score}</span>
+                          {m.ci && <span class="ci-text">{m.ci}</span>}
+                        </td>
+                        <td class="text-right meta">{m.votes.toLocaleString()}</td>
+                        {showPrice && <td class="text-right meta">{m.price || "\u2014"}</td>}
+                        {showPrice && <td class="text-right meta">{m.context || "\u2014"}</td>}
+                        <td class="text-center">
+                          {m.rankSpread != null && <span class="spread-bar" style={`--spread: ${Math.min(m.rankSpread, 100)}`}>{m.rankSpread}</span>}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </Container>
+</Layout>
+
+<style>
+  .link-cool {
+    color: var(--color-accent-cool);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  /* === Category Tabs === */
+  .cat-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 1.5rem;
+  }
+  .tab-row {
+    display: flex;
+    gap: 0.25rem;
+    flex-wrap: wrap;
+  }
+  .tab-row-primary {
+    gap: 0.375rem;
+  }
+  .tab-row-primary .cat-tab {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+  }
+  .tab-row-secondary {
+    padding-top: 0.375rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .cat-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    cursor: pointer;
+    border-radius: 0.5rem;
+    padding: 0.4rem 0.75rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+  .cat-tab:hover {
+    background-color: var(--color-surface-muted);
+    color: var(--color-text);
+  }
+  .cat-tab-active {
+    background-color: var(--color-surface-raised);
+    border-color: var(--color-border);
+    color: var(--color-text);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+  .cat-icon {
+    font-size: 0.875rem;
+    line-height: 1;
+  }
+  .cat-count {
+    font-size: 0.6875rem;
+    font-family: var(--font-mono, "Geist Mono", monospace);
+    color: var(--color-text-muted);
+    background: var(--color-surface-muted);
+    padding: 0.05rem 0.3rem;
+    border-radius: 0.25rem;
+  }
+
+  /* === Podium === */
+  .podium {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+  }
+  @media (max-width: 640px) {
+    .podium { grid-template-columns: 1fr; }
+  }
+  .podium-card {
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    text-align: center;
+    border: 1px solid var(--color-border);
+    background: var(--color-surface-raised);
+    transition: box-shadow 0.15s;
+  }
+  .podium-card:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .podium-1 {
+    border-color: #d97706;
+    background: linear-gradient(180deg, rgba(217,119,6,0.06) 0%, var(--color-surface-raised) 100%);
+  }
+  :global(.dark) .podium-1 {
+    background: linear-gradient(180deg, rgba(217,119,6,0.1) 0%, var(--color-surface-raised) 100%);
+  }
+  .podium-2 {
+    border-color: #9ca3af;
+    background: linear-gradient(180deg, rgba(156,163,175,0.06) 0%, var(--color-surface-raised) 100%);
+  }
+  :global(.dark) .podium-2 {
+    background: linear-gradient(180deg, rgba(156,163,175,0.08) 0%, var(--color-surface-raised) 100%);
+  }
+  .podium-3 {
+    border-color: #b45309;
+    background: linear-gradient(180deg, rgba(180,83,9,0.04) 0%, var(--color-surface-raised) 100%);
+  }
+  :global(.dark) .podium-3 {
+    background: linear-gradient(180deg, rgba(180,83,9,0.08) 0%, var(--color-surface-raised) 100%);
+  }
+  .podium-medal {
+    font-size: 1.75rem;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+  .podium-model {
+    font-weight: 700;
+    font-size: 0.9375rem;
+    color: var(--color-text);
+    word-break: break-word;
+    line-height: 1.3;
+  }
+  .podium-org {
+    font-size: 0.6875rem;
+    color: var(--color-text-muted);
+    margin-top: 0.125rem;
+    font-weight: 500;
+  }
+  .podium-score {
+    margin-top: 0.625rem;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.125rem;
+  }
+  .podium-score-value {
+    font-family: var(--font-mono, "Geist Mono", monospace);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+  .podium-ci {
+    font-family: var(--font-mono, "Geist Mono", monospace);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+  .podium-meta {
+    font-size: 0.6875rem;
+    color: var(--color-text-muted);
+    margin-top: 0.25rem;
+    display: flex;
+    gap: 0.25rem;
+    justify-content: center;
+  }
+  .podium-price {
+    margin-top: 0.375rem;
+    font-family: var(--font-mono, "Geist Mono", monospace);
+    font-size: 0.6875rem;
+    color: var(--color-accent-cool);
+    font-weight: 500;
+  }
+
+  /* === Org Sub-Category Grid in Podium === */
+  .org-subcats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.25rem 0.5rem;
+    text-align: left;
+  }
+  .org-subcat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.6875rem;
+  }
+  .org-subcat-label {
+    color: var(--color-text-muted);
+  }
+  .org-subcat-rank {
+    font-family: var(--font-mono, "Geist Mono", monospace);
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  /* === Table === */
+  .lb-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8125rem;
+  }
+  .lb-table th {
+    padding: 0.5rem 0.625rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    border-bottom: 2px solid var(--color-border);
+    white-space: nowrap;
+    user-select: none;
+  }
+  .lb-table td {
+    padding: 0.4rem 0.625rem;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text);
+  }
+  .lb-table tbody tr {
+    transition: background-color 0.1s;
+  }
+  .lb-table tbody tr:hover {
+    background-color: var(--color-surface-muted);
+  }
+  .rank-cell {
+    font-family: var(--font-mono, "Geist Mono", monospace);
+    font-weight: 600;
+    color: var(--color-text-muted);
+    text-align: center;
+  }
+  .model-name {
+    font-weight: 600;
+    color: var(--color-text);
+    margin-right: 0.375rem;
+  }
+  .org-badge {
+    display: inline-block;
+    padding: 0.1rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    background-color: var(--color-surface-muted);
+    border: 1px solid var(--color-border);
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+  .license-badge {
+    display: inline-block;
+    padding: 0.05rem 0.3rem;
+    border-radius: 0.25rem;
+    font-size: 0.625rem;
+    font-weight: 500;
+    vertical-align: middle;
+    white-space: nowrap;
+    margin-left: 0.25rem;
+    color: var(--color-text-muted);
+  }
+  .ci-text {
+    font-family: var(--font-mono, "Geist Mono", monospace);
+    font-size: 0.6875rem;
+    color: var(--color-text-muted);
+    margin-left: 0.125rem;
+  }
+  .spread-bar {
+    display: inline-block;
+    font-family: var(--font-mono, "Geist Mono", monospace);
+    font-size: 0.6875rem;
+    color: var(--color-text-muted);
+    padding: 0.1rem 0.25rem;
+    border-radius: 0.25rem;
+    background: linear-gradient(90deg,
+      rgba(8,145,178,0.12) calc(var(--spread, 0) * 1%),
+      transparent calc(var(--spread, 0) * 1%)
+    );
+  }
+
+  /* === Rank Colors === */
+  .rank-gold { color: #d97706 !important; font-weight: 700 !important; }
+  .rank-silver { color: #6b7280 !important; font-weight: 600 !important; }
+  .rank-bronze { color: #b45309 !important; font-weight: 600 !important; }
+  .rank-top10 { color: var(--color-accent-cool) !important; }
+
+  /* === Sticky Column === */
+  .sticky-col {
+    position: sticky;
+    left: 0;
+    z-index: 10;
+    background-color: var(--color-surface);
+    min-width: 14rem;
+  }
+  :global(.dark) .sticky-col { background-color: var(--color-surface); }
+  .lb-table tbody tr:hover .sticky-col { background-color: var(--color-surface-muted); }
+
+  /* === Search === */
+  .search-input {
+    width: 100%;
+    max-width: 24rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface-raised);
+    color: var(--color-text);
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-input:focus {
+    border-color: var(--color-accent-cool);
+    box-shadow: 0 0 0 3px rgba(8,145,178,0.1);
+  }
+  .search-input::placeholder { color: var(--color-text-muted); }
+
+  /* === Sort === */
+  .sort-header { cursor: pointer; }
+  .sort-header:hover { color: var(--color-text); }
+  .sort-header.sort-active { color: var(--color-accent-cool); }
+  .sort-arrow::after { content: ""; margin-left: 0.125rem; }
+  .sort-active .sort-arrow::after { content: " \2191"; }
+  .sort-active.sort-desc .sort-arrow::after { content: " \2193"; }
+
+  .hidden { display: none; }
+</style>
+
+<script>
+  function initLeaderboard() {
+    // === Tabs ===
+    const tabsEl = document.getElementById("cat-tabs");
+    if (tabsEl && !tabsEl.dataset.bound) {
+      tabsEl.dataset.bound = "true";
+      tabsEl.addEventListener("click", (e) => {
+        const btn = (e.target as HTMLElement).closest("[data-tab]") as HTMLElement | null;
+        if (!btn) return;
+        const activeKey = btn.dataset.tab;
+        tabsEl.querySelectorAll(".cat-tab").forEach(b =>
+          b.classList.toggle("cat-tab-active", (b as HTMLElement).dataset.tab === activeKey)
+        );
+        document.querySelectorAll(".cat-content").forEach(c =>
+          c.classList.toggle("hidden", (c as HTMLElement).dataset.cat !== activeKey)
+        );
+        // Focus the search input in the newly active tab
+        const activeContent = document.querySelector(`.cat-content[data-cat="${activeKey}"]`);
+        const searchInput = activeContent?.querySelector<HTMLInputElement>("[data-search]");
+        if (searchInput) searchInput.focus();
+      });
+    }
+
+    // === Search: bind all search inputs to their tables ===
+    document.querySelectorAll<HTMLInputElement>("[data-search]").forEach(input => {
+      if (input.dataset.bound) return;
+      input.dataset.bound = "true";
+      const key = input.dataset.search!;
+      const table = document.querySelector<HTMLTableElement>(`.searchable-table[data-search-target="${key}"]`);
+      if (!table) return;
+
+      // Also handle podium cards for category tabs (hide/show)
+      const catContent = input.closest(".cat-content");
+      const podium = catContent?.querySelector(".podium");
+
+      input.addEventListener("input", () => {
+        const q = input.value.toLowerCase();
+        // Filter table rows
+        table.querySelectorAll("tbody tr").forEach(row => {
+          const el = row as HTMLElement;
+          const model = el.dataset.model || "";
+          const org = el.dataset.org || "";
+          el.style.display = (model.includes(q) || org.includes(q)) ? "" : "none";
+        });
+        // Hide podium when searching, show when cleared
+        if (podium) {
+          (podium as HTMLElement).style.display = q ? "none" : "";
+        }
+      });
+    });
+
+    // === Sort: bind all sort headers ===
+    document.querySelectorAll<HTMLTableElement>(".searchable-table").forEach(table => {
+      if (table.dataset.sortBound) return;
+      table.dataset.sortBound = "true";
+      table.querySelectorAll(".sort-header").forEach(th => {
+        th.addEventListener("click", () => {
+          const colIndex = Array.from(th.parentElement!.children).indexOf(th);
+          const tbody = table.querySelector("tbody")!;
+          const rows = Array.from(tbody.querySelectorAll("tr"));
+
+          const asc = th.classList.contains("sort-active") && !th.classList.contains("sort-desc");
+          table.querySelectorAll(".sort-header").forEach(h => {
+            h.classList.remove("sort-active", "sort-desc");
+          });
+          th.classList.add("sort-active");
+          if (asc) th.classList.add("sort-desc");
+
+          rows.sort((a, b) => {
+            const aVal = parseInt(a.children[colIndex]?.textContent || "") || 9999;
+            const bVal = parseInt(b.children[colIndex]?.textContent || "") || 9999;
+            return asc ? bVal - aVal : aVal - bVal;
+          });
+
+          rows.forEach(row => tbody.appendChild(row));
+        });
+      });
+    });
+  }
+
+  initLeaderboard();
+  document.addEventListener("astro:page-load", initLeaderboard);
+</script>

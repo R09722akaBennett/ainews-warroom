@@ -26,6 +26,7 @@ def init_db():
             insights TEXT,
             raw_count INTEGER,
             tags TEXT,
+            token_usage TEXT,
             created_at TEXT DEFAULT (datetime('now'))
         );
 
@@ -48,6 +49,7 @@ def init_db():
             title TEXT,
             content TEXT,
             tags TEXT,
+            token_usage TEXT,
             created_at TEXT DEFAULT (datetime('now')),
             UNIQUE(period, start_date, end_date)
         );
@@ -79,5 +81,15 @@ def init_db():
             content TEXT
         );
     """)
+    # Migrations: add columns if missing (for existing databases)
+    for table, column, col_type in [
+        ("daily_digests", "token_usage", "TEXT"),
+        ("periodic_summaries", "token_usage", "TEXT"),
+    ]:
+        try:
+            conn.execute(f"ALTER TABLE {table} ADD COLUMN {column} {col_type}")
+        except sqlite3.OperationalError:
+            pass  # column already exists
+
     conn.commit()
     conn.close()

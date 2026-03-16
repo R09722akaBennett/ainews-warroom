@@ -36,6 +36,15 @@ def _guess_source(url: str) -> str:
     return domain.replace("www.", "") if domain else "Other"
 
 
+def _normalize_source(source: str) -> str:
+    """Normalize source names for consistent grouping."""
+    if source.startswith("Google News ("):
+        return "Google News"
+    if source.startswith("ArXiv"):
+        return "ArXiv"
+    return source
+
+
 def strip_frontmatter(text: str) -> str:
     """Remove YAML frontmatter (---...---) from markdown content."""
     if not text or not text.startswith("---"):
@@ -50,7 +59,7 @@ def export_reports():
     """Export daily war room reports with structured refs."""
     conn = get_conn()
     rows = conn.execute(
-        "SELECT date, title, insights, raw_count, tags, created_at "
+        "SELECT date, title, news_json, insights, raw_count, tags, token_usage, created_at "
         "FROM daily_digests ORDER BY date DESC"
     ).fetchall()
 
@@ -74,15 +83,22 @@ def export_reports():
     reports = []
     for r in rows:
         tags = json.loads(r["tags"]) if r["tags"] else {}
-        reports.append({
+        token_usage = json.loads(r["token_usage"]) if r["token_usage"] else None
+        # news_json stores items in prompt order — used for ref-N fallback
+        news_items = json.loads(r["news_json"]) if r["news_json"] else []
+        entry: dict = {
             "date": r["date"],
             "title": r["title"],
             "content": strip_frontmatter(r["insights"]),
             "rawCount": r["raw_count"],
             "createdAt": r["created_at"],
             "refs": refs_by_date.get(r["date"], []),
+            "newsItems": [{"url": it.get("url", ""), "title": it.get("title", ""), "source": _normalize_source(it.get("source", ""))} for it in news_items],
             "tags": tags,
-        })
+        }
+        if token_usage:
+            entry["tokenUsage"] = token_usage
+        reports.append(entry)
 
     path = os.path.join(DATA_DIR, "reports.json")
     with open(path, "w", encoding="utf-8") as f:
@@ -91,7 +107,7 @@ def export_reports():
     # Export raw items separately (sources.json) — keyed by date
     sources_list = []
     for item in raw_rows:
-        source = item["source"] or _guess_source(item["url"])
+        source = _normalize_source(item["source"] or _guess_source(item["url"]))
         sources_list.append({
             "date": item["date"],
             "title": item["title"],
@@ -113,7 +129,7 @@ def export_summaries():
     """Export all periodic summaries."""
     conn = get_conn()
     rows = conn.execute(
-        "SELECT period, start_date, end_date, title, content, tags, created_at "
+        "SELECT period, start_date, end_date, title, content, tags, token_usage, created_at "
         "FROM periodic_summaries ORDER BY period, start_date DESC"
     ).fetchall()
     conn.close()
@@ -121,7 +137,8 @@ def export_summaries():
     summaries = []
     for r in rows:
         tags = json.loads(r["tags"]) if r["tags"] else {}
-        summaries.append({
+        token_usage = json.loads(r["token_usage"]) if r["token_usage"] else None
+        entry: dict = {
             "period": r["period"],
             "startDate": r["start_date"],
             "endDate": r["end_date"],
@@ -129,7 +146,10 @@ def export_summaries():
             "content": r["content"],
             "createdAt": r["created_at"],
             "tags": tags,
-        })
+        }
+        if token_usage:
+            entry["tokenUsage"] = token_usage
+        summaries.append(entry)
 
     path = os.path.join(DATA_DIR, "summaries.json")
     with open(path, "w", encoding="utf-8") as f:

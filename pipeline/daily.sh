@@ -29,29 +29,33 @@ cd "$PIPELINE_DIR"
 source .env 2>/dev/null || true
 
 # Step 1: Collect news + generate report
-echo "[1/5] Running agent..."
+echo "[1/6] Running agent..."
 uv run python -m agent
 
 # Step 2: Auto-compress (weekly on Mon, monthly on 1st, quarterly on quarter start)
-echo "[2/5] Running compress..."
+echo "[2/6] Running compress..."
 uv run python -m compress auto
 
 # Step 3: Export DB → JSON for website
-echo "[3/5] Exporting site data..."
+echo "[3/6] Exporting site data..."
 uv run python -m export
 
-# Step 4: Notify Mattermost (skip if env vars not set)
-echo "[4/5] Sending to Mattermost..."
+# Step 4: Fetch Arena AI leaderboard
+echo "[4/6] Fetching leaderboard..."
+uv run python -m leaderboard
+
+# Step 5: Notify Mattermost (skip if env vars not set)
+echo "[5/6] Sending to Mattermost..."
 if [[ -n "${MATTERMOST_URL:-}" && -n "${MATTERMOST_TOKEN:-}" ]]; then
     uv run python -m notify
 else
     echo "Skipping — MATTERMOST_URL or MATTERMOST_TOKEN not set"
 fi
 
-# Step 5: Push to git → triggers Vercel deploy
-echo "[5/5] Pushing to git..."
+# Step 6: Push to git → triggers Vercel deploy
+echo "[6/6] Pushing to git..."
 cd "$REPO_DIR"
-git add src/data/reports.json src/data/sources.json src/data/summaries.json src/data/legacy.json
+git add src/data/reports.json src/data/sources.json src/data/summaries.json src/data/legacy.json src/data/leaderboard.json
 if git diff --cached --quiet; then
     echo "No changes to push."
 else

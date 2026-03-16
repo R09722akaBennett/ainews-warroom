@@ -34,8 +34,10 @@ def run_weekly(ref_date: datetime):
     source_text = "\n---\n".join(parts)
 
     prompt = build_warroom_compress_prompt(source_text, "weekly", start, end)
-    title, content, tags = compress_with_llm(prompt)
-    save_summary(WEEKLY, start, end, title, content, tags)
+    title, content, tags, token_usage = compress_with_llm(prompt)
+    if token_usage:
+        console.print(f"  Tokens: input={token_usage['input']:,} output={token_usage['output']:,} total={token_usage['total']:,}")
+    save_summary(WEEKLY, start, end, title, content, tags, token_usage)
     console.print(f"  [green]✓[/] Saved: {title}")
 
 
@@ -59,8 +61,10 @@ def run_monthly(ref_date: datetime):
         source_text = "\n---\n".join(parts)
 
     prompt = build_warroom_compress_prompt(source_text, "monthly", start, end)
-    title, content, tags = compress_with_llm(prompt)
-    save_summary(MONTHLY, start, end, title, content, tags)
+    title, content, tags, token_usage = compress_with_llm(prompt)
+    if token_usage:
+        console.print(f"  Tokens: input={token_usage['input']:,} output={token_usage['output']:,} total={token_usage['total']:,}")
+    save_summary(MONTHLY, start, end, title, content, tags, token_usage)
     console.print(f"  [green]✓[/] Saved: {title}")
 
 
@@ -89,6 +93,8 @@ def run_quarterly(ref_date: datetime):
             source_text = "\n---\n".join(parts)
 
     prompt = build_warroom_compress_prompt(source_text, "quarterly", start, end)
-    title, content, tags = compress_with_llm(prompt)
-    save_summary(QUARTERLY, start, end, title, content, tags)
+    title, content, tags, token_usage = compress_with_llm(prompt)
+    if token_usage:
+        console.print(f"  Tokens: input={token_usage['input']:,} output={token_usage['output']:,} total={token_usage['total']:,}")
+    save_summary(QUARTERLY, start, end, title, content, tags, token_usage)
     console.print(f"  [green]✓[/] Saved: {title}")

@@ -23,7 +23,10 @@ def _parse_date(entry: dict) -> datetime | None:
             try:
                 return parsedate_to_datetime(raw).astimezone(timezone.utc)
             except Exception:
-                pass
+                try:
+                    return datetime.fromisoformat(raw).astimezone(timezone.utc)
+                except Exception:
+                    pass
     # feedparser's parsed struct
     for field in ("published_parsed", "updated_parsed"):
         parsed = entry.get(field)

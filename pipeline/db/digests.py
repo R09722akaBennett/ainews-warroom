@@ -17,6 +17,7 @@ class DigestRecord:
     insights: str
     raw_count: int
     tags: str | None = None
+    token_usage: str | None = None
     created_at: str = ""
 
 
@@ -28,14 +29,16 @@ def save_digest(
     raw_count: int,
     topics: list[dict] | None = None,
     tags: dict | None = None,
+    token_usage: dict | None = None,
 ):
     """Save a daily digest and its extracted topics."""
     conn = get_conn()
     tags_json = json.dumps(tags, ensure_ascii=False) if tags else None
+    token_json = json.dumps(token_usage) if token_usage else None
     conn.execute(
-        "INSERT OR REPLACE INTO daily_digests (date, title, news_json, insights, raw_count, tags) "
-        "VALUES (?, ?, ?, ?, ?, ?)",
-        (date, title, json.dumps(news_items, ensure_ascii=False), insights, raw_count, tags_json),
+        "INSERT OR REPLACE INTO daily_digests (date, title, news_json, insights, raw_count, tags, token_usage) "
+        "VALUES (?, ?, ?, ?, ?, ?, ?)",
+        (date, title, json.dumps(news_items, ensure_ascii=False), insights, raw_count, tags_json, token_json),
     )
 
     if topics:

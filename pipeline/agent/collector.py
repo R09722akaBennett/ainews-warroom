@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import asyncio
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 from rich.console import Console
 
@@ -64,6 +64,19 @@ async def collect_news(date: str) -> tuple[list[NewsItem], int]:
         if removed:
             console.print(f"    [yellow]Filtered {removed} items seen in past 7 days[/]")
         console.print(f"    Total (cross-day deduped): {len(all_items)}")
+
+    # Filter out items older than 3 days (keep items with no date)
+    max_age = timedelta(days=3)
+    cutoff = datetime.now(timezone.utc) - max_age
+    before = len(all_items)
+    all_items = [
+        it for it in all_items
+        if it.published_at is None or it.published_at >= cutoff
+    ]
+    aged_out = before - len(all_items)
+    if aged_out:
+        console.print(f"    [yellow]Filtered {aged_out} items older than 3 days[/]")
+        console.print(f"    Total (age-filtered): {len(all_items)}")
 
     # Save raw items as markdown audit trail + condensed to DB
     raw_path = export_raw_markdown(all_items, date)
