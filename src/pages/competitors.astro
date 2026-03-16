@@ -1,0 +1,370 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+import ExternalIcon from "@components/ExternalIcon.astro";
+
+import competitorsData from "../data/competitors.json";
+import summariesData from "../data/summaries.json";
+import { marked } from "marked";
+
+const items = competitorsData as any[];
+
+// Get competitor weekly summaries
+const weeklyReports = (summariesData as any[])
+  .filter((s: any) => s.period === "competitor_weekly")
+  .sort((a: any, b: any) => b.endDate.localeCompare(a.endDate));
+
+// Group by company
+const companies = new Map<string, any[]>();
+for (const item of items) {
+  if (!companies.has(item.company)) companies.set(item.company, []);
+  companies.get(item.company)!.push(item);
+}
+const companyKeys = [...companies.keys()].sort();
+
+// Collect all categories
+const categories = [...new Set(items.map((i: any) => i.category))].sort();
+
+// Build URL → ref ID mapping from weekly reports' refItems (scoped per report date)
+const urlToRef = new Map<string, string>();
+for (const report of weeklyReports) {
+  const endDate = report.endDate?.replace(/-/g, "") || "";
+  const refItems = report.tags?.refItems || [];
+  refItems.forEach((ri: any, idx: number) => {
+    if (ri.url) urlToRef.set(ri.url, `comp-ref-${endDate}-${idx}`);
+  });
+}
+
+// Company display names (from competitor config)
+const companyNames: Record<string, string> = {
+  adobe: "Adobe", docusign: "DocuSign", foxit: "Foxit", smallpdf: "Smallpdf",
+  pandadoc: "PandaDoc", canva: "Canva", notion: "Notion", hubspot: "HubSpot",
+  mailchimp: "Mailchimp", jasper: "Jasper", copyai: "Copy.ai",
+  hootsuite: "Hootsuite", buffer: "Buffer", semrush: "SEMrush",
+};
+
+const categoryColors: Record<string, string> = {
+  product_launch: "var(--color-quarterly)",
+  pricing: "var(--color-accent-warm)",
+  acquisition: "var(--color-accent-purple)",
+  partnership: "var(--color-monthly)",
+  hiring: "var(--color-accent-cool)",
+  funding: "var(--color-accent-orange)",
+  strategy: "var(--color-text-muted)",
+  legal: "#ef4444",
+  other: "var(--color-text-muted)",
+};
+---
+
+<Layout title="Competitors" description="Competitor intelligence tracker">
+  <Container>
+    <div class="space-y-8">
+      <div>
+        <div class="section-title mb-2">Competitive Intelligence</div>
+        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Competitors</h1>
+        <p class="mt-1 text-sm" style="color: var(--color-text-muted);">
+          Tracking {Object.keys(companyNames).length} competitors across PDF, eSign, creative, and marketing.
+          {items.length > 0 ? `${items.length} classified items.` : "Data will appear after weekly classification."}
+        </p>
+      </div>
+
+      {/* Weekly Reports */}
+      {weeklyReports.length > 0 && (
+        <section class="space-y-3">
+          <h2 class="text-lg font-semibold" style="color: var(--color-text);">Weekly Reports</h2>
+          {weeklyReports.map((s: any) => {
+            const endDate = s.endDate?.replace(/-/g, "") || "";
+            // Process refs in weekly report content
+            let html = marked.parse(s.content) as string;
+            // Convert (ref-N) and (ref-N, ref-M) to in-page links, display as "ref"
+            html = html.replace(
+              /\(ref-(\d+(?:,\s*ref-\d+)*)\)/g,
+              (_: string, inner: string) => {
+                const links = inner.split(/,\s*/).map((r: string) => {
+                  const num = r.replace('ref-', '');
+                  return `<a href="#comp-ref-${endDate}-${num}" class="comp-ref-link">ref</a>`;
+                });
+                return `(${links.join(', ')})`;
+              }
+            );
+            // Bare ref-N in text
+            html = html.replace(
+              /(?<![">\/\-])ref-(\d+)(?![<"\d])/g,
+              (_: string, num: string) => `<a href="#comp-ref-${endDate}-${num}" class="comp-ref-link">ref</a>`
+            );
+            return (
+            <details class="card card-accent-warm group">
+              <summary class="flex cursor-pointer items-center gap-4 px-5 py-4">
+                <span class="period-label period-warroom">W</span>
+                <span class="meta min-w-[10rem]">{s.startDate} ~ {s.endDate}</span>
+                <span class="flex-1 text-sm font-medium" style="color: var(--color-text);">{s.title}</span>
+                {s.tokenUsage && <span class="meta hidden sm:inline">In: {s.tokenUsage.input?.toLocaleString()} · Out: {s.tokenUsage.output?.toLocaleString()}</span>}
+                <svg class="size-4 shrink-0 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 16 16" fill="currentColor" style="color: var(--color-text-muted);">
+                  <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+              </summary>
+              <div class="px-5 pb-5 pt-2" style="border-top: 1px solid var(--color-border);">
+                <article set:html={html} />
+              </div>
+            </details>
+            );
+          })}
+        </section>
+      )}
+
+      {/* Individual Items */}
+      {items.length === 0 ? (
+        <div class="card p-12 text-center">
+          <p class="text-lg font-semibold mb-2" style="color: var(--color-text);">No competitor data yet</p>
+          <p class="text-sm" style="color: var(--color-text-muted);">
+            The competitor tracker collects news daily and classifies them weekly (every Monday).
+            Check back after the first weekly classification runs.
+          </p>
+        </div>
+      ) : (
+        <>
+          {/* Company tabs */}
+          <div class="flex gap-1.5 flex-wrap" id="comp-tabs">
+            <button data-comp="all" class="tab-pill tab-pill-active">
+              All
+              <span class="tab-pill-count">{items.length}</span>
+            </button>
+            {companyKeys.map(key => (
+              <button data-comp={key} class="tab-pill">
+                {companyNames[key] || key}
+                <span class="tab-pill-count">{companies.get(key)!.length}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Category filters */}
+          <div class="flex gap-1.5 flex-wrap" id="cat-filters">
+            <button data-cat="all" class="cat-pill cat-pill-active">All</button>
+            {categories.map(cat => (
+              <button data-cat={cat} class="cat-pill">
+                <span class="cat-dot" style={`background-color: ${categoryColors[cat] || 'var(--color-text-muted)'};`}></span>
+                {cat.replace(/_/g, " ")}
+              </button>
+            ))}
+          </div>
+
+          {/* Items list */}
+          <div class="space-y-1" id="comp-items">
+            {items.map((item: any) => (
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noopener"
+                class="comp-row"
+                id={urlToRef.has(item.url) ? urlToRef.get(item.url) : undefined}
+                data-company={item.company}
+                data-category={item.category}
+              >
+                <span class="comp-date meta">{item.date}</span>
+                <span class="comp-company-badge">{companyNames[item.company] || item.company}</span>
+                <span class="comp-cat-badge" style={`color: ${categoryColors[item.category] || 'var(--color-text-muted)'}; border-color: ${categoryColors[item.category] || 'var(--color-border)'};`}>
+                  {item.category.replace(/_/g, " ")}
+                </span>
+                <div class="comp-content">
+                  <span class="comp-title">{item.title}</span>
+                  {item.summary && <span class="comp-summary">{item.summary}</span>}
+                </div>
+                <ExternalIcon />
+              </a>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  </Container>
+</Layout>
+
+<style>
+  .comp-row {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.625rem 0.75rem;
+    text-decoration: none;
+    border-radius: 0.375rem;
+    transition: background-color 0.15s;
+    font-size: 0.8125rem;
+  }
+  .comp-row:hover {
+    background-color: var(--color-surface-muted);
+  }
+  .comp-date {
+    min-width: 5.5rem;
+    flex-shrink: 0;
+  }
+  .comp-company-badge {
+    display: inline-block;
+    min-width: 5rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-align: center;
+    color: var(--color-text);
+    background-color: var(--color-surface-muted);
+    flex-shrink: 0;
+  }
+  .comp-cat-badge {
+    display: inline-block;
+    min-width: 5.5rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.625rem;
+    font-weight: 500;
+    text-align: center;
+    border: 1px solid;
+    flex-shrink: 0;
+  }
+  .comp-content {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+  .comp-title {
+    font-weight: 600;
+    color: var(--color-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .comp-summary {
+    font-size: 0.6875rem;
+    color: var(--color-text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Category filter pills */
+  .cat-pill {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    border: 1px solid var(--color-border);
+    background: transparent;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .cat-pill:hover {
+    color: var(--color-text);
+    background-color: var(--color-surface-muted);
+  }
+  .cat-pill-active {
+    color: var(--color-text);
+    background-color: var(--color-surface-raised);
+    border-color: var(--color-text-muted);
+    font-weight: 600;
+  }
+  .cat-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* Ref links in weekly report */
+  :global(.comp-ref-link) {
+    color: var(--color-accent-warm);
+    text-decoration: none;
+    font-size: 0.8em;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  :global(.comp-ref-link:hover) {
+    text-decoration: underline;
+  }
+  .comp-row.highlight {
+    background-color: color-mix(in srgb, var(--color-accent-warm) 10%, transparent);
+    outline: 1px solid color-mix(in srgb, var(--color-accent-warm) 30%, transparent);
+    border-radius: 0.375rem;
+  }
+</style>
+
+<script>
+  function initCompetitors() {
+    const rows = document.querySelectorAll<HTMLElement>(".comp-row");
+    let activeComp = "all";
+    let activeCat = "all";
+
+    function filterRows() {
+      rows.forEach(row => {
+        const matchComp = activeComp === "all" || row.dataset.company === activeComp;
+        const matchCat = activeCat === "all" || row.dataset.category === activeCat;
+        row.style.display = (matchComp && matchCat) ? "" : "none";
+      });
+    }
+
+    // Company tabs
+    const compTabs = document.querySelectorAll<HTMLButtonElement>("#comp-tabs .tab-pill");
+    compTabs.forEach(btn => {
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = "true";
+      btn.addEventListener("click", () => {
+        activeComp = btn.dataset.comp!;
+        compTabs.forEach(b => b.classList.toggle("tab-pill-active", b.dataset.comp === activeComp));
+        filterRows();
+      });
+    });
+
+    // Category filters
+    const catBtns = document.querySelectorAll<HTMLButtonElement>("#cat-filters .cat-pill");
+    catBtns.forEach(btn => {
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = "true";
+      btn.addEventListener("click", () => {
+        activeCat = btn.dataset.cat!;
+        catBtns.forEach(b => b.classList.toggle("cat-pill-active", b.dataset.cat === activeCat));
+        filterRows();
+      });
+    });
+  }
+
+  function initCompRefLinks() {
+    document.querySelectorAll<HTMLAnchorElement>(".comp-ref-link").forEach(link => {
+      if (link.dataset.bound) return;
+      link.dataset.bound = "true";
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        const href = link.getAttribute("href")!;
+        const targetId = href.slice(1);
+        const target = document.getElementById(targetId);
+        if (!target) return;
+
+        // Reset filters to show all items
+        const allCompBtn = document.querySelector<HTMLButtonElement>('#comp-tabs [data-comp="all"]');
+        const allCatBtn = document.querySelector<HTMLButtonElement>('#cat-filters [data-cat="all"]');
+        if (allCompBtn) allCompBtn.click();
+        if (allCatBtn) allCatBtn.click();
+
+        // Scroll with header offset
+        requestAnimationFrame(() => {
+          const headerOffset = 96;
+          const y = target.getBoundingClientRect().top + window.scrollY - headerOffset;
+          window.scrollTo({ top: y, behavior: "smooth" });
+          target.classList.add("highlight");
+          setTimeout(() => target.classList.remove("highlight"), 2000);
+        });
+      });
+    });
+  }
+
+  function init() {
+    initCompetitors();
+    initCompRefLinks();
+  }
+
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>

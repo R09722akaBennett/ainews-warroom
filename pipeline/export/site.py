@@ -204,6 +204,37 @@ def export_legacy():
     return len(legacy)
 
 
+def export_competitors():
+    """Export competitor items (AI-related only)."""
+    conn = get_conn()
+    rows = conn.execute(
+        "SELECT date, company, title, url, source, published_at, category, ai_related, summary "
+        "FROM competitor_items WHERE ai_related = 1 AND category != 'pending' "
+        "ORDER BY date DESC, company, id"
+    ).fetchall()
+    conn.close()
+
+    items = []
+    for r in rows:
+        items.append({
+            "date": r["date"],
+            "company": r["company"],
+            "title": r["title"],
+            "url": r["url"],
+            "source": r["source"],
+            "publishedAt": r["published_at"],
+            "category": r["category"],
+            "summary": r["summary"],
+        })
+
+    path = os.path.join(DATA_DIR, "competitors.json")
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(items, f, ensure_ascii=False, indent=2)
+
+    console.print(f"  [green]✓[/] competitors.json: {len(items)} items")
+    return len(items)
+
+
 def main():
     init_db()
     os.makedirs(DATA_DIR, exist_ok=True)
@@ -213,9 +244,10 @@ def main():
     r = export_reports()
     s = export_summaries()
     lg = export_legacy()
+    c = export_competitors()
 
     console.print(
-        f"\n[bold green]Done! {r} reports + {s} summaries + {lg} legacy issues → src/data/[/]"
+        f"\n[bold green]Done! {r} reports + {s} summaries + {lg} legacy + {c} competitor items → src/data/[/]"
     )
 
 

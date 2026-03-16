@@ -29,23 +29,32 @@ cd "$PIPELINE_DIR"
 source .env 2>/dev/null || true
 
 # Step 1: Collect news + generate report
-echo "[1/6] Running agent..."
+echo "[1/7] Running agent..."
 uv run python -m agent
 
-# Step 2: Auto-compress (weekly on Mon, monthly on 1st, quarterly on quarter start)
-echo "[2/6] Running compress..."
+# Step 2: Collect + classify competitor news (daily)
+echo "[2/7] Collecting & classifying competitor news..."
+uv run python -m competitor
+
+# Step 3: Auto-compress (weekly on Mon, monthly on 1st, quarterly on quarter start)
+# On Mondays, also generate competitor weekly report
+echo "[3/7] Running compress..."
 uv run python -m compress auto
+if [ "$(date +%u)" = "1" ]; then
+    echo "  Monday — generating competitor weekly report..."
+    uv run python -m competitor --classify
+fi
 
 # Step 3: Export DB → JSON for website
-echo "[3/6] Exporting site data..."
+echo "[4/7] Exporting site data..."
 uv run python -m export
 
 # Step 4: Fetch Arena AI leaderboard
-echo "[4/6] Fetching leaderboard..."
+echo "[5/7] Fetching leaderboard..."
 uv run python -m leaderboard
 
 # Step 5: Notify Mattermost (skip if env vars not set)
-echo "[5/6] Sending to Mattermost..."
+echo "[6/7] Sending to Mattermost..."
 if [[ -n "${MATTERMOST_URL:-}" && -n "${MATTERMOST_TOKEN:-}" ]]; then
     uv run python -m notify
 else
@@ -53,9 +62,9 @@ else
 fi
 
 # Step 6: Push to git → triggers Vercel deploy
-echo "[6/6] Pushing to git..."
+echo "[7/7] Pushing to git..."
 cd "$REPO_DIR"
-git add src/data/reports.json src/data/sources.json src/data/summaries.json src/data/legacy.json src/data/leaderboard.json src/data/papers.json
+git add src/data/reports.json src/data/sources.json src/data/summaries.json src/data/legacy.json src/data/leaderboard.json src/data/papers.json src/data/competitors.json
 if git diff --cached --quiet; then
     echo "No changes to push."
 else

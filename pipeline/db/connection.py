@@ -81,6 +81,25 @@ def init_db():
             content TEXT
         );
     """)
+    conn.executescript("""
+        CREATE TABLE IF NOT EXISTS competitor_items (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            date TEXT NOT NULL,
+            company TEXT NOT NULL,
+            title TEXT NOT NULL,
+            url TEXT,
+            source TEXT,
+            published_at TEXT,
+            category TEXT DEFAULT 'other',
+            ai_related INTEGER DEFAULT 1,
+            summary TEXT,
+            created_at TEXT DEFAULT (datetime('now'))
+        );
+        CREATE INDEX IF NOT EXISTS idx_competitor_date ON competitor_items(date);
+        CREATE INDEX IF NOT EXISTS idx_competitor_company ON competitor_items(company);
+        CREATE INDEX IF NOT EXISTS idx_competitor_url ON competitor_items(url);
+    """)
+
     # Migrations: add columns if missing (for existing databases)
     for table, column, col_type in [
         ("daily_digests", "token_usage", "TEXT"),
