@@ -17,7 +17,7 @@ python -m leaderboard ───────────────────�
 ```
 
 - **Single source of truth**: `pipeline/warroom.db` (SQLite)
-- **Website data**: `src/data/reports.json`, `summaries.json`, `sources.json`, `legacy.json`, `leaderboard.json`, `papers.json`, `competitors.json`
+- **Website data**: `src/data/reports.json`, `summaries.json`, `sources.json`, `legacy.json`, `leaderboard.json`, `papers.json`, `competitors.json`, `mcpmarket.json`
 - **Site framework**: Astro 5 + Tailwind CSS v4, deployed on Vercel
 - **LLM**: Google Gemini (`gemini-3-flash-preview` via `google.genai`)
 
@@ -32,7 +32,7 @@ pipeline/
 ├── compress/       # Periodic compression (warroom + industry tracks)
 ├── db/             # SQLite data layer (digests, summaries, raw_items, competitor_items)
 ├── export/         # DB → JSON for website
-├── leaderboard/    # Arena AI leaderboard + alphaxiv trending papers scrapers
+├── leaderboard/    # Arena AI leaderboard + alphaxiv papers + MCP Market scrapers
 ├── prompts/        # All LLM prompts (agent + compress + competitor)
 ├── sources/        # News source modules (80+ sources)
 ├── config.py       # Source definitions and settings
@@ -49,7 +49,7 @@ uv run python -m competitor                # collect + classify competitor news
 uv run python -m competitor --classify     # also generate competitor weekly report
 uv run python -m compress auto             # auto-detect weekly/monthly/quarterly
 uv run python -m export                    # DB → JSON
-uv run python -m leaderboard              # arena.ai leaderboard + alphaxiv papers
+uv run python -m leaderboard              # arena.ai leaderboard + alphaxiv papers + MCP Market
 ```
 
 ### Daily Pipeline Flow (daily.sh)
@@ -91,6 +91,7 @@ uv run python -m leaderboard              # arena.ai leaderboard + alphaxiv pape
 
 - **Arena AI Leaderboard** (`leaderboard/scraper.py`): 9 category pages (Text, Code, Vision, etc.) + full cross-category rankings → `leaderboard.json`
 - **alphaxiv Trending Papers** (`leaderboard/alphaxiv.py`): Hot 20 + Likes 20 with AI summaries → `papers.json`
+- **MCP Market** (`leaderboard/mcpmarket.py`): Top 50 MCP Servers + Top 50 Agent Skills from mcpmarket.com → `mcpmarket.json`
 
 ## Website (`src/`)
 
@@ -103,7 +104,7 @@ uv run python -m leaderboard              # arena.ai leaderboard + alphaxiv pape
 | `/reports/[date]` | Single report with ref-N links → collapsible sources section |
 | `/sources` | Daily raw news sources by date/source (normalized: Google News, ArXiv) |
 | `/leaderboard` | Arena AI rankings: Overview, Lab Ranking (F1 scoring), 9 category tabs with search |
-| `/trending` | Tabbed: GitHub Repos (live RSS) + Product Hunt (build-time) + Papers (alphaxiv Hot/Likes with category filter + summaries) |
+| `/trending` | Tabbed: GitHub Repos (live RSS) + Product Hunt (build-time) + Papers (alphaxiv) + MCP Servers + Agent Skills (mcpmarket.com, category filter) |
 | `/competitors` | Competitor intelligence: weekly reports (with ref links) + classified items by company/category |
 | `/trends` | Industry / KDAN Warroom tabs, each with W/M/Q period sub-tabs |
 | `/analytics` | Token cost dashboard + tag trend timeline (Chart.js) + source quality table — global time range control |

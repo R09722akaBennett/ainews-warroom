@@ -7,8 +7,12 @@ import reportsData from "../data/reports.json";
 import summariesData from "../data/summaries.json";
 import leaderboardData from "../data/leaderboard.json";
 import papersData from "../data/papers.json";
+import mcpData from "../data/mcpmarket.json";
 
 const topPapers = ((papersData as any).hot || []).slice(0, 3);
+const mcp = mcpData as any;
+const topServers = (mcp.servers || []).slice(0, 3);
+const topSkills = (mcp.skills || []).slice(0, 3);
 
 const latestReport = reportsData[0];
 const recentReports = reportsData.slice(1, 11);
@@ -128,14 +132,48 @@ try {
         </p>
       </div>
 
+      <!-- Latest Report (hero card) -->
+      {latestReport && (
+        <section class="space-y-4">
+          <div class="section-title">Latest Briefing</div>
+          <a href={`/reports/${latestReport.date}`} class="card card-accent-warm block p-6 no-underline">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex-1 space-y-3">
+                <div class="flex items-center gap-3">
+                  <span class="period-label period-warroom">Report</span>
+                  <span class="meta">{latestReport.date}</span>
+                </div>
+                <h2 class="text-xl font-semibold tracking-tight" style="color: var(--color-text);">
+                  {latestReport.title}
+                </h2>
+                <p class="text-sm leading-relaxed line-clamp-3" style="color: var(--color-text-muted);">
+                  {latestReport.content
+                    ?.split("\n")
+                    .filter((l: string) => l.trim() && !l.startsWith("#") && !l.startsWith("---") && !l.startsWith("*Source"))
+                    .slice(0, 2)
+                    .join(" ")
+                    .replace(/\*\*/g, "")
+                    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+                    .slice(0, 300)}
+                </p>
+                <div class="flex items-center gap-4 pt-1">
+                  <span class="meta">{latestReport.rawCount} sources collected</span>
+                  <span class="text-xs font-medium" style="color: var(--color-accent-warm);">Read briefing →</span>
+                </div>
+              </div>
+            </div>
+          </a>
+        </section>
+      )}
+
       <!-- Snapshot Grid: Leaderboard + Trending + Products -->
       <section class="space-y-4">
         <div class="flex items-center justify-between">
           <div class="section-title">At a Glance</div>
           <span class="meta">{lbUpdated}</span>
         </div>
-        {/* Row 1: Top Models + Top Labs (2 big cards) */}
-        <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
+        {/* Row 1: Top Models + Top Labs + MCP Servers + Agent Skills (4 cards) */}
+        <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
           <!-- Top Models -->
           <a href="/leaderboard#overview" class="card block p-5 no-underline snapshot-card" style="border-left: 3px solid var(--color-accent-cool);">
             <div class="snapshot-header">
@@ -173,9 +211,51 @@ try {
               ))}
             </div>
           </a>
+
+          <!-- MCP Servers -->
+          <a href="/trending#mcpservers" class="card card-accent-cool block p-5 no-underline snapshot-card">
+            <div class="snapshot-header">
+              <span class="snapshot-label" style="color: var(--color-accent-cool);">MCP Servers</span>
+              <span class="snapshot-link">all →</span>
+            </div>
+            <div class="space-y-2.5">
+              {topServers.length > 0 ? topServers.map((s: any, i: number) => (
+                <div class="flex items-center gap-2.5">
+                  <span class="snapshot-medal">{lbMedal(i + 1)}</span>
+                  <div class="flex-1 min-w-0">
+                    <div class="snapshot-name">{s.name}</div>
+                    <div class="snapshot-sub">☆ {s.stars?.toLocaleString()}</div>
+                  </div>
+                </div>
+              )) : (
+                <div class="snapshot-sub">Loading at next build...</div>
+              )}
+            </div>
+          </a>
+
+          <!-- Agent Skills -->
+          <a href="/trending#skills" class="card card-accent-cool block p-5 no-underline snapshot-card">
+            <div class="snapshot-header">
+              <span class="snapshot-label" style="color: var(--color-accent-cool);">Agent Skills</span>
+              <span class="snapshot-link">all →</span>
+            </div>
+            <div class="space-y-2.5">
+              {topSkills.length > 0 ? topSkills.map((s: any, i: number) => (
+                <div class="flex items-center gap-2.5">
+                  <span class="snapshot-medal">{lbMedal(i + 1)}</span>
+                  <div class="flex-1 min-w-0">
+                    <div class="snapshot-name">{s.name}</div>
+                    <div class="snapshot-sub">☆ {s.stars?.toLocaleString()}</div>
+                  </div>
+                </div>
+              )) : (
+                <div class="snapshot-sub">Loading at next build...</div>
+              )}
+            </div>
+          </a>
         </div>
 
-        {/* Row 2: Repos + Products + Papers (3 smaller cards) */}
+        {/* Row 3: Repos + Products + Papers (3 cards) */}
         <div class="grid gap-4 grid-cols-1 sm:grid-cols-3">
           <!-- Trending Repos -->
           <a href="/trending#repos" class="card card-accent-purple block p-5 no-underline snapshot-card">
@@ -241,40 +321,6 @@ try {
           </a>
         </div>
       </section>
-
-      <!-- Latest Report (hero card) -->
-      {latestReport && (
-        <section class="space-y-4">
-          <div class="section-title">Latest Briefing</div>
-          <a href={`/reports/${latestReport.date}`} class="card card-accent-warm block p-6 no-underline">
-            <div class="flex items-start justify-between gap-4">
-              <div class="flex-1 space-y-3">
-                <div class="flex items-center gap-3">
-                  <span class="period-label period-warroom">Report</span>
-                  <span class="meta">{latestReport.date}</span>
-                </div>
-                <h2 class="text-xl font-semibold tracking-tight" style="color: var(--color-text);">
-                  {latestReport.title}
-                </h2>
-                <p class="text-sm leading-relaxed line-clamp-3" style="color: var(--color-text-muted);">
-                  {latestReport.content
-                    ?.split("\n")
-                    .filter((l: string) => l.trim() && !l.startsWith("#") && !l.startsWith("---") && !l.startsWith("*Source"))
-                    .slice(0, 2)
-                    .join(" ")
-                    .replace(/\*\*/g, "")
-                    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
-                    .slice(0, 300)}
-                </p>
-                <div class="flex items-center gap-4 pt-1">
-                  <span class="meta">{latestReport.rawCount} sources collected</span>
-                  <span class="text-xs font-medium" style="color: var(--color-accent-warm);">Read briefing →</span>
-                </div>
-              </div>
-            </div>
-          </a>
-        </section>
-      )}
 
       <!-- Trend Cards -->
       <section class="space-y-6">

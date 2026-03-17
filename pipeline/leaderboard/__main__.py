@@ -7,7 +7,9 @@ Usage:
 
 from leaderboard.scraper import main as leaderboard_main
 from leaderboard.alphaxiv import main as papers_main
+from leaderboard.mcpmarket import main as mcpmarket_main
 
 leaderboard_main()
 papers_main()
+mcpmarket_main()
 
