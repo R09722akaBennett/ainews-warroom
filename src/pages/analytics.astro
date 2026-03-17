@@ -17,12 +17,24 @@ for (const s of sources) {
   sourceCollected[s.source] = (sourceCollected[s.source] || 0) + 1;
 }
 
-// Count how many times each source was referenced in reports (via newsItems)
+// Count how many times each source was actually cited in report text (via ref-N)
 const sourceReferenced: Record<string, number> = {};
 for (const r of reports) {
-  for (const item of r.newsItems || []) {
-    const src = item.source || "";
-    if (src) sourceReferenced[src] = (sourceReferenced[src] || 0) + 1;
+  const content = r.content || "";
+  const newsItems = r.newsItems || [];
+  // Extract all ref-N numbers from the report markdown
+  const refMatches = content.matchAll(/ref-(\d+)/g);
+  const citedIndices = new Set<number>();
+  for (const m of refMatches) {
+    citedIndices.add(parseInt(m[1], 10));
+  }
+  // Map cited ref indices back to their source names (ref-1 = index 0)
+  for (const idx of citedIndices) {
+    const item = newsItems[idx - 1];
+    if (item) {
+      const src = item.source || "";
+      if (src) sourceReferenced[src] = (sourceReferenced[src] || 0) + 1;
+    }
   }
 }
 
