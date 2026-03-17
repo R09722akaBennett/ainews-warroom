@@ -25,8 +25,10 @@ echo "=========================================="
 
 cd "$PIPELINE_DIR"
 
-# Load environment
+# Load environment (set -a exports all vars for child processes)
+set -a
 source .env 2>/dev/null || true
+set +a
 
 # Step 1: Collect news + generate report
 echo "[1/7] Running agent..."
@@ -55,7 +57,7 @@ uv run python -m leaderboard
 
 # Step 5: Notify Mattermost (skip if env vars not set)
 echo "[6/7] Sending to Mattermost..."
-if [[ -n "${MATTERMOST_URL:-}" && -n "${MATTERMOST_TOKEN:-}" ]]; then
+if [[ -n "${MATTERMOST_URL:-}" && -n "${MATTERMOST_BOT_TOKEN:-}" ]]; then
     uv run python -m notify
 else
     echo "Skipping — MATTERMOST_URL or MATTERMOST_TOKEN not set"
