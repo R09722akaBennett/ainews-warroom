@@ -10,41 +10,44 @@ const reports = reportsData as any[];
 const sources = sourcesData as any[];
 const summaries = summariesData as any[];
 
-// === Source Quality Analytics ===
-// Count raw items per source
-const sourceCollected: Record<string, number> = {};
+// === Source Quality Analytics (per-date for client-side filtering) ===
+// Collected: per date per source
+type SQDateEntry = { date: string; source: string; collected: number; referenced: number };
+const sqByDateSource: Record<string, Record<string, { collected: number; referenced: number }>> = {};
 for (const s of sources) {
-  sourceCollected[s.source] = (sourceCollected[s.source] || 0) + 1;
+  const key = s.date;
+  if (!sqByDateSource[key]) sqByDateSource[key] = {};
+  if (!sqByDateSource[key][s.source]) sqByDateSource[key][s.source] = { collected: 0, referenced: 0 };
+  sqByDateSource[key][s.source].collected += 1;
 }
-
-// Count how many times each source was actually cited in report text (via ref-N)
-const sourceReferenced: Record<string, number> = {};
+// Referenced: parse ref-N from each report
 for (const r of reports) {
   const content = r.content || "";
   const newsItems = r.newsItems || [];
-  // Extract all ref-N numbers from the report markdown
   const refMatches = content.matchAll(/ref-(\d+)/g);
   const citedIndices = new Set<number>();
   for (const m of refMatches) {
     citedIndices.add(parseInt(m[1], 10));
   }
-  // Map cited ref indices back to their source names (ref-1 = index 0)
   for (const idx of citedIndices) {
     const item = newsItems[idx - 1];
     if (item) {
       const src = item.source || "";
-      if (src) sourceReferenced[src] = (sourceReferenced[src] || 0) + 1;
+      if (src) {
+        if (!sqByDateSource[r.date]) sqByDateSource[r.date] = {};
+        if (!sqByDateSource[r.date][src]) sqByDateSource[r.date][src] = { collected: 0, referenced: 0 };
+        sqByDateSource[r.date][src].referenced += 1;
+      }
     }
   }
 }
-
-// Build source quality table
-type SourceRow = { source: string; collected: number; referenced: number; rate: number };
-const sourceRows: SourceRow[] = Object.keys(sourceCollected).map(src => {
-  const collected = sourceCollected[src];
-  const referenced = sourceReferenced[src] || 0;
-  return { source: src, collected, referenced, rate: collected > 0 ? referenced / collected : 0 };
-}).sort((a, b) => b.referenced - a.referenced || b.collected - a.collected);
+// Flatten to array for client-side
+const sqData: SQDateEntry[] = [];
+for (const [date, srcMap] of Object.entries(sqByDateSource)) {
+  for (const [source, counts] of Object.entries(srcMap)) {
+    sqData.push({ date, source, collected: counts.collected, referenced: counts.referenced });
+  }
+}
 
 // === Tag Trend Data ===
 // Build date → tags mapping for chart
@@ -328,29 +331,7 @@ const tokenChartData = {
                 <th style="width: 10rem;" title="Visual bar showing the reference rate percentage">Distribution</th>
               </tr>
             </thead>
-            <tbody>
-              {sourceRows.map(row => {
-                const barWidth = Math.min(row.rate * 100, 100);
-                const barColor = row.rate > 0.5 ? "var(--color-quarterly)" : row.rate > 0.1 ? "var(--color-accent-cool)" : "var(--color-text-muted)";
-                return (
-                  <tr>
-                    <td class="font-medium" style="color: var(--color-text);">{row.source}</td>
-                    <td class="text-right meta">{row.collected}</td>
-                    <td class="text-right meta">{row.referenced}</td>
-                    <td class="text-right">
-                      <span class="font-mono text-xs font-semibold" style={`color: ${barColor};`}>
-                        {(row.rate * 100).toFixed(1)}%
-                      </span>
-                    </td>
-                    <td>
-                      <div class="bar-bg">
-                        <div class="bar-fill" style={`width: ${barWidth}%; background-color: ${barColor};`}></div>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
+            <tbody id="sq-body"></tbody>
           </table>
         </div>
       </section>
@@ -497,8 +478,8 @@ const tokenChartData = {
   }
 </style>
 
-<script define:vars={{ chartData, tokenChartData, tokenEntries, PRICE_INPUT, PRICE_OUTPUT, sourceRows }}>
-  window.__analyticsData = { chartData, tokenChartData, tokenEntries, PRICE_INPUT, PRICE_OUTPUT, sourceRows };
+<script define:vars={{ chartData, tokenChartData, tokenEntries, PRICE_INPUT, PRICE_OUTPUT, sqData }}>
+  window.__analyticsData = { chartData, tokenChartData, tokenEntries, PRICE_INPUT, PRICE_OUTPUT, sqData };
 </script>
 
 <script is:inline src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
@@ -508,7 +489,7 @@ const tokenChartData = {
   var chartData = ad.chartData;
   var tokenChartData = ad.tokenChartData;
   var tokenEntries = ad.tokenEntries || [];
-  var sourceRows = ad.sourceRows || [];
+  var sqData = ad.sqData || [];
   var PRICE_INPUT = ad.PRICE_INPUT || 0.05;
   var PRICE_OUTPUT = ad.PRICE_OUTPUT || 3;
 
@@ -597,6 +578,40 @@ const tokenChartData = {
     updateTokenCards();
     updateBreakdownTable();
     updateTokenChartData();
+  }
+
+  function updateSourceQuality() {
+    var filtered = sqData.filter(function(e) {
+      if (globalDateFrom && e.date < globalDateFrom) return false;
+      if (globalDateTo && e.date > globalDateTo) return false;
+      return true;
+    });
+    // Aggregate by source
+    var srcMap = {};
+    filtered.forEach(function(e) {
+      if (!srcMap[e.source]) srcMap[e.source] = { collected: 0, referenced: 0 };
+      srcMap[e.source].collected += e.collected;
+      srcMap[e.source].referenced += e.referenced;
+    });
+    var rows = Object.keys(srcMap).map(function(src) {
+      var c = srcMap[src].collected;
+      var r = srcMap[src].referenced;
+      return { source: src, collected: c, referenced: r, rate: c > 0 ? r / c : 0 };
+    });
+    rows.sort(function(a, b) { return b.referenced - a.referenced || b.collected - a.collected; });
+    var tbody = document.getElementById("sq-body");
+    if (!tbody) return;
+    tbody.innerHTML = rows.map(function(row) {
+      var barWidth = Math.min(row.rate * 100, 100);
+      var barColor = row.rate > 0.5 ? "var(--color-quarterly)" : row.rate > 0.1 ? "var(--color-accent-cool)" : "var(--color-text-muted)";
+      return '<tr>' +
+        '<td class="font-medium" style="color:var(--color-text)">' + row.source + '</td>' +
+        '<td class="text-right meta">' + row.collected + '</td>' +
+        '<td class="text-right meta">' + row.referenced + '</td>' +
+        '<td class="text-right"><span class="font-mono text-xs font-semibold" style="color:' + barColor + '">' + (row.rate * 100).toFixed(1) + '%</span></td>' +
+        '<td><div class="bar-bg"><div class="bar-fill" style="width:' + barWidth + '%;background-color:' + barColor + '"></div></div></td>' +
+        '</tr>';
+    }).join("");
   }
 
   const TYPE_COLORS = {
@@ -808,6 +823,7 @@ const tokenChartData = {
     function updateAll() {
       updateAllTokenViews();
       updateTagChart();
+      updateSourceQuality();
     }
 
     // Quick buttons
@@ -868,6 +884,7 @@ const tokenChartData = {
 
   // Retry until Chart.js is loaded
   function tryInit() {
+    updateSourceQuality();
     if (typeof Chart !== "undefined") {
       initAnalytics();
       initGlobalRange();
