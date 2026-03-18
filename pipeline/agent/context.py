@@ -6,9 +6,8 @@ import os
 
 from rich.console import Console
 
-from db import get_recent_digests, get_latest_summaries
+from db import get_recent_digests
 from db.digests import DigestRecord
-from db.summaries import SummaryRecord
 
 console = Console()
 
@@ -22,17 +21,6 @@ def load_recent_digests(days: int = 7) -> list[DigestRecord]:
     digests = get_recent_digests(days=days)
     console.print(f"  [green]✓[/] Recent digests: {len(digests)} days")
     return digests
-
-
-def load_compressed_history() -> dict[str, SummaryRecord | None]:
-    """Load latest weekly/monthly/quarterly summaries."""
-    summaries = get_latest_summaries()
-    found = [k for k, v in summaries.items() if v]
-    if found:
-        console.print(f"  [green]✓[/] Compressed history: {', '.join(found)}")
-    else:
-        console.print("  [dim]No compressed history yet (expected on first runs)[/]")
-    return summaries
 
 
 def load_company_context() -> str:

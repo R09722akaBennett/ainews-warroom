@@ -7,7 +7,7 @@ from datetime import datetime
 from rich.console import Console
 
 from db.digests import load_daily_digests
-from db.summaries import save_summary, load_summaries
+from db.summaries import save_summary, load_summaries, get_latest_summary
 from compress.dates import last_week_range, last_month_range, last_quarter_range
 from compress.llm import compress_with_llm
 from prompts import build_warroom_compress_prompt
@@ -30,10 +30,12 @@ def run_weekly(ref_date: datetime):
         return
 
     console.print(f"  Found {len(digests)} daily digests")
-    parts = [f"### {d['date']} — {d['title']}\n{d['insights'][:1500]}\n" for d in digests]
+    parts = [f"### {d['date']} — {d['title']}\n{d['insights']}\n" for d in digests]
     source_text = "\n---\n".join(parts)
 
-    prompt = build_warroom_compress_prompt(source_text, "weekly", start, end)
+    prev = get_latest_summary(WEEKLY)
+    prev_dict = {"start_date": prev.start_date, "end_date": prev.end_date, "content": prev.content} if prev else None
+    prompt = build_warroom_compress_prompt(source_text, "weekly", start, end, previous_summary=prev_dict)
     title, content, tags, token_usage = compress_with_llm(prompt)
     if token_usage:
         console.print(f"  Tokens: input={token_usage['input']:,} output={token_usage['output']:,} total={token_usage['total']:,}")
@@ -57,10 +59,12 @@ def run_monthly(ref_date: datetime):
             console.print("[yellow]No data found. Skipping.[/]")
             return
         console.print(f"  Found {len(digests)} daily digests")
-        parts = [f"### {d['date']} — {d['title']}\n{d['insights'][:800]}\n" for d in digests]
+        parts = [f"### {d['date']} — {d['title']}\n{d['insights']}\n" for d in digests]
         source_text = "\n---\n".join(parts)
 
-    prompt = build_warroom_compress_prompt(source_text, "monthly", start, end)
+    prev = get_latest_summary(MONTHLY)
+    prev_dict = {"start_date": prev.start_date, "end_date": prev.end_date, "content": prev.content} if prev else None
+    prompt = build_warroom_compress_prompt(source_text, "monthly", start, end, previous_summary=prev_dict)
     title, content, tags, token_usage = compress_with_llm(prompt)
     if token_usage:
         console.print(f"  Tokens: input={token_usage['input']:,} output={token_usage['output']:,} total={token_usage['total']:,}")
@@ -89,10 +93,12 @@ def run_quarterly(ref_date: datetime):
                 console.print("[yellow]No data found. Skipping.[/]")
                 return
             console.print(f"  [dim]Using {len(digests)} daily digests[/]")
-            parts = [f"### {d['date']} — {d['title']}\n{d['insights'][:500]}\n" for d in digests]
+            parts = [f"### {d['date']} — {d['title']}\n{d['insights']}\n" for d in digests]
             source_text = "\n---\n".join(parts)
 
-    prompt = build_warroom_compress_prompt(source_text, "quarterly", start, end)
+    prev = get_latest_summary(QUARTERLY)
+    prev_dict = {"start_date": prev.start_date, "end_date": prev.end_date, "content": prev.content} if prev else None
+    prompt = build_warroom_compress_prompt(source_text, "quarterly", start, end, previous_summary=prev_dict)
     title, content, tags, token_usage = compress_with_llm(prompt)
     if token_usage:
         console.print(f"  Tokens: input={token_usage['input']:,} output={token_usage['output']:,} total={token_usage['total']:,}")

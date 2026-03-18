@@ -2,7 +2,7 @@
 
 Flow:
   1. Collect news from all sources (deterministic)
-  2. Load context: recent digests + compressed history + company info (deterministic)
+  2. Load context: recent digests + company info (deterministic)
   3. Build prompt and call LLM once to generate report
   4. Parse response and save to DB + markdown file (deterministic)
 """
@@ -13,6 +13,8 @@ import asyncio
 import argparse
 import json
 import os
+import random
+from collections import defaultdict
 from datetime import datetime, timezone
 
 import google.genai as genai
@@ -24,7 +26,7 @@ from config import OUTPUT_DIR
 from models import NewsItem
 from prompts import REPORT_SYSTEM_PROMPT
 from agent.collector import collect_news
-from agent.context import load_recent_digests, load_compressed_history, load_company_context
+from agent.context import load_recent_digests, load_company_context
 
 console = Console()
 
@@ -35,18 +37,21 @@ def _build_user_prompt(
     date: str,
     items: list[NewsItem],
     recent_digests: list,
-    summaries: dict,
     company_context: str,
 ) -> str:
     """Build the user prompt with all collected data."""
     parts = [f"今天是 {date}。請根據以下資料產出今日 AI 戰情報告。\n"]
 
-    # Today's news — sorted by published_at descending (newest first)
-    sorted_items = sorted(
-        items,
-        key=lambda x: x.published_at.replace(tzinfo=None) if x.published_at else datetime.min,
-        reverse=True,
-    )
+    # Today's news — grouped by date (newest first), shuffled within each day
+    by_date: dict[str, list[NewsItem]] = defaultdict(list)
+    for item in items:
+        date_key = item.published_at.strftime("%Y-%m-%d") if item.published_at else "0000-00-00"
+        by_date[date_key].append(item)
+    sorted_items: list[NewsItem] = []
+    for dk in sorted(by_date.keys(), reverse=True):
+        group = by_date[dk]
+        random.shuffle(group)
+        sorted_items.extend(group)
     parts.append("## 今日收集的 AI 新聞（按發佈日期排序，最新在前）\n")
     for i, item in enumerate(sorted_items):
         date_str = item.published_at.strftime("%Y-%m-%d %H:%M") if item.published_at else ""
@@ -55,8 +60,6 @@ def _build_user_prompt(
             line += f"\n    Published: {date_str}"
         if item.url:
             line += f"\n    URL: {item.url}"
-        if item.score:
-            line += f"\n    Score: {item.score}"
         if item.content:
             line += f"\n    {item.content}"
         parts.append(line)
@@ -68,20 +71,6 @@ def _build_user_prompt(
         for d in recent_digests:
             insights_preview = d.insights if d.insights else "(無)"
             parts.append(f"### {d.date} — {d.title}\n{insights_preview}\n")
-        parts.append("")
-
-    # Compressed history (W/M/Q)
-    has_history = False
-    for period, summary in summaries.items():
-        if summary:
-            if not has_history:
-                parts.append("## 壓縮歷史摘要\n")
-                has_history = True
-            parts.append(
-                f"### {period}（{summary.start_date} ~ {summary.end_date}）— {summary.title}\n"
-                f"{summary.content}\n"
-            )
-    if has_history:
         parts.append("")
 
     # Company context
@@ -136,12 +125,11 @@ async def run_daily(date: str, dry_run: bool = False):
     # Step 2: Load context (deterministic)
     console.print("[bold]Step 2/4:[/] Loading context...")
     recent_digests = load_recent_digests(days=7)
-    summaries = load_compressed_history()
     company_context = load_company_context()
 
     # Step 3: Generate report (one LLM call)
     console.print("[bold]Step 3/4:[/] Generating report...")
-    user_prompt = _build_user_prompt(date, items, recent_digests, summaries, company_context)
+    user_prompt = _build_user_prompt(date, items, recent_digests, company_context)
 
     client = genai.Client()
     response = client.models.generate_content(

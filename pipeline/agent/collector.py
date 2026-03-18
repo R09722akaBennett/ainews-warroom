@@ -11,11 +11,8 @@ from models import NewsItem
 from sources.hackernews import fetch_hackernews
 from sources.reddit import fetch_reddit
 from sources.rss_feeds import fetch_rss_feeds
-from sources.arxiv_source import fetch_arxiv
-from sources.github_trending import fetch_github_trending
 from sources.lobsters import fetch_lobsters
 from sources.google_news import fetch_google_news
-from sources.producthunt import fetch_producthunt
 from agent.utils import deduplicate, filter_seen_urls
 from agent.raw_exporter import export_raw_markdown
 from db import save_raw_items, get_recent_urls
@@ -37,11 +34,8 @@ async def collect_news(date: str) -> tuple[list[NewsItem], int]:
     sources = [
         ("Reddit", fetch_reddit),
         ("RSS", fetch_rss_feeds),
-        ("ArXiv", fetch_arxiv),
-        ("GitHub", fetch_github_trending),
         ("Lobsters", fetch_lobsters),
         ("Google News", fetch_google_news),
-        ("Product Hunt", fetch_producthunt),
     ]
 
     tasks = [loop.run_in_executor(None, fn) for _, fn in sources]
@@ -86,9 +80,7 @@ async def collect_news(date: str) -> tuple[list[NewsItem], int]:
     ])
     console.print(f"  [green]✓[/] Raw: {len(all_items)} items → {raw_path}")
 
-    # Sort by score, return all items for LLM analysis
     total_count = len(all_items)
-    all_items.sort(key=lambda x: x.score, reverse=True)
     console.print(f"  [green]✓[/] {total_count} items ready for report")
 
     return all_items, total_count
