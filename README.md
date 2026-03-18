@@ -1,6 +1,6 @@
 # KDAN AI War Room
 
-AI intelligence dashboard for KDAN Mobile. Automatically collects AI news from 80+ sources, generates strategic reports with LLM analysis, tracks competitors, and compresses insights into weekly/monthly/quarterly summaries.
+AI intelligence dashboard for KDAN Mobile. Automatically collects AI news, generates strategic reports with LLM analysis, tracks competitors, and compresses insights into weekly/monthly/quarterly summaries.
 
 ## Architecture
 
@@ -77,7 +77,7 @@ uv run python -m leaderboard      # arena.ai leaderboard + alphaxiv papers
 │   ├── agent/                    # Daily report workflow
 │   │   ├── runner.py             # Main workflow (collect → LLM → save)
 │   │   ├── collector.py          # News collection + dedup + 3-day age filter
-│   │   └── context.py            # Historical context loading
+│   │   └── context.py            # Context loading (7-day digests + company info)
 │   ├── competitor/               # Competitor intelligence
 │   │   ├── config.py             # 14 competitors + queries + RSS feeds
 │   │   ├── collector.py          # Google News + RSS per company
@@ -102,12 +102,12 @@ uv run python -m leaderboard      # arena.ai leaderboard + alphaxiv papers
 ## Data Flow
 
 ```
-80+ Sources (HN, Reddit, RSS, ArXiv, GitHub, Google News, Lobsters, PH)
-    ↓ collect + dedup + 3-day age filter (python -m agent)
+News Sources (HN, Reddit, RSS, Google News, Lobsters)
+    ↓ collect + dedup + 3-day age filter + same-day shuffle (python -m agent)
 raw_daily_items → sources.json         ← browsable on /sources
-    ↓ LLM (Gemini) — items sorted by date, token usage tracked
+    ↓ LLM (Gemini) — token usage tracked
 daily_digests → reports.json           ← daily reports with ref-N on /reports
-    ↓ compress (python -m compress)
+    ↓ compress with previous period context (python -m compress)
 periodic_summaries → summaries.json    ← W/M/Q trends on /trends
 
 14 Competitors (Google News + RSS)
@@ -144,4 +144,4 @@ MATTERMOST_TOKEN=...
 - **Website**: Astro 5, Tailwind CSS v4, Chart.js, Vercel
 - **Pipeline**: Python 3.12, Google Gemini, SQLite, BeautifulSoup
 - **LLM**: `gemini-3-flash-preview` (configurable)
-- **Data**: arena.ai (leaderboard), alphaxiv.org (papers), 14 competitors, 80+ news sources
+- **Data**: arena.ai (leaderboard), alphaxiv.org (papers), 14 competitors, HN/Reddit/RSS/Google News/Lobsters
