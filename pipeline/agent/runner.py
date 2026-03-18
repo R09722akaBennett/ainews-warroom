@@ -44,7 +44,7 @@ def _build_user_prompt(
     # Today's news — sorted by published_at descending (newest first)
     sorted_items = sorted(
         items,
-        key=lambda x: x.published_at or datetime.min,
+        key=lambda x: x.published_at.replace(tzinfo=None) if x.published_at else datetime.min,
         reverse=True,
     )
     parts.append("## 今日收集的 AI 新聞（按發佈日期排序，最新在前）\n")
