@@ -66,8 +66,7 @@ fi
 # Step 6: Push to git → triggers Vercel deploy
 echo "[7/7] Pushing to git..."
 cd "$REPO_DIR"
-git pull --rebase || { echo "ERROR: git pull failed — resolve manually"; exit 1; }
-git add src/data/reports.json src/data/sources.json src/data/summaries.json src/data/legacy.json src/data/leaderboard.json src/data/papers.json src/data/competitors.json
+git add src/data/reports.json src/data/sources.json src/data/summaries.json src/data/legacy.json src/data/leaderboard.json src/data/papers.json src/data/competitors.json src/data/mcpmarket.json
 if git diff --cached --quiet; then
     echo "No changes to push."
 else
