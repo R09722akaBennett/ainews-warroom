@@ -63,17 +63,17 @@ else
     echo "Skipping — MATTERMOST_URL or MATTERMOST_TOKEN not set"
 fi
 
-# Step 6: Push to git → triggers Vercel deploy
-echo "[7/7] Pushing to git..."
-cd "$REPO_DIR"
-git pull --rebase || { echo "ERROR: git pull failed — resolve manually"; exit 1; }
-git add src/data/reports.json src/data/sources.json src/data/summaries.json src/data/legacy.json src/data/leaderboard.json src/data/papers.json src/data/competitors.json
-if git diff --cached --quiet; then
-    echo "No changes to push."
-else
-    git commit -m "daily report $(date '+%Y-%m-%d')"
-    git push
-    echo "Pushed. Vercel will auto-deploy."
-fi
+# # Step 6: Push to git → triggers Vercel deploy
+# echo "[7/7] Pushing to git..."
+# cd "$REPO_DIR"
+# git pull --rebase || { echo "ERROR: git pull failed — resolve manually"; exit 1; }
+# git add src/data/reports.json src/data/sources.json src/data/summaries.json src/data/legacy.json src/data/leaderboard.json src/data/papers.json src/data/competitors.json
+# if git diff --cached --quiet; then
+#     echo "No changes to push."
+# else
+#     git commit -m "daily report $(date '+%Y-%m-%d')"
+#     git push
+#     echo "Pushed. Vercel will auto-deploy."
+# fi
 
 echo "Done at $(date '+%H:%M:%S')"

@@ -14,6 +14,7 @@ from rich.console import Console
 
 from db import init_db
 from db.connection import get_conn
+from export.graph import export_graph
 
 console = Console()
 
@@ -245,9 +246,10 @@ def main():
     s = export_summaries()
     lg = export_legacy()
     c = export_competitors()
+    g = export_graph()
 
     console.print(
-        f"\n[bold green]Done! {r} reports + {s} summaries + {lg} legacy + {c} competitor items → src/data/[/]"
+        f"\n[bold green]Done! {r} reports + {s} summaries + {lg} legacy + {c} competitor items + {g} graph nodes → src/data/[/]"
     )
 
 

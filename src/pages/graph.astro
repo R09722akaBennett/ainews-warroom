@@ -1,0 +1,557 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+
+import graphRaw from "../data/graph.json";
+const graphData = JSON.stringify(graphRaw);
+---
+
+<Layout title="Relation Graph" description="Tag co-occurrence graph showing relationships between companies, models, and topics across daily reports.">
+  <Container>
+    <section class="graph-intro">
+      <h1>Relation Graph</h1>
+      <p class="subtitle">Tag co-occurrence across daily reports — companies, models, and topics that appear together.</p>
+    </section>
+
+    <!-- Controls -->
+    <div class="graph-controls">
+      <div class="control-group">
+        <label class="control-label">Time Range</label>
+        <div class="range-btns">
+          <button class="rbtn" data-range="7">7d</button>
+          <button class="rbtn" data-range="30">30d</button>
+          <button class="rbtn active" data-range="90">90d</button>
+          <button class="rbtn" data-range="0">All</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label">Node Types</label>
+        <div class="type-btns">
+          <button class="tbtn active" data-type="company"><span class="dot" style="background:var(--color-accent-purple);"></span>Companies</button>
+          <button class="tbtn active" data-type="model"><span class="dot" style="background:var(--color-accent-cool);"></span>Models</button>
+          <button class="tbtn active" data-type="topic"><span class="dot" style="background:var(--color-accent-warm);"></span>Topics</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label">Min Weight</label>
+        <input type="range" id="weight-slider" min="2" max="20" value="3" class="slider" />
+        <span id="weight-val" class="slider-val">3</span>
+      </div>
+      <div class="control-group search-group">
+        <input type="search" id="graph-search" placeholder="Search nodes..." class="search-input" />
+        <span id="search-count" class="search-count"></span>
+      </div>
+      <div class="graph-stats">
+        <span id="stat-nodes">0 nodes</span>
+        <span class="stat-sep">/</span>
+        <span id="stat-edges">0 edges</span>
+      </div>
+    </div>
+
+    <div id="graph-container"></div>
+
+    <!-- Legend -->
+    <div class="graph-legend">
+      <div class="legend-item"><span class="dot" style="background:var(--color-accent-purple);"></span> Company</div>
+      <div class="legend-item"><span class="dot" style="background:var(--color-accent-cool);"></span> Model</div>
+      <div class="legend-item"><span class="dot" style="background:var(--color-accent-warm);"></span> Topic</div>
+      <div class="legend-hint">Node size = frequency &nbsp;|&nbsp; Edge thickness = co-occurrence count &nbsp;|&nbsp; Drag to rearrange &nbsp;|&nbsp; Scroll to zoom</div>
+    </div>
+  </Container>
+</Layout>
+
+<script define:vars={{ graphData }}>
+  function initGraphPage() {
+    var container = document.getElementById('graph-container');
+    if (!container || container.querySelector('svg')) return;
+
+    var gData = JSON.parse(graphData);
+    var activeTypes = new Set(['company', 'model', 'topic']);
+    var rangeD = 90;
+    var minWeight = 3;
+    var searchQuery = '';
+
+    loadD3(function() { render(); });
+
+    function loadD3(cb) {
+      if (window.d3) { cb(); return; }
+      var s = document.createElement('script');
+      s.src = 'https://d3js.org/d3.v7.min.js';
+      s.onload = cb;
+      document.head.appendChild(s);
+    }
+
+    function getColor(type) {
+      var style = getComputedStyle(document.documentElement);
+      var dark = document.documentElement.classList.contains('dark');
+      if (type === 'company') return style.getPropertyValue(dark ? '--color-accent-purple-dark' : '--color-accent-purple').trim();
+      if (type === 'model') return style.getPropertyValue(dark ? '--color-accent-cool-dark' : '--color-accent-cool').trim();
+      return style.getPropertyValue(dark ? '--color-accent-warm-dark' : '--color-accent-warm').trim();
+    }
+
+    function filterData() {
+      if (!gData) return { nodes: [], edges: [] };
+
+      var activeDates = null;
+      if (rangeD > 0) {
+        var cutoff = new Date();
+        cutoff.setDate(cutoff.getDate() - rangeD);
+        var cutoffStr = cutoff.toISOString().slice(0, 10);
+        activeDates = new Set(
+          Object.keys(gData.daily).filter(function(d) { return d >= cutoffStr; })
+        );
+      }
+
+      var tagCount = {};
+      var cooc = {};
+      var dates = activeDates
+        ? Object.entries(gData.daily).filter(function(e) { return activeDates.has(e[0]); })
+        : Object.entries(gData.daily);
+
+      for (var di = 0; di < dates.length; di++) {
+        var tags = dates[di][1];
+        var filtered = tags.filter(function(t) { return activeTypes.has(t.split(':')[0]); });
+        for (var ti = 0; ti < filtered.length; ti++) tagCount[filtered[ti]] = (tagCount[filtered[ti]] || 0) + 1;
+        var sorted = Array.from(new Set(filtered)).sort();
+        for (var i = 0; i < sorted.length; i++) {
+          for (var j = i + 1; j < sorted.length; j++) {
+            var key = sorted[i] + '||' + sorted[j];
+            cooc[key] = (cooc[key] || 0) + 1;
+          }
+        }
+      }
+
+      var nodeMap = new Map();
+      for (var ni = 0; ni < gData.nodes.length; ni++) {
+        var n = gData.nodes[ni];
+        if (activeTypes.has(n.type) && (tagCount[n.id] || 0) >= 2) {
+          nodeMap.set(n.id, Object.assign({}, n, { count: tagCount[n.id] || 0 }));
+        }
+      }
+
+      var edges = [];
+      var coocEntries = Object.entries(cooc);
+      for (var ci = 0; ci < coocEntries.length; ci++) {
+        var ck = coocEntries[ci][0];
+        var cw = coocEntries[ci][1];
+        if (cw < minWeight) continue;
+        var parts = ck.split('||');
+        if (nodeMap.has(parts[0]) && nodeMap.has(parts[1])) {
+          edges.push({ source: parts[0], target: parts[1], weight: cw });
+        }
+      }
+
+      var connectedIds = new Set();
+      for (var ei = 0; ei < edges.length; ei++) {
+        connectedIds.add(edges[ei].source);
+        connectedIds.add(edges[ei].target);
+      }
+
+      var nodes = Array.from(nodeMap.values()).filter(function(n) { return connectedIds.has(n.id); });
+      return { nodes: nodes, edges: edges };
+    }
+
+    function render() {
+      var d3 = window.d3;
+      if (!d3 || !gData || !container) return;
+
+      container.innerHTML = '';
+      var width = container.clientWidth;
+      var height = Math.max(500, window.innerHeight - 320);
+      container.style.height = height + 'px';
+
+      var result = filterData();
+      var nodes = result.nodes;
+      var edges = result.edges;
+
+      var sn = document.getElementById('stat-nodes');
+      var se = document.getElementById('stat-edges');
+      if (sn) sn.textContent = nodes.length + ' nodes';
+      if (se) se.textContent = edges.length + ' edges';
+
+      if (nodes.length === 0) {
+        container.innerHTML = '<p style="padding:3rem;text-align:center;color:var(--color-text-muted);">No nodes match current filters. Try widening the time range or lowering the minimum weight.</p>';
+        return;
+      }
+
+      var maxCount = Math.max.apply(null, nodes.map(function(n) { return n.count; }).concat([1]));
+      var sizeScale = d3.scaleSqrt().domain([1, maxCount]).range([5, 28]);
+      var maxWeight = Math.max.apply(null, edges.map(function(e) { return e.weight; }).concat([1]));
+      var widthScale = d3.scaleLinear().domain([minWeight, maxWeight]).range([1, 6]);
+
+      var svg = d3.select(container)
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height);
+
+      var g = svg.append('g');
+
+      svg.call(d3.zoom().scaleExtent([0.2, 5]).on('zoom', function(event) {
+        g.attr('transform', event.transform);
+      }));
+
+      var simulation = d3.forceSimulation(nodes)
+        .force('link', d3.forceLink(edges).id(function(d) { return d.id; }).distance(60))
+        .force('charge', d3.forceManyBody().strength(-120))
+        .force('center', d3.forceCenter(width / 2, height / 2))
+        .force('collision', d3.forceCollide().radius(function(d) { return sizeScale(d.count) + 3; }));
+
+      var link = g.append('g')
+        .selectAll('line')
+        .data(edges)
+        .join('line')
+        .attr('stroke', 'var(--color-border)')
+        .attr('stroke-width', function(d) { return widthScale(d.weight); })
+        .attr('stroke-opacity', 0.4);
+
+      var node = g.append('g')
+        .selectAll('circle')
+        .data(nodes)
+        .join('circle')
+        .attr('r', function(d) { return sizeScale(d.count); })
+        .attr('fill', function(d) { return getColor(d.type); })
+        .attr('stroke', 'var(--color-surface)')
+        .attr('stroke-width', 1.5)
+        .attr('cursor', 'pointer')
+        .attr('opacity', 0.85)
+        .call(d3.drag()
+          .on('start', function(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x; d.fy = d.y;
+          })
+          .on('drag', function(event, d) { d.fx = event.x; d.fy = event.y; })
+          .on('end', function(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null; d.fy = null;
+          })
+        );
+
+      var label = g.append('g')
+        .selectAll('text')
+        .data(nodes.filter(function(n) { return sizeScale(n.count) >= 8; }))
+        .join('text')
+        .text(function(d) { return d.label; })
+        .attr('font-size', function(d) { return Math.max(9, Math.min(13, sizeScale(d.count) * 0.6)) + 'px'; })
+        .attr('font-family', 'var(--font-mono)')
+        .attr('text-anchor', 'middle')
+        .attr('dy', function(d) { return sizeScale(d.count) + 12; })
+        .attr('fill', 'var(--color-text-muted)')
+        .attr('pointer-events', 'none');
+
+      var tooltip = document.createElement('div');
+      tooltip.className = 'graph-tooltip';
+      container.appendChild(tooltip);
+
+      node.on('mouseover', function(event, d) {
+        tooltip.innerHTML = '<strong>' + d.label + '</strong><br/><span class="tt-type">' + d.type + '</span> · ' + d.count + ' reports';
+        tooltip.style.display = 'block';
+        tooltip.style.left = (event.offsetX + 12) + 'px';
+        tooltip.style.top = (event.offsetY - 12) + 'px';
+        d3.select(event.target).attr('opacity', 1).attr('stroke', 'var(--color-text)').attr('stroke-width', 2.5);
+        link.attr('stroke-opacity', function(l) {
+          return (l.source.id === d.id || l.target.id === d.id) ? 0.8 : 0.1;
+        }).attr('stroke', function(l) {
+          return (l.source.id === d.id || l.target.id === d.id) ? getColor(d.type) : 'var(--color-border)';
+        });
+        node.attr('opacity', function(n) {
+          if (n.id === d.id) return 1;
+          var connected = edges.some(function(e) {
+            return (e.source.id === d.id && e.target.id === n.id) ||
+                   (e.target.id === d.id && e.source.id === n.id);
+          });
+          return connected ? 0.85 : 0.15;
+        });
+        label.attr('opacity', function(n) {
+          if (n.id === d.id) return 1;
+          var connected = edges.some(function(e) {
+            return (e.source.id === d.id && e.target.id === n.id) ||
+                   (e.target.id === d.id && e.source.id === n.id);
+          });
+          return connected ? 1 : 0.1;
+        });
+      }).on('mousemove', function(event) {
+        tooltip.style.left = (event.offsetX + 12) + 'px';
+        tooltip.style.top = (event.offsetY - 12) + 'px';
+      }).on('mouseout', function() {
+        tooltip.style.display = 'none';
+        node.attr('opacity', 0.85).attr('stroke', 'var(--color-surface)').attr('stroke-width', 1.5);
+        link.attr('stroke-opacity', 0.4).attr('stroke', 'var(--color-border)');
+        label.attr('opacity', 1);
+      });
+
+      function applySearch() {
+        var q = searchQuery.toLowerCase();
+        var countEl = document.getElementById('search-count');
+        if (!q) {
+          node.attr('opacity', 0.85).attr('stroke', 'var(--color-surface)').attr('stroke-width', 1.5);
+          label.attr('opacity', 1);
+          link.attr('stroke-opacity', 0.4);
+          if (countEl) countEl.textContent = '';
+          return;
+        }
+        var matched = new Set(nodes.filter(function(n) { return n.label.toLowerCase().includes(q); }).map(function(n) { return n.id; }));
+        node.attr('opacity', function(d) { return matched.has(d.id) ? 1 : 0.12; })
+          .attr('stroke', function(d) { return matched.has(d.id) ? 'var(--color-text)' : 'var(--color-surface)'; })
+          .attr('stroke-width', function(d) { return matched.has(d.id) ? 2.5 : 1.5; });
+        label.attr('opacity', function(d) { return matched.has(d.id) ? 1 : 0.08; });
+        link.attr('stroke-opacity', function(d) {
+          var sid = typeof d.source === 'object' ? d.source.id : d.source;
+          var tid = typeof d.target === 'object' ? d.target.id : d.target;
+          return matched.has(sid) || matched.has(tid) ? 0.6 : 0.05;
+        });
+        if (countEl) countEl.textContent = matched.size > 0 ? matched.size + ' found' : 'no match';
+      }
+
+      var searchEl = document.getElementById('graph-search');
+      if (searchEl) {
+        searchEl.addEventListener('input', function() {
+          searchQuery = searchEl.value;
+          applySearch();
+        });
+        if (searchQuery) applySearch();
+      }
+
+      simulation.on('tick', function() {
+        link
+          .attr('x1', function(d) { return d.source.x; }).attr('y1', function(d) { return d.source.y; })
+          .attr('x2', function(d) { return d.target.x; }).attr('y2', function(d) { return d.target.y; });
+        node.attr('cx', function(d) { return d.x; }).attr('cy', function(d) { return d.y; });
+        label.attr('x', function(d) { return d.x; }).attr('y', function(d) { return d.y; });
+      });
+    }
+
+    // Controls: time range
+    document.querySelectorAll('.rbtn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.rbtn').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        rangeD = parseInt(btn.dataset.range || '0');
+        render();
+      });
+    });
+
+    // Controls: node types
+    document.querySelectorAll('.tbtn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        btn.classList.toggle('active');
+        var type = btn.dataset.type;
+        if (activeTypes.has(type)) activeTypes.delete(type);
+        else activeTypes.add(type);
+        render();
+      });
+    });
+
+    // Controls: min weight
+    var slider = document.getElementById('weight-slider');
+    var weightVal = document.getElementById('weight-val');
+    if (slider) {
+      slider.addEventListener('input', function() {
+        minWeight = parseInt(slider.value);
+        if (weightVal) weightVal.textContent = String(minWeight);
+        render();
+      });
+    }
+  }
+
+  initGraphPage();
+  document.addEventListener('astro:page-load', initGraphPage);
+</script>
+
+<style>
+  .graph-intro {
+    padding-top: 2rem;
+    padding-bottom: 0.5rem;
+  }
+  .graph-intro h1 {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+  .subtitle {
+    color: var(--color-text-muted);
+    margin-top: 0.25rem;
+    font-size: 0.95rem;
+  }
+
+  /* Controls */
+  .graph-controls {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 0;
+  }
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .control-label {
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .range-btns, .type-btns {
+    display: flex;
+    gap: 0.2rem;
+  }
+  .rbtn, .tbtn {
+    padding: 0.25rem 0.6rem;
+    border-radius: 0.375rem;
+    font-size: 0.8rem;
+    font-family: var(--font-mono);
+    cursor: pointer;
+    border: 1px solid var(--color-border);
+    background: transparent;
+    color: var(--color-text-muted);
+    transition: all 0.15s;
+  }
+  .rbtn:hover, .tbtn:hover {
+    background: var(--color-surface-muted);
+    color: var(--color-text);
+  }
+  .rbtn.active {
+    background: var(--color-text);
+    color: var(--color-surface);
+    border-color: var(--color-text);
+  }
+  .tbtn.active {
+    background: var(--color-surface-muted);
+    color: var(--color-text);
+    border-color: var(--color-text-muted);
+  }
+  .tbtn .dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 0.25rem;
+  }
+  .slider {
+    width: 80px;
+    accent-color: var(--color-accent-cool);
+  }
+  .slider-val {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    min-width: 1.5rem;
+  }
+  .search-group {
+    margin-left: auto;
+  }
+  .search-input {
+    padding: 0.3rem 0.6rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.375rem;
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-size: 0.85rem;
+    width: 160px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .search-input:focus {
+    border-color: var(--color-accent-cool);
+  }
+  .search-count {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+  }
+  .graph-stats {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+  .stat-sep {
+    margin: 0 0.25rem;
+    opacity: 0.5;
+  }
+
+  /* Graph container */
+  #graph-container {
+    width: 100%;
+    height: 600px;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    background: var(--color-surface);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Tooltip */
+  :global(.graph-tooltip) {
+    display: none;
+    position: absolute;
+    padding: 0.5rem 0.75rem;
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border);
+    border-radius: 0.375rem;
+    font-size: 0.82rem;
+    pointer-events: none;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    color: var(--color-text);
+    max-width: 240px;
+  }
+  :global(.graph-tooltip .tt-type) {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  /* Legend */
+  .graph-legend {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 0.75rem 0;
+    flex-wrap: wrap;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+  }
+  .legend-item .dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  .legend-hint {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    opacity: 0.7;
+    margin-left: auto;
+  }
+
+  @media (max-width: 768px) {
+    .graph-controls {
+      gap: 0.75rem;
+    }
+    .search-group {
+      width: 100%;
+      margin-left: 0;
+    }
+    .search-input {
+      width: 100%;
+    }
+    .legend-hint {
+      width: 100%;
+      margin-left: 0;
+    }
+    #graph-container {
+      height: 450px;
+    }
+  }
+</style>
