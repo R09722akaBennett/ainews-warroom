@@ -129,12 +129,14 @@ RSS_FEEDS = {
 # ---------------------------------------------------------------------------
 
 GOOGLE_NEWS_QUERIES = [
-    # Broad AI industry
-    '(OpenAI OR Anthropic OR Google AI OR "large language model" OR ChatGPT OR Claude OR "AI model") when:2d',
-    # AI regulation & policy
-    '(AI regulation OR "artificial intelligence" law OR "AI safety" policy) when:3d',
-    # AI hardware & chips
-    '(NVIDIA AI OR TSMC AI OR "AI chip" OR "GPU shortage") when:3d',
+    # AI models, agents & tools
+    '("AI model" OR "AI agent" OR "large language model" OR "generative AI" OR "AI coding") when:2d',
+    # AI business & startups
+    '("AI startup" OR "AI funding" OR "AI acquisition" OR "AI partnership" OR "AI revenue") when:2d',
+    # AI regulation, safety & policy
+    '("AI regulation" OR "AI safety" OR "AI policy" OR "AI ethics" OR "AI governance") when:3d',
+    # AI infrastructure & hardware
+    '("AI chip" OR "AI datacenter" OR "AI infrastructure" OR "GPU" OR "AI training") when:3d',
 ]
 
 # ---------------------------------------------------------------------------

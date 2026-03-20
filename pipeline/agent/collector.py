@@ -14,6 +14,7 @@ from sources.rss_feeds import fetch_rss_feeds
 from sources.lobsters import fetch_lobsters
 from sources.google_news import fetch_google_news
 from agent.utils import deduplicate, filter_seen_urls
+from agent.news_filter import filter_google_news
 from agent.raw_exporter import export_raw_markdown
 from db import save_raw_items, get_recent_urls
 
@@ -71,6 +72,14 @@ async def collect_news(date: str) -> tuple[list[NewsItem], int]:
     if aged_out:
         console.print(f"    [yellow]Filtered {aged_out} items older than 3 days[/]")
         console.print(f"    Total (age-filtered): {len(all_items)}")
+
+    # LLM filter: deduplicate and select top Google News items
+    gn_items = [it for it in all_items if it.source_type.value == "google_news"]
+    if len(gn_items) > 50:
+        non_gn_items = [it for it in all_items if it.source_type.value != "google_news"]
+        filtered_gn = filter_google_news(gn_items)
+        all_items = non_gn_items + filtered_gn
+        console.print(f"    Total (after Google News filter): {len(all_items)}")
 
     # Save raw items as markdown audit trail + condensed to DB
     raw_path = export_raw_markdown(all_items, date)
