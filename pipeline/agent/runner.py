@@ -27,6 +27,7 @@ from models import NewsItem
 from prompts import REPORT_SYSTEM_PROMPT
 from agent.collector import collect_news
 from agent.context import load_recent_digests, load_company_context
+from agent.ref_fixer import fix_refs
 
 console = Console()
 
@@ -159,6 +160,9 @@ async def run_daily(date: str, dry_run: bool = False):
     console.print(f"  [green]✓[/] Topics: {len(topics)}, Tags: {tags.keys() if tags else 'none'}")
     if token_usage:
         console.print(f"  [green]✓[/] Tokens: input={token_usage['input']:,} output={token_usage['output']:,} total={token_usage['total']:,}")
+
+    # Fix hallucinated ref-N numbers
+    markdown = fix_refs(markdown, items)
 
     # Step 4: Save (deterministic)
     console.print("[bold]Step 4/4:[/] Saving...")

@@ -26,7 +26,7 @@ FILTER_PROMPT = """你是一位 AI 新聞編輯。以下是從 Google News 收�
 - 寧可多留，不可漏掉重要新聞
 - 同一事件只保留 1 篇，但不同面向的報導（如技術分析 vs 商業影響）可各保留 1 篇
 - 非 AI 相關的新聞直接移除
-- 目標數量：保留約 40-60 條（視當天新聞量調整）
+- 目標數量：保留約 30 條最重要的新聞
 
 ## 新聞列表
 """
@@ -37,7 +37,7 @@ def filter_google_news(items: list[NewsItem]) -> list[NewsItem]:
 
     Returns the filtered subset of items.
     """
-    if len(items) <= 50:
+    if len(items) <= 30:
         return items
 
     # Build the item list for the prompt
