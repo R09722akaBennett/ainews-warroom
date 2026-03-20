@@ -58,7 +58,7 @@ uv run python -m leaderboard
 # Step 5: Notify Mattermost (skip if env vars not set)
 echo "[6/7] Sending to Mattermost..."
 if [[ -n "${MATTERMOST_URL:-}" && -n "${MATTERMOST_BOT_TOKEN:-}" ]]; then
-    uv run python -m notify
+    uv run python -m notify || echo "WARNING: Mattermost notification failed (exit $?), continuing..."
 else
     echo "Skipping — MATTERMOST_URL or MATTERMOST_TOKEN not set"
 fi
