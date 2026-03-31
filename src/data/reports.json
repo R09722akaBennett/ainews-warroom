@@ -1,5 +1,724 @@
 [
   {
+    "date": "2026-03-31",
+    "title": "KDAN AI 戰情報告 (2026-03-31)",
+    "content": "# KDAN AI 戰情報告 (2026-03-31)\n\n## 昨日 AI 重點新聞\n\n### Anthropic 證實新一代模型 Mythos 並獲 Coatue 兩兆美元估值預期 ref-53, ref-67, ref-24\n**Anthropic** 正式確認代號 **Mythos** 的旗艦模型正在測試中。根據 **Coatue** 流出的 1 月投資簡報，預計 **Anthropic** 在 **2026 年** 營收將達 **180 億美元**，儘管面臨 **140 億美元** 的虧損，但其在 **2030 年** 的估值預計將達到驚人的 **1.995 兆美元**。\n\n### Microsoft Copilot 實現 GPT 與 Claude 跨模型協同研發代理 ref-2, ref-106\n**Microsoft** 發表新功能，讓 **OpenAI GPT** 與 **Anthropic Claude** 在 **Copilot Researcher** 代理中聯手。此流程由 **GPT** 負責初稿，**Claude** 負責校對精確度與引用，實驗顯示協作後的 **DRACO** 基準測試分數達 **57.4**，遠超單一模型。\n\n### Google 發佈 Java 版 ADK 1.0 與 xAI Grok 4.20 多代理模式 ref-12, ref-17\n**Google** 推出 **Agent Development Kit (ADK) for Java 1.0**，內建 **Agent2Agent** 協定以支持跨框架協作。同時，**xAI** 的 **Grok 4.20** 在 **Vercel AI Gateway** 上線，提供專為代理編排設計的 **Multi-Agent** 變體。\n\n### Axios 套件遭遇供應鏈攻擊與 LiteLLM 曝合規造假醜聞 ref-33, ref-84, ref-15\n熱門 npm 套件 **Axios** (v1.14.1) 遭到入侵，植入惡意依賴以竊取憑證。此外，AI 閘道器 **LiteLLM** 遭遇憑證竊取後發現，其合規服務商 **Delve** 涉嫌「虛假合規」，導致 **LiteLLM** 宣布與之斷絕關係。\n\n### Meta 與 Nebius 簽署 270 億美元協議；Mistral 巨額舉債興建數據中心 ref-123, ref-38, ref-36\n**Meta** 與 **Nebius** 達成 **270 億美元** 的五年基礎設施合約。法國 **Mistral AI** 則籌集 **7.22 億歐元** 債務融資，於巴黎近郊部署 **13,800** 顆 **NVIDIA GB300 GPU**，強化歐洲 AI 主權算力。\n\n### 阿里巴巴發佈 Qwen 3.5 Omni 全模態模型 ref-54, ref-105\n**Alibaba** 推出 **Qwen3.5-Omni**，支援超過 **10 小時** 的音訊輸入與視覺理解。其 **Plus** 版本在多項音訊指標上超越 **Gemini 3.1 Pro**，並具備語音複製與即時翻譯功能。\n\n### Apple Intelligence 在中國區上線受挫；州政府加強監管 ref-6, ref-4, ref-56\n**Apple** 在測試版中意外於中國上線 **Apple Intelligence** 後緊急撤回，因尚未取得監管審查。與此同時，**加州**與**華盛頓州**分別簽署新的行政命令與法案，強化對 AI 安全與隱私的監控。\n\n### 空間 AI 基礎設施新創 Starcloud 估值破 11 億美元 ref-40, ref-74\n**Starcloud** 僅用 **17 個月** 即成為 **Y Combinator** 最快達成獨角獸地位的公司，目前已募資 **1.7 億美元**，旨在於太空中建立 AI 數據中心以解決地面散熱與能源瓶頸。\n\n### NVIDIA 發表 Nemotron Super 120B 與 Cohere 高性能轉錄模型 ref-25\n**NVIDIA** 發佈 **Nemotron-3-Super**，具備 **120B** 參數與 **1M** 上下文視窗。**Cohere** 同步推出支援 **14 種語言** 的轉錄模型，宣稱效能擊敗所有同量級開源模型。\n\n### AI 編程代理爭議：Claude Code 爆出快取 Bug 導致成本激增 ref-11, ref-2\n儘管 **Claude Code** 在 GitHub 獲得 **11.8 萬星** 關注，但用戶回報其存在快取 Bug，會導致 **API 成本** 無預警翻倍 **10-20 倍**。**OpenAI** 則推出 **Codex** 插件嘗試反攻 **Claude Code** 市場。\n\n---\n\n## 市場洞察\n\n1. **「代理編排與 A2A 協定」成為 2026 年技術主軸 (ref-53, ref-129, ref-130)**\n延續前日對 **OpenAI Spud** 代理商務的觀察，今日 **Microsoft** 的「GPT 寫、Claude 審」模式 `(ref-53)` 標誌著單一模型競爭結束，進入「模型組合技」時代。**Google ADK 1.0** 推動的 **Agent2Agent (A2A)** 標準 `(ref-129)`，將使跨軟體代理的協作如同 API 調用般標準化，這將迫使垂直 SaaS 必須具備「可被代理調用」的標準介面。\n\n2. **AI 安全合規的誠信危機與供應鏈防禦 (ref-3, ref-89, ref-92)**\n**Axios** 供應鏈攻擊 `(ref-3)` 與 **Delve** 的虛假合規事件 `(ref-89)` 顯示，當前 AI 生態系的資安基礎極度脆弱。當企業開始依賴 AI 代理自動編碼時，供應鏈的每一個環節都可能成為投毒點。未來「自動化代碼驗證 (Verification)」`(ref-67)` 與「私有化合規審計」將成為企業級 AI 的剛需，而非僅靠第三方認證貼紙。\n\n3. **算力與模型效能的「分層化」演進 (ref-33, ref-34, ref-43)**\n市場正出現明顯分層：一端是如 **Mistral** `(ref-34)` 與 **Meta** `(ref-19)` 瘋狂投入基礎設施以維持旗艦模型領先；另一端是如 **ScaleOps** `(ref-43)` 與 **NVIDIA Nemotron** `(ref-33)` 致力於透過 **NVFP4** 壓縮與自動化擴展來優化 GPU 效率。這意味著「算力管理能力」將與「模型研發能力」同等重要。\n\n4. **個人超級智慧 (PSI) 對企業治理的衝擊 (ref-7, ref-30, ref-103)**\n**Meta** 成立正式的 **AI Engineer** 部門 `(ref-7)` 標誌著開發流程的永久性改變。然而，調查顯示僅 **15%** 的美國人願意接受「AI 主管」`(ref-30)`。這預示著 2026 年的商務產品競爭，不僅在於功能的強大，更在於如何設計「人機協作」的治理框架，讓人類維持決策主權。\n\n---\n\n## KDAN 戰略洞察\n\n1. **DottedSign：搶先卡位「A2A 協定」中的信任認證層 (ref-129, ref-53)**\n   * **具體行動**：參考 **Google Java ADK 1.0** 的規格，開發 **DottedSign** 專屬的「**代理簽署 Plugin**」。\n   * **價值**：當 **Microsoft Copilot** 這種「跨模型代理」`(ref-53)` 完成商務決策或法律審核時，**DottedSign** 應成為其執行簽署的標準化出口。透過 **Agent2Agent** 協定，讓 AI 代理能自動向 **DottedSign** 申請身份驗證，確保「代理行為」具備法律確權的數位足跡。\n\n2. **ComPDF SDK / AI：針對「10 小時音訊/長視窗」優化多模態解析 (ref-42, ref-33)**\n   * **具體行動**：借鑑 **Qwen 3.5 Omni** `(ref-42)` 的多模態理解力，強化 **ComPDF AI** 處理「影音文檔整合解析」的能力。\n   * **產品機會**：當前的 AI 代理已能處理超長音訊與 **1M** 上下文 `(ref-33)`，**ComPDF SDK** 應提供能將「視訊會議紀錄」與「PDF 法律合約」自動比對並產出差異報告的模組。鎖定需要處理大量影音與文書證據的法律、審計市場。\n\n3. **LynxPDF：利用「虛假合規」危機，推廣私有化與自動化審計方案 (ref-89, ref-67)**\n   * **具體行動**：以 **LiteLLM / Delve** 事件 `(ref-89)` 為案例，針對金融與律所推廣 **LynxPDF** 的「**在地端 AI 審計沙盒**」。\n   * **優勢**：當公有雲 AI 工具的合規性受到質疑時，凱鈿應強調我們提供的是「可被驗證 (Verifiable)」的軟體架構。整合類似 **Qodo** `(ref-67)` 的代碼驗證邏輯，確保企業處理敏感 PDF 時，AI 的行為是受控且可審計的。\n\n4. **ADNEX：開發「Agentic Marketing Assistant」並對接 Java 企業生態 (ref-129, ref-58)**\n   * **具體行動**：利用 **Google ADK for Java** `(ref-129)` 重新架構 **ADNEX** 的後台，使其能輕易整合進全球大型企業的 Java 基礎設施中。\n   * **目標**：參考 **Amazon** 的個人化助理 `(ref-58)`，將 **ADNEX** 從單純的報表工具轉型為能自動執行廣告預算調配、並透過 A2A 協定與企業 ERP 對接的「**行銷決策代理**」。\n\n5. **安全性策略：應對「Claude Code 成本 Bug」，推出成本控管與緩存監控工具 (ref-21)**\n   * **具體行動**：在凱鈿內部的 **AI 研發中心** 建立一套「**Token 審計閘道**」，並可考慮將此功能轉化為 SDK 選配組件。\n   * **護城河**：針對 **Claude Code** 爆出的成本激增 Bug `(ref-21)`，我們應在提供 AI 技術的同時，內建「**成本熔斷機制**」。這對極度在意 ROI 的企業客戶而言，是比模型智慧更具說服力的商業保險。",
+    "rawCount": 131,
+    "createdAt": "2026-03-31 08:01:47",
+    "refs": [
+      {
+        "headline": "Anthropic 證實新一代模型測試中，Coatue 預測其估值將達 2 兆美元",
+        "url": "https://www.therundown.ai/p/anthropic-secret-mythos-model",
+        "source": "The Rundown AI"
+      },
+      {
+        "headline": "Microsoft 實現 GPT 與 Claude 協同運作；Google 發表 Java 版 ADK",
+        "url": "https://thenewstack.io/microsofts-copilot-llm-team/",
+        "source": "The New Stack"
+      },
+      {
+        "headline": "Axios 套件遭供應鏈攻擊，LiteLLM 因虛假合規事件棄用 Delve",
+        "url": "https://vercel.com/changelog/axios-package-compromise-and-remediation-steps",
+        "source": "Vercel Blog"
+      },
+      {
+        "headline": "Meta 與 Mistral 投入數百億美元強化 AI 算力基礎設施",
+        "url": "https://techcrunch.com/2026/03/30/mistral-ai-raises-830m-in-debt-to-set-up-a-data-center-near-paris/",
+        "source": "TechCrunch"
+      }
+    ],
+    "newsItems": [
+      {
+        "url": "https://www.dhanishsemar.com/writing/bird-brains",
+        "title": "Bird brains (2023)",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://github.com/drona23/claude-token-efficient",
+        "title": "Universal Claude.md – cut Claude output tokens",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://claude.nagdy.me/",
+        "title": "Learn Claude Code by doing, not reading",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://arxiv.org/abs/2603.26524",
+        "title": "Mathematical methods and human thought in the age of AI",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://ollama.com/blog/mlx",
+        "title": "Ollama is now powered by MLX on Apple Silicon in preview",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://www.theregister.com/2026/03/30/github_copilot_ads_pull_requests/",
+        "title": "GitHub backs down, kills Copilot pull-request ads after backlash",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://arkoinad.com/posts/apple_keychain_recovery.html",
+        "title": "Recover Apple Keychain",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://github.com/coast-guard/coasts",
+        "title": "Show HN: Coasts – Containerized Hosts for Agents",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://www.technologyreview.com/2026/03/30/1134780/r3-bio-brainless-human-clones-full-body-replacement-john-schloendorn-aging-longevity/",
+        "title": "R3 Bio pitched “brainless clones” to serve the role of backup human bodies",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://github.com/virpo/pegboard",
+        "title": "Show HN: I turned a sketch into a 3D-print pegboard for my kid with an AI agent",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://simonwillison.net/2026/Mar/30/mr-chatterbox/",
+        "title": "Mr. Chatterbox is a Victorian-era ethically trained model",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://old.reddit.com/r/ClaudeCode/comments/1s7mitf/psa_claude_code_has_two_cache_bugs_that_can",
+        "title": "Claude Code bug can silently 10-20x API costs",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://developers.googleblog.com/announcing-adk-for-java-100-building-the-future-of-ai-agents-in-java/",
+        "title": "Announcing ADK for Java 1.0.0: Building the Future of AI Agents in Java",
+        "source": "Google Developers Blog"
+      },
+      {
+        "url": "https://vercel.com/blog/agent-responsibly",
+        "title": "Agent responsibly",
+        "source": "Vercel Blog"
+      },
+      {
+        "url": "https://vercel.com/blog/making-turborepo-ninety-six-percent-faster-with-agents-sandboxes-and-humans",
+        "title": "Making Turborepo 96% faster with agents, sandboxes, and humans",
+        "source": "Vercel Blog"
+      },
+      {
+        "url": "https://vercel.com/changelog/axios-package-compromise-and-remediation-steps",
+        "title": "Axios package compromise and remediation steps",
+        "source": "Vercel Blog"
+      },
+      {
+        "url": "https://vercel.com/changelog/vercels-cdn-now-respects-cache-control-headers-from-external-origins-by-default",
+        "title": "Vercel CDN now respects Cache-Control headers from external origins by default",
+        "source": "Vercel Blog"
+      },
+      {
+        "url": "https://vercel.com/changelog/grok-4-20-on-ai-gateway",
+        "title": "Try Grok 4.20 on AI Gateway",
+        "source": "Vercel Blog"
+      },
+      {
+        "url": "https://vercel.com/changelog/mercury-2-on-ai-gateway",
+        "title": "Inception Mercury 2 is live on AI Gateway",
+        "source": "Vercel Blog"
+      },
+      {
+        "url": "https://aws.amazon.com/blogs/machine-learning/how-ring-scales-global-customer-support-with-amazon-bedrock-knowledge-bases/",
+        "title": "How Ring scales global customer support with Amazon Bedrock Knowledge Bases",
+        "source": "AWS ML Blog"
+      },
+      {
+        "url": "https://aws.amazon.com/blogs/machine-learning/reimagine-marketing-at-volkswagen-group-with-generative-ai/",
+        "title": "Reimagine marketing at Volkswagen Group with generative AI",
+        "source": "AWS ML Blog"
+      },
+      {
+        "url": "https://aws.amazon.com/blogs/machine-learning/build-a-solar-flare-detection-system-on-sagemaker-ai-lstm-networks-and-esa-stix-data/",
+        "title": "Build a solar flare detection system on SageMaker AI LSTM networks and ESA STIX data",
+        "source": "AWS ML Blog"
+      },
+      {
+        "url": "https://aws.amazon.com/blogs/machine-learning/deliver-hyper-personalized-viewer-experiences-with-an-agentic-ai-movie-assistant-using-amazon-bedrock-agentcore-and-amazon-nova-sonic-2-0/",
+        "title": "Deliver hyper-personalized viewer experiences with an agentic AI movie assistant using Amazon Bedrock AgentCore and Amazon Nova Sonic 2.0",
+        "source": "AWS ML Blog"
+      },
+      {
+        "url": "https://importai.substack.com/p/import-ai-451-political-superintelligence",
+        "title": "Import AI 451: Political superintelligence; Google's society of minds, and a robot drummer",
+        "source": "Import AI"
+      },
+      {
+        "url": "https://www.therundown.ai/p/anthropic-secret-mythos-model",
+        "title": "Anthropic's secret 'Mythos' model",
+        "source": "The Rundown AI"
+      },
+      {
+        "url": "https://www.interconnects.ai/p/latest-open-artifacts-20-new-orgs",
+        "title": "Latest open artifacts (#20): New orgs! New types of models! With Nemotron Super, Sarvam, Cohere Transcribe, & others",
+        "source": "Interconnects"
+      },
+      {
+        "url": "https://www.latent.space/p/ainews-the-last-4-jobs-in-tech",
+        "title": "[AINews] The Last 4 Jobs in Tech",
+        "source": "Latent Space"
+      },
+      {
+        "url": "https://www.latent.space/p/voxtral",
+        "title": "Mistral: Voxtral TTS, Forge, Leanstral, & what's next for Mistral 4 — w/ Pavan Kumar Reddy & Guillaume Lample",
+        "source": "Latent Space"
+      },
+      {
+        "url": "https://simonwillison.net/2026/Mar/30/datasette-files/#atom-everything",
+        "title": "datasette-files 0.1a3",
+        "source": "Simon Willison"
+      },
+      {
+        "url": "https://simonwillison.net/2026/Mar/30/georgi-gerganov/#atom-everything",
+        "title": "Quoting Georgi Gerganov",
+        "source": "Simon Willison"
+      },
+      {
+        "url": "https://simonwillison.net/2026/Mar/30/datasette-llm/#atom-everything",
+        "title": "datasette-llm 0.1a3",
+        "source": "Simon Willison"
+      },
+      {
+        "url": "https://simonwillison.net/2026/Mar/30/mr-chatterbox/#atom-everything",
+        "title": "Mr. Chatterbox is a (weak) Victorian-era ethically trained model you can run on your own computer",
+        "source": "Simon Willison"
+      },
+      {
+        "url": "https://techcrunch.com/2026/03/30/ai-work-boss-supervisor-us-quinnipiac-poll/",
+        "title": "15% of Americans say they’d be willing to work for an AI boss, according to new poll",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/03/30/popular-ai-gateway-startup-litellm-ditches-controversial-startup-delve/",
+        "title": "Popular AI gateway startup LiteLLM ditches controversial startup Delve",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/03/30/ai-trust-adoption-poll-more-americans-adopt-tools-fewer-say-they-can-trust-the-results/",
+        "title": "As more Americans adopt AI tools, fewer say they can trust the results",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/03/30/mantis-biotech-is-making-digital-twins-of-humans-to-help-solve-medicines-data-availability-problem/",
+        "title": "Mantis Biotech is making ‘digital twins’ of humans to help solve medicine’s data availability problem",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/03/30/scaleops-130m-series-c-kubernetes-efficiency-ai-demand-funding/",
+        "title": "ScaleOps raises $130M to improve computing efficiency amid AI demand",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/03/30/ai-chip-startup-rebellions-raises-400-million-at-2-3b-valuation-in-pre-ipo-round/",
+        "title": "AI chip startup Rebellions raises $400 million at $2.3B valuation in pre-IPO round",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/03/30/mistral-ai-raises-830m-in-debt-to-set-up-a-data-center-near-paris/",
+        "title": "Mistral AI raises $830M in debt to set up a data center near Paris",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/03/30/qodo-bets-on-code-verification-as-ai-coding-scales-raises-70m/",
+        "title": "Qodo raises $70M for code verification as AI coding scales",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/03/30/starcloud-raises-170-million-series-ato-build-data-centers-in-space/",
+        "title": "Starcloud raises $170 million Series A to build data centers in space",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://www.theverge.com/podcast/902264/oktas-ceo-is-betting-big-on-ai-agent-identity",
+        "title": "Okta&#8217;s CEO is betting big on AI agent identity",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://www.technologyreview.com/2026/03/30/1134795/there-are-more-ai-health-tools-than-ever-but-how-well-do-they-work/",
+        "title": "There are more AI health tools than ever—but how well do they work?",
+        "source": "MIT Technology Review AI"
+      },
+      {
+        "url": "https://www.technologyreview.com/2026/03/30/1134881/the-pentagons-culture-war-tactic-against-anthropic-has-backfired/",
+        "title": "The Pentagon’s culture war tactic against Anthropic has backfired",
+        "source": "MIT Technology Review AI"
+      },
+      {
+        "url": "http://www.techmeme.com/260331/p3#a260331p3",
+        "title": "Indian government data: India's smartphone exports rose 55% YoY to $11B in H1 FY 2026; analysts warn the Iran war may trigger a 22%-25% drop in the coming weeks (Quratulain Rehbar/Nikkei Asia)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "http://www.techmeme.com/260331/p2#a260331p2",
+        "title": "Sources: London-based chip startup Fractile is in talks to raise over $200M from Accel and others at a $1B valuation; Fractile raised a $15M seed round in 2024 (Financial Times)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "http://www.techmeme.com/260331/p1#a260331p1",
+        "title": "A look at Babel Audio, which pairs anonymous strangers to record their conversations, starting at $17/hour, and bundles those recordings into AI training data (Issie Lapowsky/Bloomberg)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "http://www.techmeme.com/260330/p47#a260330p47",
+        "title": "AI coding agents will drastically alter both the practice and the economics of exploit development, automating the discovery of zero-day vulnerabilities (Thomas H. Ptacek/sockpuppet.org)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "http://www.techmeme.com/260330/p46#a260330p46",
+        "title": "California Gov. Gavin Newsom signs a first-of-its-kind executive order requiring safety and privacy guardrails from AI companies that contract with the state (Cecilia Kang/New York Times)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "http://www.techmeme.com/260330/p45#a260330p45",
+        "title": "Social gaming startup Rec Room is shutting down on June 1, saying it could not find a path to profitability; Rec Room had a $3.5B valuation in December 2021 (Todd Bishop/GeekWire)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "http://www.techmeme.com/260330/p44#a260330p44",
+        "title": "Inside David Sacks' new role shaping Trump's AI agenda; US officials say Sriram Krishnan is taking on a position at the National Economic Council to focus on AI (Axios)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "http://www.techmeme.com/260330/p43#a260330p43",
+        "title": "Micron shares closed down 10% on Monday and are now down 30% since Micron's earnings report on March 18; Sandisk fell 7% and Western Digital dropped 9% (Lola Murti/CNBC)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "http://www.techmeme.com/260330/p42#a260330p42",
+        "title": "OpenAI introduces a Codex plugin for Claude Code, letting users invoke Codex from inside Claude Code to review code or delegate tasks (Vaibhav Srivastav/@reach_vb)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "http://www.techmeme.com/260330/p41#a260330p41",
+        "title": "Leaked January presentation: Coatue estimated that Anthropic would lose $14B in EBITDA on $18B in revenue in 2026 and reach a $1.995T valuation in 2030 (Eric Newcomer/Newcomer)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "http://www.techmeme.com/260330/p40#a260330p40",
+        "title": "Alibaba releases its Qwen3.5-Omni omnimodal LLM with support for 10+ hours of audio input, saying the Plus variant surpasses Gemini 3.1 Pro on audio benchmarks (Qwen)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "http://www.techmeme.com/260330/p39#a260330p39",
+        "title": "Levels.fyi: median base-salary offers for US software engineers at VC-backed startups have risen 25% to $200K since 2022; total compensation has risen just 18% (Katherine Bindley/Wall Street Journal)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "http://www.techmeme.com/260330/p38#a260330p38",
+        "title": "Gurman: Apple pulls Apple Intelligence in China, after accidentally launching it there; Apple does not plan an imminent launch as it lacks regulatory approval (Ryan Christoffel/9to5Mac)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "http://www.techmeme.com/260330/p37#a260330p37",
+        "title": "Sources: US prosecutors are exploring whether some prediction market bets, including on the capture of Nicolás Maduro, violated insider trading and other laws (Kara Scannell/CNN)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "http://www.techmeme.com/260330/p36#a260330p36",
+        "title": "Meta is testing an Instagram Plus subscription in a few countries, offering features including anonymous Story viewing and extended 48-hour Story durations (Aisha Malik/TechCrunch)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.infoq.com/news/2026/03/kubevirt-18-announcement/?utm_campaign=infoq_content&utm_source=infoq&utm_medium=feed&utm_term=global",
+        "title": "KubeVirt v1.8 Brings Multi-Hypervisor Support and Confidential Computing to Kubernetes",
+        "source": "InfoQ AI/ML"
+      },
+      {
+        "url": "https://www.infoq.com/news/2026/03/discord-osprey/?utm_campaign=infoq_content&utm_source=infoq&utm_medium=feed&utm_term=global",
+        "title": "Discord Open Sources Osprey Safety Rules Engine Processing 2.3 Million Rules per Second",
+        "source": "InfoQ AI/ML"
+      },
+      {
+        "url": "https://www.infoq.com/presentations/cyber-security-log4shell/?utm_campaign=infoq_content&utm_source=infoq&utm_medium=feed&utm_term=global",
+        "title": "Presentation: Are We Ready for the Next Cyber Security Crisis Like Log4shell?",
+        "source": "InfoQ AI/ML"
+      },
+      {
+        "url": "https://www.infoq.com/articles/optimization-in-automated-driving/?utm_campaign=infoq_content&utm_source=infoq&utm_medium=feed&utm_term=global",
+        "title": "Article: Optimization in Automated Driving: from Complexity to Real-Time Engineering",
+        "source": "InfoQ AI/ML"
+      },
+      {
+        "url": "https://thenewstack.io/hightower-ai-open-source-kubecon/",
+        "title": "Kelsey Hightower at KubeCon 2026: “Everyone is a junior engineer when it comes to AI”",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/microsofts-copilot-llm-team/",
+        "title": "Microsoft’s Copilot makes Anthropic’s Claude and OpenAI’s GPT team up",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/sparky-linux-9-brings-a-rolling-release-to-debian/",
+        "title": "Sparky Linux 9 brings a rolling release to Debian",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://www.wired.com/story/documents-reveal-palantir-irs-contract-fraud-clean-energy-credits/",
+        "title": "The IRS Wants Smarter Audits. Palantir Could Help Decide Who Gets Flagged",
+        "source": "Wired AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/03/30/what-were-looking-for-in-startup-battlefield-2026-and-how-to-put-your-best-application-forward/",
+        "title": "What we’re looking for in Startup Battlefield 2026 and how to put your best application forward",
+        "source": "TechCrunch Startups"
+      },
+      {
+        "url": "https://techcrunch.com/2026/03/30/delve-whistleblower-strikes-again-with-alleged-receipts-about-fake-compliance/",
+        "title": "Delve whistleblower strikes again, with alleged receipts about ‘fake compliance’",
+        "source": "TechCrunch Startups"
+      },
+      {
+        "url": "https://www.tomshardware.com/video-games/playstation/last-chance-to-buy-a-playstation-5-digital-edition-for-usd399-and-save-usd200-before-sonys-price-hikes-secure-your-savings-today-before-msrp-skyrockets-from-usd499-to-usd599-on-april-2",
+        "title": "Last chance to buy a PlayStation 5 Digital Edition for $399 and save $200 before Sony's price hikes — secure your savings today before MSRP skyrockets from $499 to $599 on April 2",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/pc-components/cpus/amd-zen-6-venice-es-chips-break-cover-with-up-to-192-cores-32-per-ccd-in-early-stress-test-kenya-congo-nigeria-platforms-leaked",
+        "title": "AMD Zen 6 'Venice' ES chips break cover with up to 192 cores, 32 per CCD, in early stress test — Kenya, Congo, Nigeria platforms leaked",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/service-providers/tv-providers/sky-wins-irish-court-order-forcing-revolut-to-unmask-over-300-pirate-iptv-subscribers",
+        "title": "Revolut Bank ordered to hand over details of more than 300 Sky TV subscribers connected to piracy operation — TV provider expected to pursue subscribers who paid for illicit 'IPTV is Easy' service in unprecedented move",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/semiconductors/tsmc-industrial-espionage-saga-heading-to-verdict-next-month-in-unprecedented-taiwan-national-security-act-case-former-engineer-accused-of-stealing-2nm-technical-info-faces-a-total-of-up-to-20-years-in-prison-if-found-guilty",
+        "title": "TSMC industrial espionage saga heading to verdict next month in unprecedented Taiwan National Security Act case — former engineer accused of stealing 2nm technical info, faces a total of up to 20 years in prison if found guilty",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/semiconductors/analyzing-elon-musks-terafab-a-step-towards-tesla-and-spacexs-partial-vertical-integration-or-an-unattainable-dream",
+        "title": "Analyzing Elon Musk's TeraFab — A step towards Tesla and SpaceX's partial vertical integration, or an unattainable dream?",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/software/windows/latest-windows-11-update-is-broken-refuses-to-install-microsoft-pulls-latest-update-over-missing-files-error",
+        "title": "Latest Windows 11 update is broken, refuses to install — Microsoft pulls latest update over missing files error",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/semiconductors/chinese-chip-industry-leaders-say-ai-demand-is-straining-equipment-and-talent-supply",
+        "title": "Chinese chip industry leaders admit the country lags five to ten years behind in AI data center chips — AI demand is straining equipment and talent supply",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/3d-printing/bambu-lab-settles-with-pop-mart-over-labubu-ip-theft-publicly-apologizes-problematic-content-fully-removed-from-makerworld-3d-printing-platform",
+        "title": "Bambu Lab Settles with Pop Mart over Labubu IP Theft, publicly apologizes — 'problematic content' fully removed from MakerWorld 3D printing platform",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/peripherals/gaming-keyboards/asus-rog-strix-morph-96-wireless-review",
+        "title": "Asus ROG Strix Morph 96 Wireless Review: Cheaper, but not really?",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/laptops/grab-usd1-100-off-lenovos-ultimate-2-in-1-oled-road-warrior-two-devices-for-one-single-price",
+        "title": "Grab $1,100 off Lenovo's ultimate 2-in-1 OLED road warrior — two devices for one single price",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/monitors/dell-ultrasharp-u3226q-4k-32-inch-qd-oled-monitor-review",
+        "title": "Dell UltraSharp U3226Q 4K 32-inch QD-OLED monitor review: Pro-grade with reference-level color",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/video-games/retro-gaming/dev-showcases-seamless-massive-world-with-zero-loading-screens-on-n64-hardware-30-year-old-nintendo-retro-console-coaxed-into-draw-distances-matching-the-scale-of-skyrim",
+        "title": "Dev showcases ‘seamless, massive world with zero loading screens on N64 hardware’ — 30-year-old Nintendo retro console coaxed into draw distances matching the scale of Skyrim",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/pc-components/just-usd151-for-32gb-of-corsair-vengeance-ddr5-6400-ram-when-bundled-with-intels-new-270k-plus-and-z890-e-motherboard-start-your-arrow-lake-refresh-build-for-less-than-usd800",
+        "title": "Just $151 for 32GB of Corsair Vengeance DDR5-6400 RAM when bundled with Intel's new 270K-Plus and Z890-E motherboard — start your Arrow Lake refresh build for less than $800",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/desktops/gaming-pcs/score-an-entire-rtx-5090-gaming-pc-for-the-same-price-as-the-gpu-itself-thanks-to-a-massive-usd1-500-off-epic-hp-pre-built-is-ready-for-4k-gaming-with-32gb-ddr5-ram-and-a-1tb-ssd",
+        "title": "Score an entire RTX 5090 gaming PC for the same price as the GPU itself, thanks to a massive $1,500 off — epic HP pre-built is ready for 4K gaming with 32GB DDR5 RAM and a 1TB SSD",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/video-games/xbox/xbox-360-devkit-bought-for-usd5-at-car-boot-sale-came-with-2007-beta-build-of-gta-iv-with-unreleased-assets-version-includes-cut-ferry-system-zombies-and-more",
+        "title": "Xbox 360 devkit bought for $5 at car boot sale came with 2007 beta build of GTA IV with unreleased assets — Version includes cut ferry system, zombies, and more",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://thehackernews.com/2026/03/axios-supply-chain-attack-pushes-cross.html",
+        "title": "Axios Supply Chain Attack Pushes Cross-Platform RAT via Compromised npm Account",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://thehackernews.com/2026/03/openai-patches-chatgpt-data.html",
+        "title": "OpenAI Patches ChatGPT Data Exfiltration Flaw and Codex GitHub Token Vulnerability",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://thehackernews.com/2026/03/deepload-malware-uses-clickfix-and-wmi.html",
+        "title": "DeepLoad Malware Uses ClickFix and WMI Persistence to Steal Browser Credentials",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://thehackernews.com/2026/03/weekly-recap-telecom-sleeper-cells-llm.html",
+        "title": "⚡ Weekly Recap: Telecom Sleeper Cells, LLM Jailbreaks, Apple Forces U.K. Age Checks and More",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://thehackernews.com/2026/03/3-soc-process-fixes-that-unlock-tier-1.html",
+        "title": "3 SOC Process Fixes That Unlock Tier 1 Productivity",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://thehackernews.com/2026/03/russian-ctrl-toolkit-delivered-via.html",
+        "title": "Russian CTRL Toolkit Delivered via Malicious LNK Files Hijacks RDP via FRP Tunnels",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://thehackernews.com/2026/03/the-state-of-secrets-sprawl-2026-9.html",
+        "title": "The State of Secrets Sprawl 2026: 9 Takeaways for CISOs",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/03/the-saas-shift-why-is-the-gender-gap-widening/",
+        "title": "The SaaS shift: Why is the gender gap widening?",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/03/uks-riplo-emerges-from-stealth-with-e2-6-million-to-build-the-agentic-operating-system-for-consulting/",
+        "title": "UK’s Riplo emerges from stealth with €2.6 million to build the agentic operating system for consulting",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/03/ex-reuters-team-out-of-denmark-raises-e1-5-million-for-ai-newsroom-financial-news-system/",
+        "title": "Ex-Reuters team out of Denmark raises €1.5 million for AI newsroom Financial News System",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/03/berlin-based-midas-lands-e43-million-to-expand-tokenised-investment-infrastructure/",
+        "title": "Berlin-based Midas lands €43 million to expand tokenised investment infrastructure",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/03/mistral-ai-extends-a-year-of-outsized-expansion-with-e722-million-to-deepen-europes-ai-infrastructure/",
+        "title": "Mistral AI extends a year of outsized expansion with €722 million to deepen Europe’s AI infrastructure",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/03/germanys-nature-robots-raises-e4-million-to-tackle-agricultures-triple-threat-with-ai-and-robotics/",
+        "title": "Germany’s Nature Robots raises €4 million to tackle agriculture’s “triple threat” with AI and robotics",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/03/viennaup-2026-puts-health-tech-and-life-sciences-in-the-spotlight-sponsored/",
+        "title": "ViennaUP 2026 puts health tech and life sciences in the spotlight (Sponsored)",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/03/finnish-quantum-unicorn-iqm-secures-e50-million-from-blackrock-ahead-of-public-listing/",
+        "title": "Finnish quantum unicorn IQM secures €50 million from BlackRock ahead of public listing",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://anil.recoil.org/projects/oxcaml",
+        "title": "OxCaml Labs",
+        "source": "Lobsters"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxQMUp4bXFnNGZIU0lPZmwwT0Y3VWJhcEpnQUZ5TVNINWdfZ2dpVm5iZWxPYmZhNC1Wb1M0VElMeUhHMnFlTWlMRVVDWERWckRwWG14YWhDWk5na0N4VGtQZ2lCd3ozX2llOEVBempmdDVLQ0Uzd2pCZDFfNXB5aVJTUnNDbzlXQ1k1NFdn?oc=5",
+        "title": "AI Coding Tools Raise Hidden Security Risks",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxQQTlveElTcDJnRERpSndzRkw0b0ZiTFFLNUJ0REN2SHNhZFlxMTFfQVppODluQ09lcG9qbi1JWVdLUy1wZW85eXFiRm9CYnBpUHNRQkttSEZmNFJUM2Q3eWxCUndRbmNoOGJ2N0k0WkJvSHdlMDIyYk1wYnc4YWlXei1ObmtuemMxQ0lMa2NrSVA4aWtfWVBqamtHMHVhU1h1XzFFWWZJTzhrOWUtd0E?oc=5",
+        "title": "Former Coatue partner raises huge $65M seed for enterprise AI agent startup",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE82WFBTSzhqWXJGa0QtajlFYlo1LUp3SlhpME9PMnVMOEI3QWhoM21oZnplZ3N6NHBnajliOWx5MmZsMk5OMWw4N04zek50OW5Yd1VaZTVfWFRuLS1LWWRFVVdfR2Fwc0VySS1nOTYtLXJoS1k4R1E?oc=5",
+        "title": "Everything Claude Code hits 118K stars: is this the missing config layer for AI coding agents?",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTE1oT2FnTmxpVlN2U3F4Y0t2ZEpkWDIzQ1gyVk85Z282NVhSYmtsM1hWRGhjVlJiZjIwMHJiZDdHSDdqUEgzXzJERDBCQ0l0bV9pQzh4cWl3aGF2OV9SaFJmWjFlTXhZeWF6R203SzlVbw?oc=5",
+        "title": "Anthropic confirmed a new, more powerful AI model — after accidentally leaking it",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNSWg4RGE2dDRHc2NPWTFoS2FELVZvdWFVNmF2VDFxWVl3XzRMZ3RTZUVRYTdhNDJ0RXllVkpjNUxmem1mVDZDczBVYl9yUEJ4c2txWmZoWFg0elhOd1VRT2lsU2pNMDlVaHZZRXZMMWhjdDFSWTlhbm5pRGFvR3VxYU81QTg0dDBWdTV3cmtzS0VUUnZ4UzBlVkFmT3FpU3RQZVRsM21EQ1cyTHpKYzBz?oc=5",
+        "title": "UK Watchdog Issues First Guidance on Generative AI in Audit",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE9jcnJRSlI1UFRmNVpXV0d3RHRnaC05Zlk2X3hPTkN6QlZTZnRnSzRHNDZZVXVpNjNrTDNTUkx2S0h3emFGdmNvOFFiV0VRY3BMc3c1Q2twVHE4LU1qeElwZEhTRmdrNTlMcC1FZU1mYWZVd9IBekFVX3lxTFBvLUM5YTlEekRVcUdvTkV0aHBLQ1RpRjlrNUpBX1ZhMGJPWXlremNDQlQxRG5GLTl0V1JHUUVZeEozWDNOUkpzOE83dGt6MVdSOUZSMWlnYl9BTzFGYnBkaGphUGU3NGFfWlVncHNJR2gteTA1UHBmcS1R?oc=5",
+        "title": "Qwen 3.5 Omni: Alibaba’s AI Model Can Now Hear, Watch, and Clone Your Voice",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxPRVJWUmNxRkxrR1Z5TjlPaXJaM2ptcHlMVklaVS10NFpuOExUT2RJUFhwUC03UmpONkE5SmM2LWxQRElnVzlhOFU1UWYtZHlaZlF5SXZBaUc2aXdVV2otVnFqWjNQVTJWaWNUSjNITGQxWExTSndnUHhKajhTamxxby1XenU2ay1yaXB4TEIyUm4wWmJMRnZlVWtQWmtHR1RaVW1xZmpnaFhhY1JWd0F6NmxZRkRoQQ?oc=5",
+        "title": "Microsoft’s Researcher AI Agent Can Now Make GPT and Claude Models Work Together",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxPdlYtUXZyaktiMi1XOUlxMVh6Nlh2Zjh2SHk4N0Z1US1sRUowSlRLUjduZWI1YW9kSk1Qb1N1NWxzWTRFMmxQLTdKQTFpT1ItVlEtTF8wcVBHRVJiNjJWMjR6SGVpTnByMjFzeHhiNzV3RkZocWFubHZlQm1CQlJvcHoyekZCLWJYa1pMT0xQUDl1WTRyV2tqRlRnTGg?oc=5",
+        "title": "Qodo raises $70M for code verification as AI coding scales",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiuANBVV95cUxQZFJXbUozMVpJb204Q0c5eVNHQXAzdzNGVlNzWWpyRWdJYklRRnNNRllaSGk5dlJJUEhBVVYwWEhGREIzVFpHaFVSTUhMZ3ZLWV9hcjZ0RmV5azFHMG82RDI3NnpabTBLQ0dfWDFKV2Yzc2hqLWxoVjV4X0d3NjU3R1B1MFFOZWdJWU01dmpiVGZ1c25MRUlhRlM0Ul9KUDU2bmZlem5PZWF2UHp6VTVmdm9fYzN6X3FMeTFFMmlicS04VGp0U1pXTzhvUnM5dnRIY0psUHlBZmVMUGdMQzVBVE5tUnNocTlDSWt4b0VJWU1BaVVvZWU1cEpDVzlYYU9WWTNNOU91d3YwRlJiaXRXQXpUU1lZMFkwQTlLT3hCOUFUR19mX1NYdGM1OFZUd05lbEgybGlXNklQaHhHVkhwZlYyY3NyUHJxeXQxY1I2T1lpTTU3eEdVWHlIREowRl9WX0lJLWpoOGhGZ2NDN19mZktrRnpQdlhjemtrd1pIX0UyNmtqTEE1RzU2UG1xZllTc0M4YWRGeUdCLUh0RjhubEZDb0ZfTGtlV1NVQUFmdEVSUEsxY2tmUA?oc=5",
+        "title": "AI Agent Future Is Coming, OpenClaw Creator Tells AFP",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxNYk53UEl2bEFBd1RDZDFycEdTcFVWbGlmcE1HQUFjQkxyMTdERGpTQzhqeEJyMU9XZ2thc0t0dEpuT1dsbU1PNWJGRkdROFFJQU1JenZiU3JUZ0JaUV85T2ozcFpDWDlqLThhTy1FQUtXOF85M2p0LWk5LTcxOXpacllVVi1FU1l2NDg5RHIwSm9kQnc0YmlCMGowdFdrbDJzbWZJRWQ5TTN4SnFiSVpWVV9CNjJlaEx2N2xhenhRdk1pTFNoamNIaWJR?oc=5",
+        "title": "Qualys Debuts Industry’s First AI Agent for Safe Exploit Validation and Autonomous Remediation",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxQVFJ5Y0FXZmhQVjZSWkxzd3hURGswQTIxSTBwREhtcEdPcTh3QlpJZjN2Y2VOc0VTWFF3MVZhTDRyb0k5Z2FwYW0wUjY5Wnp1dVpyTVM5elYzbW9VRnVFZ2FlSFRuQmhINVFLMHdYTmdIX0RPcW5aRlhtaUpreTVxTWRmb05hcE1IMWdiTE1GMGd2Uzh5dEs4dklxZw?oc=5",
+        "title": "Mastercard completes live AI-agent payments in Latin America",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTE1xWmI3d1lHSTNSQklXaWo1YkowNFgtZ1VTXzlVV3ZzTjk5OVlwSDFHWVEtNWk0N0NOa3dxVVRhVWhEWldweEFCYnphb2syZDJEVVNIa3JGSXFoV01tRlhaZEZyVnA0bXJQV09hbzhnd1NTaUFN?oc=5",
+        "title": "Mistral launches open-source speech AI model: Why it matters",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxOTmZMY1VGN2xMWWV0aHFHWWtKaEdLZTRxLTBIcGRjLXF1TzFaVmVvQjRkRHFIYmE0Q1FJdVBkUlVDY0p3bllJM0U4UEppVWliUk1vZW13TjB1WktGbm1xZV9udG1iSFhBNC14czFxTkRGeUJ6Q2NYMUZDcV9DcTJyaHVXZ0lHRDIwWEVDall5RVE1OE1idVFNMF8zX2FkVm1Fc0x1OEctVGJXbl92cWR3cWtVN08yaGYxaWZF0gHAAUFVX3lxTE9Mb3Q1eGZhcXJzeGR4NHBkamd3X2hRLWpaSFJFNDhCSjh0WU1uOTh6Nlh5UFhEbG1xdmhXU0o3SFd1akRhNzB2cVdKRVp3TzZuM0JmUHlsYnFDMmVEd3UtdUFFcmdHNEJTemx1TjhDSHdwWXJ6Tmc1cVppeGRnUHJNRm9Qd3o0MlEzZ3N0NklSS0pWN29hb3dGdDBmb1hXXzgzdDBJaVVLalM4dHV1b0Z5MVNqWURnVzczV05EMVRQSw?oc=5",
+        "title": "AI startup is developing biological computers by training human brain cells to play ‘Doom’",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxOdG9tVjhjR2M3bzRubW5iUEkxWnZxVUoyZnJkdXVDdXlmTlBpSEhjM0lfZEJLdnI2VHBYdC1SemhvMEluUUlfbGdzdElqcTl2ZEtGd203WS13TEJsWXYtSnlIMVhVQnkwcEYyMDQwRGNlTEU5MVJvUFRacjkxQjYtbkE5VUJkZ0xCLWlfb3FackRXcTRCZjYwd19JLWNUN0J0bUdtem40dVMxUjhZWVFfNUstY2g0RmVMQV92a2Z5dw?oc=5",
+        "title": "xAI Leadership Overhaul Continues as Final Co-Founders Exit During Strategic Rebuild",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxOdlM2VmZ1X2hQZXo1OE9KMzExLVMwR0s1cWZ0MXJoWmNEWXhOdW1UckpVTl9uYTQtbFRpMDJ2UmZieVFCZmFzNGcycERUQ2pzTlY1S1Rrd0xQMVpLV0dBaWgzbWtXNDRVRm9pdXd3bkNsalNGSU5nTGdISGhoVlNUcy1pSjZPa19CZjctTVZ3YWdHZ9IBlwFBVV95cUxPbjBtaVBJVUFhU3ZKLVl0eE1RNmplUHVuUjYtS2lDRUtsbXkxTWkyWV9SS3REamRoTUlvZ0JZVUNTektiVzlIcWR1eW81RkxodjRKNUp5S3drWlFHLW1DRnBWS0Q2am1nT00xYXJuYkN2Zk5Wb2dQMU9iT1Zzb1pSTEVSeWJNQ0QzTWk3cWNfM0lxQm12Wjcw?oc=5",
+        "title": "Mistral secures $830 million in debt financing to fund AI data center",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMikgJBVV95cUxQR0Q0X1BSWnNwbDRrLWhlRGtpbGlkU0RPVXFuc2N3X2tOb2ZEV2NyVVR4WUJLcHVHenBrRkVrcHBMaG53N05DdWlJYlVMcm5Bbllab3BIOU81V0U4NzA1aE81TUx3NW13S1ZqWEVBelcxQkhQNUNOc3JGSVAtbUo5S3BkVFJMRTZFOURhSTRaOTlhLVFCY212SElMcV96eVdCSVhWZ1ljR1FPcHdRY19lMzlBbF8ta2lQVVA5OWJLRVBuXzJSS1Q1Z1dqZnVQYi0zdUVMNVJJczAtWUdDRUpNMDFIczFPQWwtSTlObjI2eXJvZVdLcm53SW1pV25fRXAza09zeVdZenc5WmZ2V0JrMVRR?oc=5",
+        "title": "DeepSeek outage: Chinese AI startup's near-perfect record broken by massive seven-hour global outage",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPVTdiaHpRNWdCaXdrZjFxZ0c3YzlQVVNTd0UyVkxNUWM0enl0UUxiUWtZVlVLWmZzQ042QnJvczZCWjAtLVRZM1Q5V1IydjVIUVppSVZ3ZUZHY2ZZdWczVDVwZ2hWR1NKRVBINlIyZnVzdnRJRHhndDlFQzY1cFI5cTBKZVlMbk1sSUZ0dEUtTER5c0FiVVE2WGNRTWtXZ2VWN09JNk8zbnpUcTg?oc=5",
+        "title": "Broadcom Reports Strong Q1 FY2026 Results with AI Revenue Exceeding Expectations",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxOT0JqVlJ0Y3A0WGktOENLZmdRSDc5WGVoM2toYU5YX0V0eF9kVFNKVl9fRllKT293Z1NmTDg3VHZfZFpJdkNLSlRsMzhjQWh5V2JZUWZTOVNHai16RVpOREhaOUR6ZHE0cWNyNnBmbHc1Rkp1UVJTaGM0N3lmQ0lOYVF1NlJrS1oxYVk0NFNOWHZJeDRp?oc=5",
+        "title": "States Plow Ahead With A.I. Regulation, Defying Trump",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxPTE5ZVDZTSExZZ3BuaUNpUFFvenpaR0dFTEdIbFpILWJ3UWRINUc5b3B1aThXMEQwMkpmYkxVTnYyUHh0R1lSZUNvbENBaDkzOEthT0tLTjk4VzRzQjJ2TVhHV0xJZjJ1RnAyZlM1MzNXdzgtdUU1WFBLUEpfczFiQVEyN0YyeF91Zmc?oc=5",
+        "title": "White House releases national AI policy framework",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxORUNpZ3JXX2ozM0t2cWdaRmpxZEpTaGJFQnBIM2hFSmlNd1Q2TUY2TWFhTVVlVmNCT09YVWtENFJPWnBFOWJ3bFFBSF9ET2YxTEsyZVlKX0VFU2hIN2piNlhNcVNQNGZ3VjJ3eGlab0lrbE5pN01fOXk5M3h4cnNFQXhNVlpvNW53MlpjR0dSclNCcFZjZ0xjV3hWQ0ljLTBMMUFiRTJXbG82MkFJ?oc=5",
+        "title": "Washington governor signs two AI safety bills into law",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxOSHpaS1lZd1BwaGMxbDd2bDB0Qnl1cW81Mk9qalZJdFdONGhSMVZ1YUY1bmFpYVc5ZTFpZVNYTHpUUi05UGlXVEg2aURqTTd4eDNDQXgzNF9hc2JRNlRZM0FWaE5OSW9ySkJVejRpZ01xWXR0S2k4alhfT1ZEWEg1enRmdFlYZ1lUNDIwbnkyeGdCX3puVGtqQXZmMU1nRXFUUlA0RGlnbGxsQQ?oc=5",
+        "title": "AI policy war: Anthropic sues the Pentagon",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMia0FVX3lxTE52eEc4QUlLQ3NuODdOVVlfS05DSkVaN19CQ0FuWXRyS2REa3k3YUlDNEp6OGgwd1NUMzY2Q3ZIa0h4U3JIeFVGOHpxdFFYdE9LYzNrOFllMjBKT1hldl84U1NRaVNlY2ZmNHVv?oc=5",
+        "title": "OpenAI Launches AI Safety Bug Bounty",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMitwNBVV95cUxOYU9jMEpaS1Z2anZmYk0zdFR5TFI4VTA5elo2UkFnNmwtV20yaDJFMUJXdS1HVnRqWUF6OEpZcGM4MEtENnZxVUdKUXJWdmEtWVZqS1hWUzIteWZLYl9OUkdrMDJXWTA3UEVGZnY4d0M5M2FHd2IxbHRMcU5ocU5xRjF1bzBxTjRBZ3NBakx0bnJJVVhVX1BYTkhzdU5Na3hJd0lPMTdHTmtTT19xTWRIYlFFeXVpdTVKcEJic2dJYWh3dE9tOHdheThkeVdBbkVJRmVsM3JhMnJkaXZZMDExR3h3cnVfZ0ZsNE40c0ZRaFdUQkROSkxVLVlybXlHTW5Lb3UtbHE5RmZ5cFJNbXgtVHNWUnNaQzZyZThibWc5TmVKb2t4eGU4ai1kMVlDaEhoTV9TREVEdVVMVGpQaTdobmFVWDVwbVAwX1FkNlBmQ3YwYUdFdEE2X0FBb05nTEdKcS1aUmIyVXZDWFZ2SlRFQTVrb21XNVZMTEJ1NUZaOUJrZjdBdlNUTlJHQ1ZwTUJJR0VZSzJEQWFVeFZkWjVvLVBOak5oNlpvZUtBMXo3NjZNeWNPQUZN?oc=5",
+        "title": "Microsoft to Invest Over $1 Billion in Thailand on Cloud, AI Infrastructure",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMijgNBVV95cUxNLThqYWdmSzZVWWNRaldpR2lHQ194WnBsSGc1YWlUeUlOYURkRWRodXlSQmx4VktXUEZVRkxaS1czZ3RDV3VGa1dCTVluTDdlLXp6ZXd4X1p6ZjQwdDhWNVFCMzdTejlJbUszMDZkLUJLNnRlb1ZXajBjVHdibWpaNGs2cGV5ZGNIdmYzZjBOaGZrQVc2SG80VExuclhCUEZldG80NF9fUk13NWluTzRhRU84bzE1NlpVMlZYa0JHVzlMVkNmZHdfYnNTdldoLVduMGZESEV0UnFrM2lVQ1dnZF9oaHVTWnZOZGVNMTZ1MjBnZ0FKWFNpU0VoeFktRnA5TUxHb3gxUkVXaC05Wk96QXM2S3ZWSEZQNHJFQnhGdld6ejdvS21QWDJGdlpVQ1Z5RTZBNkFWUGNuNjRCQWlxV2hnQlBJdTRHMk1KRzkwb0FHTGMxNkRRVXhVWGU5RXdCVlVLYTdmOTJzUWpJMnNaNEl2TFpDVk9XS1FpSVpma3JiZXJ5aHBYUHBQam1rQQ?oc=5",
+        "title": "Meta Platforms (META) and Nebius sign AI infrastructure deals worth up to $27 billion over 5 years, Reuters reports",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMimAJBVV95cUxOU0xSOERmaUZiczdaRnpncXJqSHdIalI1dXU3M2pCMEpJbWVmLURKLThMSW5EbzFsdVRqa21KSjJJcUtXLXRQYVBNekFxMmtmNFR1bHdTeVFRYXF5UzJpQmVYNEJHNDY5bGdLU3UxUVhydWhYLXNPZkFDYTZ6bEo3OVg5M1ZiVjFmQzgyVzA2RTFYR1NrWUdRc2xTMFpxQk9Mb3JKb1J2RkZWaFU2YTRrTnpGRWM4cXFCaExLRXh6ZVZwXzhPTHpDaHgtTVpoUVNWUkpkRVJBSnZMU1h0RHJNYU1acjlWWk4yVEZZQmhkX1ZBNFJWYzZHOG8taERWTkN5SkVucEhibzV2MFRtaDZhWDU1UVA1WDhu?oc=5",
+        "title": "ScaleOps Raises $130M Series C at Over $800M Valuation to Lead the Future of Autonomous Cloud and AI Infrastructure Resource Management",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxNWE9JN2paUXIwX09tNkJKWjBmMlNnalctSXZWUFcweURBeHpYcUNLalBPekFUaUhfeWpWV1hTQzVFV3RlbkVzVUtjdERLQV96NmgzUlYxcEtzNHFsT0Vzc1JtZENIclRlQXBnY0pwT3RGZW1KMjVkNlpJYWpwNWJnSG92YWVmcmZ1T0NxVElrQzhmSVNQQVRqQ2g0SUVDc1gzLU4zbE1QSVZXTXA4bDJxUmx3c1ZRQQ?oc=5",
+        "title": "AI chip startup Rebellions raises $400 million at $2.3B valuation in pre-IPO round",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNd3gyLVVxOEJROGJIcDRPeUNjaTFrMjN5OWdWUXlmUk5zSWFnZEJ1aEhyQjYtUDVGVGZQZGVvbXNVQmh1dFd0OTVGbi1DcmU1TDd1YWZJYTE4QzhBbjk3YXc3clVEUUJ5NUpTaHF0NHdUZTl0YXh0RkFBVzN1bE5kSVNmMWhMbVRMTFV2Yll5dHc3TlFUUHIzeUJZWTVJMmY0eGNEcWFGVFZCRkJWNE9ZQnBjd043YmRl?oc=5",
+        "title": "AI chip startup MatX raises $500M in race to compete with Nvidia",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxPeHFjVm9SNXFMUUY3Z1VDRl9vTEo4S0hrYURZWFdDZmt6SDBUSUtCaDdwamUxU3V0YkhKcktvSVlWN2tOV1NScGJnb0RQaS1tc1BGM0UycVA0WUk3MW93THJBMzdtZTAtcWNWRzJtNmsyWmUxaF9fWFU4TExial9qOXY0dGNsR3RPNUtTQUpNOURhanVOSlE?oc=5",
+        "title": "Encyclopedia Britannica sues OpenAI over 'cannibalizing' content for AI training",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQYUtMNlpKV1hsTlFwdngxd1pNbDhRVDI1UnBJYW5LTGw1WWFhWHk2THB3Yk1zeWstNFJkT3BHWHY3eEhPNnZNUGoxMWZYVGFSVlI0MV9POFRRM05JUUVudUNQSGhmX19RNTZpS3QzUmpuMTh4MXo1YnNDUm5EOXduc0dvblVaQmYtNnB2cnZlYmZtWnJqcjc4ZnNVd0JvUERTc05ldkZDbF9LWWhjclFuODQ3dDB6UDdy?oc=5",
+        "title": "Starcloud hits $1.1 billion valuation as space-based AI infrastructure gains momentum",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxOc0JjMktRck55RTdFLVU1Znh3ZlJENFJ3NXRZVGtiY21Gc0NJMUM3b0doSUo1bTNVSjRRcV9XeG53RGdDLVQtYmtpNFBTU19reV9ZMHpsOWNlNDZOWVdkeG1IbzdPUnI2QUpYcDlMLVc2VFNRQTY4ZGhCMFZGRnB4UUE4VTlIam9TVGt1OUladzJMZw?oc=5",
+        "title": "Trio arrested over Nvidia AI chip smuggling plot",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxQS3R4NjZQd19CZ3QtNjdIT3RQaW4xWDhqSXBxbmpRTnYzbWp5X3h6UWttcjhTNHVVRlNyV2lpNFRVa0tGR2t1OWxNcmg3SnlrcDNLcTFMdmcyQTZZZG44a1VyeWEzUkZRa3ZxcVh4SVdHLWs4WG9Ka25TM0hMV1dQRUtqUGJfUQ?oc=5",
+        "title": "TERAFAB Explained: Elon Launched a New AI Chip Fab",
+        "source": "Google News"
+      }
+    ],
+    "tags": {
+      "companies": [
+        "anthropic",
+        "openai",
+        "google",
+        "meta",
+        "microsoft",
+        "mistral",
+        "alibaba",
+        "nvidia"
+      ],
+      "models": [
+        "claude-mythos",
+        "gpt-5.4",
+        "qwen-3.5-omni",
+        "grok-4.20",
+        "nemotron-super",
+        "mercury-2"
+      ],
+      "topics": [
+        "agent-orchestration",
+        "supply-chain-attack",
+        "infrastructure",
+        "multi-modal",
+        "a2a-protocol",
+        "security-compliance"
+      ]
+    },
+    "tokenUsage": {
+      "input": 94101,
+      "output": 3531,
+      "total": 99664
+    }
+  },
+  {
     "date": "2026-03-30",
     "title": "KDAN AI 戰情報告 (2026-03-30)",
     "content": "# KDAN AI 戰情報告 (2026-03-30)\n\n## 昨日 AI 重點新聞\n\n### Anthropic 證實代號 Mythos 的新一代最強模型正在測試中 ref-18, ref-19, ref-20\n**Anthropic** 官方正式確認代號為 **Claude Mythos** 的新模型確實存在，並正處於內部測試階段。公司描述該模型在性能上有「顯著進步」，這也解釋了為何 **Google** 願意加碼 50 億美元在德州興建專屬數據中心，以支撐其龐大的算力需求。\n\n### OpenAI 正式關閉 Sora 計畫，算力全面移往盈利性更高的任務 ref-16, ref-42, ref-41\n**OpenAI** 投下震撼彈，宣布停止開發其備受矚目的影片生成工具 **Sora**。這反映出在算力成本高昂的背景下，公司決定放棄短期內難以變現的影片工具，將資源全數轉向 **Agentic Commerce (代理商務)** 與具備即時產值的企業應用。\n\n### 祖克柏自建個人 AI 代理協助管理；Meta 目標 75% 代碼 AI 化 ref-84, ref-87, ref-99\n**Mark Zuckerberg** 正致力於開發個人專屬的 **AI 代理**，擔任其數位助理以管理公司事務。與此同時，**Meta** 內部推動工程文化改革，目標是達成 75% 的程式碼由 AI 工具輔助生成，顯示其全面擁抱 AI 編程自動化的決心。\n\n### Google 發表 TurboQuant 壓縮技術；Android 邁向代理優先系統 ref-31, ref-141, ref-135\n**Google** 發表 **TurboQuant** 技術，能極大幅度地減少 AI 模型的記憶體占用而不損精確度。此外，Google 開發的 **AppFunctions** 讓 AI 代理能直接在 **Android** 系統中操作各個 App 的功能組件，旨在將手機轉型為「代理優先」的作業系統。\n\n### 阿里巴巴推 Accio Work 代理平台；商務代理支付成為現實 ref-121, ref-107, ref-108\n**Alibaba** 發表 **Accio Work**，展示由多個 AI 代理組成的數位員工團隊。搭配 **Mastercard** 與 **Visa** 近期推出的 **AI Agent Pay** 技術，這意味著 AI 代理已具備從決策到最終支付交易的完整商務能力。\n\n### DeepSeek 遭遇大規模當機；Cursor 估值與未來引發關注 ref-89, ref-151, ref-175\n以低推理成本席捲市場的 **DeepSeek** 遭遇了 7 小時的全球性服務中斷，引發對其基礎設施穩定性的擔憂。與此同時，AI 編程工具 **Cursor** 傳出正進行高估值融資，但也面臨巨頭夾擊的不確定性。\n\n### 富士通發表原始碼解析 AI；軟體開發文件進入自動化時代 ref-144, ref-103, ref-207\n**Fujitsu** 推出的新服務能自動深度解析程式原始碼，並同步產出對應的設計文件。此技術鎖定企業遺留系統的維護與新專案的自動化管理，是 **Enterprise AI** 領域的重要應用突破。\n\n### 禮來與 Insilico 達成 27.5 億美元 AI 藥物開發協定 ref-164, ref-57\n生醫領域迎來巨額交易，藥廠巨頭 **Eli Lilly** 宣布與 **Insilico Medicine** 合作，利用其 AI 平台加速新藥研發。這再次證明了 AI 在高專業門檻領域（如製藥）的商業化落地已趨成熟。\n\n### Midjourney 營收亮眼；App Store 審核受 Vibe Coding 衝擊 ref-7, ref-159\n**Midjourney** 在無風投背景下營收破 2 億美元。然而，由於 **Vibe Coding**（AI 極速編程）導致大量低品質 App 湧入，**Apple** 的 App Store 審核週期近期已明顯拉長至數週。\n\n### 全球 AI 晶片自主化浪潮：小鵬、AMD 與 Rebellions ref-231, ref-250, ref-237\n**小鵬汽車** 將於 4 月發表搭載自研 AI 晶片的新車；**AMD** 計畫在印度大規模佈局 **Helios** GPU。南韓保險巨頭 **NH NongHyup** 亦跨界投資 **Rebellions** 晶片，反映出「算力自主化」已成為跨產業共識。\n\n---\n\n## 市場洞察\n\n1. **從「生成內容」轉向「執行商務」的結構性撤退 (ref-23, ref-25, ref-89)**\n延續前幾日報告中提到的 OpenAI 停止 **Sora** `(ref-23)`，這標誌著市場正進入「算力理性期」。不再追求純粹的視覺奇觀，而是將算力導向能直接執行採購、支付等商務活動的 **Agentic Commerce**。結合 **Mastercard** 的代理支付技術 `(ref-25)` 與 **Alibaba** 的代理團隊 `(ref-89)`，2026 年的主戰場已確立為：誰能最快讓 AI 代替人類完成「錢與貨」的流通。\n\n2. **作業系統的「代理化」與介面消亡 (ref-156, ref-39, ref-42)**\n**Google AppFunctions** `(ref-156)` 是 Android 歷史性的轉向，顯示作業系統不再是 App 的載體，而是 AI 代理調用功能的後台。隨著 **Vibe Coding** 導致 App 數量爆炸並造成審核負擔 `(ref-42)`，未來的用戶體驗將不再是點擊圖示，而是直接對 **Zuckerberg 式** 的個人代理下令 `(ref-39)`，這將迫使 SaaS 廠商必須提供更強的 API 交互性而非僅靠 UI 留存。\n\n3. **穩定性成為「高性價比模型」的隱形溢價 (ref-52, ref-11, ref-73)**\n**DeepSeek** 的長達 7 小時當機 `(ref-52)` 證明了低成本推理模型在可靠性上的短板。相較之下，**Anthropic** 與 **Google** 共同投資 50 億美元在基礎設施上 `(ref-73)` 以支持 **Mythos** 模型 `(ref-11)`。未來企業對 AI 供應商的選擇，將從單純的 Token 價格轉向對「算力彈性」與「維運保證」的資安審計。\n\n4. **專業垂直領域的「代碼與知識」全自動化 (ref-13, ref-16, ref-84)**\n**Fujitsu** 的程式碼解析 `(ref-13)` 與 **Eli Lilly** 的 AI 製藥協定 `(ref-16)`，顯示 AI 正在消化人類最高門檻的知識資產。當 **Meta** 要求工程師產出 75% 由 AI 生成 `(ref-84)` 時，代表傳統的「寫程式」與「寫文件」已徹底轉型為「架構審核」。這將使所有軟體公司的價值，從「人力多寡」轉向「私有數據集」的品質。\n\n---\n\n## KDAN 戰略洞察\n\n1. **DottedSign：搶先對接「Agentic Payment」與「代理簽署協定」 (ref-25, ref-72, ref-89)**\n   * **具體行動**：與金融服務商（如 **Mastercard/Visa**）或電商平台（如 **Alibaba**）探討將 **DottedSign API** 整合進其代理支付流中。\n   * **價值**：當 AI 代理執行 **Accio Work** `(ref-89)` 模式的商務採購時，DottedSign 應成為其合約簽署的「信任層」。不僅提供數位簽章，更要開發針對「**AI 代理發起的自動化身分核驗**」機制，解決代理行為在法律確權上的最後一哩路。\n\n2. **KDAN Office / ComPDF SDK：導入「TurboQuant」模式優化行動端效能 (ref-7, ref-156)**\n   * **具體行動**：研發團隊應參考 **Google TurboQuant** `(ref-7)` 的壓縮邏輯，優化凱鈿產品在行動裝置上的 AI 解析效能。\n   * **優勢**：在 Android 轉向「代理優先」`(ref-156)` 的趨勢下，**ComPDF SDK** 應提供更極致的記憶體管理方案。確保當 AI 代理透過 AppFunctions 調用凱鈿的文檔技術時，能在低耗能環境下完成複雜的表格解析與數據擷取，成為移動端最輕量化的 AI 文檔引擎。\n\n3. **LynxPDF：開發針對「AI 代碼設計文件」的自動歸檔與審計功能 (ref-13, ref-17)**\n   * **具體行動**：針對 **Fujitsu** 展示的原始碼解析技術 `(ref-13)`，**LynxPDF** 應推出「**技術資產 AI 圖書館**」模組。\n   * **產品機會**：當企業透過 AI 大量生成代碼與設計文檔時，文檔的管理、版本控制與合規性審計將成為災難。LynxPDF 應主打能自動分類、摘要並偵測這些 AI 生成文檔中潛在風險的功能，鎖定正在經歷「代碼 AI 化」改革的大型科技企業客戶。\n\n4. **ADNEX：轉型為「行銷決策代理團隊」 (ref-89, ref-41, ref-86)**\n   * **具體行動**：借鑑 **Alibaba Accio Work** `(ref-89)` 的架構，將 **ADNEX** 現有的智能助理升級為「**行銷代理群 (Agent Pods)**」。\n   * **目標**：不再只是單一提問，而是能由一個代理負責數據收集（如追蹤 Guinness 價格模式，`ref-102`），另一個負責廣告行銷預算分配 `(ref-86)`，並自動完成各平台 merchant 工具的對接 `(ref-41)`。這將 ADNEX 從工具提升為「全自動行銷運作中心」。\n\n5. **安全性策略：佈局「私有化佈署」以應對公有雲風險 (ref-52)**\n   * **具體行動**：利用 **DeepSeek 當機事件** `(ref-52)` 作為業務推廣點，強化凱鈿解決方案的「**私有化、在地端**」解析優勢。\n   * **護城河**：對於金融、法律與保險 `(ref-0)` 客戶，強調當公有雲 AI 服務癱瘓或洩漏時，KDAN 的 AI 基礎設施能確保業務不中斷。將「穩定性」轉化為凱鈿與矽谷巨頭競爭時的差異化優勢。",
