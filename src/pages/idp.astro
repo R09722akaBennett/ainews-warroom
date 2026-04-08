@@ -10,7 +10,6 @@ const items = (idpData as any[]) || [];
 
 const recaps = items.filter(i => i.kind === "weekly_recap");
 const opinions = items.filter(i => i.kind === "opinion");
-const news = items.filter(i => i.kind === "news");
 
 // Collect all vendors across all items
 const vendorSet = new Set<string>();
@@ -33,7 +32,7 @@ function renderMd(md: string | null | undefined) {
         <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">IDP Community</h1>
         <p class="mt-1 text-sm" style="color: var(--color-text-muted);">
           Translated weekly recaps and analysis articles from <a href="https://www.intelligentdocumentprocessing.com/" target="_blank" rel="noopener" class="underline">intelligentdocumentprocessing.com</a> — the leading independent IDP industry portal.
-          {recaps.length} weekly recaps · {opinions.length} opinions · {news.length} news.
+          {recaps.length} weekly recaps · {opinions.length} opinions.
         </p>
         <p class="mt-2 text-xs" style="color: var(--color-text-muted);">
           ⚠️ The site is currently seeking a new owner / consortium. Content may stop updating without notice.
@@ -72,7 +71,6 @@ function renderMd(md: string | null | undefined) {
             <button data-kind="all" class="tab-pill tab-pill-active">All<span class="tab-pill-count">{items.length}</span></button>
             <button data-kind="weekly_recap" class="tab-pill">Weekly Recap<span class="tab-pill-count">{recaps.length}</span></button>
             <button data-kind="opinion" class="tab-pill">Opinions<span class="tab-pill-count">{opinions.length}</span></button>
-            {news.length > 0 && <button data-kind="news" class="tab-pill">News<span class="tab-pill-count">{news.length}</span></button>}
           </div>
 
           {/* Items */}

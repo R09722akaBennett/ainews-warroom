@@ -34,6 +34,8 @@ def run_fetch() -> tuple[int, int]:
         console.print(f"[red]RSS fetch failed: {e}[/]")
         return 0, 0
 
+    items = [it for it in items if it["kind"] in ("weekly_recap", "opinion")]
+
     new_count = 0
     for it in items:
         _, is_new = upsert_idp_item(it)
