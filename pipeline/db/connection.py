@@ -98,6 +98,26 @@ def init_db():
         CREATE INDEX IF NOT EXISTS idx_competitor_date ON competitor_items(date);
         CREATE INDEX IF NOT EXISTS idx_competitor_company ON competitor_items(company);
         CREATE INDEX IF NOT EXISTS idx_competitor_url ON competitor_items(url);
+
+        CREATE TABLE IF NOT EXISTS idp_items (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            guid TEXT UNIQUE,
+            url TEXT NOT NULL,
+            title TEXT NOT NULL,
+            kind TEXT NOT NULL,                -- weekly_recap | opinion | news
+            published_at TEXT,                 -- ISO date
+            vendors TEXT,                      -- JSON array
+            categories TEXT,                   -- JSON array (raw RSS categories)
+            raw_html TEXT,                     -- original content:encoded
+            raw_text TEXT,                     -- stripped plain text
+            translated_md TEXT,                -- LLM zh-tw markdown (weekly recap / opinion)
+            translated_title TEXT,
+            token_usage TEXT,
+            created_at TEXT DEFAULT (datetime('now')),
+            updated_at TEXT DEFAULT (datetime('now'))
+        );
+        CREATE INDEX IF NOT EXISTS idx_idp_kind ON idp_items(kind);
+        CREATE INDEX IF NOT EXISTS idx_idp_published ON idp_items(published_at);
     """)
 
     # Migrations: add columns if missing (for existing databases)
