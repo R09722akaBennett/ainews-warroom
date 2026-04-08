@@ -47,7 +47,7 @@ def save_digest(
             "INSERT INTO news_topics (date, topic, headline, summary, url, source) "
             "VALUES (?, ?, ?, ?, ?, ?)",
             [
-                (date, t["topic"], t["headline"], t["summary"], t.get("url", ""), t.get("source", ""))
+                (date, t.get("topic", ""), t.get("headline", ""), t.get("summary", ""), t.get("url", ""), t.get("source", ""))
                 for t in topics
             ],
         )

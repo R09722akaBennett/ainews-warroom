@@ -19,7 +19,29 @@ from datetime import datetime, timezone
 
 import google.genai as genai
 from dotenv import load_dotenv
+from pydantic import BaseModel
 from rich.console import Console
+
+
+class Topic(BaseModel):
+    topic: str
+    headline: str
+    summary: str
+    url: str = ""
+    source: str = ""
+
+
+class Tags(BaseModel):
+    companies: list[str]
+    models: list[str]
+    topics: list[str]
+
+
+class Report(BaseModel):
+    title: str
+    topics: list[Topic]
+    tags: Tags
+    markdown: str
 
 from db import init_db, save_digest
 from config import OUTPUT_DIR
@@ -138,6 +160,10 @@ async def run_daily(date: str, dry_run: bool = False):
         contents=[
             {"role": "user", "parts": [{"text": REPORT_SYSTEM_PROMPT + "\n\n" + user_prompt}]},
         ],
+        config={
+            "response_mime_type": "application/json",
+            "response_json_schema": Report.model_json_schema(),
+        },
     )
 
     # Extract token usage
@@ -150,11 +176,11 @@ async def run_daily(date: str, dry_run: bool = False):
             "total": getattr(um, "total_token_count", 0) or 0,
         }
 
-    result = _parse_report_response(response.text)
-    title = result.get("title", f"KDAN AI 戰情報告 ({date})")
-    topics = result.get("topics", [])
-    tags = result.get("tags")
-    markdown = result.get("markdown", response.text)
+    report = Report.model_validate_json(response.text)
+    title = report.title or f"KDAN AI 戰情報告 ({date})"
+    topics = [t.model_dump() for t in report.topics]
+    tags = report.tags.model_dump()
+    markdown = report.markdown
 
     console.print(f"  [green]✓[/] Report generated: {title}")
     console.print(f"  [green]✓[/] Topics: {len(topics)}, Tags: {tags.keys() if tags else 'none'}")
