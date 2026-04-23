@@ -103,6 +103,21 @@ def _build_user_prompt(
     return "\n".join(parts)
 
 
+def _unescape_if_needed(text: str) -> str:
+    """Guard against LLMs that double-escape control chars in JSON output.
+
+    Why: Gemini occasionally emits markdown where every `\\n` is written as the
+    literal two-char sequence `\\\\n`, so JSON parsing leaves backslash-n pairs
+    in the string instead of real newlines. When that happens the whole report
+    collapses to one line on the site and in Mattermost. This fixes it in place.
+    How to apply: only triggers when the string has no real newlines but does
+    contain literal `\\n` — a healthy markdown report always has real newlines.
+    """
+    if text and "\n" not in text and "\\n" in text:
+        return text.replace("\\n", "\n").replace("\\t", "\t").replace('\\"', '"')
+    return text
+
+
 def _parse_report_response(text: str) -> dict:
     """Parse the LLM JSON response, handling markdown fences."""
     text = text.strip()
@@ -180,7 +195,7 @@ async def run_daily(date: str, dry_run: bool = False):
     title = report.title or f"KDAN AI 戰情報告 ({date})"
     topics = [t.model_dump() for t in report.topics]
     tags = report.tags.model_dump()
-    markdown = report.markdown
+    markdown = _unescape_if_needed(report.markdown)
 
     console.print(f"  [green]✓[/] Report generated: {title}")
     console.print(f"  [green]✓[/] Topics: {len(topics)}, Tags: {tags.keys() if tags else 'none'}")
