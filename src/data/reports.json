@@ -1,5 +1,1014 @@
 [
   {
+    "date": "2026-05-20",
+    "title": "KDAN AI 戰情報告 (2026-05-20)",
+    "content": "# KDAN AI 戰情報告 (2026-05-20)\n\n## 昨日 AI 重點新聞\n\n### Google I/O 2026：Gemini 3.5 Flash 領銜代理革命 ref-5, ref-9, ref-1, ref-21\n**Google** 正式發表 **Gemini 3.5 Flash** (GA) 與 **Gemini Omni**。Flash 模型在 **TerminalBench** 與 **MCP Atlas** 測試中超越 3.1 Pro，且推理速度達 **280 t/s**。此外，Google 推出 **$100 AI Ultra 方案**，並將計費模式轉向「**計算量計費 (Compute-used)**」，取代傳統的 Prompt 次數限制。\n\n### Andrej Karpathy 加入 Anthropic 強化 Claude 研發 ref-60, ref-161, ref-6, ref-93\nAI 界巨擘 **Andrej Karpathy** (OpenAI 創辦成員、前 Tesla AI 負責人) 宣布加入 **Anthropic** 預訓練團隊。其工作重點將在於利用 **Claude** 模型來加速自身的預訓練研究，體現了 AI 代理「自我進化」的研究趨勢。\n\n### 阿里雲發表「真武 M890」AI 晶片與 Qwen 3.7-Max ref-180, ref-125, ref-82\n**阿里巴巴** 在雲端峰會推出首款專為「代理任務」設計的 **真武 M890** 晶片與 **Qwen 3.7-Max** 旗艦模型。該晶片旨在強化訓練與推理效能，特別針對長鏈條的代理決策進行優化。\n\n### Anthropic 發表 MCP 隧道與自託管沙箱解決代理安全 ref-100, ref-88\n針對企業對 AI 代理安全權限的疑慮，**Anthropic** 推出 **MCP 隧道 (MCP Tunnels)** 與 **自託管沙箱**。此技術允許 AI 代理在受控的私有環境中執行代碼，且能建立單向出站連接存取企業內網，無需暴露公網 IP。\n\n### Google 搜尋介面 25 年來最大變革：從連結轉向代理 ref-3, ref-54, ref-165, ref-6\nGoogle 搜尋框現在支援**動態擴展**，可直接輸入長篇指令、PDF 或影片。新介面整合了 **AI Overviews** 與 **AI Mode**，並推出 **通用購物車 (Universal Cart)**，讓 AI 代理能跨平台完成比價、監控與自動結帳。\n\n### AWS 推出「程式化工具調用 (PTC)」顯著降低延遲與成本 ref-34\n**Amazon Bedrock** 引入 **PTC** 架構。傳統工具調用需多次往返模型，PTC 則讓模型產出一段 **Python 代碼**在沙箱中一次性執行所有邏輯（如過濾、聚合），避免大量原始數據進入上下文窗口，節省 Token 並提升精確度。\n\n### Google AI Studio 支援「感官編程 (Vibe Coding)」開發 Android 應用 ref-3, ref-52, ref-53\nGoogle 推出全新 Web 開發工具，讓非技術人員能透過自然語言直接「Vibe-code」出原生 **Kotlin** 應用。配合 **Android CLI 1.0**，AI 代理現在能直接調用 Android Studio 的語義解析功能，實現端到端的應用開發。\n\n### GitHub 儲存庫遭 TeamPCP 駭客組織攻擊調查中 ref-138, ref-137\n**GitHub** 證實正在調查一起內部儲存庫遭未授權存取的事件。駭客組織 **TeamPCP** 宣稱竊取了約 **4,000 個** 儲存庫源代碼並在黑市販售，儘管 GitHub 稱目前客戶數據安全，但事件已引發代碼供應鏈安全的擔憂。\n\n### Pulumi 佈局代理化基礎設施，推出免費臨時雲端帳戶 ref-7\n雲端基礎設施平台 **Pulumi** 指出，平台已有 **20%** 的操作由 AI 代理執行。為此 Pulumi 推出 72 小時有效、無需手動註冊的**代理專用帳戶**，並優化 CLI 以便代理進行 `pulumi do` 的單次資源部署。\n\n### xAI 推動 Grok 整合 OpenClaw 24/7 代理環境 ref-110, ref-3\n馬斯克旗下的 **xAI** 宣布 **Grok** 模型現可直接於開源、本地優先的代理工具 **OpenClaw** 中使用。此舉被視為與 **Google Spark** 代理競爭 24 小時運行的個人助理市場。\n\n---\n\n## 市場洞察\n\n### 1. 代理基礎設施的「沙箱化」與「私有化」共識 (   ) ref-156, ref-9, ref-0\n延續昨日報告中關於 **NVIDIA Vera** 對硬體沙箱的佈局 (ref-25)，今日 **Anthropic** 的 **MCP 隧道**與 **AWS** 的 **PTC 沙箱**進一步證實：**2026 年是代理安全元年**。企業不再滿足於模型「說什麼」，更在意代碼執行時的「物理隔離」。這預示著「**安全代理基礎設施 (Secure Agent Infra)**」將成為取代傳統防火牆的企業新標準。\n\n### 2. 計費模式從「Token」轉向「計算價值 (Compute-used)」 (  ) ref-3, ref-6\nGoogle 調整 **AI Ultra** 訂閱邏輯，改以「**計算量**」計費，反映了模型「思考」成本的提升。這與前日提及的「**Token 經濟學革命**」相呼應 (ref-2)，模型在執行複雜推理時產生的隱形成本，正迫使巨頭重新定義 AI 商業模式，未來「**低計算、高 Recall**」的技術將更具市場競爭力。\n\n### 3. 「感官編程 (Vibe Coding)」引發的軟體平民化與爆炸 (    ) ref-3, ref-6, ref-52, ref-17\nGoogle AI Studio 的更新證實了 **GitLab** 執行長的預言：軟體開發成本正在崩塌。當「**Vibe Coding**」能生成原生應用時，軟體產量將呈指數級成長。這意味著市場競爭將從「功能實現」轉向「**數據差異化**」與「**極速交付**」。\n\n---\n\n## KDAN 戰略洞察\n\n### 1. ComPDF SDK：整合 Android CLI 與 A2UI 標準，佈局「Vibe-ready」開發套件 (  ) ref-3, ref-52\n*   **具體行動**：針對 Google 推出的 **Android CLI 1.0** 與 **AI Studio** 應用生成功能，**ComPDF SDK** 應立即開發專屬的「**Vibe-Skills**」。讓非專業開發者在 Vibe Coding 時，能透過簡單指令（如：幫我加一個具備 AI 摘要功能的 PDF 閱讀器）直接調用凱鈿 SDK 的功能。這將使凱鈿產品成為「**代理開發時代**」的首選 PDF 基礎元件。\n\n### 2. 點點簽 (DottedSign)：引入 MCP 隧道技術，建立企業私有化簽署閘口 (  ) ref-135, ref-0\n*   **具體行動**：面對 **Anthropic** 推廣的 **MCP 隧道**標準，**點點簽** 應開發支援 MCP 協定的「**簽署代理伺服器**」。當企業內部的 AI 代理需要執行簽署時，可透過 MCP 隧道安全地與點點簽 API 通訊，無需將簽署權限暴露於公網。此舉可直接對標 **DocuSign** 在高資安需求企業（如金融、政府）的市佔率。\n\n### 3. ADNEX：開發「通用購物車 (Universal Cart)」之成效分析與歸因 (  ) ref-3, ref-54\n*   **具體行動**：針對 Google 推出的 **通用購物車** 趨勢，**ADNEX** 應開發專門的「**代理商務監測模組**」。協助廣告主追蹤消費者在與 AI 代理互動、加入通用購物車、最終結帳的完整路徑。這不僅是傳統的電商分析，更是凱鈿轉型為「**代理行銷數據中台**」的關鍵步驟。\n\n### 4. 全產品線：導入 AWS PTC 模式優化大型 PDF 批次處理效能 ( ) ref-3\n*   **具體行動**：借鑑 **AWS PTC** (程式化工具調用) 的邏輯，**ComPDF Cloud** 應推出「**Batch-PTC 接口**」。當 AI 代理需要從 1,000 份 PDF 中篩選特定條款並計算統計數據時，KDAN 提供一段在安全沙箱執行的解析代碼，而非讓模型反覆調用 API 提取文字。這將大幅降低企業客戶的 Token 成本並提升 10 倍以上的處理速度。\n\n### 5. 安全性：強化「秘密外洩監控」與 GitHub 代碼合規審計 (  ) ref-72, ref-138\n*   **具體行動**：鑑於 **CISA** (ref-99) 與 **GitHub** (ref-31) 近期發生的密鑰外洩事件，凱鈿內部應全面導入 AI 驅動的**機敏資訊掃描器**。同時，這也可作為 **LynxPDF** 的新功能——「**AI 資安過濾層**」，在用戶將 PDF 文檔分享給 AI 代理前，自動遮蔽代碼段落中的 Secret 或 PII 資訊，建立領先業界的資安護城河。",
+    "rawCount": 183,
+    "createdAt": "2026-05-20 08:01:47",
+    "refs": [
+      {
+        "headline": "Google I/O 2026：Gemini 3.5 旗艦系列與 Antigravity 代理平台全面發表",
+        "url": "https://www.latent.space/p/ainews-google-io-2026-gemini-35-flash",
+        "source": "Latent Space"
+      },
+      {
+        "headline": "Andrej Karpathy 加入 Anthropic 領導 Claude 預訓練團隊",
+        "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxPRklkLXNGcGRtYXN2OWVnRUU0UmxkUGpNWmlzcDJiSmE3anFFeVNVY1Z3dVNXUmo5U3YtdTVsdEFESnVBbWRPVXZFcGI4dS0wOHVMcERRSmZmMG1HeHAzT0gzNnNoTk4zcHFsNUVxWUFpTWpVVFpZQXhDX0p3MUEwQUJxRGtRUkNB?oc=5",
+        "source": "朝鮮日報"
+      },
+      {
+        "headline": "阿里雲發表「真武 M890」AI 晶片與 Qwen 3.7-Max 旗艦模型",
+        "url": "https://www.bloomberg.com/news/articles/2026-05-20/alibaba-unveils-new-ai-chip-for-training-and-inferencing",
+        "source": "Bloomberg"
+      },
+      {
+        "headline": "Anthropic 推出 MCP 隧道與自託管沙箱，鎖定企業代理安全",
+        "url": "https://thenewstack.io/anthropic-mcp-tunnels-sandboxes/",
+        "source": "The New Stack"
+      },
+      {
+        "headline": "Google AI Studio 支援「感官編程 (Vibe Coding)」原生 Android 應用",
+        "url": "https://www.theverge.com/tech/932364/google-ai-studio-native-android-apps-vibe-code-google-io-2026",
+        "source": "The Verge"
+      },
+      {
+        "headline": "Google Search 介面 25 年來最大改版：轉向代理化搜尋與通用購物車",
+        "url": "https://venturebeat.com/technology/google-just-redesigned-the-search-box-for-the-first-time-in-25-years-heres-why-it-matters-more-than-you-think",
+        "source": "VentureBeat"
+      },
+      {
+        "headline": "AWS 推出程式化工具調用 (PTC) 以優化代理效能與成本",
+        "url": "https://aws.amazon.com/blogs/machine-learning/implementing-programmatic-tool-calling-on-amazon-bedrock/",
+        "source": "AWS ML Blog"
+      },
+      {
+        "headline": "GitHub 遭駭客組織 TeamPCP 攻擊，調查內部儲存庫外洩事件",
+        "url": "https://thehackernews.com/2026/05/github-investigating-teampcp-claimed.html",
+        "source": "The Hacker News"
+      },
+      {
+        "headline": "馬斯克對 OpenAI 之訴訟因時效問題宣告失敗",
+        "url": "https://www.therundown.ai/p/musk-openai-case-runs-out-of-time",
+        "source": "The Rundown AI"
+      },
+      {
+        "headline": "Pulumi 推出代理專用雲端帳戶，佈局「代理化基礎設施」時代",
+        "url": "https://thenewstack.io/pulumi-infrastructure-agent-era/",
+        "source": "The New Stack"
+      }
+    ],
+    "newsItems": [
+      {
+        "url": "https://twitter.com/karpathy/status/2056753169888334312",
+        "title": "I’ve joined Anthropic",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5/",
+        "title": "Gemini 3.5 Flash",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://blog.google/products-and-platforms/products/search/search-io-2026/",
+        "title": "Google changes its search box",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://status.railway.com/?date=20260519",
+        "title": "Railway Blocked by Google Cloud",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://github.com/antoinezambelli/forge",
+        "title": "Show HN: Forge – Guardrails take an 8B model from 53% to 99% on agentic tasks",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://deepmind.google/models/gemini-omni/",
+        "title": "Gemini Omni",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://openai.com/index/advancing-content-provenance/",
+        "title": "OpenAI Adopts Google's SynthID Watermark for AI Images with Verification Tool",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://github.com/wiltodelta/remove-ai-watermarks",
+        "title": "Remove–AI–Watermarks – CLI and library for removing AI watermarks from images",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://www.emmi.ai/news/mistral-ai-acquires-emmi-ai",
+        "title": "Mistral AI acquires Emmi AI",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://developers.googleblog.com/an-important-update-transitioning-gemini-cli-to-antigravity-cli/",
+        "title": "Gemini CLI will stop working from June 18, 2026",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://emptysqua.re/blog/intro-to-tla-plus-for-the-llm-era/",
+        "title": "Intro to TLA+ for the LLM Era: Prompt Your Way to Victory",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://www.gentoo.org/news/2026/05/19/copy-fail-fragnesia-vulnerabilities.html",
+        "title": "Copy Fail, Dirty Frag, and Fragnesia kernel vulnerabilities",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://distill.pub/2020/growing-ca/",
+        "title": "Growing Neural Cellular Automata",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://superlog.sh/",
+        "title": "Show HN: Superlog (YC P26) – Observability that installs itself and fixes bugs",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://leonardo-boquillon.com/photonic-cop-supply-chain",
+        "title": "Tool mapping 90 companies in the photonics and CPO supply chain",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://xint.io/blog/copy-fail-pod-to-host",
+        "title": "CopyFail: From Pod to Host",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://openai.com/index/introducing-openai-for-singapore",
+        "title": "Introducing OpenAI for Singapore",
+        "source": "OpenAI Blog"
+      },
+      {
+        "url": "https://blog.google/innovation-and-ai/technology/developers-tools/google-io-2026-collection/",
+        "title": "I/O 2026",
+        "source": "Google AI Blog"
+      },
+      {
+        "url": "https://blog.google/products-and-platforms/products/search/ai-mode-us-insights/",
+        "title": "How AI Mode is changing the way people search in the U.S.",
+        "source": "Google AI Blog"
+      },
+      {
+        "url": "https://blog.google/products-and-platforms/products/workspace/workspace-updates/",
+        "title": "New ways to create and get things done in Google Workspace",
+        "source": "Google AI Blog"
+      },
+      {
+        "url": "https://blog.google/innovation-and-ai/sundar-pichai-io-2026/",
+        "title": "I/O 2026: Welcome to the agentic Gemini era",
+        "source": "Google AI Blog"
+      },
+      {
+        "url": "https://blog.google/products-and-platforms/products/google-one/google-ai-subscriptions/",
+        "title": "Everything new in our Google AI subscriptions, fresh from I/O 2026",
+        "source": "Google AI Blog"
+      },
+      {
+        "url": "https://developers.googleblog.com/google-tensor-sdk-beta-with-litert/",
+        "title": "Google Tensor SDK Beta with LiteRT",
+        "source": "Google Developers Blog"
+      },
+      {
+        "url": "https://developers.googleblog.com/one-year-of-innovation-celebrating-100k-members-in-the-google-cloud-x-nvidia-developer-community/",
+        "title": "One Year of Innovation: Celebrating 100k Members in the Google Cloud x NVIDIA Developer Community",
+        "source": "Google Developers Blog"
+      },
+      {
+        "url": "https://developers.googleblog.com/blazing-fast-on-device-genai-with-litert-lm/",
+        "title": "Blazing fast on-device GenAI with LiteRT-LM",
+        "source": "Google Developers Blog"
+      },
+      {
+        "url": "https://developers.googleblog.com/all-the-news-from-the-google-io-2026-developer-keynote/",
+        "title": "All the news from the Google I/O 2026 Developer keynote",
+        "source": "Google Developers Blog"
+      },
+      {
+        "url": "https://developers.googleblog.com/a-smarter-google-ai-edge-gallery-mcp-integration-notifications-and-session-continuity/",
+        "title": "A Smarter Google AI Edge Gallery: MCP integration, notifications, and session continuity",
+        "source": "Google Developers Blog"
+      },
+      {
+        "url": "https://developers.googleblog.com/a2ui-v0-9-generative-ui/",
+        "title": "A2UI v0.9: The New Standard for Portable, Framework-Agnostic Generative UI",
+        "source": "Google Developers Blog"
+      },
+      {
+        "url": "https://huggingface.co/blog/allenai/olmoearth-v1-1",
+        "title": "OlmoEarth v1.1: A more efficient family of models",
+        "source": "Hugging Face Blog"
+      },
+      {
+        "url": "https://blogs.nvidia.com/blog/google-cloud-developer-community-ai-builders/",
+        "title": "NVIDIA and Google Cloud Empower the Next Wave of AI Builders",
+        "source": "NVIDIA Blog"
+      },
+      {
+        "url": "https://x.ai/news/grok-openclaw",
+        "title": "Use Grok in OpenClaw",
+        "source": "xAI News"
+      },
+      {
+        "url": "https://aws.amazon.com/blogs/machine-learning/scalable-voice-agent-design-with-amazon-nova-sonic-multi-agent-tools-and-session-segmentation/",
+        "title": "Scalable voice agent design with Amazon Nova Sonic: multi-agent, tools, and session segmentation",
+        "source": "AWS ML Blog"
+      },
+      {
+        "url": "https://aws.amazon.com/blogs/machine-learning/extending-conversational-memory-in-kiro-cli-using-amazon-bedrock-agentcore-memory/",
+        "title": "Extending conversational memory in Kiro CLI using Amazon Bedrock AgentCore Memory",
+        "source": "AWS ML Blog"
+      },
+      {
+        "url": "https://aws.amazon.com/blogs/machine-learning/accelerate-ml-feature-pipelines-with-new-capabilities-in-amazon-sagemaker-feature-store/",
+        "title": "Accelerate ML feature pipelines with new capabilities in Amazon SageMaker Feature Store",
+        "source": "AWS ML Blog"
+      },
+      {
+        "url": "https://aws.amazon.com/blogs/machine-learning/implementing-programmatic-tool-calling-on-amazon-bedrock/",
+        "title": "Implementing programmatic tool calling on Amazon Bedrock",
+        "source": "AWS ML Blog"
+      },
+      {
+        "url": "https://www.therundown.ai/p/musk-openai-case-runs-out-of-time",
+        "title": "Musk's OpenAI case runs out of time",
+        "source": "The Rundown AI"
+      },
+      {
+        "url": "https://www.latent.space/p/ainews-google-io-2026-gemini-35-flash",
+        "title": "[AINews] Google I/O 2026: Gemini 3.5 Flash, Omni (NanoBanana for Video), Spark (background agents), and Antigravity 2.0",
+        "source": "Latent Space"
+      },
+      {
+        "url": "https://simonwillison.net/2026/May/19/llm-gemini-2/#atom-everything",
+        "title": "llm-gemini 0.32",
+        "source": "Simon Willison"
+      },
+      {
+        "url": "https://simonwillison.net/2026/May/19/gemini-35-flash/#atom-everything",
+        "title": "Gemini 3.5 Flash: more expensive, but Google plan to use it for everything",
+        "source": "Simon Willison"
+      },
+      {
+        "url": "https://simonwillison.net/2026/May/19/datasette-llm-accountant/#atom-everything",
+        "title": "datasette-llm-accountant 0.1a4",
+        "source": "Simon Willison"
+      },
+      {
+        "url": "https://simonwillison.net/2026/May/19/llm-gemini/#atom-everything",
+        "title": "llm-gemini 0.32a0",
+        "source": "Simon Willison"
+      },
+      {
+        "url": "https://simonwillison.net/2026/May/19/datasette-llm/#atom-everything",
+        "title": "datasette-llm 0.1a8",
+        "source": "Simon Willison"
+      },
+      {
+        "url": "https://techcrunch.com/2026/05/19/ai-design-tools-are-the-next-big-battleground-and-google-is-going-all-in-at-io-2026/",
+        "title": "Google just declared itself a contender in AI design at IO 2026",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/05/19/you-can-now-talk-to-your-gmail-inbox-as-seen-at-google-io-2026/",
+        "title": "You can now talk to your Gmail inbox, as seen at Google IO 2026",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/05/19/how-to-use-googles-new-ai-agents-to-go-beyond-your-standard-searches/",
+        "title": "How to use Google’s new AI agents to go beyond your standard searches",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/05/19/from-teen-hacker-to-iron-dome-researcher-this-founder-raised-28m-to-fight-ai-phishing/",
+        "title": "From teen hacker to Iron Dome researcher, this founder raised $28M to fight AI phishing",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/05/19/elon-musk-said-sam-altman-stole-a-non-profit-but-the-trial-showed-he-had-similar-aims/",
+        "title": "Elon Musk said Sam Altman ‘stole’ a non-profit — but the trial showed he had similar aims",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/05/19/google-takes-a-page-out-of-metas-book-announces-new-audio-powered-smart-glasses-at-io-2026/",
+        "title": "Google takes a page out of Meta’s book, announces new audio-powered smart glasses at IO 2026",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/05/19/googles-genie-world-model-can-now-simulate-real-streets-with-street-view/",
+        "title": "Google’s Genie world model can now simulate real streets with Street View",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/05/19/with-gemini-3-5-flash-google-bets-its-next-ai-wave-on-agents-not-chatbots/",
+        "title": "With Gemini 3.5 Flash, Google bets its next AI wave on agents, not chatbots",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/05/19/google-search-as-you-know-it-is-over/",
+        "title": "Google Search as you know it is over",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/05/19/openai-is-making-it-easier-to-check-if-an-image-was-made-by-their-models/",
+        "title": "OpenAI is making it easier to check if an image was made by their models",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/05/19/googles-ai-studio-now-lets-anyone-build-android-apps-in-minutes/",
+        "title": "Google’s AI Studio now lets anyone build Android apps in minutes",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/05/19/agentic-app-coding-gets-an-upgrade-with-googles-release-of-android-cli/",
+        "title": "Agentic app coding gets an upgrade with Google’s release of Android CLI",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/05/19/googles-new-universal-cart-wants-to-follow-your-entire-shopping-journey-across-the-internet/",
+        "title": "Google’s new Universal Cart wants to follow your entire shopping journey across the internet",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/05/19/google-introduces-gemini-spark-a-24-7-agentic-assistant-with-gmail-integration/",
+        "title": "Google introduces Gemini Spark, a 24/7 agentic assistant with Gmail integration, at IO 2026",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/05/19/google-adds-voice-based-prompting-to-docs-and-keep/",
+        "title": "Google adds voice-based prompting to Docs and Keep",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/05/19/google-launches-antigravity-2-0-with-an-updated-desktop-app-and-cli-tool-at-io-2026/",
+        "title": "Google launches Antigravity 2.0 with an updated desktop app and CLI tool at IO 2026",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/05/19/googles-gemini-omni-turns-images-audio-and-text-into-video-and-thats-just-the-start/",
+        "title": "Google’s Gemini Omni turns images, audio, and text into video — and that’s just the start",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/05/19/google-updates-its-gemini-app-to-take-on-chatgpt-and-claude-at-io-2026/",
+        "title": "Google updates its Gemini app to take on ChatGPT and Claude at IO 2026",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/05/19/openai-co-founder-andrej-karpathy-joins-anthropics-pre-training-team/",
+        "title": "OpenAI co-founder Andrej Karpathy joins Anthropic’s pre-training team",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://venturebeat.com/technology/google-just-redesigned-the-search-box-for-the-first-time-in-25-years-heres-why-it-matters-more-than-you-think",
+        "title": "Google just redesigned the search box for the first time in 25 years — here’s why it matters more than you think.",
+        "source": "VentureBeat AI"
+      },
+      {
+        "url": "https://www.theverge.com/tech/934260/google-io-ai-singularity-demis-hassabis",
+        "title": "Demis Hassabis said this might be the ‘foothills of the singularity.’ What?",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://www.theverge.com/tech/934217/google-search-box-does-everything-ai-io-2026",
+        "title": "The future of Google is a search box that does everything",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://www.theverge.com/tech/934172/google-io-gemini-ai-trust-personal-data",
+        "title": "Google’s AI future demands trust — and your personal data",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://www.theverge.com/transportation/933556/google-io-gemini-volvo-ex60-camera-ai-parking",
+        "title": "Gemini will use Volvo’s external cameras to interpret parking signs",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://www.theverge.com/tech/933415/google-io-2026-biggest-announcements-ai-gemini",
+        "title": "The 13 biggest announcements at Google I/O 2026",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://www.theverge.com/tech/933921/google-wants-to-compete-with-anthropics-mythos",
+        "title": "Google wants to compete with Anthropic’s Mythos",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://www.theverge.com/tech/932364/google-ai-studio-native-android-apps-vibe-code-google-io-2026",
+        "title": "Google can now vibe-code you an Android app",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://www.theverge.com/news/932927/google-io-agentic-ai-shopping-universal-cart",
+        "title": "Would you let robots spend your money? Google is betting on it",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://www.theverge.com/tech/932970/google-search-ai-update-io-2026",
+        "title": "Google Search is getting its biggest changes ever",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://www.theverge.com/tech/932973/google-gmail-live-ai-keep-docs-io-2026",
+        "title": "Gmail is going to start talking to you",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://arstechnica.com/information-technology/2026/05/in-stunning-display-of-stupid-secret-cisa-credentials-found-in-public-github-repo/",
+        "title": "In stunning display of stupid, secret CISA credentials found in public GitHub repo",
+        "source": "Ars Technica"
+      },
+      {
+        "url": "https://www.techmeme.com/260520/p13#a260520p13",
+        "title": "An analysis based on current valuations of OpenAI and Anthropic suggests ~$370B of philanthropic assets tied to the two AI companies are poised to become liquid (Nan Ransohoff/Nan's Substack)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260520/p12#a260520p12",
+        "title": "Q&A with Harvey CEO Winston Weinberg on launching the legal AI startup in 2022, how AI could shake up law firm business models, legal AI competition, and more (George Hammond/Financial Times)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260520/p11#a260520p11",
+        "title": "Two research papers describe how Google's Co-Scientist and nonprofit FutureHouse's AI tools can succeed at drug-retargeting tasks by forming hypotheses (John Timmer/Ars Technica)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260520/p10#a260520p10",
+        "title": "Three precedent-setting court rulings in China have said that employers replacing workers with AI is voluntary cost-cutting that does not justify mass layoffs (Catie Edmondson/New York Times)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260520/p9#a260520p9",
+        "title": "Sources: Nvidia's business development group, not its VC arm NVentures, has led much of its ~$90B dealmaking push across 145+ companies over the past 16 months (Financial Times)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260520/p8#a260520p8",
+        "title": "Sources: an attack exploiting a previously unknown vulnerability in Huawei router software caused a three-hour nationwide telecoms outage in Luxembourg in 2025 (Alexander Martin/The Record)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260520/p7#a260520p7",
+        "title": "Vietnam introduces Decree 142 to implement its AI law, requiring companies to classify AI models by risk level, label deepfakes, and disclose chatbot use (Lien Hoang/Nikkei Asia)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260520/p6#a260520p6",
+        "title": "Filing and sources: PE firm Hg has spun out €500M worth of assets from its €19B software group Visma, whose London IPO remains shelved amid the \"SaaSpocalypse\" (Alexandra Heal/Financial Times)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260520/p5#a260520p5",
+        "title": "SkyeChip becomes the first Malaysian chip design company to IPO on the Bursa Malaysia exchange, surging 300%+; the company was valued at ~$397M at its IPO price (Nikkei Asia)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260520/p4#a260520p4",
+        "title": "Alibaba's T-Head unveils the Zhenwu M890 AI chip for training and inference, saying it is particularly suited for agentic tasks, and plans annual upgrades (Luz Ding/Bloomberg)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260520/p3#a260520p3",
+        "title": "Singapore announces a National AI Partnership with Google and an MoU with OpenAI, which will set up an AI lab and commit $234M+ to the city-state's AI ecosystem (Dylan Butts/CNBC)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260520/p2#a260520p2",
+        "title": "Samsung Electronics rejects a labor union-accepted mediation proposal, raising the prospect of a workers' strike; a general work stoppage will proceed on May 21 (Bloomberg)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260520/p1#a260520p1",
+        "title": "Berlin-based bunch, an AI-native platform for managers and institutional investors to manage the entire fund lifecycle, raised a €30.1M Series B led by Portage (Rahul Raj/EU-Startups)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260519/p77#a260519p77",
+        "title": "GitHub says it's investigating \"unauthorized access\" to its internal repositories, and there's no proof of customer data outside its repositories being impacted (@github)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260519/p76#a260519p76",
+        "title": "Q&A with Google SVP James Manyika on AI's ability to automate tasks versus occupations, his optimism about the labor market despite AI-driven layoffs, and more (Casey Newton/Platformer)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.infoq.com/news/2026/05/claude-mcp-tunnels/?utm_campaign=infoq_content&utm_source=infoq&utm_medium=feed&utm_term=global",
+        "title": "Anthropic Introduces MCP Tunnels for Private Agent Access to Internal Systems",
+        "source": "InfoQ AI/ML"
+      },
+      {
+        "url": "https://www.infoq.com/news/2026/05/agoda-multimodal-content-system/?utm_campaign=infoq_content&utm_source=infoq&utm_medium=feed&utm_term=global",
+        "title": "Agoda Builds Multimodal Content System to Bridge Images and Reviews in Travel Discovery",
+        "source": "InfoQ AI/ML"
+      },
+      {
+        "url": "https://www.infoq.com/presentations/infrastructure-ai-agent-development/?utm_campaign=infoq_content&utm_source=infoq&utm_medium=feed&utm_term=global",
+        "title": "Presentation: Powering the Future: Building Your GenAI Infrastructure Stack",
+        "source": "InfoQ AI/ML"
+      },
+      {
+        "url": "https://www.infoq.com/news/2026/05/tanstack-supply-chain-attack/?utm_campaign=infoq_content&utm_source=infoq&utm_medium=feed&utm_term=global",
+        "title": "TanStack Details Sophisticated npm Supply Chain Attack That Compromised 42 Packages",
+        "source": "InfoQ AI/ML"
+      },
+      {
+        "url": "https://www.infoq.com/articles/ebpf-for-security-observability/?utm_campaign=infoq_content&utm_source=infoq&utm_medium=feed&utm_term=global",
+        "title": "Article: Kernel-Level Ground Truth: Why eBPF is Replacing User-Space Agents for Security Observability",
+        "source": "InfoQ AI/ML"
+      },
+      {
+        "url": "https://thenewstack.io/andrej-karpathy-anthropic-pretraining/",
+        "title": "Anthropic hires OpenAI co-founder Andrej Karpathy to lead Claude pre-training research",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/google-ai-studio-android-apps/",
+        "title": "Google now lets you vibe code native Android apps in AI Studio",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/google-agent-ready-web/",
+        "title": "Google wants to make the web agent-ready",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/google-gpt-and-claude-android-studio/",
+        "title": "Google now lets developers use GPT and Claude in Android Studio",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/googles-gemini-3-5-flash-beats-the-frontier-models/",
+        "title": "Google’s Gemini 3.5 Flash beats the frontier models",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/google-ai-ultra-pricing/",
+        "title": "Google launches $100 AI Ultra plan and cuts top tier to $200",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/valkey-91-cuts-memory/",
+        "title": "Valkey 9.1 trims memory 10% and pulls search into the core",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/anthropic-mcp-tunnels-sandboxes/",
+        "title": "Anthropic debuts MCP tunnels and self-hosted sandboxes to lock down AI agent infrastructure",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/rag-retrieval-scaling-architecture/",
+        "title": "Why production RAG systems give confident, wrong answers at scale",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/steve-yegges-ai-agent-orchestration-project-gas-town-comes-to-the-cloud-and-brings-the-wasteland-with-it/",
+        "title": "Steve Yegge’s AI agent orchestration project Gas Town comes to the cloud — and brings the Wasteland with it",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/pulumi-infrastructure-agent-era/",
+        "title": "Pulumi bets infrastructure’s next decade belongs to AI agents",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://www.wired.com/story/commonwealth-short-story-prize-ai-allegations/",
+        "title": "Literary Prizewinners Are Facing AI Allegations. It Feels Like the New Normal",
+        "source": "Wired AI"
+      },
+      {
+        "url": "https://www.wired.com/story/everything-google-announced-at-google-io-2026/",
+        "title": "Everything Announced at Google I/O 2026: Gemini, Search, Smart Glasses",
+        "source": "Wired AI"
+      },
+      {
+        "url": "https://www.wired.com/story/meta-employees-scramble-benefits-layoffs-ai/",
+        "title": "Meta Employees Are Scrambling to Use Up Benefits Ahead of Layoffs",
+        "source": "Wired AI"
+      },
+      {
+        "url": "https://www.wired.com/story/google-search-goes-agentic-and-doesnt-need-you-anymore/",
+        "title": "Google Search Goes Agentic—and Doesn’t Need You Anymore",
+        "source": "Wired AI"
+      },
+      {
+        "url": "https://www.wired.com/story/demis-hassabis-ai-layoffs-deepmind-google-io/",
+        "title": "Demis Hassabis Thinks AI Job Cuts Are Dumb",
+        "source": "Wired AI"
+      },
+      {
+        "url": "https://www.wired.com/story/google-makes-it-easy-to-make-a-deepfake-of-yourself/",
+        "title": "Google Makes It Easy to Deepfake Yourself",
+        "source": "Wired AI"
+      },
+      {
+        "url": "https://www.wired.com/story/googles-response-to-openclaws-24-7-ai-agent/",
+        "title": "Gemini Spark Is Google’s Response to OpenClaw’s 24/7 AI Agent",
+        "source": "Wired AI"
+      },
+      {
+        "url": "https://www.wired.com/story/ex-openai-staffers-warn-spacex-investors-of-ai-safety-risks/",
+        "title": "Former OpenAI Staffers Warn That xAI’s Poor Safety Record Could Complicate SpaceX’s IPO",
+        "source": "Wired AI"
+      },
+      {
+        "url": "https://www.wired.com/story/the-big-interview-podcast-tom-steyer/",
+        "title": "Tom Steyer Wants to Save California From Billionaires. But Also Doesn’t Want Them to Leave",
+        "source": "Wired AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/05/19/gamified-social-media-network-status-announces-17m-funding-to-help-usher-in-new-era-of-social-networking/",
+        "title": "Forget the feed: Status AI raises $17M to turn social media into interactive entertainment",
+        "source": "TechCrunch Startups"
+      },
+      {
+        "url": "https://techcrunch.com/2026/05/19/survivor-stars-kyle-fraser-and-kamilla-karthigesu-introduce-a-goal-tracking-app-paprclip/",
+        "title": "‘Survivor’ stars Kyle Fraser and Kamilla Karthigesu introduce  a goal-tracking app, Paprclip",
+        "source": "TechCrunch Startups"
+      },
+      {
+        "url": "https://techcrunch.com/2026/05/19/legal-tech-announced-stilta-announces-10m-seed-backed-by-yc-and-a16z-months-after-launch/",
+        "title": "Stilta raises $10.5M from a16z and YC to help companies rediscover the patents they forgot they had",
+        "source": "TechCrunch Startups"
+      },
+      {
+        "url": "https://stratechery.com/2026/personal-day-3/",
+        "title": "Personal Day",
+        "source": "Stratechery"
+      },
+      {
+        "url": "https://www.tomshardware.com/laptops/new-microsoft-surface-for-business-pcs-pair-panther-lake-chips-with-as-little-as-8gb-of-ram-13-inch-surface-laptop-goes-light-on-memory-but-still-starts-at-usd1-299",
+        "title": "New Microsoft Surface for Business PCs pair Panther Lake chips with as little as 8GB of RAM — 13-inch Surface Laptop goes light on memory but still starts at $1,299",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/pc-components/cpus/amd-rumored-to-ready-budget-friendly-ryzen-7-7700x3d-for-suffering-gamers-chipmaker-lowers-clocks-and-price-with-rumored-zen-4-x3d-cpu",
+        "title": "AMD rumored to ready budget-friendly Ryzen 7 7700X3D for suffering gamers — chipmaker lowers clocks and price with new Zen 4 X3D CPU",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/semiconductors/smic-founder-and-amec-ceo-urge-chinese-fabs-to-test-domestic-chip-tools-on-production-lines",
+        "title": "SMIC founder and AMEC CEO urge Chinese fabs to test domestic chipmaking tools on active production lines — equipment makers post record revenue but falling margins",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/cryptocurrency/physical-attacks-against-crypto-holders-including-kidnap-and-assault-up-75-percent-in-2025-72-confirmed-incidents-see-usd41-million-lost-real-number-likely-higher",
+        "title": "Physical attacks against crypto holders, including kidnap and assault, up 75% in 2025 — 72 confirmed incidents see $41 million lost, real number likely higher",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/pc-components/sound-cards/creative-sound-blaster-audigy-fx-pro-a-decent-upgrade-for-analog-audio",
+        "title": "Creative Sound Blaster Audigy FX Pro 7.1 channel sound card: A decent 2026 upgrade for analog audio",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/software/vpn/slash-nearly-usd300-off-a-two-year-expressvpn-subscription-and-grab-four-extra-months-for-free-massive-82-percent-saving-on-this-privacy-focused-vpn-service-with-servers-across-105-different-countries-down-to-just-usd64",
+        "title": "Slash nearly $300 off a two-year ExpressVPN subscription and grab four extra months for free — massive 82% saving on this privacy-focused VPN service with servers across 105 different countries, down to just $64",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/standard-chartered-plans-to-cut-7-000-jobs-in-ai-push-lender-wants-to-replace-lower-value-human-capital-and-focus-on-automation",
+        "title": "Standard Chartered plans to cut 7,000 jobs in AI push — lender wants to replace ‘lower-value human capital’ and focus on automation",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/intel-tells-pc-makers-to-adopt-18a-cpus-or-lose-their-allocations",
+        "title": "Intel tells PC makers to adopt 18A CPUs or lose their supply, report claims — Intel 7 supply dries up, pressuring notebook and PC manufacturers in the US, China, and Taiwan",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/laptops/gaming-laptops/msi-raider-16-max-hx-review",
+        "title": "MSI Raider 16 Max HX review: Elite gaming performance",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/pc-components/save-a-whopping-usd900-on-this-incredible-4-item-am5-combo-from-newegg-for-only-usd2-269-high-end-parts-including-the-flagship-9950x3d2-processor-64gb-of-gskill-ram-4tb-of-fast-m-2-storage-and-a-quality-msi-motherboard",
+        "title": "Save a whopping $900 on this incredible 4-item AM5 combo from Newegg — for only $2,269, high-end parts including the flagship 9950X3D2 processor, 64GB of GSkill RAM, 4TB of fast M.2 storage, and a quality MSI motherboard",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/monitors/gaming-monitors/lg-unveils-worlds-first-native-1000-hz-refresh-rate-at-1080p-for-serious-competitive-gaming-ultragear-25g590b-to-launch-in-the-second-half-of-2026",
+        "title": "LG unveils 'world's first' native 1,000 Hz refresh rate at 1080p for serious competitive gaming — UltraGear 25G590B to launch in the second half of 2026",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/desktops/gaming-pcs/pick-up-an-rtx-5090-powered-prebuilt-desktop-for-usd5-less-than-the-gpu-alone-hps-omen-45l-costs-usd3-795-thanks-to-usd1-265-discount",
+        "title": "Pick up an RTX 5090-powered prebuilt desktop for $5 less than the GPU alone — HP's Omen 45L costs $3,795 thanks to $1,265 discount",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/laptops/intels-project-firefly-creates-sub-usd600-laptops-to-compete-with-macbook-neo-leverages-chinas-smartphone-manufacturing-blueprint-to-produce-affordable-wildcat-lake-systems",
+        "title": "Intel's Project Firefly creates sub-$600 laptops to compete with Apple's MacBook Neo — leverages China's smartphone manufacturing blueprint to produce affordable Wildcat Lake systems",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/pc-components/researchers-attack-amds-infinity-fabric-to-bypass-hardware-security-protections-with-fabricked-flaw-lets-malicious-cloud-hosts-silently-read-confidential-vm-memory-and-forge-attestation-reports",
+        "title": "Researchers attack AMD's Infinity Fabric to bypass hardware security protections with 'Fabricked' — flaw lets malicious cloud hosts silently read confidential VM memory and forge attestation reports",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/pc-components/ssds/fake-samsung-ssd-spotting-comes-to-crystaldiskinfo-as-ai-crunch-drives-sophisticated-counterfeit-market-free-open-source-software-can-flag-clones-by-checking-firmware-pci-vendor-id",
+        "title": "Fake Samsung SSD spotting comes to CrystalDiskInfo as AI crunch drives sophisticated counterfeit market — free open-source software can flag clones by checking firmware, PCI Vendor ID",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/desktops/pc-building/ambitious-modder-creates-custom-passive-water-cooled-pc-9800x3d-build-with-rtx-5080-has-no-fans-copper-and-radiator-chimney-struggles-to-keep-temperatures-down",
+        "title": "Custom-built passive water-cooled PC relies on convection chimney effect powered by triple-stacked radiators — 9800X3D build with RTX 5080 has no fans, copper, and radiator chimney, but struggles to keep temperatures down",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/video-games/fans-release-24tb-million-square-block-archive-of-minecrafts-infamous-2b2t-server-intense-digital-archaeology-project-has-taken-years-to-reach-this-stage",
+        "title": "Fans secretly mapped 24 terabytes of Minecraft’s infamous 2b2t server, million‑square‑block archive to be shared via torrent — Intense digital archaeology project has taken years, risked player wrath",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.politico.com/news/2026/05/19/data-centers-loom-over-georgia-governor-race-00929073",
+        "title": "Data centers loom over Georgia governor race",
+        "source": "Politico Tech"
+      },
+      {
+        "url": "https://www.politico.com/news/2026/05/19/dc-circuit-trump-anthropic-national-security-00927883",
+        "title": "DC Circuit eyes off-ramp in Trump’s national security feud with Anthropic",
+        "source": "Politico Tech"
+      },
+      {
+        "url": "https://www.politico.com/news/2026/05/19/nancy-mace-data-center-moratorium-00927781",
+        "title": "Nancy Mace pushes for statewide data center moratorium",
+        "source": "Politico Tech"
+      },
+      {
+        "url": "https://thehackernews.com/2026/05/grafana-github-breach-exposes-source.html",
+        "title": "Grafana GitHub Breach Exposes Source Code via TanStack npm Attack",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://thehackernews.com/2026/05/github-investigating-teampcp-claimed.html",
+        "title": "GitHub Investigating TeamPCP Claimed Breach of ~4,000 Internal Repositories",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://thehackernews.com/2026/05/trapdoor-android-ad-fraud-scheme-hit.html",
+        "title": "Trapdoor Android Ad Fraud Scheme Hit 659 Million Daily Bid Requests Using 455 Apps",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://thehackernews.com/2026/05/dirtydecrypt-poc-released-for-linux.html",
+        "title": "DirtyDecrypt PoC Released for Linux Kernel CVE-2026-31635 LPE Vulnerability",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://thehackernews.com/2026/05/the-new-phishing-click-how-oauth.html",
+        "title": "The New Phishing Click: How OAuth Consent Bypasses MFA",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://thehackernews.com/2026/05/drupal-to-release-urgent-core-security.html",
+        "title": "Drupal to Release Urgent Core Security Updates on May 20, Sites Told to Prepare",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://thehackernews.com/2026/05/seppmail-secure-e-mail-gateway.html",
+        "title": "SEPPMail Secure E-Mail Gateway Vulnerabilities Enable RCE and Mail Traffic Access",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/05/zurich-based-avian-raises-e2-2-million-to-prevent-industrial-fires-with-always-on-ai-thermal-monitoring/",
+        "title": "Zurich-based AVIAN raises €2.2 million to prevent industrial fires with always-on AI thermal monitoring",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/05/freiburgs-qurie-secures-e2-2-million-to-develop-economically-viable-refrigeration-systems-without-compressors-or-refrigerants/",
+        "title": "Qurie secures €2.2 million to develop cost-effective refrigeration systems without compressors or refrigerants",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/05/could-europes-red-tape-finally-be-its-biggest-moat/",
+        "title": "Could Europe’s Red Tape finally be its Biggest Moat?",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/05/berlin-based-bunch-bags-e30-1-million-series-b-to-modernise-europes-private-markets-infrastructure/",
+        "title": "Berlin-based bunch bags €30.1 million Series B to modernise Europe’s private markets infrastructure",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/05/munichs-feldwerke-secures-e12-million-revolving-credit-facility-to-build-100-mw-agri-pv-portfolio-in-18-months/",
+        "title": "Munich’s Feldwerke secures €12 million revolving credit facility to build 100 MW agri-PV portfolio in 18 months",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/05/london-based-mouro-capital-secures-e343-4-million-first-close-for-third-fund-backed-by-santander/",
+        "title": "London-based Mouro Capital secures €343.4 million first close for third fund backed by Santander",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://softwaremaniacs.org/blog/2026/05/18/shoppy/",
+        "title": "Categorizing without an LLM",
+        "source": "Lobsters"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPaldHXzVvaGFJUWRMQVMySDR6V3FmSUhkSUExbGdnR1A2ZWlRU0dWVTM0RkQweDNlb3IwS1lSeE92MGwxZVN5WTJtZm13a29lMWd5Vk9aRjhFdkpIeU0tOW5UZWhRRTgwRy1WMGZyd1BoajJKcjBla0cwV0FwdnQ2WEFPMmo3MWtMekFnNkxqZkplTkNUN1FfTjEyRnhmWHVJVGVyVlVaSWhxS2hCNU9jbTV1NA?oc=5",
+        "title": "Sberbank seeks Chinese chips to power Russia's GigaChat AI model",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxPU1h3a3JsTXRrS28yOEhDRmNjUmloMWlYTGtjOTl3bUs4LVJyN0pKbUlIX0ZWa3RvcUpLbVhhODFpOUFpdmxZNzI3QTljeTdiV0FfNHppTUZkdFFNcExmOFJKRi1KTEF1ZkExbmxXMlZVazNvVDUwZFhkQmM5SFRPa0pFbWtqbVFkdGRNV0g5bXlIbFIwOHJrcTRBcWItc3puNTBEaWtOOXE3LTcyaXI1TjdaemdVekRDZnRLZzNLMndEaFJVc1RKMVo0TXZSRFhtTVB4ZElPcmM2cjRSSkEyeVlIWQ?oc=5",
+        "title": "OpenAI brings remote access of AI coding tool to ChatGPT on Android and iOS",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPQ1lkckxWd25jTF9XcUZTakJadTNxZVFnNGxlOXFwY0VPVmNldzFZY3p5SFZLa1hKbnRzdmtMTlpDWmhPY1c2REdsZEpUXy10T0dFTVdwMFRTalV4X0trcjZ1cGhpcEI5M1d0a3JzbzFmTS12LVRnNWJ6ZmRsVGwyVEdhWDY0OGhxbk8xdTZsS1BuMHAt?oc=5",
+        "title": "Google Unveils New Gemini AI Agent for Personal Tasks",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE1kcUhtbEhpLXhQcXVDdGxrSEVlMTZPajJiTzQ1bnhFMVladmpWbk14RzlucTJtSHl1VHU5b0JzalIyakR4Z3JwbUpiY3phejg0WUZNbTY0NjlMRVpSb3NNOExNanNiSkxsNnhudm5vNTk?oc=5",
+        "title": "Google debuts AI model as it comes under pressure from coding rivals",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxPbEg5Y09ySlJjSXVyeTFSa2Jpdk5UMk0xc1g0ZmIyUGxJWnpObHYtd0g3aUNPdENBbFNBLVpTNFF6b2RyZS1CcnBlSUJ5UDBFeXdrNkJJLXk4S1ZxZkdKSmVISGtvTFFWX2pEak5Gb0xYYWhBSUlMVTJ0MzVqZTJBVEhieXdxdkQzQ05CSWk2dnVwOWwxN280Zm1RMHhsNEMxNGM5eQ?oc=5",
+        "title": "Google unveils Gemini Omni 'any-to-any' AI model: what enterprises should know",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxOQUxsZXdaZzlXb1N2b05WcDNRMmF1cEZIc3dvbmFGUUFZc3o2SlRNT01VSm5NWUdDM2lnbkFnT1U3aElWd3B4clBHNGliQ2JTZThJYk1Ca2pqRGVpRk1pa21LalVQNGpVdkEwbmdnNGZBaFltSVBpMVVBTlR4QWMwWUZyZmJCUzF2NERIU2dXX3p5WjJzdUJucmQwWGtQSEt1aXVtMFpyclVLa3FMbkJPdTFYQ1daSU9qaUo0cjRZcXpocm9k0gHKAUFVX3lxTE9nSjYwcy1vaHctZ3pFWVFRZ18zVVJsM0FMbkVkbUVEd3RhV18tRzNEc1NIMm9CS240bUNLMmVKREViNTJrWTNXNnlqSHYzSkJZOW52ZDdmbVdNcWRlMVhXX0NES0hmWDhxZTduVUZFcWUtbXNRaUZ5Z3JZTlpnQ3k0eHY3Q0dERnBuLWsyTmpKSExtczlVMkR5c2w4dTFWaDN4UlVmZlV4dVozbW5TaHNucUYtbGhTblZ6dnlGVmVHQ0lEQ19LMW1PbkE?oc=5",
+        "title": "Cloudflare Anthropic Deal Highlights Push Into Secure AI Agent Infrastructure",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQS2c2dnlHQ01pY3VMdDY2WjZaYW5qMExBUmU0U0ozajk3ZzJRcDlmeno1UU9kbi1vNS1DcmhnS3hUcVhzZmxxUkQwaF9pZGJJMEk3azlKU2hreF9Pc0thQXhNRjVpc3lreTYyZnZpcGVHckdnRnNiVkFnMDFOQXpaRk0xTmd3Zld0bFdEbjM0bw?oc=5",
+        "title": "Cursor’s Composer 2.5 Brings Smarter, More Reliable AI Coding Agents",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE9PZG5oN05UU25ZSXRiVWxfMUc3d09pVGFfcnJsQWJzeGsyYzk4c1lxb1NjQVdSTTJLTjhLQ1JvcW91eHdqVVU0QjU1TXFXN1JYRzVJN21oQVU5emJMVXlPdVNuZVZiblhFQkcwcHBhSE5DZmItVHVQZW1aOXVFZmfSAX9BVV95cUxPT2RuaDdOVFNuWUl0YlVsXzFHN3dPaVRhX3JybEFic3hrMmM5OHNZcW9TY0FXUk0yS044S0NSb3FvdXh3alVVNEI1NU1xVzdSWEc1STdtaEFVOXpiTFV5T3VTbmVWYm5YRUJHMHBwYUhOQ2ZiLVR1UGVtWjl1RWZn?oc=5",
+        "title": "Google debuts new AI models, personal AI agents in effort to keep pace with OpenAI and Anthropic",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQMTJWNFNsQndZbGo1ZmlfLUwwRmF6RDhEbnpub1pycGp2ZlJPMnRSTnZ4SWlkN2kzeWFiNVhfN1pZVjZsNzMzekNLT1dvYzJDSS16VTY3dzhkM1ZLdDQ5b19VWjN5Q1AzQVhIaUpGYjg1VHFfSkpWMjd1OFRoaXRneEpYUWY5UnR5OHIzZDYySzFxeURmbkxxaVdrUi1Pck4wNU4zT294MnltZw?oc=5",
+        "title": "Netflix plans to launch a generative AI animation studio",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxPc0JRcU4zbHEzUF9SdHp5YlZKNm04bWJfTEwtUGdxOGNpV2Q3TC1OdHBVX0VFcldOcXlSVjVVTjBSQnhaX1BENGwxU3VseHVwMGhWM2dtMDVZREZJZmhrU1ZqdDc4WmN5M3NWNURLb3hVRlpObHpnbk5LUkQyZDNsM2RRcHBfdy01aEFjRGhiczVuT0FxMDNadC0tQ001ajQ4X01uaDE3MXVvcW11RDVKYTVhdEk5Zw?oc=5",
+        "title": "Google unveils Gemini 3.5 Flash, personalized AI agent Gemini Spark",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxPRklkLXNGcGRtYXN2OWVnRUU0UmxkUGpNWmlzcDJiSmE3anFFeVNVY1Z3dVNXUmo5U3YtdTVsdEFESnVBbWRPVXZFcGI4dS0wOHVMcERRSmZmMG1HeHAzT0gzNnNoTk4zcHFsNUVxWUFpTWpVVFpZQXhDX0p3MUEwQUJxRGtRUkNB?oc=5",
+        "title": "Andrej Karpathy Joins Anthropic to Advance Claude AI Model",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTFBJcjZMaVBBb1lTQkRad0MydEwxblQxTE12b21BLVM5My1LYjFqYkhDY2J5US1HLUpEa0Z1R3J6UnpSQ2JKLVdlS2tBb2RwT1J2aG01M3lVQl93R0Q5YnJKc2NUTTI2Rjd6NWlMUmd6MDlvX0Z5NkE?oc=5",
+        "title": "Dell is rolling out on-premises AI agent tools using Nvidia software to lure enterprises away from the cloud",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE04aGJ5X2Y1Qk1mejlFRVBjV3Fhb19YY1o2Y3F0bmttckVOZ1R6MzBhTzRlMjh3NXBmVURIc3VQWmltcG5KcktRb1ZsN08xTWxxWGJfQUJoOFJiNTNCdTI2Z3h6RUZDcWozUXdYc0ZQUzg0UQ?oc=5",
+        "title": "Google unveils lifesize AI agent Sophie in secretive Beam Lab experiment",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxNaW8zbldWaWdvQ195OHR3YXJrTmtMQzZVRzNzQjgtUXY0bVkzME9GbFdzZmgyNzlMZ1lVRWRMeUtUNmd2d2NfdGQ3N21Pc3ZPM0pNUTFLdGNtekZKN2RvTmZVdm1rTkg4VXdQakd1ZHk3OEROWFZxb25GdjQxV1VxbFNLVThNWm1YQnFuNml3R2FBT2RKaktTZ0pR?oc=5",
+        "title": "GE Aerospace Taps Generative AI to Design a Hypersonic Engine in Seconds",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMizgFBVV95cUxOdW96WkhHUlZkOTQ5NkVzQ2FFVlFXNS1qMXl0Wkh5LTFpRGtyUmh1TEhiRXVLZThCZFpEMElSR0dFV3UzTC1LXzEzdkU1Wjkwa1ZYRWdHVnA0NHp2cFpQM3lkelpwNklMbExyRWl6UGY3NGZ1S0ZCSDE2ZVdwY2JmcjM4UFRsTFdvUDRGbkFKYlEydmp5Rk4tZ3UxTFJ6VkdxZ19BYm8zUmJ2TVF3R2xpRHRjWmFZbG11b3dpempoaFhPS2hmWmRJYndQeFEtdw?oc=5",
+        "title": "3 new features are coming to Google Shopping, including a Universal Cart and AI agent restrictions",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxNQ2xJRFFZVTgwYWdyOTgweDliRXNmbmpOVExRQVI2MlVLM0FRY0dMNW9JLUI3U3JZZW5RT3VMTkVNLWhsSWdPdlBsa0Fkcm5rU25VQWtWa3dQLS1iMlVOaF9Fdk5vZXV4czNPSlFjV1RxRm9zSXZLcHExWDRGOGlDS0kzc3hvNlpSWnJZUkk1UHlXdnNHV0VnVzVkcw?oc=5",
+        "title": "Anthropic unseats OpenAI in the enterprise as AI model spending spikes",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMihgJBVV95cUxQX2tidzZHRWxQTm5lRHc3b2pLNEcxLTMwaEs3M1NDeDUwazlPZ1FhMFN1TFI1WU14M1JGaHhoaVltYmRFNlRIdkl6bXUtX1hFeEdqYUU0bXhiT2Frbi1vR3lKa1dwU2NJenRwUENqRVd0QlZKUWF3M3BZajVQeGVMR3BDMTh6YUZaSUtkcEZ2Y2lfRmlfV2F5cU9GQ3Ruem1tV1R1SlpjaG96ZHd0REI4dW5kSFNWaVJrN2JMTkQzd2FGX010ZmJTSmItVGM1cmJSajJ2dFhQMFFseHdjV1FCS0VnVGgwNndkVTdIZTlrYW93ZWVwaFlGRmNtM01ZekZmd01Ecmd3?oc=5",
+        "title": "Kay.ai Launches First Fully Autonomous AI Agent for Insurance, Replacing Offshore Back-Office Work at Top US Brokerages",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE5DbXJWYzBTWTdSZC1yX1lweTFHNjB0NXJ5RENYaWhvLWg4WDVCVzJzaVFHMnF3QW45VS13YUlDcnJtOER6S2hHRDVVTHZXYnNkUnY4dm1lLTZFQkluM3BJRWduam9icVkyNG9ONTRJMjVVWU4xVjZZ?oc=5",
+        "title": "Healthcare AI startup Commure is raising $70 million at a $7 billion valuation",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxPV3VHMFlVVHl6cGhmS2JIRjRvaVNXTGdWX0tyUko3U2JvTjhNLUJSMFlVVGgzZVBGQ1V6TlV6bTQ5WFRIYktlQ09CTl9nY2NSLUhxZWM2MlM4OVBxUDd1QzdMSG1DMU5nOEJMU19sQmZDeTE1b2RpRDJUalByMWFPS3lUUmg5LU9TZm1rb3BRRzFhNnBGSGlkVWRvTW5kUWVSMUhuTzI5TTNQaG1LMjFtZEZjUGh5aUhpeHh6cFNDeUZjSVQtS1FUWEFIY1Q1ajIyMDhEUE1wMkR4czVpTnE5am55QlE0ak0?oc=5",
+        "title": "Microsoft’s enterprise AI revenue hits $37B annualized run rate",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxNOXRKTnVyTWU0dmVpMGlxUnRzTi1TY1lwaURmZ0gyUGFLWWVNVHJfQkFNNmdVLUtuaDFPdEZLMlZXYVJHUjdySk1reDZZd0I5SjNJdTE4NjQySWpSeE9BZUJEWV9handpNU13RGdoMnZ5OW5MQm5SVFJxMkk1cURFYVZwUnUycy1hM2pDU19KWUFPQVJlSnlRR0ZtcUY5YzloQmEya21vRGRkYjNUS1RnOE9DTmFoQjdFdnFUQ2pLM1JOMmc?oc=5",
+        "title": "Mistral AI buys Austrian physics AI startup in industrial push",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxQZVN4OElWbWRpRUM4UmpJeGZrbFdTZ0V3R0xjaXBpbWFLSlRLcDRubWkxR2xWS0VwT1NwSWZpQlJIWEl6OF9TYkhnOXo0RUFwU19xY1R1SGN4OElMX0E3MUZmZHBhb2hUUDF6aUQ4WWFFWUk4RkZuOHRhNS1pR3hCN3ZZZkEyS3RlRVFqN2lzMHRENFZISlFWZktKcXZlaGJfWDMxSU85ZjlXVm8?oc=5",
+        "title": "Parag Agrawal’s AI startup wants to pay publishers when AI agents use their work",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE1RU1UxZVZaQkN1VWpheHBCQWNaUFdMZFg0Mk85SG9XZWpEbDJTaHRva2pPN3BieF9UWXN4dTItNFVpV0FjdGE2X1h4M1N0bjZK?oc=5",
+        "title": "Google expands frontier AI partnership with Singapore across healthcare, scientific research, enterprise and safety",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQdHVpdEtOeklwQWdBT2tqaVRUYWRfd1NEYmdUTmJWemlOQTVuS29valZ1T1ZLamlHV0xSMDBBVU1PTFk0Y2psQWhUcTF1MVFJLVdUcF9MNDJ6bDF0RFNHYTlySTJqYjJzNzludm5aQ2U3eEVoWVJhLVhvdjh4OXlRQ3NPa0lQSl9teW9ZcUZsQ29ZcUFj?oc=5",
+        "title": "Sequoia backs Paris AI startup Dust with $40M to fix the enterprise AI productivity gap",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQMUUwUFgzLVdqeUI3ZFJxaTNjUzRHcHpNTkY5QXdudVVOeFk0ck5KRjY3VkR0NmFfYjNFWGlpU1FnWGdIV0FLeUkyNVgwaVY5MDFKWW0wRHZDT3E4VmVoQVVmTnRZcDhkZ1JPTTV4cDVBbTBYNkQ3TVpVd3hMUHBxYzBYWUpWTkJvUERxbmxIYmNQSXM5TXY3YWtRRWIzSlYtcTdjSC01QQ?oc=5",
+        "title": "Baidu's AI revenue jumps 49% in Q1, becomes core business driver",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE13M1JjdGNMM3RBX3VaMnhxWkhzNW5zaHk3bUxQRXV3V3VkQmZHRkhyTHBsbUljZHpYNll5WjNzT0l6U21maWtRUTdiTFF3ZnJsVzFjeHFsUEJiVzNXaFlvTkNB?oc=5",
+        "title": "Trump’s AI Regulation Pivot: What It Means for Tech",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOSEFWbzhHS0xDWnJNdDFoN0hBdmxxemlUN3hPMmwtZGN2NjdnQ2llSmFUTURfNFlWblB2Ul9tNDdBd2toZ0M0TzV0V1g2WHozSUFFTTY4VTNOT3JvYmhTYjBOa05Mb1NnU3FSN0RLT0NrQ29yd3hWdl8taVA0d3Z6WGs5VHN5ZXJON2pmYi1pRzh3QjlNd3phRk1wQ05PbF9QeUY0VDU1YVp5WkZmR3ZRODducFZ2UdIBtgFBVV95cUxNUVVta1duYWFoNHdpdzdiZ0s1TVFiUGJGbVZjNVhZdTVyNUJ0azg4bkF0ZWkzaFgyYXJ6YXZiZW41Z2laWEZXRlZDUXJLTlpfMHFHV29BUDNXRGZGLV9kbWtZMkF2S1licUxWY0dWelhMQl92S2Y1ZWlKZjRab01Pclgtc1dQOXFuUTNjc2tjdVJKNTJCdmotbkFKSXl3Q3ZLVU1KejRDSE5lWHcyTXJlaDdrLVYxUQ?oc=5",
+        "title": "China and US to hold dialogue on AI governance, Beijing confirms",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxQRGZMeXdaYWhTVWdiZTYtQmNKVndTWng1SDdNdDNuczZUX1pnalhUaDg4eXVDNk5odzQyejhuTHRuUmlJU3JicEJhUnZFc0VBa2xUQUxWeFNoWENTMy1uS1dBSjk1TklpT0RyMnZpRTBvT0pLMUtIS0FFWnNHOE9fMkxTdGU?oc=5",
+        "title": "Pope Leo XIV Releases First Encyclical on AI Ethics, Human Dignity",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxORWp4aWNJdWg2OFgzNDBIaV9MbTFxSDg5dEVsUjMzeEFrcWRhcEpfenNBT3A2UVV1UnlhMnZ3R3lYeGhaWllweHE5YUgwSTBQTzk0bkRWejdhVXpVbkxxSGNmUWE5XzF3dzVJOHc2dWdwT2JUM0t1MHRCbmpYMmlYUUpuWWg4eVhsYmJfamJOaW55LVAyR1RTbjJseWJ3UFVNZlJkd3NqMmNFYjdyNlJiUWxhb3ZxY0IydmxLeVh3VnVRdnZhcXhjR1hmSQ?oc=5",
+        "title": "Elon Musk and OpenAI leaders face off in court over AI safety concerns",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPWFFYc3Z5YmY1OHVlVWNEeXZVRktETXV5VTViVmc3Z3lYWmthaEFlR1h2MnhoeFRsQ2ZFLWg5MTVMcFR1UFRpWFJycHB5N0twVFg4YzF2d3hxSlY4NHVqSWprTXJJRG91U2pYMUNTcE9MZ3FqQ004MFRDVEJ4dVJ5SmdDcTFtNXN4UGYtcUkxSzBDY2pRWUluWTEydHFxN21rN0xHckRxY0lTMVk?oc=5",
+        "title": "Alibaba Unveils New AI Chip for Training and Inferencing",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxOUFlZY0pfY0VURHlxQUpuWVJOWEpnRHpIcm9Yb2V2eHozQnlMZFphenNORC1xYU5qa3pCVnpnZ05OZnNKYy1rS3R5Q2F6RE5yTV93Ty1sMEZWaFJqNXk2ZTZnX2JQdnVSTkVQY0xnX1RUN2FqUzZ1QzgyUTZtTnlaeU83V2VzbWpnX2Rra3o2OFY5TmxUQVVsbkRuc3M0YnJMZ2gxcA?oc=5",
+        "title": "Alibaba Cloud Summit: Launches 'Zhenwu M890' AI chip and debuts Qwen3.7-Max, the flagship Qwen large language model",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQWXZQdktKcVIwM1NuTzdmZ0Z2OUpPcFM3aE5jZ2k1R0hTM1NXakhQUXpzM2F1YS1xQjVoVDRuZWthNk4yY1ZuZ3lwUkxWWGJnSXQ2clp0bW9EQWh1LU9JLTc4TXZ1WDY3ejJwUDBpc2h5bGYwNHJ0OGttTzJsd0hUMGw2TDRoMk1aRWhUbHM5Nnh0LUVNdGV4LUc2bUJuUnRocVU3b01zUzAyZw?oc=5",
+        "title": "AI Chip Newcomer Cerebras Soars 68% on Debut, Can It Replicate Nvidia’s Myth?",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxOSmkwMjBZRGZfSVp2clVGYVZDaEdvX09yX09DQXhJZ3BjUFRRTFpTUE5Hc09jODk0ZHJJOThHMFI5d25vUUI3Ym5GcllNTy0xeko4NjU3SURaVG9XWGY3aVNMdG11bzZsSWtZS3h4dTZCZzdtVm5BeW5DdFo1MUpfclRpU1p0TlZtbm1IMEFZRE3SAZYBQVVfeXFMTnNLUVp5ekxNN01XUEZEY0ZTUmp5Y0c3Q0JWWEFfdm1Za1B3WE1uSkZ5OXowNDhUbWpueThhV2NrbW5YUktDUjcxTEZWbldMeUdRRGlLSjZkMENzV3VaSk04WHhsdUMwXzlqUkR5S0o5dVMtTWtVRjMxTjBDQlhCTFdsM2NFVmZNN2d0ZVBtN3RyS1FxZzFn?oc=5",
+        "title": "Blackstone to invest $5 billion in AI infrastructure venture with Google, powered by TPU chips",
+        "source": "Google News"
+      }
+    ],
+    "tags": {
+      "companies": [
+        "google",
+        "anthropic",
+        "alibaba",
+        "openai",
+        "nvidia",
+        "aws",
+        "github",
+        "pulumi"
+      ],
+      "models": [
+        "gemini-3.5-flash",
+        "claude-4.6",
+        "qwen-3.7-max",
+        "gemma-4",
+        "nova-sonic"
+      ],
+      "topics": [
+        "agent",
+        "mcp",
+        "vibe-coding",
+        "on-device-ai",
+        "security",
+        "infrastructure",
+        "rag"
+      ]
+    },
+    "tokenUsage": {
+      "input": 105067,
+      "output": 3689,
+      "total": 110124
+    }
+  },
+  {
     "date": "2026-05-19",
     "title": "KDAN AI 戰情報告 (2026-05-19)",
     "content": "# KDAN AI 戰情報告 (2026-05-19)\n\n## 昨日 AI 重點新聞\n\n### NVIDIA 發表首款代理專用 CPU Vera，宣佈「代理推論」進入硬體加速時代 ref-25, ref-21\n**NVIDIA** 推出首款專為 **AI 代理**設計的 **Vera CPU**，具備領先全球的單線程效能與 **1.2 TB/s** 記憶體頻寬。執行長黃仁勳強調，Vera 能讓代理在處理數據管線、代碼沙箱與分析任務時的速度提升 **50%**，大幅縮短代理任務的決策回饋循環。\n\n### Cursor 推出 Composer 2.5 模型，主打低成本實現 GPT-5.5 級編程能力 ref-7, ref-117\n熱門 AI 編輯器 **Cursor** 發表新模型 **Composer 2.5**。該模型透過強化學習 (RL) 與合成數據技術，在編程測試中達到接近 **GPT-5.5** 的表現，且推理成本大幅下降，被定位為目前最強大的開源代碼代理驅動引擎。\n\n### Musk v. Altman 訴訟終結：陪審團裁定 OpenAI 獲勝，駁回所有指控 ref-0, ref-77, ref-74\n備受矚目的 **Musk v. Altman** 訴訟迎來結局。陪審團達成一致建議，認為 Elon Musk 的起訴已超過法律追訴期，**OpenAI** 的重組與盈利化行為並未在法律規定的時效內被挑戰，法官隨即採納該裁決並駁回案件。\n\n### Anthropic 收購自動化 SDK 工具 Stainless，構建代理開發閉環 ref-2, ref-16\n**Anthropic** 宣佈收購 **Stainless**，該公司專精於利用 AI 自動化生成與維護 **SDK**。此舉旨在簡化開發者整合 Claude API 的流程，並將 Stainless 的能力整合進 Claude 的代理框架中，強化其開發者生態系統。\n\n### Google 與 Blackstone 成立 50 億美元合資公司，挑戰 NVIDIA GPU 壟斷 ref-110\n投資巨頭 **Blackstone** 宣佈與 **Google** 合作建立全新雲端運算實體，初始投入 **50 億美元**。該公司將提供客戶直接存取 Google **TPU** 的權限，旨在為對 NVIDIA 晶片供貨不滿的客戶提供另一種高性能算力選擇。\n\n### CISA 發生嚴重密鑰外洩，承包商將 AWS GovCloud 憑證上傳至 GitHub ref-58, ref-89\n美國資安局 **CISA** 遭爆料其承包商將包含 **AWS GovCloud** 密鑰與數十個內部系統密碼的代碼倉庫設為公開。安全專家 **Brian Krebs** 指出，這可能導致攻擊者在政府系統內埋下持久化後門，嚴重程度達歷史級別。\n\n### Sygnum 銀行完成首例由 AI 代理執行的銀行交易 ref-114\n瑞士受監管銀行 **Sygnum** 宣佈完成全球首項由 **AI 代理**自主發起並執行的數位資產交易與清算。這證明了具備法律身分與支付權限的 AI 代理已具備在傳統金融體系中運作的能力。\n\n### Meta 斥資 2,000 億美元建設 Hyperion 數據中心，算力達 5 GW ref-56\n**Meta** 被爆出計畫在路易斯安那州建設代號為 **Hyperion** 的超級數據中心校園。該項目預計投入超過 **2,000 億美元**，目標總算力達到驚人的 **5 GW**，顯示 Meta 正以前所未有的規模投入生成式 AI 的基礎建設。\n\n### Tenstorrent 引發 Intel 與 Qualcomm 收購意向，估值破 50 億美元 ref-135, ref-61\n傳出 AI 晶片挑戰者 **Tenstorrent** 已吸引 **Intel** 與 **Qualcomm** 的收購興趣。由於 Tenstorrent 在 **RISC-V** 架構與 AI 算力優化上的領先地位，其估值可能因這場競購戰被推升至 **50 億美元**以上。\n\n### 義大利 LegalTech 新創 Lexroom 獲 4,290 萬歐元 Series B 融資 ref-99\n**Lexroom** 採取「數據優先」而非「模型優先」的策略，整合數百萬份法律條文、案例與法規。其自動化法律研究與草擬功能已吸引 8,000 多家律師事務所使用，驗證了**垂直領域數據層**比通用模型微調更具商業價值的觀點。\n\n### Amazon Alexa Plus 加入 AI Podcast 生成功能，挑戰 Spotify AI 廣播 ref-40, ref-44\n**Amazon** 宣佈升級版 **Alexa Plus** 現可根據用戶自定義主題生成具備雙主持人的 AI Podcast。用戶能隨時干預對話方向或調整時長，顯示個人化內容生成的「即時語音化」趨勢已成主流。\n\n### 軟體供應鏈安全崩潰：314 個 npm 軟體包遭 Mini Shai-Hulud 蠕蟲入侵 ref-13, ref-91, ref-98\n新型 AI 驅動的惡意軟體 **Mini Shai-Hulud** 大規模感染 **npm** 生態系，特別是熱門的 **AntV** 視覺化工具庫。攻擊者利用 AI 自動化生成混淆代碼並竊取開發者環境中的雲端密鑰 (ref-111)。\n\n### Sieve 推出本地密鑰掃描工具，防範 AI 代理導致的 .env 外洩 ref-15\n由於 **Cursor**、**Claude Code** 等代理在讀取檔案時會將內容存入本地 SQLite 日誌中，**Sieve** 開發了專用工具，掃描並過濾掉這些 AI 代碼工具產生的明文 API 密鑰，防止隱私二次外洩。\n\n### Mistral 收購奧地利工業 AI 新創 Emmi AI ref-120, ref-48\n歐洲 AI 領袖 **Mistral** 宣佈收購工業物理 AI 新創 **Emmi AI**，旨在將大型語言模型與實體物理模擬結合，搶佔歐洲強大的工業自動化與科學計算市場。\n\n---\n\n## 市場洞察\n\n### 1. 代理基礎設施的「硬體與底層化」趨勢 (   ) ref-25, ref-13, ref-110\n延續前日關於 **Mac mini** 成為代理主機的報導 (ref-18, ref-40)，今日 **NVIDIA Vera CPU** 的發布標誌著「代理算力」正式進入專屬矽片時代。市場競爭點已從單純的模型參數量轉向「**代理運作頻寬**」與「**沙箱安全性**」。**Google 與 Blackstone** 的 50 億美元 JV (ref-17) 進一步說明，即使是金融巨頭也開始將算力視為核心資產進行深度佈局。\n\n### 2. 「數據層 (Data Layer)」正在重塑 Vertical AI 的護城河 (  ) ref-2, ref-111\n**Lexroom** 的 Series B 融資 (ref-6) 證明了一種反共識觀點：在特定產業中，擁有結構化的專屬數據庫比微調通用模型更有價值。這與 **Anthropic** 推出 **Claude for Legal** (ref-88) 的策略相呼應，顯示 Vertical AI 的勝負關鍵已不在「誰的模型強」，而在「誰的數據最準確且可引用」。\n\n### 3. AI 代理導致的「新型 DevOps 災難」與治理缺口 (    ) ref-1, ref-89, ref-58, ref-15\n**CISA 的密鑰外洩** (ref-66) 與 **Sieve** 針對 AI 工具日誌的密鑰掃描器 (ref-30) 揭示了一個重大隱憂：當 AI 代理頻繁存取開發環境時，它們正無意中將極高權限的憑證散佈在本地緩存、日誌與 GitHub 之中。這標誌著 AI 治理必須從「內容過濾」升級為「**自動化身分與密鑰治理 (Identity & Secret Governance)**」。\n\n### 4. 代理商務 (Agentic Commerce) 的金融閉環已完成 (  ) ref-70, ref-17\n**Sygnum 銀行** 的 AI 交易 (ref-101) 與 **Stripe/Cloudflare** 允許代理自主開戶 (ref-44)，標誌著 2026 年成為「代理經濟」元年。這不只是技術實驗，而是金融與合規體系開始承認 AI 代理具備一定的「合約主體性」，將帶動後續對電子簽章、身分綁定與防洗錢技術的巨大需求。\n\n---\n\n## KDAN 戰略洞察\n\n### 1. ComPDF SDK：整合「Stainless 式」開發者體驗，佈局代理專屬 SDK (  ) ref-2, ref-6\n*   **具體行動**：參考 **Anthropic 收購 Stainless** (ref-84) 的邏輯，**ComPDF SDK** 應開發「**Agent-native SDK**」。該 SDK 能自動對接 **MCP (模型上下文協定)**，讓 AI 代理在無需工程師手動配置的情況下，自動發現、理解並調用 PDF 解析與編輯功能，建立比 Foxit 更低的「代理整合門檻」。\n\n### 2. 點點簽 (DottedSign)：搶佔「代理交易身分」與金融授權門戶 (  ) ref-17, ref-114\n*   **具體行動**：面對 **Sygnum 銀行** 引發的代理交易浪潮 (ref-101)，**點點簽** 應開發專屬的「**代理授權金鑰 (Agentic Signing Keys)**」。當 AI 代理代執行交易時，需透過點點簽的身分綁定模組進行二次確認。同時參考 **Cosmico** 對「SuperAgents」的定義 (ref-105)，將點點簽定位為連接人類權利與代理執行的「**法律行為斷路器**」。\n\n### 3. LynxPDF：建構「Lexroom 等級」的法律垂直數據檢索 (  ) ref-6, ref-99\n*   **具體行動**：借鑑 **Lexroom** (ref-6) 的數據優先架構，**LynxPDF** 應從 PDF 編輯工具進化為「**智慧法律文檔中台**」。針對企業合約開發專屬的 RAG 引擎，不只提供摘要，更應標配 Lexroom 的「**溯源校正 (Source-traceable Retrieval)**」功能，確保 AI 生成的所有合約建議皆能對應到真實的法條與案例。\n\n### 4. 安全性：開發「AI 轉錄防火牆」與密鑰自動紅隊掃描 (   ) ref-15, ref-16, ref-40\n*   **具體行動**：針對 **Sieve** 揭露的 AI 輔助開發洩密風險 (ref-30)，凱鈿全產品線應加入「**敏感資訊過濾層**」。當用戶與 **LynxPDF AI** 或 **DottedSign AI** 對話時，系統應自動偵測並遮蓋 .env、API Keys 與個人 PII 資訊，防止這些機敏數據被寫入 AI 訓練日誌或本地 SQLite 資料庫。同時，參考 **Amazon Bedrock** 的 code-based evaluator (ref-53)，為企業客戶提供自動化的合規審計報告。\n\n### 5. 全產品線：優化針對 NVIDIA Vera CPU 的「代理平行處理」架構 (  ) ref-25, ref-6\n*   **具體行動**：針對 **NVIDIA Vera** 對單線程效能與記憶體頻寬的優化 (ref-125)，凱鈿的 PDF 重建技術與 OCR 引擎應進行微架構調整。開發專門針對 Vera CPU 與 Blackwell NPU 的「**Agent-heavy 運行模式**」，讓凱鈿產品在最新的 AI 行動工作站與伺服器上具備超越同業 50% 的響應速度。",
