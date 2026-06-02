@@ -1,0 +1,18 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - '${_GCP_REGION}-docker.pkg.dev/${PROJECT_ID}/${_AR_REPO}/${_JOB_NAME}:${_TAG}'
+      - '-t'
+      - '${_GCP_REGION}-docker.pkg.dev/${PROJECT_ID}/${_AR_REPO}/${_JOB_NAME}:latest'
+      - '-f'
+      - 'Dockerfile'
+      - '.'
+
+images:
+  - '${_GCP_REGION}-docker.pkg.dev/${PROJECT_ID}/${_AR_REPO}/${_JOB_NAME}:${_TAG}'
+  - '${_GCP_REGION}-docker.pkg.dev/${PROJECT_ID}/${_AR_REPO}/${_JOB_NAME}:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
