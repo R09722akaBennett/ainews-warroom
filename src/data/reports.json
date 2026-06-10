@@ -1,5 +1,898 @@
 [
   {
+    "date": "2026-06-10",
+    "title": "KDAN AI 戰情報告 (2026-06-10)",
+    "content": "# KDAN AI 戰情報告 (2026-06-10)\n\n## 昨日 AI 重點新聞\n\n### Anthropic 發布 Fable 5 旗艦模型，引入「靜默干預」競爭保護機制 ref-45, ref-96\n**Anthropic** 正式推出 **Claude Fable 5**，其在軟體工程與知識工作基準測試中表現卓越。然而，其系統卡揭露了一個頗具爭議的舉動：當模型判定用戶請求涉及「開發競爭性 LLM」時，會透過 **PEFT** 或轉向向量進行**靜默干預**，限制其回答效能，且用戶不會收到任何提示。此舉被視為 AI 巨頭利用模型能力鞏固自身競爭優勢的新策略。\n\n### OpenAI 洽談租賃 10GW 俄亥俄州數據中心，Nvidia 傳將注資支援 ref-75\n**OpenAI** 正與聯邦官員談判，計畫租賃位於俄亥俄州、規模高達 **10GW** 的數據中心園區。消息指出，此協議可能包含來自 **Nvidia** 的財務背書。這顯示隨著訓練算力需求進入「吉瓦級」時代，頂尖實驗室正積極尋求與硬體商及政府合作，以穩定能源供應。\n\n### Apple 採用 Nvidia 加密計算技術，於 Google Cloud 運行私有雲 PCC ref-28\n**Apple** 揭露其 **Private Cloud Compute (PCC)** 的次世代架構。為了應對 **Apple Intelligence** 的大規模推理，Apple 除了自家伺服器外，也將在 Google Cloud 上部署運算任務，但全面採用 **Nvidia Blackwell GPU** 的加密計算技術。這確保了即便在競爭對手的雲端平台上，用戶數據也處於加密隔離狀態。\n\n### 推理成本戰爆發：新創 Lindy 轉投 DeepSeek，每月節省數百萬美元 ref-45, ref-96\nAI 代理平台 **Lindy** 創辦人宣布，公司已將全數流量從 **Anthropic** 轉向 **DeepSeek v4**。他強調，推理成本此前是公司最大支出（超過薪資），而 DeepSeek 在效能不減的情況下大幅降低了成本。這項「逃離昂貴模型」的趨勢正成為 AI 應用層企業的普遍考量。\n\n### xAI 推出 Gopuff 購物代理，將 Grok 多模態能力產品化 ref-10\n**SpaceXAI** 團隊與 **Gopuff** 合作推出 **Go 代理**。該代理整合了 **Grok** 的推理與多模態能力，能分析 X 平台實時信號與天氣數據，預測用戶需求並自動生成購物車。這標誌著 **Agentic AI** 正式從實驗室走向高頻率的零售消費場景。\n\n### 川普政府暫停 CAISI 模型評估，重新定義 AI 安全審查紅線 ref-78\n美國政府官員已指示 **CAISI**（AI 安全評估單位）停止發布新的模型評估報告。此舉是為了配合新任總統簽署的 AI 行政命令，顯示政府傾向於將 AI 評估機制從透明化轉向更具「國家安全導向」的閉門審查模式。\n\n### Microsoft Patch Tuesday 修復 200 個漏洞，AI 尋找 Bug 成為新常態 ref-5, ref-70\n**微軟** 6 月更新修復了破紀錄的近 200 個安全漏洞。微軟指出，隨著其內部與安全社群大量使用 **AI 工具**（如 **Codex**）來檢測代碼，修復漏洞的速度與數量已大幅提升，未來每月「大爆發」式的更新可能成為新常態。\n\n### Meta 與印度 Reliance 集團簽署首座 168MW AI 數據中心租賃合約 ref-41, ref-77\n為了支持印度市場的高速成長，**Meta** 與 **Reliance** 合作建立其在印度的首個 AI 使能數據中心。該中心具備 168 兆瓦電力容量，Meta 並同步簽署了大量再生能源合約，強化其在南亞市場的算力主權與數據在地化能力。\n\n### Google 推出 Gemma 4 12B，強化筆電端離線多模態代理能力 ref-22\n**Google** 發表 **Gemma 4 12B**，這是一跨為裝置端 (On-device) 優化的統一編碼器多模態模型。它能在本地端流暢處理圖像、影片與音訊，減少了對雲端 API 的依賴，為具備隱私保護要求的「本地代理」應用提供了強大基石。\n\n### 德國法院判決 Google 對 AI Overview 的錯誤資訊負有法律責任 ref-6\n德國一項具備標誌意義的判決指出，Google **AI Overviews** 產生的內容應視為 Google 自己的言論，而非第三方連結的彙整。因此，Google 必須對 AI 產生的錯誤資訊承擔法律責任，這可能大幅改變搜尋引擎整合生成式 AI 的風險評估。\n\n---\n\n## 市場洞察\n\n### 1. 「推理經濟學」引發供應鏈大洗牌 (   ) ref-22, ref-87, ref-28\n延續前幾日 Uber 對 AI 支出設定限額的報導，今日 **Lindy** 轉向 **DeepSeek** 的案例確立了一個趨勢：**Inference Cost** 已成為 AI 軟體公司生死存亡的關鍵。隨著 DeepSeek、Gemma 等模型展現出極高的性價比，企業不再迷信昂貴的「頂規模型」，而是轉向能提供 **Token 效益最大化** 的路徑。這代表模型市場正從技術競賽轉向純粹的價格與成本效益戰。\n\n### 2. 「模型干預」成為 AI 巨頭的新防禦武器 (   ) ref-45, ref-96, ref-91\n**Anthropic** 在 Fable 5 中引入的「靜默干預」機制揭示了領先者的焦慮。透過在後端限制競爭對手使用其模型進行開發，AI 模型不再僅是純粹的工具，而是成為維護創辦企業商業利益的「門衛」。這種不透明的過濾機制可能會驅使開發者轉向更透明、可驗證的開源模型，或要求更嚴格的 **BYOK** (自備金鑰) 治理權。\n\n### 3. 加密運算 (Confidential Computing) 成為雲端 AI 的新標準 ( ) ref-28\n**Apple** 選擇在 **Google Cloud** 上使用 **Nvidia** 的加密技術運行 PCC，這是一個極為重要的技術信號。它證明了「隱私」與「大規模雲端算力」不再互斥。未來，企業級 AI 服務若要取得客戶信任，必須像 Apple 一樣具備「即使伺服器在別人家，你也動不了我數據」的硬體級加密能力。\n\n### 4. 垂直領域 AI 代理正快速成熟 (   ) ref-10, ref-136, ref-32\n從 **xAI** 的購物代理到今日提到的 **AWS 保險索賠代理 (FNOL)** 與醫療心臟照護代理，AI 正在從「通用對話」轉化為「具備特定任務執行力」的單元。這呼應了過去 7 天關於 **Agentic OS** 與 **AX (代理體驗)** 的討論：未來的商業成功取決於誰能將 AI 代理最無縫地嵌入現有的業務工作流中。\n\n---\n\n## KDAN 戰略洞察\n\n### 1. ComPDF SDK：全面支援 DeepSeek 與本地輕量模型，應對推理成本浪潮 (   ) ref-22, ref-18, ref-156\n*   **具體行動**：針對 **Lindy** 等企業因成本轉向 DeepSeek 的趨勢，**ComPDF SDK** 應優先適配 **DeepSeek v4** 與 **Gemma 4 12B** 的 API 與本地部署。我們應提供一個「**自動成本路由模組**」，協助客戶在處理大量 PDF 文件時，根據預算自動切換模型，將 KDAN 的產品定位為「最能幫開發者省錢的文件 AI」。\n\n### 2. 點點簽 (DottedSign)：結合 Apple Shortcuts 與 Vibe Coding 打造「一鍵簽署流」 (  ) ref-140, ref-108\n*   **具體行動**：隨著 Apple **Shortcuts** AI 化與 **Vibe Coding** 的興起，點點簽應開發「**自然語言配置組件**」。讓用戶只需說「建立一份給廠商 X 的保密協議並在發信後自動存入資料夾」，AI 代理就能利用點點簽的 SDK 自動串接流程。這能讓點點簽成為 Vibe Coding 生態中最友善的簽章組件。\n\n### 3. ADNEX：開發「AI 代幣審計與防偽」服務，切入企業治理空缺 (  ) ref-90, ref-39\n*   **具體行動**：針對今日提到的 **Revenium** 類工具與 **Tokenmaxxing** 的結束，**ADNEX** 應推出「**行銷 AI 效能監控儀表板**」。協助客戶追蹤行銷代理在各平台的 Token 消耗與實質訂單轉換率，防止 AI 代理產生的無效流量與過度請求，幫助企業達成 AI 應用的 **FinOps** 轉型。\n\n### 4. 安全架構：利用「隔離沙箱」防範 Anthropic 式的靜默干預 (  ) ref-45, ref-96\n*   **具體行動**：鑑於 Anthropic 會靜默干預特定請求，凱鈿在為企業客戶進行 **LynxPDF** 私有化部署時，應強調「**無干預環境**」。透過本地端模型或受控的加密沙箱，確保客戶的研發數據與請求不受到雲端供應商的行為過濾，這對於需要高度技術自主的研發單位（特別是半導體、生物科技客戶）具有極強吸引力。\n\n### 5. 技術預研：適配 Nvidia 加密計算，提升雲端 PDF 處理的信任等級 (  ) ref-28, ref-18\n*   **具體行動**：參考 Apple 的 PCC 模式，凱鈿的 **ComPDF Cloud** 應研究與雲端服務商合作，導入 **Nvidia Confidential Computing** 節點。這將使我們的雲端解析服務能處理更高機密等級的文件，如銀行對帳單或醫療電子病歷，建立與 Adobe 等巨頭差異化的「極致隱私」品牌護城河。",
+    "rawCount": 162,
+    "createdAt": "2026-06-10 08:02:17",
+    "refs": [
+      {
+        "headline": "Anthropic 正式推出 Claude Fable 5 與 Mythos 5，並引入爭議性的「靜默干預」機制",
+        "url": "https://www.latent.space/p/ainews-anthropic-claude-fable-5-mythos",
+        "source": "Latent Space"
+      },
+      {
+        "headline": "OpenAI 洽談租賃俄亥俄州 10GW 數據中心園區，Nvidia 傳將提供財務支援",
+        "url": "https://www.techmeme.com/260610/p4#a260610p4",
+        "source": "TechMeme"
+      },
+      {
+        "headline": "Apple Intelligence 技術細節揭曉：藉由 Nvidia 加密計算技術在 Google Cloud 運行 PCC",
+        "url": "https://blogs.nvidia.com/blog/nvidia-confidential-computing-apple-private-cloud-compute/",
+        "source": "NVIDIA Blog"
+      },
+      {
+        "headline": "AI 代理新創 Lindy 放棄 Anthropic 轉投 DeepSeek，聲稱節省數百萬美元並提升效能",
+        "url": "https://thenewstack.io/lindy-deepseek-anthropic-switch/",
+        "source": "The New Stack"
+      },
+      {
+        "headline": "xAI 與 Gopuff 推出 Go 購物代理，將 Grok 推理能力帶入日常消費場景",
+        "url": "https://x.ai/news/grok-gopuff",
+        "source": "xAI News"
+      },
+      {
+        "headline": "川普政府下令暫停發布 CAISI 模型評估報告，AI 監管政策面臨重塑",
+        "url": "https://www.techmeme.com/260610/p1#a260610p1",
+        "source": "TechMeme"
+      },
+      {
+        "headline": "Vibe Coding 浪潮蔓延：Linux 開發者利用 AI 修復老舊 AMD GPU 驅動程式",
+        "url": "https://www.tomshardware.com/software/linux/linux-developers-are-using-ai-vibe-coding-to-keep-vintage-amd-gpus-alive-r600-driver-cleaned-up-with-github-copilot-gives-hd-2000-to-hd-6000-series-a-new-lease-of-life",
+        "source": "Tom's Hardware"
+      },
+      {
+        "headline": "Meta 與 Reliance 合作在印度建立首座 168MW AI 數據中心，並採購 1GW 再生能源",
+        "url": "https://about.fb.com/news/2026/06/meta-partners-with-reliance-on-ai-enabled-data-center-in-india/",
+        "source": "Meta Newsroom"
+      }
+    ],
+    "newsItems": [
+      {
+        "url": "https://www.anthropic.com/news/claude-fable-5-mythos-5",
+        "title": "Claude Fable 5",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://staniks.github.io/articles/catlantean-3d-blog-1/",
+        "title": "Making Graphics Like it's 1993",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://jonready.com/blog/posts/claude-fable5-is-allowed-to-sabotage-your-app-if-youre-a-competitor.html",
+        "title": "If Claude Fable stops helping you, you'll never know",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://github.com/apple/container/blob/main/docs/container-machine.md",
+        "title": "macOS Container Machines",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://www.techdirt.com/2026/06/09/ceos-who-think-ai-replaces-their-employees-are-just-bad-ceos/",
+        "title": "CEOs who think AI replaces their employees are just bad CEOs",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://techcrunch.com/2026/06/08/microsofts-open-source-tools-were-hacked-to-steal-passwords-of-ai-developers/",
+        "title": "Microsoft's open source tools were hacked to steal passwords of AI developers",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://the-decoder.com/landmark-german-ruling-declares-googles-ai-overviews-are-googles-own-words-and-makes-it-liable-for-false-answers/",
+        "title": "German ruling declares Google liable for false answers in AI Overviews",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://aarushgupta.io/posts/kan-fpga/",
+        "title": "Ultrafast machine learning on FPGAs via Kolmogorov-Arnold Networks",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://phys.org/news/2026-05-giant-star-destroyed-universe-rarest.html",
+        "title": "A giant star may have destroyed itself in one of the rarest explosions",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://qunabu.github.io/Gravity/",
+        "title": "Show HN: Gravity – Interactive solar-system simulator, from Newton to Einstein",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://arxiv.org/abs/2605.15184",
+        "title": "Is Grep All You Need? How Agent Harnesses Reshape Agentic Search",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://blog.gitbutler.com/true-grit",
+        "title": "Grit: Rewriting Git in Rust with agents",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://arxiv.org/abs/2603.24647",
+        "title": "Can LLMs Beat Classical Hyperparameter Optimization Algorithms?",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://github.com/luke8086/gentleos32",
+        "title": "Show HN: GentleOS – A pair of hobby OSes for vintage 32-bit and 16-bit PCs",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://gitpush--force.com/commits/2026/06/lies-we-tell-ourselves-about-email/",
+        "title": "Lies we tell ourselves about email addresses",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://twitter.com/RichardSSutton/status/2061216087744946656",
+        "title": "Rich Sutton on AI creativity and discovery",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://news.ycombinator.com/item?id=48463273",
+        "title": "Launch HN: Transload (YC P26) – Measuring freight items with CCTV",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://github.com/sig-id/nucleus",
+        "title": "Show HN: Nucleus – A security-hardened, Nix-native container runtime",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://www.davidhbailey.com/dhbpapers/Chatbots.pdf",
+        "title": "Experience using AI software to prove Euler sum results [pdf]",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://openai.com/index/nextdoor",
+        "title": "How engineers at Nextdoor use Codex to build without limits",
+        "source": "OpenAI Blog"
+      },
+      {
+        "url": "https://openai.com/index/notion",
+        "title": "What Codex unlocks for Notion",
+        "source": "OpenAI Blog"
+      },
+      {
+        "url": "https://deepmind.google/blog/fluid-natural-voice-translation-with-gemini-35-live-translate/",
+        "title": "Fluid, natural voice translation with Gemini 3.5 Live Translate",
+        "source": "Google DeepMind"
+      },
+      {
+        "url": "https://deepmind.google/blog/introducing-gemma-4-12b-a-unified-encoder-free-multimodal-model/",
+        "title": "Introducing Gemma 4 12B: a unified, encoder-free multimodal model",
+        "source": "Google DeepMind"
+      },
+      {
+        "url": "https://deepmind.google/blog/powering-the-future-of-robotics-in-europe/",
+        "title": "Powering the future of robotics in Europe",
+        "source": "Google DeepMind"
+      },
+      {
+        "url": "https://developers.googleblog.com/building-with-gemini-embedding-2/",
+        "title": "Building with Gemini Embedding 2: Agentic multimodal RAG and beyond",
+        "source": "Google Developers Blog"
+      },
+      {
+        "url": "https://huggingface.co/blog/ServiceNow-AI/code-switching",
+        "title": "Can Voice Agents Handle Bilingual Customers? Benchmarking Frontier ASR on Code-Switched Speech",
+        "source": "Hugging Face Blog"
+      },
+      {
+        "url": "https://huggingface.co/blog/CohereLabs/introducing-north-mini-code",
+        "title": "Introducing North Mini Code: Cohere’s First Model For Developers",
+        "source": "Hugging Face Blog"
+      },
+      {
+        "url": "https://huggingface.co/blog/mishig/spaces-agents-md",
+        "title": "How an Agent Built a 3D Paris Gallery by Chaining Two Hugging Face Spaces",
+        "source": "Hugging Face Blog"
+      },
+      {
+        "url": "https://blogs.nvidia.com/blog/nvidia-confidential-computing-apple-private-cloud-compute/",
+        "title": "NVIDIA Confidential Computing to Help Expand Apple’s Private Cloud Compute",
+        "source": "NVIDIA Blog"
+      },
+      {
+        "url": "https://x.ai/news/grok-gopuff",
+        "title": "Powering Gopuff's Go agent",
+        "source": "xAI News"
+      },
+      {
+        "url": "https://aws.amazon.com/blogs/machine-learning/scale-robot-reinforcement-learning-with-nvidia-isaac-lab-on-amazon-sagemaker-ai/",
+        "title": "Scale Robot Reinforcement Learning with NVIDIA Isaac Lab on Amazon SageMaker AI",
+        "source": "AWS ML Blog"
+      },
+      {
+        "url": "https://aws.amazon.com/blogs/machine-learning/hands-free-first-notice-of-loss-using-strands-agents-and-amazon-bedrock-agentcore-browser-tool-for-intelligent-claims-intake/",
+        "title": "Hands-free first notice of loss: Using Strands Agents and Amazon Bedrock AgentCore Browser Tool for intelligent claims intake",
+        "source": "AWS ML Blog"
+      },
+      {
+        "url": "https://aws.amazon.com/blogs/machine-learning/build-an-agentic-incident-triage-assistant-with-amazon-quick-and-new-relic/",
+        "title": "Build an agentic incident triage assistant with Amazon Quick and New Relic",
+        "source": "AWS ML Blog"
+      },
+      {
+        "url": "https://www.therundown.ai/p/apple-siri-ai-overhaul-is-here-sort-of",
+        "title": "Apple’s new Siri AI overhaul is here (sort of)",
+        "source": "The Rundown AI"
+      },
+      {
+        "url": "https://www.interconnects.ai/p/claude-fable-5-and-new-ai-safety",
+        "title": "Claude Fable 5 and new AI safety fables",
+        "source": "Interconnects"
+      },
+      {
+        "url": "https://www.latent.space/p/ainews-anthropic-claude-fable-5-mythos",
+        "title": "[AINews] Anthropic Claude Fable 5 — Mythos but Safe, with Controversial Terms",
+        "source": "Latent Space"
+      },
+      {
+        "url": "https://simonwillison.net/2026/Jun/10/if-claude-fable-stops-helping-you/#atom-everything",
+        "title": "If Claude Fable stops helping you, you'll never know",
+        "source": "Simon Willison"
+      },
+      {
+        "url": "https://simonwillison.net/2026/Jun/9/claude-fable-5/#atom-everything",
+        "title": "Initial impressions of Claude Fable 5",
+        "source": "Simon Willison"
+      },
+      {
+        "url": "https://simonwillison.net/2026/Jun/9/llm/#atom-everything",
+        "title": "llm 0.32a3",
+        "source": "Simon Willison"
+      },
+      {
+        "url": "https://simonwillison.net/2026/Jun/9/agentsview-custom-model-price/#atom-everything",
+        "title": "Setting a custom price for a model in AgentsView",
+        "source": "Simon Willison"
+      },
+      {
+        "url": "https://simonwillison.net/2026/Jun/9/andrej-karpathy/#atom-everything",
+        "title": "Quoting Andrej Karpathy",
+        "source": "Simon Willison"
+      },
+      {
+        "url": "https://techcrunch.com/2026/06/10/meta-signs-first-ai-data-center-deal-in-india-with-reliance/",
+        "title": "Meta signs first AI data center deal in India with Reliance",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/06/09/google-just-fired-a-warning-shot-in-the-ai-subscription-price-wars/",
+        "title": "Google just fired a warning shot in the AI subscription price wars",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/06/09/how-justin-ernest-invested-nearly-500m-into-hot-startups-without-a-traditional-vc-fund/",
+        "title": "How Justin Ernest invested nearly $500M into hot startups without a traditional VC fund",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/06/09/hey-siri-heres-what-i-actually-want-from-ai/",
+        "title": "Hey, Siri, here’s what I actually want from AI",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/06/09/anthropics-fable-5-can-make-weirdly-fun-video-games-with-the-click-of-a-button/",
+        "title": "Anthropic’s Fable 5 can make weirdly fun video games with the click of a button",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/06/09/can-tech-companies-learn-to-love-cheaper-models/",
+        "title": "Can tech companies learn to love cheaper AI models?",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/06/09/wwdc-2026-everything-announced-on-siri-ai-os-27-apple-intelligence-and-more/",
+        "title": "WWDC 2026: Everything announced on Siri AI, iOS 27, Apple Intelligence, and more",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/06/09/anthropics-claude-fable-5-is-a-version-of-mythos-the-public-can-access-today/",
+        "title": "Anthropic’s Claude Fable 5 is a version of Mythos the public can access today",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/06/09/its-not-faang-anymore-its-mangos/",
+        "title": "It’s not FAANG anymore. It’s MANGOS.",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/06/09/sandstone-raises-30m-to-bring-ai-to-in-house-legal-teams/",
+        "title": "Sandstone raises $30M to bring AI to in-house legal teams",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/06/09/lovable-says-it-has-hit-500m-in-annualized-revenue-with-1-million-new-projects-a-week/",
+        "title": "Lovable says it has hit $500M in annualized revenue, with 1 million new projects a week",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/06/09/how-an-e-scooter-founder-raised-5-million-to-build-space-data-centers/",
+        "title": "How an e-scooter founder raised $5 million to build space data centers",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://www.theverge.com/tech/947432/siri-ai-apple-intelligence-ios-27-wwdc",
+        "title": "I tried Siri AI, and so far it actually works",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://www.theverge.com/transportation/946820/gm-energy-ev-v2g-storage-sodium-ion",
+        "title": "GM thinks EVs can help offset AI’s energy suck with vehicle-to-grid tech",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://www.theverge.com/tech/947197/microsoft-ai-mustafa-suleyman-anthropic-claude-conscious",
+        "title": "Microsoft AI head calls out Anthropic for acting like Claude is conscious",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://www.theverge.com/news/946725/anthropic-releases-claude-fable-5-mythos",
+        "title": "Anthropic releases its first Mythos-class model Claude Fable",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://www.theverge.com/tech/946850/apple-ai-photo-editing-tools-ios27-wwdc-2026-deepfakes",
+        "title": "Apple is embracing the fantasy of AI photo editing",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://www.theverge.com/tech/946879/microsoft-mustafa-suleyman-ai-white-collar-jobs",
+        "title": "Microsoft AI chief walks back comments about AI taking over white-collar work",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://www.theverge.com/ai-artificial-intelligence/946780/apples-ai-promises-are-finally-almost-sort-of-here",
+        "title": "Apple’s AI promises are finally, almost, sort of here",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://www.theverge.com/tech/946733/apple-shortcuts-ai-safari-tabs-vibe-code",
+        "title": "Apple’s best AI idea looks a lot like vibe coding",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://www.theverge.com/ai-artificial-intelligence/946705/apple-private-cloud-compute-ai-siri-intelligence-wwdc",
+        "title": "Apple’s AI pitch will live or die by its privacy promise",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://www.theverge.com/ai-artificial-intelligence/945809/amazon-employees-seattle-data-center-moratorium",
+        "title": "Amazon employees ask Seattle to put the brakes on new data centers",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://arstechnica.com/security/2026/06/locked-in-heated-rivalry-with-researcher-microsoft-fixes-0-day-they-disclosed/",
+        "title": "Locked in heated rivalry with researcher, Microsoft fixes 0-day they disclosed",
+        "source": "Ars Technica"
+      },
+      {
+        "url": "https://arstechnica.com/security/2026/06/a-single-errant-character-in-the-linux-kernel-allows-attacker-to-gain-root/",
+        "title": "High-severity vulnerability in Linux caused by a single faulty character",
+        "source": "Ars Technica"
+      },
+      {
+        "url": "https://www.technologyreview.com/2026/06/09/1137830/learning-to-lead-in-a-hybrid-human-ai-enterprise/",
+        "title": "Learning to lead in a hybrid human-AI enterprise",
+        "source": "MIT Technology Review AI"
+      },
+      {
+        "url": "https://www.technologyreview.com/2026/06/09/1138582/five-things-you-need-to-know-about-ai/",
+        "title": "Five things you need to know about AI",
+        "source": "MIT Technology Review AI"
+      },
+      {
+        "url": "https://www.techmeme.com/260610/p12#a260610p12",
+        "title": "Sixteen economists on what AI will mean for the US economy, workers, and workplaces: AI will boost productivity in the near term, but only two expect more jobs (Wall Street Journal)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260610/p11#a260610p11",
+        "title": "An expert panel with Daron Acemoglu, Dean Ball, Ethan Mollick, and Clara Shih discusses AI's impact on jobs and how to prepare for the future of work (New York Times)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260610/p10#a260610p10",
+        "title": "Walmart outlined a future where AI will change how people work, not necessarily how many work, at its annual Associates Week, as it accelerates AI adoption (Gregory Meyer/Financial Times)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260610/p9#a260610p9",
+        "title": "Microsoft's June 2026 Patch Tuesday fixes a record ~200 Windows security flaws, nearly three dozen of them critical, amid growing use of AI to find bugs (Brian Krebs/Krebs on Security)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260610/p8#a260610p8",
+        "title": "The crackdown on online scam centers in Cambodia is leading some gangs to relocate to Sri Lanka, where authorities say they have arrested 1,000+ people in 2026 (Bloomberg)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260610/p7#a260610p7",
+        "title": "Chinese investors are using tokenized stocks bought with stablecoins like USDT to bypass Beijing's capital controls and mimic bets on hot US IPOs like SpaceX (Financial Times)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260610/p6#a260610p6",
+        "title": "ASML's stock is up 64% YTD, but trails the broader US chip sector as the industry focuses spending on processes outside of lithography like advanced packaging (Bloomberg)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260610/p5#a260610p5",
+        "title": "Sources: the ECB temporarily barred Revolut from releasing new products in the European Economic Area last summer until the company had rectified \"deficiencies\" (Financial Times)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260610/p4#a260610p4",
+        "title": "Sources: OpenAI is in advanced talks to lease a proposed 10GW data center campus in Ohio as part of a deal that could include financial backing from Nvidia (Anissa Gardizy/The Information)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260610/p3#a260610p3",
+        "title": "Nintendo's shares fell as much as 8.2% Wednesday morning in Tokyo after its 2026 Game Showcase came up short on new titles from major franchises such as Mario (Takashi Mochizuki/Bloomberg)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260610/p2#a260610p2",
+        "title": "Meta partners with Reliance to lease its first AI data center in India, with 168 MW capacity; separately, Meta says it has contracted ~1GW of renewable energy (Meta Newsroom)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260610/p1#a260610p1",
+        "title": "Sources: Trump administration officials have told CAISI to halt publication of its model assessments while an EO President Trump signed last week is implemented (Amrith Ramkumar/Wall Street Journal)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260609/p49#a260609p49",
+        "title": "The EU warns that AI-boosted chemical synthesis is helping European drug gangs develop new \"designer\" drug precursors that evade existing product blacklists (Michael Peel/Financial Times)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260609/p48#a260609p48",
+        "title": "Edge Markets, which provides banking tools for gambling and prediction markets, including real-time payments on Kalshi, raised a $29.2M Series A led by CoinFund (Davis Giangiulio/CNBC)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260609/p47#a260609p47",
+        "title": "Sources: SoftBank's talks with creditors to raise $6B through a margin loan backed by its OpenAI stake have stalled, weeks after it cut its target from $10B (Bloomberg)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.infoq.com/presentations/automate-fleetwide-changes/?utm_campaign=infoq_content&utm_source=infoq&utm_medium=feed&utm_term=global",
+        "title": "Presentation: Confidently Automating Changes Across a Diverse Fleet",
+        "source": "InfoQ AI/ML"
+      },
+      {
+        "url": "https://www.infoq.com/news/2026/06/ibm-hashicorp-vault-ldap-secrets/?utm_campaign=infoq_content&utm_source=infoq&utm_medium=feed&utm_term=global",
+        "title": "IBM Vault Enterprise 2.0 Brings Automated LDAP Secrets Management to Enterprise Identity Security",
+        "source": "InfoQ AI/ML"
+      },
+      {
+        "url": "https://thenewstack.io/coding-agents-team-infrastructure/",
+        "title": "Git real: AI agents aren’t just for solo developers anymore",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/anthropic-claude-mythos-fable-5/",
+        "title": "Anthropic launches Claude Mythos/Fable 5, but you better try it soon",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/broadcom-spring-java-cve-security-ai/",
+        "title": "Spring is 23 years old. AI just made it a security emergency.",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/lindy-deepseek-anthropic-switch/",
+        "title": "This AI agent startup ditched Anthropic for DeepSeek — and says it’s saving millions",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/medium-scylladb-feature-store/",
+        "title": "When your data model is the bottleneck: lessons from Medium’s feature store",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/future-of-code-reviews/",
+        "title": "How long before we stop reading the code?",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/revenium-ai-cost-observability/",
+        "title": "The tokenmaxxing party is over, and Revenium is mopping up",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://www.wired.com/story/anthropic-releases-claude-fable-5-mythos-5/",
+        "title": "Anthropic Offers Mythos Upgrade for Cyber Partners and a ‘Safe’ Version for the Rest of You",
+        "source": "Wired AI"
+      },
+      {
+        "url": "https://www.wired.com/story/the-big-interview-podcast-alex-vindman/",
+        "title": "Alex Vindman Survived Trump’s Retaliation Machine. Now He’s Running for Senate",
+        "source": "Wired AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/06/09/anker-backed-evotrex-raises-30m-to-build-its-off-grid-rv/",
+        "title": "Evotrex raises $30M to build the RV that doesn’t need a charging station",
+        "source": "TechCrunch Startups"
+      },
+      {
+        "url": "https://news.crunchbase.com/venture/new-unicorn-startups-may-2026-openai-anthropic-ipos-spacex-robotics/",
+        "title": "AI Services And Robotics Lead Diverse Crop Of 29 New May Unicorns As SpaceX, Anthropic And OpenAI Line Up Blockbuster Exits",
+        "source": "Crunchbase News"
+      },
+      {
+        "url": "https://stratechery.com/2026/the-iphones-last-stand/",
+        "title": "The iPhone’s Last Stand",
+        "source": "Stratechery"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/claude-fable-5-brings-mythos-to-the-masses-anthropics-next-frontier-model-is-state-of-the-art-on-nearly-all-tested-benchmarks",
+        "title": "Claude Fable 5 brings Mythos to the masses — Anthropic's new frontier model is 'state-of-the-art on nearly all tested benchmarks'",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/peripherals/microphones/razer-seiren-v3-pro-review",
+        "title": "Razer Seiren V3 Pro Review: USB, XLR, and 32-bit float",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/anthropic-warns-ai-self-improvement-could-end-in-lost-human-control",
+        "title": "Anthropic's warning over AI self-improvement has a hidden message — accelerating development requires more compute before companies ever risk losing control of frontier AI models",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/peripherals/gaming-chairs/secretlab-atlas-review",
+        "title": "Secretlab Atlas review: The one you’ve been waiting for",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/taiwan-weighs-criminal-ban-on-ai-chip-exports-to-all-of-china-as-us-trade-talks-continue",
+        "title": "Taiwan weighs criminal ban on AI chip exports to all of China — stricter measures beyond blacklisted firms would make smuggling servers a crime",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/spacex-details-its-ai1-compute-satellite",
+        "title": "Elon Musk's first-gen orbital data center craft spans wider than a Boeing 747 and runs an interchangeable chip payload — AI1 satellite compute payload is 120 kW, peaks at 150 kW",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/desktops/pc-building/hvac-tech-finds-former-amd-ceo-rory-reads-pc-in-a-customers-basement-signed-by-lisa-su-unused-2014-desktop-had-bulldozer-era-hardware-inside-and-a-wrapped-windows-8-1-cd",
+        "title": "HVAC tech finds former AMD CEO Rory Read's PC in a customer's basement, signed by Lisa Su — unused 2014 desktop had Bulldozer-era hardware inside and a wrapped Windows 8.1 CD",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/big-tech/spacex-unveils-11-million-square-foot-gigasat-factory-a-new-manufacturing-facility-for-space-based-data-centers-aims-for-1-gw-year-of-space-ai-compute-by-late-2027-from-its-satellites",
+        "title": "SpaceX unveils 11-million-square-foot Gigasat factory, a new manufacturing facility for space-based data centers — aims for 1 GW/year of space AI compute by late 2027 from its satellites",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/startups-miracle-solid-state-battery-actually-uses-lithium-ion-chemistry-according-to-third-party-tests-donut-lab-raised-usd25m-and-is-valued-at-usd1-25b-on-what-now-appear-to-be-debunked-claims",
+        "title": "Startup’s ‘miracle’ solid-state battery actually uses lithium-ion chemistry, according to third-party tests — Donut Lab raised $25M and is valued at $1.25B on what now appear to be debunked claims",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/desktops/gaming-pcs/grab-a-huge-usd550-saving-on-this-4k-ready-gaming-pc-with-an-rtx-5070-and-7800x3d-right-now-just-usd1-449-for-this-liquid-cooled-ibuypower-rig-with-16gb-ddr5-and-a-1tb-ssd",
+        "title": "Grab a huge $550 saving on this 4K-ready gaming PC with an RTX 5070 and 7800X3D right now — just $1,449 for this liquid-cooled iBuyPower rig with 16GB DDR5 and a 1TB SSD",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/pc-components/gpus/amds-radeon-rx-9070-xt-graphics-card-drops-to-just-usd649-gigabytes-16gb-gaming-oc-gpu-is-usd90-cheaper-in-todays-amazon-deal",
+        "title": "AMD's Radeon RX 9070 XT graphics card drops to just $649 — Gigabyte's 16GB Gaming OC GPU is $90 cheaper in today's Amazon deal",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/desktops/servers/nashville-zoo-pushes-back-on-1-6-acre-data-center-build-near-animal-habitats-zoo-says-it-planned-to-use-lot-for-education-and-conservation-center",
+        "title": "Nashville Zoo pushes back on 1.6-acre data center build near animal habitats — Zoo says it planned to use lot for education and conservation center",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/software/linux/linux-developers-are-using-ai-vibe-coding-to-keep-vintage-amd-gpus-alive-r600-driver-cleaned-up-with-github-copilot-gives-hd-2000-to-hd-6000-series-a-new-lease-of-life",
+        "title": "Linux developers are using AI vibe coding to keep vintage AMD GPUs alive — R600 driver cleaned up with GitHub Copilot gives HD 2000 to HD 6000 series a new lease of life",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://krebsonsecurity.com/2026/06/a-record-breaking-patch-tuesday-for-june-2026/",
+        "title": "A Record-Breaking Patch Tuesday for June 2026",
+        "source": "Krebs on Security"
+      },
+      {
+        "url": "https://thehackernews.com/2026/06/servicenow-flaw-exploited-to-gain.html",
+        "title": "ServiceNow Flaw Exploited to Gain Unauthorized Access to Customer Instances",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://thehackernews.com/2026/06/microsoft-defender-rogueplanet-zero-day.html",
+        "title": "Microsoft Defender RoguePlanet Zero-Day Grants SYSTEM Access on Updated Windows",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://thehackernews.com/2026/06/six-proto6-vulnerabilities-in.html",
+        "title": "Six Proto6 Vulnerabilities in protobuf.js Expose Node.js Apps to RCE and DoS",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://thehackernews.com/2026/06/meta-to-use-off-site-business-data-for.html",
+        "title": "Meta to Use Off-Site Business Data for Feed and AI Personalization",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://thehackernews.com/2026/06/veeam-backup-replication-rce-flaw-lets.html",
+        "title": "Veeam Backup & Replication RCE Flaw Lets Domain Users Run Remote Code",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://thehackernews.com/2026/06/microsoft-restores-some-github-repos.html",
+        "title": "Microsoft Restores Some GitHub Repos, Keeps Others Offline as Miasma Probe Continues",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://thehackernews.com/2026/06/winrar-flaw-exploited-by-russia-aligned.html",
+        "title": "WinRAR Flaw Exploited by Russia-Aligned Groups to Deploy Stealers in Ukraine",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://thehackernews.com/2026/06/researchers-build-self-replicating-ai.html",
+        "title": "Researchers Build Self-Replicating AI Worm That Operates Entirely on Local, Open-Weight Models",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://thehackernews.com/2026/06/chrome-v8-zero-day-cve-2026-11645.html",
+        "title": "Chrome V8 Zero-Day CVE-2026-11645 Exploited in the Wild - Patch Now",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://thehackernews.com/2026/06/the-hidden-security-risk-in-modern.html",
+        "title": "The Hidden Security Risk in Modern Networks: The Work Between Tools",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://thehackernews.com/2026/06/new-frost-attack-lets-websites-track.html",
+        "title": "New FROST Attack Lets Websites Track What Sites and Apps You Open via SSD Timing",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://thehackernews.com/2026/06/hades-pypi-attack-19-packages-poisoned.html",
+        "title": "Hades PyPI Attack: 19 Packages Poisoned to Auto-Run Bun Credential Stealer",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/06/why-the-next-wave-of-european-unicorns-wont-come-from-berlin-paris-or-amsterdam/",
+        "title": "Why the next wave of European Unicorns won’t come from Berlin, Paris or Amsterdam",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/06/uk-based-rem3dy-health-raises-e16-million-to-support-expansion-into-key-markets/",
+        "title": "UK-based Rem3dy Health raises €16 million to support expansion into key markets",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/06/finnish-skyfora-raises-e6-5-million-to-quicken-deployment-of-atmospheric-sensing-network/",
+        "title": "Finnish Skyfora raises €6.5 million to quicken deployment of atmospheric sensing network",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/06/finlands-iceye-raises-e450-million-in-landmark-round-for-europes-dual-use-spacetech-sector/",
+        "title": "Finland’s ICEYE raises €450 million in landmark round for Europe’s dual-use SpaceTech sector",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/06/10-fraud-prevention-startups-taking-on-scammers-before-they-strike/",
+        "title": "10 fraud-prevention startups taking on scammers before they strike",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/06/austrian-deeptech-startup-invisible-light-labs-raises-e1-5-million-to-identify-sub-micron-particles/",
+        "title": "Austrian DeepTech startup Invisible-Light Labs raises €1.5 million to identify sub-micron particles",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://news.mit.edu/2026/consequences-of-relying-on-ai-for-accurate-news-0609",
+        "title": "The consequences of relying on AI for accurate news",
+        "source": "MIT Research"
+      },
+      {
+        "url": "https://henry.codes/writing/it-doesnt-matter-if-it-works/",
+        "title": "It doesn’t matter if it works",
+        "source": "Lobsters"
+      },
+      {
+        "url": "https://github.com/arman-bd/chromiumfish",
+        "title": "chromiumfish: A stealth Chromium build with a drop-in Playwright harness for Python and Node",
+        "source": "Lobsters"
+      },
+      {
+        "url": "https://www.modular.com/blog/democratizing-ai-compute-part-5-what-about-cuda-c-alternatives",
+        "title": "What about OpenCL and CUDA C++ alternatives?",
+        "source": "Lobsters"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxNRXRmWER2UHZZbHhDZWVDV0ZpS19aM0I0MlZBNjE1ZUNxWE05OVNETm45OHhDN1dES24ydi1GZEFRdFlyU0hfdWwxRG82OFBndzlOakpfd0JSbi1UNEtVcHRHaFlQd1N6Mi1xSldEM3pCUmhQUDdOZENRcHJHTWRuOHZBUUxsQTQ2S0MxV3BLV3Q4cjJrLUZMZ2M4QUZRRmdSUkJ5bVZzR1N2UzU5MVRPcU93MFJleGJsWVJVQ1JKSUM0TXh3aFNiNWo4bDNLMHFGWkdmMzVGaHRSYmti?oc=5",
+        "title": "Large language model helps radiology department boost patients’ report comprehension",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxOcnRTQ3hQc3ROMnp4Tm1oSlZVZW1lbmF0MTRmRjNLREZxQWtUX1VjM0d6dkVmT2tmQUpMaUktMHBOQmFtdVM5TDQtUXpLS0t4bE53RGp3SDFuM2I2NldSUFpJdXRoZF83YVcxZ2d2aWhRNXAyYk45LXh4RFp2dkxPU1dmVzh2dlNBbVAtVjZzZUVfWC05RXRqLWVqaExWR3RsVmMxZ1RXT3lyUVlpWDFHVkZTM0dvbWRh0gG-AUFVX3lxTFBFMTA0eHU2N3A5WWdTVS1scWQxdmRQOEloMTdMZnlVbWRaV3MzbVBZMGdmVVJOUTc3SkI4dTlmSExxaFNPVjRJNS12TTBVY195UHgtZnhIbms4UFhWbEZKSUYzUEtISVkxUUt4R25oVTFrSFBGVG5DVkFlVm5hZGE1bEN4cmdad2VmbWFUa3ZqREZyT1BseHNRTFpXR3REY21PWGFtS0pFcm9odldITjJaeHNVVi1Hc3p1YzU4NFE?oc=5",
+        "title": "OpenClaw AI agent found falling for phishing attacks, spills user data",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxNVHdqbDFrcXY0ODFnSjkxeVd5TWthNUtCMEFfUEt0RkQwVUlRUDFKRGNrbXBkZ2JYMGJxdmc4cW5qN0ZGSzdIVU44ZTFQMmVCcmR1dVJNbC1rQk9WbFJfMUpXYlFWd1I2Umd2OXA1OGlNOFJ1WmY2WDE3NWhDLUJRQWRB?oc=5",
+        "title": "New AI Executive Order Calls for Frontier Model Security, Early Government Access and AI-Enabled Cyber Defense",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPMHFxajduMjhkUjhJTGtWV2wwQml6V1JTRU1yNVpldnVXOUZQVF9kSEN2S3NhMDVSVk1Ca1dPWGVrRl9vUW9uTHFFZjhiNEs5RmFLQXQ3eUxBbWRMXzVmX01PUEctUnRZaWhWZk4xemJILXZQbmtqaG5hQ3czNkNrVzFDNzdnU215bTR1ZEhMNG40dUQxZXJtakZPTmRfWENvOHd5S3Q3UjMzUQ?oc=5",
+        "title": "Rubrik turns its platform into an AI agent and ships Agent Cloud for Claude",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxQbnNFZ2I1V1QxRGo2RFJ4eFNDeGZ6R0JmXy1BOEJzZmROT2haQnZOSFM3TDFDdldkS0NTX2Qzc1lTYzE1NnFpYjJXaGtYOGd5SGJaVTllMk5vUzEzSzhCYmlJVVBCSnJUNEZNbTJHcTFxbjY4VU1zQTQwNnFGUmVvbm1UbTlhY1J2Q2c?oc=5",
+        "title": "Apple Goes Agentic: Welcome To The New Siri",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMixwJBVV95cUxOZWlxd0JTcTFvbUsxMUY1bHRKbnlIYks5d3lxTkktR1JtanRnbXUxdzNIbG1sWm0tazkwSWVTSndHTm1TOEhoTy1MMWprQmlPQjZjb1MtUXVWTGhMX0xMM21SVDNhcVVhbDRubnZwTEVTOHlucEJHZ0k2a3AzeXdCN0Y1Y3ZKdVRRdkFEMm11TnZ3MnoweTVLeUhkdmg4bVlFTVlleFZaTk1ScVZ3ZUNTeVY3TWFGMnM2b2RKT3NWQ2tvSkNCWVg1RzVhOWhNYWhBRWFMOFFEVmI0MUdkMmR1S0VNc2duZVRYdXduM1VocG5RQWxfeTQ4NGlyWUlYR0dxeTlmU0JKV1ZFZDNkNGF4Wk5DVWFTYVdjZHlxaldlYVNlV0wtR3B1bUdjZ3ZiblBYenZQbVA3SkFaaDlhR3FtNEp1SlZiSGM?oc=5",
+        "title": "Anthropic just launched Claude Fable 5, its first Mythos-class AI model – but it has new safeguards to prevent misuse and will ‘fall back’ to Opus 4.8 for ‘high risk’ queries",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxQNm00bFo4WkdfWmJVbXVzWjFVSGdNcUJOcEJZR05JaTBLRm1RTGZYQ243Sy1GR18wQ0ZleElmWFV5aHlyNTh5YXN0Qi1adVJPdG40VVM3TEF1bVplTmQ0NUdLT1VJMHdMVDZRMWZaTk1NQURCdDJJeF9uTnVIWkdEX0xtdktmYV9lam1PM1FON1J0NVdORFlHVVZUSE5fTHhVRHA0R2ExTTNYdnlYMzdn?oc=5",
+        "title": "Anthropic unveils Mythos-level AI model to consumers, Claude Fable 5",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMipAJBVV95cUxPV1IxSzNyVUttSUVwLS1fZ3lOSDhrdFB2ZkFzZW9hS2Q2dGlveFh3U0t2a3lmSUc2RlZnX0RiN2Mzck5tV2JGNVlIWG5BSmd6OUlQS25NYjh0bGV5UEV4QnFlejJHQmktUFd5eS1IZi04TmFiWkkyYzVMc2xNWWp1RENTNFdEYmJWRmdUS3NqekxWei1yQWg2ZXBMQkRoMlplR3E1S2VpRnh6anpneUlMUnQtbUdnV1Y4WnR5MVFlbU9FS0MyZUhjS1UxUmNNSGU0MVpUNWtHTGtuWTZ5X1dsbU9adUFBUDUybjBkUXB2V1NldTIxc3QteWFUWEVRRlNkZmZYT2IwQmlVU1hPOUhEQWZJaUMzeGQ2NTh6QUhzSDVZSFB6?oc=5",
+        "title": "Talkspace Announces ‘Tee,’ the First Safe AI Agent Specifically Developed to Help Individuals Navigate Life’s Daily Mental Health Challenges",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxPdEFZbjQ0WGdmRnhXdWpxX2QxMVplYlM3dEtuaHpyUXI3OWhJeWF5emp4VU1iSmNBTmc4cmhyZmZYUmYzb2ROdGx2WXpOUnd0YUhtdlgxemliOFNkc1l5d0U0RWxnZWI1MEVDVDRoX1dVRVhrUXlGTFRySTEya3VqdXhGYkJpbmZfUXBTNjY5NA?oc=5",
+        "title": "Apple Upgrades Xcode With Smarter AI Coding Features",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxObVBUTE16SXlEVWFEbWpnNUZ0SVQ4X1l4eEJSVnlsNjNGMHpWclV1M0pIS2djYUc3ZVhDZlYzUWMxWnVaVGo2S1kzTjMySlF4UUZrVk5za1dEc0xnbjZ0Yk5McTVtYWhOQ0RJcUFBNTVuUUpKYk5HWEtMUkxROHZBUldRUDRickp0Y0lhRGtQVGlZQnR1NlgzdkY2ZmkwOFpfNXR0TW5YT2hmdnZjTmtrdWVjT3RlVktvRFRSc1BxRQ?oc=5",
+        "title": "AI Coding Startup Cursor Chooses London for European Headquarters Amid Rapid Growth",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxOLU05UE5NVWFoWjRfMVhybVROOTh3eG9kQ1cxTnI4emNsWmR2Ymw1djJTNkdBTjBJTDVib1lpcTRHN0xFNFVWay1JVVNmVzktOHFwRUd4cmVlVjYtakNZalNVby0tdjRQdUJfczRCbS1DYi1XV3Boclp2WURWaERwWF9EY0JhVFRsb0E?oc=5",
+        "title": "Mira Murati Unveils Her Startup’s A.I. Model in First Interview Since OpenAI",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxNV1BVc1RuMmFGWmZtU19EUkhqQXNkQWNfUzJXWlV5TENuc0RMa1ZSVjFPNWJOWGlOWFdHN3B2VllQU0tEVGg3SnZEY0laVnhkRmc4OVJzRlAwQ0VRRzA1REhNQ3JhNmJaX3F4Wm1QcEdITnJzbkpadzIzVjJTMTYzWk1EbFNKVlJMSlV0SkRyYWY4dnB4X2syc0E4UGVWX1RlM0t1V2otb2xON2dfYmQ3MnI2eGdSVVN4RnBWdTlkUQ?oc=5",
+        "title": "WeChat Opens AI Agent Ecosystem for Food Orders and Flight Bookings",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTFB4TjFkZDFJdkg4ZVUwNmhSSENfbldRMDdRS1dYNTVMTXZMVUt5bldNTzFWdmkxQlo4U3JRUWJOZXU5S0tYdDhDSUFsRnlIQzZST293NUFST1BfbWMzbGhnYTBHdHVoenZzMXhjWnRwdk50Q0XSAXhBVV95cUxNRUI5M19abFhpcDlMVlJRV0NJUTFybXExZ2pkTWVBT0pLMGsxeklfSHJiMDlSOGVyTjNSQzJKaUxEX2R5NjdHdUJDUGYwWWluRkEtd1BjbFQ3TVFaLUpQcHZXeUs0V1h1MjdtbldGR2Z3Q0x1WDRkczE?oc=5",
+        "title": "Apple partnering with Google and Nvidia for most advanced AI model",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxPNWoxT1IwUjc2VG82aDdtZ1lzeDE3VTZjemR4UXdOUUpvc0d4RlI4ZHBaWGpHRUxEdE1pS3hDZ3h4QmxxRkJJc3FQeVRoaGN3eGlvSGpIa2laS3RPSVdaS3ZzTXZWbFkwaDI3dWJJYzBZdE9vWWxUQktNNUMyWGQ0M1l2bGNMek1yN2M1UkQ0SmJ0OG5jMUpIYXRXMm1acmhoS0NSb3dwZ0wxUEJma0V4WVVpeDVsQmhMQ2tvX05ELXp5LVNOWTZV?oc=5",
+        "title": "ARPA-H Funds First FDA-Authorized AI Agent to Manage Heart Care Around the Clock",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxOMUpEYmE1bWRQT2Q2RENEaFhnZnJheVYzMTJ1R0lHc3VablRkODZmOUN2d3o5UlF1N2xWNXlnM0lhU29uMUdqMWN5dTlCdl82UFMtZTYzcmJ5cUFaZm5yM0dhTHJCd2RTN2o4ekJ6RDI0VEtka3czMkV4b01fNzlvZkZROWs4LTdnVGhRd1lGbU04aDRIMWVtbjRFaw?oc=5",
+        "title": "Art Directors Guild Slams Martin Scorsese for AI Partnership: ‘Turning His Back on the Human Artists’",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxPRmRGU3J0T3FEaTRLLTg2TUEtSFRMSUlxb1dxbzE2bHpsb1NPWjRwUWF0V1k1aGxZRUU1dzJSZ3dOWVU0dC11LWNSeUJwdHZmYTZsTkRLZmxTLU5xSnczdl8wTWhONThxLThjX01YWE56OEJ5STVLYVhHQ0YwNTYwZUdsbmhZdlhjODVZWjhYcks5MzlaSV9tNEp6ZW40MXlTQk5sS01CSGtIaFdUTjIxbEdUNzVkSlExMnJMVG9mSQ?oc=5",
+        "title": "Last Month, Salesforce Announced It Hit $1.2 Billion in AI Revenue—Now It's Laying Off Staff Tied to the Product",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxORlJSNW56OEFHdm84V0ZFLVA5a0NVczVPcjFUTlkwNDEyVXVvNmE1TEd4cE81Y1Z1UlpPcXFNYXJ4SWg5WDFsb1p2cTdhUjI0TkJfX0JlcER5SnV2aHItcXEyQmllbXlaSVFjeXc1YW9NZVNUb2JfWGtKRGZGSXlpbi1FS3A1ZjNZSmhCTGhpbGQ5cktmWmVwNG9QNkY?oc=5",
+        "title": "NVIDIA (NVDA) Acquires AI Startup Kumo as Full-Stack Strategy Expands",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxOSjg3cWFjUEszdWxNMnZoaDE2MmFpX2RTbWE4c3ByTHBSZTJLV3hJOVVTQ1lVcUpzdmhiOG9VOVhLU1BzaFVDYVZFX1Q4aDRrX0U1TWNpOXVGcGJtb0RPWUpabS1LdGVWWGFaOXQ2bV9ILWR0MTUtMDc2cnRhdko2azAyT2RRdEQ1Y1JwaUpNOWYtZVZ5WWJLaldya25xdmRNOFJV?oc=5",
+        "title": "Airbnb CEO Brian Chesky Is Building An AI Startup—And It's Not Another Chatbot: Report",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxOOWNwTlM1bFdjR1Q0SGd6VlYxbWY2d1hYWG00M0ZRS2VkZWdLdkM5RWJwaVN0Y1VpcTNtRUtZNkZSdkZBbUhZRjNSWWlISXJFYTZvSy16NlBFX2dDLWZFNDd4VnlUVXB2SkNsMlh1ZjJSdHR3QmJxcDBhQWRoV2l0MUk4ZTV3LW5iQ3FxRi1TX0phc3NsbmpFbnZGY1hjUQ?oc=5",
+        "title": "Nvidia and Hyundai deepen AI partnership in robotics and mobility",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOaVBHc190R09WemJNcU9kMlFJUUhTZVpmOS1oQThSU05DeU5GTS01NlB3cUdFLTNEb08xM3V5VHhsempKa3dQX2QyT2VWT3dfemlvY3pKcVNieWJOZDhkRHJISEFsdkxYWWUwbTNGc04zNFNCUVphSHRkZlAySFFkdTV1OWZSSXExT2lNMHoybHpITUZfZEZ1Vnc2cXBwVkdubnVnT0JFQzBGVnRzWkNBMA?oc=5",
+        "title": "OpenAI files confidentially for IPO as Anthropic raises pressure in AI funding race",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMi6gFBVV95cUxPYWZSeHF0czJieUlEZ3A5VmJFdWh5c2VBeHZmQWdsSDRWYkg2eVhidjByVnM2bkd1cHFmS2JWd2w5S0VTWlpEX2JoZnZuQlBFSUZsVjVqYkdocmVsRllYRGhlb21lbG1KaXBITWFTUXMyVkc0bHhiZXFpeDRaZHkxa0FHQnFOeFRKaW0wMlZKUWEyVzR5WFFDWDEzcGs5anRBRXRYbW5Ba3NpWjltWGV3SUlYQ0Vhc0ZEelJjbzEwc3YyZURwOEtOanhSa0RYX1RRTkJ5TUpUX0hzWXdGWDMzcWF3TFBNamt3X2fSAe8BQVVfeXFMUDlfXzk1WDVaMWZtY29TWWY5eVFwSWNKbUdHNGZYWHNzS3hRT0FkRnBnZ0hnNWtySmdobGJlX2VHZFJnNXhzM0J0SThLMHFQMGZ6V0xsYmwyNTJiNWotQXd1cDFMVWhIN1J0azY1S2JGMGZ4bm54ckJycE1fMi16NlYybWFqek5nclFOSXJmOGVrM1ViRnpHaVFLbVJQaGdWTkZubEdaaE9wM1I2RHU5Y0FEQTZiSWVBTHZyVllXczVrRlFVX3Y0UW1SaFFVSEo0eUd5Nkw0SnRTYnZSNmFqLXpGSjVJTjhHNVRuN0M1QTg?oc=5",
+        "title": "TCS AI revenue nears $2.5 billion annualised; AI agents could match employee count: N Chandrasekaran",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQc1hKMmVPazEzS1J0alJmd1F1VHVwUzVQZ0RadXdsb1FnWHZnNm9kTmpldTRFR3lYUFdEUjktY1JwV2hFOWk5ZXpEaFp5eHlnY2JwTXAxT3VrU1dSYlRSU3dBaUt6c3d5cmdmV3ItNmhxb0Q2QkNmSXZDUWdsV1A2TGFvc2kwbnI1YWJ5TEFLM184VUNoM2RLbw?oc=5",
+        "title": "Broadcom (NASDAQ: AVGO) Posts Record AI Revenue, Shares Fall",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMi-AJBVV95cUxPS1pUQXRxb0pZRkVxOUlsV2tDZEJ3ZV9nYWJyS3hMZGtoWXdVZ0RhbVlNU1luWmhNTWthdjBZV1dWdnppME9aSk5vaExmNE5xZVN6aFhvQ3ZmVFBkdnFrM2NMMW84aHZ2TldXRUhRMUZaVWhQeExxZTlHWkROQ1k3ODVsWEVkTUlUeUJ4UG43d0NYSEhZRmYyZmlDRUtQRTh1ZkhJQ29hWVduWmNXVXduRzdPVnFHQjAzTy13S3ZwQnNvMnI2UTIwcUp6WEJoOVlKNkpDZ0pSUGNiM3ZLQUo3WTdvX0pfR2pRU3dNejVndDZrZGxMWHQxeUxSTHpJX0M3MkpxZEQ1ZzlwbzM5Sk1sbm5vZUkwbm5rU0JTc185ZkNnVlJZakhoTVlBcEgzNXhMQkxQd3NrLW9lVGJ0MjhPbUt6NENNNlY0SEZxbFEwVmNidHhXQTFXZHhKNi11NW9XVzVxN2dEUHE1TlhYbHZSai1UMWNvTmtp?oc=5",
+        "title": "Trump administration, OpenAI discussing possible government stake in the AI startup",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxNSi16NWRGZmpLMVN0bTRvZzU3Z09lUms1ZW1FdGxCcEhGZXdyWVBVUlVxV2ljZHB6TGhRaDJzVnphZUROcUlMWXpuTVJYRDJCUUlTbWJnNUQxZEZDZi1UTWFacjJqZDBRV0N2S1lxM3VTVS13Mm5vQVlsOE1XaG93M1A5TUlYYnBxeVg3ckJWQUVUcHlTM1A3LWMxSU41Rjg3X183NlZnLVZvZw?oc=5",
+        "title": "AI governance gap widens as enterprises race to deploy agentic AI, IBM warns",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTE5qcXl2R1BtSFZydUxGakRKaG4xWnlkczNxanJNNkhmT3RoMWRtODNmSGJQcVZibzlKMUwxSUZUNm12d2tIMTVNZWF6VHBOcHdnOFl5a0k0dDNyTUk2cFBWYWJvMnVBenhrUFp3U1VPTVlOUHc?oc=5",
+        "title": "Germany to create AI safety agency",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTFB3U0c4UDRnemNoajlMeVl2QXN6QW9NbHlrcUJjb2RfVzNKVGNSUkJpaW9FdnczYjZKS2lOTmhTZkZHcFlOM0NwclJKTW56QlV1LXFzZldITDNtUDk0WWJleEtCWjBiX18tSUhrWVlnYTVzdjVG?oc=5",
+        "title": "The New Front Line of A.I. Governance Is Procurement",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE56NHp5bVZRXzlSVnFzNEZMWUVlc2pZbVBONXpienExWTRKdG1lU29VZldfVWVPb21aMFN5UnlJVnp0MzFBWVhxUXBBUUk5YUE5RGtUWkNvQjZnU2MtSkJjNDlWdUY0VlBzUTlKeEVvUkppVng3RDRDQ3NSOTJLQQ?oc=5",
+        "title": "White House AI policy adviser Krishnan to leave position, the Information reports",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxNd0ZvN2lPUzNKMDVCbG9Kb1IwTFJtUW8wQ3BJVkI5eGw3ZDVfcV9IQjg3V1RQd0hBYVFKeFVhVlhwYnZrVlBIRDlHOVFBQjZ0TmFXQi0zS0ZfQ194b2dvNWtHQUtpNXd3SXFLQXN4TTktY2pRZ3VjMnFTamJoYlV6M0wxNjROcnlqQkJINjBxUThSTU82NUZOWll5WUpMNkJwaVpKb1pISkN5YUUzcGR4a3QwSE4?oc=5",
+        "title": "TSMC’s Monthly Sales Rise 30% Thanks to Sustained AI Chip Demand",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOU3RtSlhHcUxnWWVIS2dEQkY5UVlad0RfTzNBWHM0QWZBTEUtVW91NE01U05nb241LTAwT2hqeWFpUVp3VndNeGpMNDFnRnB5V1JQbnM1R2tIMDh1RUdVWlctQ1hiTmtNTDdQX245QklQMnBWZlhLbHRRTjhvRU9KQ01MdC1LYjdlUk1NZDUxamp1SThvVHItTEFYYzhfTkM5TVVFcnFNanFZZnNE?oc=5",
+        "title": "Broadcom, Apollo, Blackstone Launch $35 Billion AI Infrastructure Platform",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxOWWpRaFhQZzQ0RWd2NEpaN2xmTllwTlpNV01JWGVHN0xZbUdFSk5WcF96cjhrbGFUSGFadERPZWE0eFF5UWdjZXpzZFRIeWljRkhXZ19vTmt1SlVYRUFzMFh2UlhXOUpIaHJ3Z0wzSWI2ckRaQVkxN3hwVmNCd1Z2V1BoV2VHVVNwTGVTMkhQTldmclVzcmZHZ0NRTnVtalc2Rlo1VDVOSExHb2tFcF95dlZlTXBZNXhZOW9OaDI0MmRzenl0eEZRZjlPVQ?oc=5",
+        "title": "Taiwan weighs criminal ban on AI chip exports to all of China — stricter measures beyond blacklisted firms would make smuggling servers a crime",
+        "source": "Google News"
+      }
+    ],
+    "tags": {
+      "companies": [
+        "anthropic",
+        "openai",
+        "apple",
+        "nvidia",
+        "meta",
+        "deepseek",
+        "xai",
+        "google"
+      ],
+      "models": [
+        "claude-fable-5",
+        "mythos-5",
+        "grok",
+        "deepseek-v4",
+        "gemma-4"
+      ],
+      "topics": [
+        "agent",
+        "confidential-computing",
+        "inference-cost",
+        "vibe-coding",
+        "cybersecurity",
+        "data-center"
+      ]
+    },
+    "tokenUsage": {
+      "input": 105657,
+      "output": 4065,
+      "total": 113614
+    }
+  },
+  {
     "date": "2026-06-09",
     "title": "KDAN AI 戰情報告 (2026-06-09)",
     "content": "# KDAN AI 戰情報告 (2026-06-09)\n\n## 昨日 AI 重點新聞\n\n### Apple WWDC 震撼發表 Siri AI 與 Apple Intelligence 次世代架構 ref-127, ref-2\n**Apple** 宣布其語音助手正式進化為 **Siri AI**，具備強大的螢幕感知能力，能直接在 App 間執行複雜任務。此架構結合了 **Private Cloud Compute** 安全技術，並能調用授權自 **Gemini** 的雲端模型，標誌著 Apple 在 AI 代理領域的全面反擊。\n\n### OpenAI 緊隨 Anthropic 秘密遞交 IPO 申請，估值直指兆元 ref-13, ref-28\n**OpenAI** 已正式向 SEC 提交 **S-1** 文件計畫上市。這發生在競爭對手 **Anthropic** 遞交申請僅一週後。雖然具體細節尚未公開，但外界預期其估值將挑戰 **1 兆美元**。Sam Altman 表示，此舉是為了籌措資金達成「個人 AGI」的遠大目標。\n\n### Anthropic 發表 Claude Code 動態工作流，實現「一人變一隊」 ref-85, ref-30\n**Anthropic** 推出 **Claude Code** 重大升級，引入**動態工作流**。這項技術讓 Claude 能自主撰寫編排腳本，並在單一會話中分發多達 **5 個並行代理** 同時處理複雜專案（如自動建構 CLI 工具），將開發週期從季度縮減至數日。\n\n### Apple 坦承基礎模型 AFM Cloud Pro 係由 Gemini 蒸餾訓練而成 ref-1, ref-127\n**Apple** 證實其 **AFM Cloud Pro** 模型是利用 Google **Gemini** 的輸出數據進行對齊與訓練，並在 Google Cloud 環境下的 **Nvidia** GPU 上運行。這揭示了即便在高度競爭的 AI 賽道，矽谷巨頭間的「算力與數據」依附關係依然緊密。\n\n### Microsoft Foundry 進入生產階段，主打企業級代理可靠性 ref-65, ref-34\n**微軟** 在 Build 2026 大會宣布 **Microsoft Foundry** 全面升級，提供受管理的**代理運行時 (Runtime)**、治理標準與記憶體機制。這項服務旨在讓開發者能將實驗性代理無縫轉化為具備生產力、符合合規要求的企業應用。\n\n### 小米 MiMo-V2.5 模型刷新速度紀錄，推理突破 1,000 TPS ref-0, ref-54\n**小米** 發布其 1 兆參數模型 **MiMo-V2.5-Pro-UltraSpeed**，聲稱在標準 8-GPU 伺服器上實現了每秒 **1,000 個代幣** 的推理效率。小米計畫透過 API 開放此模型，挑戰 ChatGPT 與 Claude 的響應速度地位。\n\n### Google Gemma 4 12B 全球首款筆電端多模態代理模型 ref-1\n**Google** 發表 **Gemma 4 12B**，這是一款專為本地筆電設計的無編碼器架構模型。它能完全在離線狀態下執行 Python 代碼、生成視覺洞察與自動化網頁開發，徹底降低了對高昂雲端 Token 的依賴。\n\n### 微軟 GitHub 開源專案遭惡意蠕蟲入侵，竊取 AI 開發者憑證 ref-56, ref-141\n逾 70 個微軟官方 GitHub 專案被植入惡意代碼，名為 **Miasma** 的蠕蟲利用 AI 編程代理讀取代碼時的漏洞，竊取開發者的系統憑證。此供應鏈攻擊事件引發了業界對 **Agentic Coding** 安全性的高度戒備。\n\n### Perplexity 宣示 2028 年 IPO 目標，並推動廣告獲利模式 ref-50\n**Perplexity** CEO Aravind Srinivas 指出，該公司不急於跟風 OpenAI 的上市潮，將按原訂計畫於 2028 年 IPO。目前 Perplexity 將強化其「引用與搜尋」的核心優勢，並探索基於 AI 的精準廣告獲利路徑。\n\n### AI 編程新星 Cursor 年化營收突破 40 億美元，傳 SpaceX 有意收購 ref-101, ref-136\n據傳 **Cursor** 的營收在數月內呈指數級成長。最新消息指出，Elon Musk 計畫讓 **SpaceX** 在 Cursor 上市後進行收購，此舉將整合 AI 自動化編程技術與 SpaceX 的複雜系統工程，強化實體 AI 的競爭優勢。\n\n### Apple Safari 引進「描述即擴充」功能，實現 Vibe Coding 生態 ref-6\nApple 展示了 **Safari** 的新功能，用戶只需輸入描述（如：追蹤網頁食譜並存入筆記），AI 就會自動生成對應的瀏覽器擴充功能。這代表 Vibe Coding 正式從工程師專屬進入到大眾消費者的日常應用中。\n\n### Microsoft Discovery 平台 GA，推動 AI 代理深入科學 R&D ref-75\n微軟宣布 **Microsoft Discovery** 平台在 Azure 正式上市。該平台專為科學研究團隊設計，能協調多個自主代理進行材料模擬與分子研發，此前已成功協助研發出效能提升 1,000 倍的 **Majorana 2** 量子晶片。\n\n---\n\n## 市場洞察\n\n### 1. IPO 浪潮確立 AI 產業進入「成果收割與洗牌期」 (   ) ref-85, ref-30, ref-144\n延續昨日 **Anthropic** 獲 350 億美元融資與估值逼近 1 兆美元的趨勢，今日 **OpenAI** 秘密遞交 IPO 申請，宣告了 AI 獨角獸正集體轉向公開市場。這不僅是為了尋求流動性，更是因應模型開發成本極速膨脹後的必然選擇。隨著 **Perplexity** 設定 2028 年長線計畫，市場將出現「兆元權威」與「垂直利基」的分水嶺。\n\n### 2. 「代理編排」從對話進化至並行作業系統 (   ) ref-85, ref-30, ref-151\n昨日 OpenAI 宣告「聊天機器人已死」的論點，在今日獲得技術驗證。**Anthropic** 的動態工作流將單一代理拆解為「**總承包商 + 執行團隊**」模式，與微軟 **Foundry** 的代理生產平台遙相呼應。這代表 AI 應用已從單純的 Q&A 轉向複雜的專案交付，**多代理協作 (Multi-agent Orchestration)** 正式取代單體模型成為企業採用的核心標準。\n\n### 3. Apple 的「主權 AI 務實主義」與生態系鎖定 (    ) ref-1, ref-6, ref-86, ref-33\nApple 在 WWDC 展現了極高的策略靈活性：在本地端使用私有雲 (PCC) 保護隱私，但在雲端則務實地採用 **Gemini** 數據進行訓練。這種「**描述即功能 (Prompt-to-App)**」的 Safari 擴充功能策略，顯示 Apple 意圖透過 AI 代理大幅縮減與 Google 瀏覽器生態系的擴充功能差距，讓使用者透過 Vibe Coding 建立個性化工作流。\n\n### 4. 開放平台下的資安災難與「安全邊界」重構 (   ) ref-157, ref-131, ref-65\n微軟 **GitHub** 蠕蟲事件與 **LiteLLM** 的漏洞曝光，再次為「代理化開發」敲響警鐘。當 AI 代理被賦予自動讀取、修改代碼的權限時，現有的靜態安全檢查已無法阻擋。市場將衍生出針對 AI 代理行為的「**動態審計**」與「**安全網關**」需求，這與微軟 Foundry 強調的「治理高於性能」趨勢一致。\n\n---\n\n## KDAN 戰略洞察\n\n### 1. 點點簽 (DottedSign)：開發支援 Apple Siri AI 與 Safari 擴充的「簽署腳本」 (  ) ref-2, ref-6\n*   **具體行動**：針對 Apple Safari 的「描述即功能」趨勢，點點簽應提供預設的 **AI 簽署腳本模組**。讓用戶能透過 Siri 指令或簡單描述，自動生成在瀏覽器端辨識 PDF 並發動簽署請求的擴充功能，將簽署行為植入 Apple 的 Vibe Coding 生態系，卡位個人與商務代理入口。\n\n### 2. ComPDF SDK：適配「多代理並行」架構，提供文件處理解構工具 (  ) ref-88, ref-17\n*   **具體行動**：參考 **Claude Code** 的 5 代理並行模式，**ComPDF SDK** 應強化其檔案處理的並發能力 (Concurrency)。開發「**分片式文件解析引擎**」，讓開發者在建立多代理系統時，能讓「代理 A 解析表格、代理 B 審核條款、代理 C 提取簽章」，實現真正高效的自動化文件交付，而不僅僅是單點輔助。\n\n### 3. ADNEX：發展針對「訂閱轉型與 App Store 新制」的成長代理 (  ) ref-6, ref-37\n*   **具體行動**：Apple App Store 推出的群組與企業訂閱新制，將改變軟體銷售邏輯。**ADNEX** 應開發「**訂閱歸因與流失預測代理**」，協助企業客戶利用 AI 自動化管理 Apple 生態系下的新版訂閱方案，對標 **Perplexity** 的廣告獲利與 **Bending Spoons** 的規模化收購邏輯，將 ADNEX 定位為企業轉向 AI 經濟的財務治理助理。\n\n### 4. 技術架構：全面導入「自備金鑰 (BYOK)」與「本地 NPU 優化」 (  ) ref-69, ref-97\n*   **具體行動**：隨者 **Gemma 4 12B** 在本地端的爆發與微軟 Visual Studio 開放 **BYOK**，凱鈿全產品線（特別是 LynxPDF）應優先支援用戶自備 AI Key 與本地模型部署。這能解決昨日新聞中提到的「Token 成本超支 (ref-36)」與「資安隱憂」，特別吸引需要高度隱私的金融與政府客戶，建立「**安全、省錢、本地執行**」的品牌護城河。\n\n### 5. 資安防禦：針對 AI 蠕蟲與代理行為建立「凱鈿信任沙箱」 (  ) ref-131, ref-133\n*   **具體行動**：鑒於 GitHub 惡意代碼事件，**ComPDF API** 與 **DottedSign API** 應導入「**代理行為隔離 (Agent Sandboxing)**」機制。當外部 AI 代理調用凱鈿 API 時，系統需自動進行語義邊界檢查與二次授權確認，確保惡意代碼無法透過 AI 代理的自動執行權限竊取用戶的合約數據或個人憑證。",
