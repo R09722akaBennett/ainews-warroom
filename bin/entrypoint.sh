@@ -2,7 +2,7 @@
 # Cloud Run Job entrypoint for AI War Room pipeline.
 #
 #   1. Pull warroom.db from GCS (state bucket)
-#   2. Run the daily pipeline (agent / competitor / compress / export / leaderboard / notify)
+#   2. Run the daily pipeline (agent / competitor / compress / export / leaderboard)
 #   3. Push warroom.db back to GCS
 #   4. Clone target GitHub repo with PAT, copy src/data/*.json, commit + push
 #      → Vercel auto-deploys
@@ -12,8 +12,6 @@
 #   STATE_BUCKET           — GCS bucket holding warroom.db
 #   GOOGLE_API_KEY         — Gemini
 #   REDDIT_CLIENT_ID / REDDIT_CLIENT_SECRET — Reddit API
-#   MATTERMOST_URL         — chat.kdan.cc
-#   MATTERMOST_BOT_TOKEN / MATTERMOST_CHANNEL_ID — Mattermost notify
 #   GITHUB_PAT             — fine-grained PAT with contents:write on the repo
 #   GIT_BRANCH             — defaults to main
 
@@ -61,12 +59,7 @@ uv run python -m export
 echo "[5/7] leaderboard..."
 uv run python -m leaderboard
 
-echo "[6/7] notify Mattermost..."
-if [[ -n "${MATTERMOST_URL:-}" && -n "${MATTERMOST_BOT_TOKEN:-}" ]]; then
-  uv run python -m notify || echo "  WARN: notify failed (exit $?), continuing"
-else
-  echo "  skip — MATTERMOST_URL or MATTERMOST_BOT_TOKEN not set"
-fi
+echo "[6/7] Mattermost notification disabled; skipping."
 
 # 8. Save db
 echo "[7a/7] Saving warroom.db back to $STATE_URI..."
