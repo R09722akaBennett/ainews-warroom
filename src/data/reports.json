@@ -1,5 +1,412 @@
 [
   {
+    "date": "2026-06-22",
+    "title": "KDAN AI 戰情報告 (2026-06-22)",
+    "content": "# KDAN AI 戰情報告 (2026-06-22)\n\n## 昨日 AI 重點新聞\n\n### 騰訊於微信測試基於 DeepSeek 的 AI 助手「小微」 ref-29\n**騰訊**開始測試整合於**微信 (WeChat)** 的新助手 Xiaowei，由其自研模型 WeLM 與 **DeepSeek** 共同驅動。此舉旨在應對中國國內激烈的 AI 競爭，提升超級應用的智能化交互能力。\n\n### 三星大規模部署 ChatGPT Enterprise 與 Codex ref-14, ref-45\n**三星電子**正式在全球 DX 部門及韓國總部引入 **ChatGPT Enterprise** 和 **Codex**。**OpenAI** 表示，這標誌著 AI 工作自動化工具在跨國科技巨頭中的最大規模滲透，旨在提升研發與辦公效率。\n\n### NVIDIA Rubin 平台實現 100% 液冷與零耗水設計 ref-18\n**NVIDIA** 發表 Rubin 代 AI 工廠設計，透過將冷卻液溫度提升至 **45°C**，實現全系統液冷並消除風扇需求。該架構在特定氣候下可達成**零耗水**，並減少數百萬美元的運營能源成本。\n\n### 資安漏洞「Agentjacking」威脅 AI 編程工具 ref-6\n安全公司 Tenet 揭露 **Agentjacking** 攻擊。駭客可利用 **Sentry** 的公開 DSN 植入惡意 Markdown，當 **Claude Code** 或 **Cursor** 讀取錯誤日誌試圖修復時，會誤執行其中的惡意指令，造成主機權限遭劫持。\n\n### Perplexity 推動 Search-as-Code 技術變革 ref-33\n**Perplexity** 提出將搜尋轉向「代碼生成」。這讓 **AI 代理**能透過編寫結構化查詢（如 SQL 或複雜過濾）來處理 RAG 任務，不再僅依賴語義相似度，從而具備類似**量化分析師**的專業數據處理能力。\n\n### Anthropic 內部 95% 數據分析已由 Claude 自主完成 ref-0\n**Anthropic** 透過完善的數據治理與語義定義，成功讓 **Claude** 處理幾乎所有的內部營運查詢。這大幅降低了數據團隊的負擔，展示了 AI 代理在企業內部決策中的實戰潛力。\n\n### Google 推出 Colab CLI 加速代理控制流 ref-6\n**Google** 發表新的 **Colab 命令行界面**，允許 AI 代理（如 **Claude Code**）直接從終端控制遠端 GPU 算力並檢索模型。這進一步強化了開發者工具的「代理友好性」。\n\n### Sakana AI 推出 Fugu Ultra 多代理路由模型 ref-19\n**Sakana AI** 發表 Fugu Ultra，現已在 Vercel AI Gateway 上線。該模型並非單一結構，而是能根據問題複雜度自動將任務路由至 1-3 個代理，性能表現據稱逼近 **Claude Mythos**。\n\n### 具身智能機器人新創 Coowa 擬於香港 IPO ref-37\n上海**具身智能 (Embodied AI)** 公司 **Coowa** 獲得軟銀支持，估值已達 **30 億美元**。該公司計劃在未來幾個月內申請香港上市，顯示機器人與 AI 結合的商業化進程加速。\n\n### NVIDIA 高管定義「代理」為 LLM 加線程裝置 ref-9\n**NVIDIA** 開發者技術總監定義 AI 代理為「LLM 加上線程裝置 (Harness)」，強調「循環 (Loop)」的重要性，並重申對開源代理藍圖 **OpenClaw** 的支持。\n\n### Cloudflare 推出針對 AI 代理的臨時帳戶功能 ref-58\n為了方便 AI 代理自動部署測試應用，**Cloudflare** 推出免註冊的 60 分鐘臨時 Workers 帳戶。這降低了自主代理執行 CI/CD 流程時的摩擦與安全性門檻。\n\n### INTERPOL 警示亞太區 AI 詐騙與勒索軟體激增 ref-64\n國際刑警組織發布報告，指出由於數位化快速發展，亞太地區利用 AI 進行的**網路詐騙、網路勒索**與網路威脅正呈現戲劇化成長，需加強區域安全協作。\n\n## 市場洞察\n\n### 1. 企業 AI 從「對話窗口」轉向「深度流程集成」 (  ) ref-24, ref-0\n延續昨日關於 **Valkey** 自動修復 Bug 的案例，今日三星的大規模部署 (ref-42) 與 Anthropic 內部 95% 的分析自動化 (ref-58)，顯示領先企業已不再滿足於將 AI 當作聊天工具，而是透過嚴格的數據治理，讓 AI 代理直接深入核心營運與代碼生產流程。這驗證了「代理化」是企業降本增效的終極路徑。\n\n### 2. 代理安全 (Agentic Security) 成為不可忽視的技術短板 (  ) ref-66, ref-64\n**Agentjacking** (ref-38) 的出現是一個重要警訊：當我們給予 AI 代理愈多讀取日誌與執行指令的權限，傳統上「安全」的公開數據（如 Sentry DSN）就可能成為致命的後門。市場將會出現針對代理執行環境的「**零信任沙箱**」與「**安全審計協定**」之強烈需求。\n\n### 3. RAG 3.0：從語義向量轉向「搜尋即代碼」 (  ) ref-21, ref-29\n**Perplexity** 提倡的 Search-as-code (ref-33) 代表了檢索增強生成 (RAG) 的演進方向。單純的向量搜尋已無法滿足複雜業務需求，未來的 AI 代理將具備編寫代碼來查詢數據的能力，這將使 AI 能處理精準的**結構化數據分析**，而不僅僅是處理非結構化的文字。\n\n### 4. 基礎設施的硬核競爭：能效與代理友好度 (   ) ref-53, ref-15, ref-18\nNVIDIA 的 Rubin 液冷架構 (ref-18) 針對大規模 AI 工廠進行了極致優化；而 **Cloudflare** (ref-57) 與 **Google** (ref-66) 則分別透過臨時帳戶與專用 CLI，讓 AI 代理更容易在雲端「安家」。基礎設施廠商正全力爭取「**AI 代理開發者**」這一新客群。\n\n## KDAN 戰略洞察\n\n### 1. 點點簽 (DottedSign)：開發針對「Agentjacking」的防禦型簽署流程 ( ) ref-31\n*   **具體行動**：針對 AI 代理可能因讀取惡意訊息而誤執行簽署動作的風險，點點簽應開發「**帶外 (Out-of-Band) 人類確認機制**」。當偵測到簽署指令是由 AI 代理（如 Cursor 整合環境）發起時，系統應強制要求在手機端進行二次手動生物辨識確認，防止代理被劫持後引發法律風險。\n\n### 2. ComPDF SDK：適配 Google Pay & Wallet MCP 伺服器標準 (  ) ref-17, ref-15\n*   **具體行動**：Google 推出 Wallet MCP 伺服器 (ref-65) 旨在讓代理理解支付脈絡。**ComPDF SDK** 應開發對應的插件，讓企業代理在讀取 PDF 帳單或憑證時，能直接透過 MCP 協定與支付錢包進行數據比對，實現「**文件解析即核銷**」的自動化財務流程，吸引如三星等大規模部署 AI 的企業客戶。\n\n### 3. KDAN Office：引入 Search-as-Code 機制優化企業內網文檔檢索 (  ) ref-24, ref-0\n*   **具體行動**：參考 Anthropic 內部分析的成功案例，**KDAN Office** 的 AI 助理應整合「搜尋即代碼」能力。讓用戶在查詢內部 PDF 或文件庫時，AI 助手能自動生成複雜的過濾規則，而非僅靠關鍵字。這能精準解決企業長久以來「文件找不到了」或「無法跨表統計」的痛點。\n\n### 4. ADNEX：應用「因果世界模型」提升行銷預測的準確度 (  ) ref-15, ref-16\n*   **具體行動**：**Aether AI** 融資開發的「因果模型」 (ref-6) 旨在讓 AI 理解前因後果而非單純模式匹配。**ADNEX** 應嘗試在會員活化助理中導入因果推理技術，從「客戶可能流失」進化為「客戶因為 X 原因流失，故採取 Y 行動最有效」，並結合 **Gemma 2** 的推理能力 (ref-64) 提供更具邏輯的決策建議。\n\n### 5. 技術架構：導入雲端臨時運行環境以支援安全代理測試 (  ) ref-23, ref-19\n*   **具體行動**：研發團隊應參考 **Cloudflare** 的臨時帳戶機制 (ref-57)，為 **KDAN AI 服務** 建立「**短暫隔離環境**」。這能讓開發者或 AI 代理在測試凱鈿的 API 時，是在一個具備 60 分鐘自動銷毀機制的沙箱中運行，從源頭杜絕資安風險，提升開發者對凱鈿代理生態的信任度。",
+    "rawCount": 67,
+    "createdAt": "2026-06-22 08:01:33",
+    "refs": [
+      {
+        "headline": "騰訊開始在微信測試由 DeepSeek 驅動的 Xiaowei AI 助手",
+        "url": "https://www.techmeme.com/260622/p3#a260622p3",
+        "source": "Bloomberg"
+      },
+      {
+        "headline": "三星全球部署 ChatGPT Enterprise 與 Codex 自動化平台",
+        "url": "https://biz.chosun.com/en/en-it/2026/06/22/XFHSJHM5VRFWNGTDXIOBOPIAQI/",
+        "source": "CHOSUNBIZ"
+      },
+      {
+        "headline": "NVIDIA 推出全新 Rubin 架構：100% 液冷技術與節能突破",
+        "url": "https://blogs.nvidia.com/blog/liquid-cooling-ai-factories/",
+        "source": "NVIDIA Blog"
+      },
+      {
+        "headline": "「Agentjacking」威脅警報：Sentry 公開 DSN 可能劫持 AI 代碼助手",
+        "url": "https://thenewstack.io/agentjacking-sentry-mcp-attack/",
+        "source": "The New Stack"
+      },
+      {
+        "headline": "Perplexity 提出「Search-as-Code」：將 AI 代理推向專業分析師水平",
+        "url": "https://thenewstack.io/search-like-2010-quant/",
+        "source": "The New Stack"
+      },
+      {
+        "headline": "Anthropic 內部 95% 分析查詢已由 Claude 自主處理",
+        "url": "https://www.infoq.com/news/2026/06/anthropic-claude-analytics/",
+        "source": "InfoQ"
+      }
+    ],
+    "newsItems": [
+      {
+        "url": "https://support.claude.com/en/articles/14328960-identity-verification-on-claude",
+        "title": "Identity verification on Claude",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://apertvs.ai/",
+        "title": "Apertus – Open Foundation Model for Sovereign AI",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://hawksley.dev/blog/json-ld-explained-for-personal-websites/",
+        "title": "JSON-LD explained for personal websites",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://twitter.com/LarsAnders1620/status/2068208864747540516#m",
+        "title": "Danish privacy activist Lars Andersen raided by police",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://alexkritchevsky.com/2024/02/28/geometric-algebra.html",
+        "title": "The case against geometric algebra (2024)",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://www.teachmecoolstuff.com/viewarticle/fine-tuning-a-local-llm-to-categorize-questions",
+        "title": "Good results fine tuning a local LLM like Qwen 3:0.6B to categorize questions",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://github.com/raiyanyahya/recall",
+        "title": "Show HN: Recall – Local project memory for Claude Code",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://twitter.com/MattZirwas/status/2068365802491834541",
+        "title": "I was wrong about the Midjourney ultra-sound scanner",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://clevercrow.io",
+        "title": "Show HN: CleverCrow: give tokens to your favorite projects",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://alshe.substack.com/p/i-canceled-my-french-tutor-and-built",
+        "title": "I Canceled My French Tutor and Built an LLM Tool That Does It Better",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://notes.ansonbiggs.com/youre-probably-using-agent-skills-wrong/",
+        "title": "You're probably using Agent Skills wrong",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://minipcs.zip",
+        "title": "Show HN: MiniPCs.zip – Charting the Pareto frontier of Mini PCs",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://people.idsia.ch/~juergen/ai-boom-roots-munich-1991.html",
+        "title": "Munich 1991: The Roots of the Current AI Boom",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://github.com/hrudulmmn/crespo",
+        "title": "Show HN: Crespo – Tree-sitter AST blueprints instead of raw code for LLMs",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://openai.com/index/samsung-electronics-chatgpt-codex-deployment",
+        "title": "Samsung Electronics brings ChatGPT and Codex to employees",
+        "source": "OpenAI Blog"
+      },
+      {
+        "url": "https://developers.googleblog.com/introducing-the-google-colab-cli/",
+        "title": "Introducing the Google Colab CLI",
+        "source": "Google Developers Blog"
+      },
+      {
+        "url": "https://developers.googleblog.com/how-the-community-trained-gemma-to-think-with-tunix-and-tpus/",
+        "title": "How the community trained Gemma to \"Think\" with Tunix and TPUs",
+        "source": "Google Developers Blog"
+      },
+      {
+        "url": "https://developers.googleblog.com/supercharge-your-integration-workflow-with-the-google-pay-wallet-developer-mcp-server/",
+        "title": "Supercharge your integration workflow with the Google Pay & Wallet Developer MCP server",
+        "source": "Google Developers Blog"
+      },
+      {
+        "url": "https://blogs.nvidia.com/blog/liquid-cooling-ai-factories/",
+        "title": "Hotter Than a Hot Tub: The 45°C Breakthrough to Cool AI’s Biggest Machines",
+        "source": "NVIDIA Blog"
+      },
+      {
+        "url": "https://vercel.com/changelog/sakana-fugu-ultra-now-available-on-ai-gateway",
+        "title": "Sakana Fugu Ultra now available on AI Gateway",
+        "source": "Vercel Blog"
+      },
+      {
+        "url": "https://www.latent.space/p/exclusive-250-off-ai-engineer-tix",
+        "title": "[Exclusive] $250 off AI Engineer tix til Monday",
+        "source": "Latent Space"
+      },
+      {
+        "url": "https://simonwillison.net/2026/Jun/21/sqlite-utils-40rc1/#atom-everything",
+        "title": "sqlite-utils 4.0rc1 adds migrations and nested transactions",
+        "source": "Simon Willison"
+      },
+      {
+        "url": "https://simonwillison.net/2026/Jun/21/sqlite-utils/#atom-everything",
+        "title": "sqlite-utils 4.0rc1",
+        "source": "Simon Willison"
+      },
+      {
+        "url": "https://simonwillison.net/2026/Jun/21/temporary-cloudflare-accounts/#atom-everything",
+        "title": "Temporary Cloudflare Accounts for AI agents",
+        "source": "Simon Willison"
+      },
+      {
+        "url": "https://techcrunch.com/2026/06/21/when-the-trump-administration-cracks-down-on-anthropic-who-benefits/",
+        "title": "When the Trump administration cracks down on Anthropic, who benefits?",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/06/21/beyond-siri-here-are-the-practical-ai-features-coming-to-your-iphone-in-ios-27/",
+        "title": "Beyond Siri: Here are the practical AI features coming to your iPhone in iOS 27",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://www.techmeme.com/260622/p6#a260622p6",
+        "title": "A profile of Sarah Polcz, the UC Davis law professor that Bernie Sanders' team consulted while developing his AI sovereign wealth fund proposal (Eli Rosenberg/The Information)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260622/p5#a260622p5",
+        "title": "Analysis: Anthropic may have talked itself into an export ban, as its 2026 official statements and posts used AI risk-related terms 8x more often than OpenAI (Clara Murray/Financial Times)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260622/p4#a260622p4",
+        "title": "PitchBook: defense tech companies making drones, battlefield AI, and more have raised $12.3B across 175 deals YTD, up from a $9.95B total from 158 deals in 2025 (Financial Times)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260622/p3#a260622p3",
+        "title": "Tencent starts testing the new Xiaowei AI assistant powered by WeLM and DeepSeek models in its WeChat app in China, in an effort to catch up in the AI race (Luz Ding/Bloomberg)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260622/p2#a260622p2",
+        "title": "Source: Morgan Stanley is pitching data center developers to use leveraged loans rather than bonds, and estimates ~$15B will be issued this year in such loans (Dakin Campbell/The Information)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260622/p1#a260622p1",
+        "title": "WiseTech's shares fell 11% after Australian police probed co-founder Richard White over sex exploitation claims; WiseTech shares are down ~67% in the past year (Sydney Morning Herald)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260621/p17#a260621p17",
+        "title": "Sources: ByteDance shares are trading at a $600B+ valuation in gray markets; an IPO is unlikely and its growth continues to benefit its Chinese and US backers (Henny Sender/Nikkei Asia)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260621/p16#a260621p16",
+        "title": "China adds ten US companies, including MP Materials and Teal Drones, to export controls and bars government purchases from 46 US companies, including Anduril (Wataru Suzuki/Nikkei Asia)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260621/p15#a260621p15",
+        "title": "Shenzhen-listed Apple supplier Lingyi iTech seeks to raise $1.1B in a June 26 Hong Kong debut, as the electronic parts maker expands into AI hardware and robots (Iris Deng/South China Morning Post)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260621/p14#a260621p14",
+        "title": "Samsung rolls out ChatGPT Enterprise and Codex to all staff in Korea and DX division staff globally; OpenAI says it's one of its largest enterprise deployments (Kim Su-jeong/CHOSUNBIZ)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260621/p13#a260621p13",
+        "title": "Japan's top five chip equipment makers posted their first-ever fall in combined China sales, down 10% in the year ended March 31, as China boosts local players (Nikkei Asia)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260621/p12#a260621p12",
+        "title": "Sources: Shanghai-based Coowa, which develops embodied AI robots, plans to file a Hong Kong IPO; Coowa was valued at $3B after raising $600M in its latest round (Jiahui Huang/Wall Street Journal)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260621/p11#a260621p11",
+        "title": "San Diego-based Aether AI, which is building \"causal world models\" to teach robots cause and effect instead of pattern-matching, raised a $20M seed led by MPCi (Cristian Dina/The Next Web)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260621/p10#a260621p10",
+        "title": "Toto, Japan's largest toilet maker, plans to invest $495M by 2030 to expand its semiconductor materials unit, targeting R&D for next-gen 1nm chip production (Nikkei Asia)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260621/p9#a260621p9",
+        "title": "As Europe falls behind the US and China in consumer AI, its engineering companies and AI startups are turning to industrial AI applications to boost efficiency (Marilen Martin/Bloomberg)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.infoq.com/news/2026/06/anthropic-claude-analytics/?utm_campaign=infoq_content&utm_source=infoq&utm_medium=feed&utm_term=global",
+        "title": "Anthropic Reports Claude Now Handles 95% of Internal Analytics Queries",
+        "source": "InfoQ AI/ML"
+      },
+      {
+        "url": "https://thenewstack.io/agentjacking-sentry-mcp-attack/",
+        "title": "A public Sentry key is all it takes to hijack Claude Code, Cursor, and Codex",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/search-like-2010-quant/",
+        "title": "Your agent wants to search like a 2010 quant",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/nvidia-openclaw-agent-blueprints/",
+        "title": "“An agent is an LLM and a harness”: What Nvidia really thinks about OpenClaw",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://www.wired.com/story/28-tips-to-take-your-chatgpt-prompts-to-the-next-level/",
+        "title": "28 Tips to Take Your ChatGPT Prompts to the Next Level",
+        "source": "Wired AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/06/21/ethan-thornton-is-trying-to-do-everything-all-at-once/",
+        "title": "Ethan Thornton is trying to do everything all at once",
+        "source": "TechCrunch Startups"
+      },
+      {
+        "url": "https://news.crunchbase.com/venture/europe-seed-investor-seedcamp-closes-two-funds/",
+        "title": "European Investor Seedcamp Closes On $320M Across Two Funds To Back Seed Startups And Reaches $1B AUM",
+        "source": "Crunchbase News"
+      },
+      {
+        "url": "https://www.tomshardware.com/video-games/handheld-gaming/nintendo-switch-2-is-usd399-at-woot-for-new-customers-usd419-for-returning-customers-with-code-save-up-to-usd100-on-gaming-handheld-while-stocks-last",
+        "title": "Nintendo Switch 2 is $399 at Woot for new customers, $419 for returning customers with code — save up to $100 on gaming handheld while stocks last",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/live/news/amazon-prime-day-2026",
+        "title": "Best Amazon Prime Day tech deals live — PC hardware deals on SSDs, RAM, GPUs, CPUs, gaming laptops, and more",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/pc-components/cooler-master-nr2-pro-mini-itx-system-packing-an-rtx-5080-is-usd400-off-in-newegg-deal-grab-a-compact-yet-powerful-liquid-cooled-gaming-pc-for-usd2-799-99",
+        "title": "Cooler Master NR2 Pro mini-ITX system packing an RTX 5080 is $400 off in Newegg deal — grab a compact yet powerful liquid cooled gaming PC for $2,799.99",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/pc-components/corsairs-tiny-touchscreen-display-is-on-sale-at-20-percent-off-ahead-of-prime-day-get-the-xeneon-edge-14-5-inch-lcd-touchscreen-for-just-usd199-99",
+        "title": "Corsair’s tiny touchscreen display is on sale at 20% off ahead of Prime Day — get the Xeneon Edge 14.5-inch LCD touchscreen for just $199.99.",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/pc-components/gpus/ingenious-modder-converts-countertop-ice-machine-into-an-rtx-3060-gpu-cooler-with-a-beer-fridge-thermostat-mod-reduces-temps-by-up-to-62-percent-in-games-cyberpunk-2077-runs-at-22-c",
+        "title": "Ingenious modder converts countertop ice machine into an RTX 3060 GPU cooler with a beer fridge thermostat — mod reduces temps by up to 62% in games, Cyberpunk 2077 runs at 22°C",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/pc-components/gpu-drivers/open-source-nvidia-vulkan-driver-nvk-gains-experimental-dlss-support-by-importing-pre-baked-cuda-binaries",
+        "title": "Open-source Vulkan driver NVK gains experimental DLSS support — bringing Nvidia’s upscaling tech to Linux via imported CUDA binaries",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/video-games/ubisoft-co-founder-claude-guillemot-dies-in-plane-crash-french-publisher-established-in-1986-became-one-of-the-biggest-entertainment-companies-in-the-world",
+        "title": "Ubisoft co-founder Claude Guillemot dies in plane crash —  French publisher established in 1986 became one of the biggest entertainment companies in the world",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/pc-components/samsungs-32-inch-1440p-165-hz-gaming-monitor-falls-to-its-lowest-price-yet-with-46-percent-off-for-prime-day-grab-the-curved-odyssey-g55c-at-just-usd189-99",
+        "title": "Samsung's 32-inch 1440p 165 Hz gaming monitor falls to its lowest price yet with 46% off for Prime Day — grab the curved Odyssey G55C at just $189.99",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/peripherals/mechanical-keyboards/one-of-our-favorite-budget-gaming-keyboards-drops-back-down-to-its-lowest-ever-price-of-usd45-at-amazon-rk-r65-packs-lubed-switches-metallic-knob-and-gasket-mount-for-excellent-sound-and-feel",
+        "title": "One of our favorite budget gaming keyboards drops back down to its lowest-ever price of $45 at Amazon — RK R65 packs lubed switches, metallic knob, and gasket mount for excellent sound and feel",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/desktops/mini-pcs/dramatically-redesigned-gmktec-evo-x3-shown-bearing-lisa-sus-signature-of-approval-flagship-ai-mini-pc-workstation-is-built-around-amds-ryzen-ai-max-395-strix-halo-processor-again",
+        "title": "Dramatically redesigned GMKtec EVO-X3 shown bearing Lisa Su’s signature of approval — flagship AI mini PC workstation is built around AMD’s Ryzen AI Max+ 395 'Strix Halo' processor, again",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/bank-of-korea-flags-samsung-and-sk-hynix-chip-bonuses-as-a-national-inflation-risk",
+        "title": "Samsung and SK hynix bonuses for chip workers flagged as a national inflation risk — Bank of Korea projects full-year inflation significantly above its 2% target",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/peripherals/gaming-mice/telehealth-doctor-treats-patients-using-razer-naga-gaming-mouse-12-button-mmo-thumb-grid-simplifies-medical-workflow-automates-medical-scripting",
+        "title": "Telehealth doctor treats patients using Razer Naga gaming mouse — 12-button MMO thumb grid simplifies medical workflow, automates medical scripting",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/maker-stem/creality-falcon-t1-review",
+        "title": "Creality Falcon T1 review: Modular laser engraving",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/age-of-empires-iis-goats-used-as-ai-building-blocks-to-build-a-neural-network-goaty-experiment-mocks-the-idea-of-chatbot-consciousness-microsoft-ai-researchers-project-makes-an-absurdist-point-about-ai-consciousness",
+        "title": "Age of Empires II’s goats used as AI building blocks to build a neural network — goaty experiment mocks the idea of chatbot consciousness, Microsoft AI researcher’s project makes an absurdist point about AI consciousness",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/drones/acoustic-mapping-app-uses-thousands-of-networked-old-android-phones-to-hunt-shahed-drones-crowd-sourced-microphone-network-spots-small-low-rcs-military-targets",
+        "title": "Acoustic mapping app uses thousands of networked old Android phones to hunt Shahed drones — crowd-sourced microphone network spots small, low-RCS military targets",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://thehackernews.com/2026/06/arystinger-malware-infects-4300-legacy.html",
+        "title": "AryStinger Malware Infects 4,300 Legacy Routers to Build Reconnaissance Proxy Network",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://thehackernews.com/2026/06/interpol-warns-phishing-ransomware-and.html",
+        "title": "INTERPOL Warns Phishing, Ransomware, and AI Scams Are Rising Across Asia-Pacific",
+        "source": "The Hacker News (Security)"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/06/from-field-notes-to-field-intelligence-greendas-ai-bet-on-everyday-farming-sponsored/",
+        "title": "From field notes to field intelligence: Greenda’s AI bet on everyday farming (Sponsored)",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://developer.chrome.com/docs/lighthouse/agentic-browsing/scoring",
+        "title": "Lighthouse agentic browsing scoring",
+        "source": "Lobsters"
+      }
+    ],
+    "tags": {
+      "companies": [
+        "tencent",
+        "samsung",
+        "nvidia",
+        "anthropic",
+        "google",
+        "openai",
+        "sentry"
+      ],
+      "models": [
+        "deepseek",
+        "claude-code",
+        "codex",
+        "fugu-ultra",
+        "gemma-2"
+      ],
+      "topics": [
+        "agent",
+        "mcp",
+        "cybersecurity",
+        "liquid-cooling",
+        "rag",
+        "search-as-code"
+      ]
+    },
+    "tokenUsage": {
+      "input": 46284,
+      "output": 3340,
+      "total": 50955
+    }
+  },
+  {
     "date": "2026-06-21",
     "title": "KDAN AI 戰情報告 (2026-06-21)",
     "content": "# KDAN AI 戰情報告 (2026-06-21)\n\n## 昨日 AI 重點新聞\n\n### Google I/O 2026：從輔助 AI 全面轉向「獨立代理」時代 ref-16\n**Google** 宣布 AI 策略重大轉型，推出 **Gemini 3.5** 系列及 **Antigravity** 代理開發平台。重點包含 **WebMCP** 開放標準，旨在讓瀏覽器代理能執行跨標籤頁的複雜任務，並為 Android 開發者提供自動遷移代理，將代碼快速轉為 **Kotlin**。\n\n### Apple WWDC 26 發表 Core AI：Apple Silicon 原生 AI 框架 ref-36\n**Apple** 推出 **Core AI** 正式取代 Core ML，專為 **Apple Silicon** 優化的本地生成式 AI 設計。開發者可直接在裝置上運行大型語言模型，支援自訂 **PyTorch** 模型轉換，強化了隱私與斷網執行的能力。\n\n### Anthropic 旗艦模型 Fable 5 因出口管制被迫從 AWS Bedrock 下架 ref-37, ref-22\n**Claude Fable 5** 在上線三天後，因美國出口管制合規問題遭 **Anthropic** 要求撤架。此舉影響了所有建立在該模型上的企業自動化流程，引發開發者對「託管模型」不確定性的恐慮，進而轉向 **GLM-5.2** 等具備 **MIT 授權** 的開源權重模型。\n\n### Google AI Edge 推出 LiteRT-LM：實現 Gemma 4 行動端加速 ref-17\n新推出的 **LiteRT-LM** 基礎設施為 **Gemma 4** 提供動態載入與**多代幣預測 (MTP)** 技術，在行動端實現 **2.2 倍** 的速度提升。該引擎亦支援 **WebGPU** 加速的 JavaScript API，讓瀏覽器具備高效能、無伺服器的推理能力。\n\n### 諾貝爾獎得主 John Jumper 加入 Anthropic ref-22\n**AlphaFold** 開創者、諾貝爾獎得主 **John Jumper** 宣布從 **Google DeepMind** 離職並加入 **Anthropic**。這標誌著頂尖 AI 人才爭奪戰白熱化，特別是在科學發現與基礎模型研究領域。\n\n### 開源專案 Valkey 部署 AI 代理處理 Bug 修復 ref-39\n**Linux 基金會** 旗下的 **Valkey** (Redis 替代品) 宣布在 9.1 版本中使用 **AI Agent** 自動執行 Bug 補丁的「櫻桃選取 (Cherry-picking)」與回傳作業。該代理能自動解決合併衝突並執行測試管線，大幅降低維護成本。\n\n### Google Pay 推進「代理商業」並導入 MCP 協議 ref-18\n**Google Pay** 引入**通用商業協議**與 **MCP (Model Context Protocol)** 伺服器，讓 AI 代理能自主分析消費趨勢並處理支付整合。同時推出跨裝置生物辨識技術，旨在減少代理執行交易時的摩擦。\n\n### ArgusRed 推出專為滲透測試開發的 Kimi K2.6 後訓練模型 ref-22\n這款名為 **ArgusRed** 的工具突破了傳統模型（如 OpenAI/Anthropic）的**安全護欄**，專門用於識別程式碼漏洞。它具備「讀取」與「滲透」兩種模式，能直接在沙盒環境中證明漏洞的存在，而非僅提供信心分數。\n\n### Intel 與 AMD 聯手發表 ACE 擴充：提升 AI 矩陣運算效率 ref-52\n兩大處理器巨頭推出新的 **ACE CPU** 擴充指令集，針對 **x86** 架構的矩陣乘法進行優化。此舉旨在提升處理器在運行本地 AI 模型時的計算密度與能源效率，應對來自 ARM 架構的競爭。\n\n### Google 終止 Gemini CLI 並強推 Antigravity CLI ref-14, ref-16\n**Google** 將其開源 **Gemini CLI** 遷移至閉源的 **Antigravity CLI**，引發社群爭議。雖然新工具在測試中被發現初期速度略慢於舊版，但其支援**多代理背景異步處理**，顯示 Google 對開發者工具「代理化」的堅持。\n\n## 市場洞察\n\n### 1. 「代理原生 (Agent-Native)」架構成為大廠基建核心 ref-22, ref-14, ref-16\n延續前日關於 **Amazon Bedrock AgentCore** 的討論，今日 **Google** 透過 **Antigravity** 與 **WebMCP** 將競爭層級提升至作業系統與瀏覽器標準 (ref-57)。這代表 AI 正在從「對話助手」演進為具備自主執行權限的「系統組件」。企業軟體若不適配 MCP 或 WebMCP 協議，未來可能無法被大廠的代理生態系調用。\n\n### 2. 本地 AI (On-Device AI) 進入 2.0 加速期 ref-52, ref-36, ref-22\n**Apple Core AI** (ref-26) 與 **Google LiteRT-LM** (ref-56) 同時瞄準本地執行。配合 **Intel/AMD ACE** 硬體擴充 (ref-23)，本地 AI 性能瓶頸正快速消失。這驗證了前日報告中關於「模型分級」的趨勢：基礎任務正快速從雲端轉移至端點，以降低延遲與成本。\n\n### 3. 出口管制驅動「模型主權」與開源模型復興 ref-22, ref-37\n**Anthropic Fable 5** 在 Bedrock 遭撤架 (ref-15) 是對「依賴單一雲端 API」最沉重的警示。這迫使開發者轉向如 **GLM-5.2** 這類性能逼近旗艦但具備**下載權重**能力的開源模型 (ref-27)。「模型擁有權」正成為非美系企業與高隱私行業的首要考量。\n\n### 4. 自動化軟體維護：從代碼補全到流程閉環 ref-1\n**Valkey** 案例展示了 AI 代理已能接管 **CI/CD** 中的重複性繁瑣工作 (ref-16)。這不僅是開發輔助，而是軟體工程流程的自動化閉環。這顯示「**工程代理 (Dev Agents)**」正從個人工具演變為團隊基礎設施的一部分。\n\n## KDAN 戰略洞察\n\n### 1. ComPDF SDK：全面適配 Apple Core AI 與 WebMCP 標準 ref-36, ref-50\n*   **具體行動**：凱鈿應優先開發支援 **Apple Core AI** 的本地化組件，確保 **ComPDF SDK** 在 Apple 晶片上的解析速度領先同業。同時，應預研 **WebMCP 伺服器整合**，讓凱鈿的 PDF 處理能力成為瀏覽器代理可以直接調用的「Web 工具」，搶占下一代網頁代理生態。\n\n### 2. 點點簽 (DottedSign)：結合「代理商業」協議應對自動化交易 ref-22, ref-13\n*   **具體行動**：參考 **Google Pay** 的代理商業協議 (ref-54)，點點簽應開發「**代理支付感知的簽章流**」。此外，針對 **Humanizer** 應用可能引發的內容真實性風險 (ref-18)，點點簽的稽核軌跡 (Audit Trail) 應整合「**AI 修正偵測**」，標記文件是否經過 AI 修改，維持法律文件的嚴肅性。\n\n### 3. KDAN Office：導入 LiteRT-LM 技術實現毫秒級文件處理 ref-41, ref-17\n*   **具體行動**：**KDAN Office** 應導入 **LiteRT-LM** 框架 (ref-56)，優化 **Gemma 4** 在行動端 PDF 與文書處理的表現。這能讓使用者在手機端進行長文件摘要時獲得 **2.2 倍** 的加速體驗。此外，結合 **Siri AI** 的語音交互 (ref-39)，開發「語音驅動的文檔編輯代理」。\n\n### 4. ADNEX：演進為具備 MCP 跨源整合能力的決策代理 ref-18, ref-22\n*   **具體行動**：**ADNEX** 應積極整合 **MCP (Model Context Protocol)** (ref-53)，讓代理能直接讀取 **Google Workspace** 或廣告後台數據。從目前的「數據分析中台」進化為能自動執行預算調整、並透過 **Antigravity** 平台與其他企業代理協作的「**自主成長代理**」。\n\n### 5. 技術防禦：建立「出口管制韌性」的模型庫存策略 ref-22, ref-37\n*   **具體行動**：鑑於 **Anthropic** 被封禁的先例 (ref-15)，凱鈿應將 **GLM-5.2** 與 **Kimi K2.6** (ref-40) 列入全線產品的**備選路由**。確保當美國 API 受限時，產品能無縫切換至本地部署的開源模型，保障全球客戶的服務穩定性，避免像 Fable 5 用戶般陷入引擎斷供困境。",
