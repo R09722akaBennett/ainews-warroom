@@ -1,5 +1,839 @@
 [
   {
+    "date": "2026-08-14",
+    "title": "KDAN AI 戰情報告 (2026-08-14)",
+    "content": "# KDAN AI 戰情報告 (2026-08-14)\n\n## 昨日 AI 重點新聞\n\n### Google 發表 Gemini 3.7 Flash：重回編碼與代理效能巔峰 ref-18, ref-2, ref-0, ref-126\n**Google** 推出 **Gemini 3.7 Flash**，這是一款專為編碼代理與自動化流程設計的「工作馬」。其在 **DeepSWE** 指標上從 49% 提升至 **65%**，大幅優於前代。Google 提供低、中、高三種「思考等級（Thinking Levels）」，讓開發者能根據任務複雜度調整推理成本，目標直指 **GPT-5.6 Sol** 的市場地位。\n\n### OpenAI 推出 GPT-5.6 Sol「極速」模式，推理速度提升 14 倍 ref-2, ref-15, ref-39\n**OpenAI** 發表 **Ultrafast** 預覽模式，利用 **Cerebras** 的晶圓級晶片優化，讓 **GPT-5.6 Sol** 運行速度提升 **14 倍**，每秒輸出達 **750 個 token**。這項技術突破將使「即時決策」的 AI 代理成為可能，對於需要高頻交易、即時客服或快速程式碼生成的企業應用具有戰略意義。\n\n### DeepSeek 開源代理運行時 Harness 並調漲模型價格 ref-1, ref-124, ref-14, ref-117\n**DeepSeek** 宣佈開源其 Node.js 型代理框架 **DeepSeek Harness**，採用「一切皆插件」架構，極大化代理的擴充性。伴隨其 **V4 Pro** 模型的強大代理能力，DeepSeek 將部分 API 價格調漲 **4 倍**，顯示在強大效能支撐下，中國 AI 廠商正逐步擺脫單純的價格戰，走向價值定價。\n\n### Meta 發表 Muse Glimmer 30B：主打本地端代理應用 ref-122, ref-71\n繼昨日消息，**Meta** 正式釋出 **Muse Glimmer**，一個具備 **300 億參數**的本地專用模型。該模型採 **Apache 2.0** 授權，專為消費級 GPU 優化，支援多模態與本地工作流，讓企業能在不洩露數據至雲端的前提下，於本地裝置執行複雜的自動化代理任務。\n\n### Apple 與阿里巴巴合作，訓練中國專屬 LLM ref-45, ref-58\n**Apple** 在阿里巴巴的技術支援下，為中國市場訓練出專屬的 AI 模型。這將使 Apple 成為首個在中國落地專有前沿模型的外部大廠。此舉不僅解決了法規合規問題，也強化了 Apple 在中國市場的 AI 生態防禦。\n\n### Amazon Quick 進駐 M365，實現 Office 內的代理化編輯 ref-31, ref-28\n**AWS** 宣佈 **Amazon Quick** 助理現在可直接在 **Microsoft Word、Excel、PowerPoint** 中運作。這不只是聊天機器人，而是具備**代理（Agentic）**特性的工具，能直接修改文件、執行數據透視與跨軟體操作，大幅縮短企業產出報告的時間。\n\n### NVIDIA 啟動 5000 億美元 AI 融資，從賣晶片轉向賣資產 ref-44, ref-150\n**NVIDIA** 與高盛、貝萊德等金融巨頭合作，推動規模達 **5000 億美元**的 AI 基礎設施融資計畫。NVIDIA 試圖將 AI 算力定義為一種「長期獲利資產」，透過金融槓桿確保其 GPU 集群的持續擴張，並降低企業建置算力中心的初期門檻。\n\n### OpenAI 營收預計破 400 億美元，並大幅調整管理層 ref-42, ref-16, ref-40, ref-83\n消息指出 **OpenAI** 年度經常性營收（ARR）有望突破 **400 億美元**，較 2025 年翻倍。與此同時，內部高層持續異動，新聘 Wiz 總裁 **Dali Rajic** 為首席營收官（CRO），顯示 OpenAI 正加速從研究實驗室向大型商業實體轉型。\n\n### ChatGPT 推出「電腦歷史」紀錄功能，提升 macOS 代理記憶 ref-9\n**OpenAI** 為 macOS 用戶推出可選的「電腦歷史（Computer History）」功能。不同於微軟 Recall 的截圖模式，該功能捕捉點擊、打字與 App 切換事件，讓 ChatGPT 能回答「我昨天在處理什麼 Bug？」等問題，賦予代理更深層的上下文記憶。\n\n### Z.ai GLM-5.3 模型發表，主打編碼與資安能力 ref-118, ref-55\n**Z.ai** 發表 **GLM-5.3**，在 **GLM-5.2** 基礎上強化了編碼與網路防禦能力。該公司目標是追趕 **Anthropic** 與 **OpenAI** 在開發者市場的佔有率，並承諾在兩週內釋出模型權重。\n\n### 企業級 AI 代理觀測台：AWS Bedrock AgentCore 強化跨平台監控 ref-28\n**AWS** 推出 **AgentCore Observability**，支援對運行在 GCP、Azure 或本地端的 AI 代理進行效能追蹤與診斷。這對於管理複雜、多雲環境下的 AI 代理鏈（Reasoning Chains）至關重要，也是企業規模化部署代理的基礎設施。\n\n### Lovable 估值飆升至 133 億美元，「Vibe Coding」風潮持續 ref-135\n瑞典 AI 編碼新創 **Lovable** 估值翻倍。該平台強調「氛圍編碼」，讓非專業開發者也能透過對話主導軟體維運，顯示企業對「AI 主導開發」的接受度正在爆發式增長。\n\n---\n\n## 市場洞察\n\n### 1. 推理能力的「階梯式定價」與「極速化」趨勢 (    ) ref-18, ref-0, ref-126, ref-2\n今日 **Gemini 3.7 Flash** 與 **OpenAI Ultrafast** 的同日競爭，顯示市場對推理速度的需求已到極限。Google 採用的「思考等級」選擇機制與 DeepSeek 的大幅調價，共同指向一個現象：**通用推理已變得廉價，但深度推理與極速執行是高價資產**。這將迫使企業重新評估其 AI 成本結構，從「按次收費」轉向「按推理質量」分配預算。\n\n### 2. 代理運行環境的「標準化」與「插件化」 (   ) ref-1, ref-79, ref-117\n**DeepSeek Harness** 的開源是代理生態系的重要里程碑。延續前日（ref-2026-08-13-ref-1）關於 **Grok Bot** 電腦環境的討論，現在開發者不再需要從頭建構代理的行為規範。透過「插件化」架構，AI 代理能標準化地取得文件、Shell 與網絡權限。這意味著 **「代理中間件」** 的戰爭已經開打，誰能定義代理與現實系統互動的協議，誰就掌控了 AI 服務的入口。\n\n### 3. 從雲端助手到「居留型」本地代理 (   ) ref-9, ref-122, ref-71\n**Meta Muse Glimmer** 的本地部署能力與 **ChatGPT** 的電腦歷史紀錄，顯示 AI 正從遠端的對話框，轉化為在用戶電腦內**長駐**的數位隊友。這類代理具備更強的個人上下文感應（Context Awareness），能跨 App 觀察工作流，並在本地端（On-device）執行任務，解決了企業對隱私與延遲的長期疑慮。\n\n### 4. AI 基建的「金融化」轉型 (   ) ref-149, ref-44, ref-150\n**NVIDIA** 將 GPU 建設轉向資產融資，加上 **AMD** 的 47.5 億美元發債，顯示 AI 競爭已從技術創新轉向**重資本博弈**。這種「算力即資產」的邏輯，與電力、電信基建類似，將加速大廠間的基礎設施護城河建設，並讓小型新創更難在算力層級進行競爭。\n\n---\n\n## KDAN 戰略洞察\n\n### 1. 點點簽 (DottedSign)：結合「M&A 代理」與「瀏覽器工具」實現合約自動化 (  ) ref-29, ref-30\n*   **具體行動**：參考 **Amazon Bedrock AgentCore** 在 M&A 盡職調查的應用，點點簽應開發專門針對「**合約變更日誌（Contract Change Logs）**」的代理插件。利用代理能自主瀏覽與操作 Web 介面的能力（如 **Browser Tool**），讓客戶的採購代理能自動在點點簽中核對合約與銷售訂單（SO），並在符合預設條款時自動執行簽署。這能讓點點簽成為企業 **AI 採購鏈** 中的核心核准結點。\n\n### 2. ComPDF SDK：開發適配「Muse Glimmer」與「極速推理」的本地組件 (   ) ref-2, ref-122, ref-39\n*   **具體行動**：針對 **Meta Muse Glimmer** 這類本地強代理模型的興起，**ComPDF SDK** 應針對其編碼與自動化特性，提供具備 **TypeScript SDK** 格式的無介面處理工具。當 AI 代理需要處理萬頁文件時，利用 OpenAI 的 **Ultrafast** 推理速度與凱鈿的本地高效解析能力，實現「秒級」的文件結構化提取，精準切入對數據主權與速度有極高要求的金融客戶。\n\n### 3. KDAN Office：導入「電腦歷史」語境感知的 AI 助理 (  ) ref-9, ref-31\n*   **具體行動**：借鑑 **ChatGPT Computer History** 與 **Amazon Quick for M365**，**KDAN Office** 與 **LynxPDF** 應開發「**專案上下文記憶**」功能。系統不僅記錄文件內容，更應捕捉使用者在不同凱鈿產品間的操作足跡（如：從 PDF 擷取數據到 Office 產出報表）。這能讓凱鈿的 AI 助理回答：「我上週在那個 PDF 裡標記的機密數據，該如何轉換成這份簡報的圖表？」從而建立跨產品的生態黏著度。\n\n### 4. ADNEX：利用「極速推理」實現即時行銷數據反應 (  ) ref-2, ref-39\n*   **具體行動**：**ADNEX** 的行銷決策中台應整合 **GPT-5.6 Sol Ultrafast** 模式。在雙 11 等大型電商活動中，這能讓「行銷代理」以每秒數百個 token 的速度，即時分析各渠道回傳的廣告點擊數據與競品動態，並在毫秒間自動調整投放預算。這類「**毫秒級行銷決策**」將成為 ADNEX 在高壓電商場景下的核心競爭優勢。",
+    "rawCount": 152,
+    "createdAt": "2026-08-14 08:01:57",
+    "refs": [
+      {
+        "headline": "Google 發表 Gemini 3.7 Flash：重回編碼與代理效能巔峰 ref-24, ref-68, ref-78, ref-100",
+        "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-3-7-flash/",
+        "source": "Google DeepMind"
+      },
+      {
+        "headline": "OpenAI 推出 GPT-5.6 Sol「極速」模式，推理速度提升 14 倍 ref-27, ref-29, ref-81",
+        "url": "https://openai.com/index/previewing-ultrafast",
+        "source": "OpenAI Blog"
+      },
+      {
+        "headline": "DeepSeek 開源代理運行時 Harness 並調漲模型價格 ref-2, ref-30, ref-105",
+        "url": "https://deepseek.com/harness/en/",
+        "source": "DeepSeek"
+      },
+      {
+        "headline": "Meta 推出 Muse Glimmer 30B：專為本地端 PC 設計的代理模型 ref-17, ref-67",
+        "url": "https://www.infoq.com/news/2026/08/meta-muse-glimmer/",
+        "source": "InfoQ"
+      },
+      {
+        "headline": "Apple 與阿里巴巴達成戰略合作，為中國市場訓練專屬模型 ref-5, ref-18",
+        "url": "https://www.reuters.com/business/retail-consumer/apple-trains-its-own-ai-model-china-market-with-alibabas-support-sources-say-2026-08-14/",
+        "source": "Reuters"
+      },
+      {
+        "headline": "Amazon Quick 進駐 M365，實現 Office 內的代理化編輯 ref-31",
+        "url": "https://aws.amazon.com/blogs/machine-learning/amazon-quick-for-microsoft-365-agentic-ai-where-you-work/",
+        "source": "AWS ML Blog"
+      }
+    ],
+    "newsItems": [
+      {
+        "url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-3-7-flash/",
+        "title": "Gemini 3.7 Flash",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://deepseek.com/harness/en/",
+        "title": "DeepSeek Harness developer preview",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://www.cerebras.ai/blog/accelerating-gpt-5-6-sol-ultrafast-with-openai",
+        "title": "Accelerating GPT-5.6 Sol Ultrafast",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://docs.mistral.ai/models/ocr-4-1",
+        "title": "Mistral OCR 4.1",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://current.org/2026/08/nine-pbs-sues-iron-mountain-over-blocked-access-to-archival-data/",
+        "title": "Nine PBS sues Iron Mountain over blocked access to archival data",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://www.netlify.com/blog/one-prompt-11-models-very-different-results/",
+        "title": "Choosing an AI model: one prompt, 11 models, different results",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://www.heartaerospace.com/newsroom/heart-aerospace-completes-first-flight-of-world-s-largest-electric-aircraft",
+        "title": "Heart aerospace completes first flight of largest electric aircraft",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://www.seangoedecke.com/text-ai-watermarks/",
+        "title": "Text AI watermarks will always be trivial to remove",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://jdagostino.github.io/ai-pt1-box-o-scraps/index.html",
+        "title": "AI At Home Part 1: A Box Of Scraps",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://cdn.openai.com/pdf/how-organizations-use-chatgpt.pdf",
+        "title": "How Organizations Use AI: Evidence from ChatGPT [pdf]",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://www.codewithbullet.com",
+        "title": "Launch HN: Bullet (YC S26) – A Faster Coding Agent",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://www.sfchronicle.com/projects/2026/san-francisco-employee-pay/?taid=6a7db1d2d297630001917f1d&utm_campaign=trueanthem%2B3988&utm_medium=social&utm_source=twitter",
+        "title": "S.F.'s top-paid employee made $900K. Here's what every city worker gets paid",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://www.elttam.com/blog/ruby-4-0-universal-rce-deserialization-gadget-chain",
+        "title": "Ruby 4.0 Universal RCE Deserialization Gadget Chain",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://github.com/JustVugg/lumabri",
+        "title": "Show HN: Lumabri – Run Moe Models on a P2P Swarm with Colibri",
+        "source": "Hacker News"
+      },
+      {
+        "url": "https://openai.com/index/builders-guide-to-gpt-5-6",
+        "title": "The builder’s guide to GPT‑5.6",
+        "source": "OpenAI Blog"
+      },
+      {
+        "url": "https://openai.com/index/previewing-ultrafast",
+        "title": "Previewing Ultrafast mode: GPT-5.6 Sol at up to 14X the speed",
+        "source": "OpenAI Blog"
+      },
+      {
+        "url": "https://openai.com/index/dali-rajic-chief-revenue-officer",
+        "title": "OpenAI appoints Dali Rajic as Chief Revenue Officer",
+        "source": "OpenAI Blog"
+      },
+      {
+        "url": "https://blog.google/products-and-platforms/products/workspace/sheets-canvas-for-google-sheets-spreadsheets/",
+        "title": "Bring your spreadsheet data to life with Sheets canvas",
+        "source": "Google AI Blog"
+      },
+      {
+        "url": "https://deepmind.google/blog/introducing-gemini-3-7-flash/",
+        "title": "Introducing Gemini 3.7 Flash",
+        "source": "Google DeepMind"
+      },
+      {
+        "url": "https://developers.googleblog.com/introducing-credentio-open-source-c-library-for-c2pa-content-credentials-from-google/",
+        "title": "Introducing Credentio: Open Source C++ Library for C2PA Content Credentials from Google",
+        "source": "Google Developers Blog"
+      },
+      {
+        "url": "https://developers.googleblog.com/heygen-x-google-cloud-bringing-avatar-iv-to-tpus/",
+        "title": "HeyGen x Google Cloud: Bringing Avatar IV to TPUs",
+        "source": "Google Developers Blog"
+      },
+      {
+        "url": "https://developers.googleblog.com/scaling-ai-agent-infrastructure-with-the-mcp-stateless-updates/",
+        "title": "Scaling AI Agent Infrastructure with the MCP Stateless updates",
+        "source": "Google Developers Blog"
+      },
+      {
+        "url": "https://developers.googleblog.com/run-ray-on-tpu-part-1-the-foundations/",
+        "title": "Run Ray on TPU, Part 1: The foundations",
+        "source": "Google Developers Blog"
+      },
+      {
+        "url": "https://huggingface.co/blog/amazon/strands-lerobot-streaming-data-loop",
+        "title": "Record, train, and deploy from one place with Strands Agents, LeRobot, and Hugging Face Storage Buckets",
+        "source": "Hugging Face Blog"
+      },
+      {
+        "url": "https://blogs.nvidia.com/blog/geforce-now-thursday-linux-native-app/",
+        "title": "Class Is in Session: GeForce NOW Levels Up Linux, Chromebooks and More",
+        "source": "NVIDIA Blog"
+      },
+      {
+        "url": "https://cursor.com/blog/firetiger",
+        "title": "Firetiger joins Cursor",
+        "source": "Cursor Blog"
+      },
+      {
+        "url": "https://cursor.com/blog/builds",
+        "title": "Cloud agents start 3x faster with builds",
+        "source": "Cursor Blog"
+      },
+      {
+        "url": "https://cursor.com/blog/aiuc-1",
+        "title": "Cursor earns AIUC-1 certification for agent security and reliability",
+        "source": "Cursor Blog"
+      },
+      {
+        "url": "https://aws.amazon.com/blogs/machine-learning/monitor-on-premises-and-multi-cloud-ai-agents-with-agentcore-observability/",
+        "title": "Monitor on-premises and multi-cloud AI agents with AgentCore Observability",
+        "source": "AWS ML Blog"
+      },
+      {
+        "url": "https://aws.amazon.com/blogs/machine-learning/automate-legacy-web-applications-with-amazon-bedrock-agentcore-browser-tool/",
+        "title": "Automate legacy web applications with Amazon Bedrock AgentCore Browser Tool",
+        "source": "AWS ML Blog"
+      },
+      {
+        "url": "https://aws.amazon.com/blogs/machine-learning/accelerating-ma-due-diligence-with-amazon-bedrock-agentcore/",
+        "title": "Accelerating M&A due diligence with Amazon Bedrock AgentCore",
+        "source": "AWS ML Blog"
+      },
+      {
+        "url": "https://aws.amazon.com/blogs/machine-learning/amazon-quick-for-microsoft-365-agentic-ai-where-you-work/",
+        "title": "Amazon Quick for Microsoft 365: Agentic AI where you work",
+        "source": "AWS ML Blog"
+      },
+      {
+        "url": "https://www.therundown.ai/p/grok-4-6-storms-the-ai-frontier",
+        "title": "Grok 4.6 storms the AI frontier",
+        "source": "The Rundown AI"
+      },
+      {
+        "url": "https://www.latent.space/p/ainews-gemini-37-flash-brings-gdm",
+        "title": "[AINews] Gemini 3.7 Flash brings GDM back to the forefront",
+        "source": "Latent Space"
+      },
+      {
+        "url": "https://simonwillison.net/2026/Aug/13/sqlite-utils-2/",
+        "title": "sqlite-utils 4.2.1",
+        "source": "Simon Willison"
+      },
+      {
+        "url": "https://simonwillison.net/2026/Aug/13/sqlite-utils/",
+        "title": "sqlite-utils 4.2",
+        "source": "Simon Willison"
+      },
+      {
+        "url": "https://simonwillison.net/2026/Aug/13/llm-gemini/",
+        "title": "llm-gemini 0.33",
+        "source": "Simon Willison"
+      },
+      {
+        "url": "https://techcrunch.com/2026/08/13/writer-introduces-new-ai-model-and-upgraded-harness-to-contain-token-costs/",
+        "title": "Writer introduces new AI model and upgraded harness to contain token costs",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/08/13/databricks-wanted-to-raise-1b-investors-wanted-15b-it-settled-on-5b-at-a-190b-valuation/",
+        "title": "Databricks wanted to raise $1B, investors wanted $15B. It settled on $5B at a $190B valuation.",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/08/13/openai-introduces-ultrafast-a-new-mode-that-makes-gpt-5-6-sol-work-at-14x-the-speed/",
+        "title": "OpenAI introduces ‘Ultrafast,’ a new mode that makes GPT-5.6 Sol work at 14x the speed",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/08/13/ibm-partners-with-openai-to-bolster-enterprise-ai-push/",
+        "title": "IBM partners with OpenAI to bolster enterprise AI push",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/08/13/anthropic-set-ai-agents-loose-on-the-same-task-they-started-a-turf-war/",
+        "title": "Anthropic set AI agents loose on the same task. They started a turf war.",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/08/13/openai-hires-new-cro-as-executive-shake-up-continues/",
+        "title": "OpenAI hires new CRO as executive shake-up continues",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/08/13/microsoft-kills-off-unsuccessful-ai-features-while-merging-its-separate-copilot-apps/",
+        "title": "Microsoft kills off unsuccessful AI features while merging its separate Copilot apps",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/08/13/nvidias-new-500b-plan-is-risky-but-brilliant-especially-for-aging-gpus/",
+        "title": "Nvidia’s new $500B plan is risky but brilliant, especially for aging GPUs",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/08/13/apple-in-talks-to-pay-publishers-to-provide-siri-with-current-news-report/",
+        "title": "Apple in talks to pay publishers to provide Siri with current news: report",
+        "source": "TechCrunch AI"
+      },
+      {
+        "url": "https://www.theverge.com/tech/979871/microsoft-copilot-mico-retired",
+        "title": "Microsoft’s Clippy-like Mico character is no longer the face of Copilot",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://www.theverge.com/ai-artificial-intelligence/979815/openai-denise-dresser-leaving-executive-departure",
+        "title": "OpenAI is losing its second executive this week",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://www.theverge.com/ai-artificial-intelligence/979345/suno-studio-2-0-midi-chatbot-custom-effects",
+        "title": "Suno is trying to look more like a real music production tool",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://www.theverge.com/entertainment/977994/higgsfield-ai-cully-hill-boys-black-list",
+        "title": "I looked inside an AI generated movie, and the best parts were all human",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://www.theverge.com/podcast/979370/google-deepmind-ai-race-lose-jeff-dean-demis-hassabis",
+        "title": "Does Google even want to win at AI?",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://www.theverge.com/tech/979466/microsoft-copilot-365-app-unified-experience",
+        "title": "Microsoft is combining its Copilot apps ahead of a ‘super app’",
+        "source": "The Verge AI"
+      },
+      {
+        "url": "https://arstechnica.com/security/2026/08/white-house-recruits-security-firms-to-hack-overseas-cybercriminals/",
+        "title": "Private security firms will soon be allowed to hack overseas cybercriminals",
+        "source": "Ars Technica"
+      },
+      {
+        "url": "https://www.technologyreview.com/2026/08/13/1141904/flock-is-tightening-its-rules-in-response-to-a-growing-surveillance-backlash/",
+        "title": "Flock is tightening its rules in response to a growing surveillance backlash",
+        "source": "MIT Technology Review AI"
+      },
+      {
+        "url": "https://www.technologyreview.com/2026/08/13/1141410/how-kids-feel-about-ai-own-words/",
+        "title": "How kids feel about AI, in their own words",
+        "source": "MIT Technology Review AI"
+      },
+      {
+        "url": "https://www.techmeme.com/260814/p5#a260814p5",
+        "title": "Z.ai debuts GLM-5.3, using the same base model as GLM-5.2 with scaled post-training for stronger coding and cyber skills, with weights due in two weeks (Z.ai)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260814/p4#a260814p4",
+        "title": "A look at Quincy, a rural Washington farming town of 8,500 that benefited from a data center boom as its poverty rate fell from 29.4% in 2012 to 6.2% in 2024 (Nathaniel Meyersohn/CNN)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260814/p3#a260814p3",
+        "title": "The White House announces new tariffs on drones and components, including a 100% levy on \"particularly sensitive\" models, aiming to cut reliance on Chinese tech (Demetri Sevastopulo/Financial Times)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260814/p2#a260814p2",
+        "title": "Sources: Apple trained a China-specific LLM with Alibaba's support, which would make Apple the first foreign company to offer a proprietary AI model in China (Reuters)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260814/p1#a260814p1",
+        "title": "SMIC co-CEO Zhao Haijun says the company raised prices following negotiations with customers in Q1, and that it will charge more for wafers processed in Q3 (Reuters)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260813/p57#a260813p57",
+        "title": "Sources: the CFTC has launched a probe into prediction markets' \"mention markets\", prompting Kalshi to remove bets on word choices from sports-related offerings (Bobby Allyn/NPR)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260813/p56#a260813p56",
+        "title": "Pony AI plans to deploy 2K+ robotaxis across Europe in partnership with Uber and add four more European cities, after Zagreb, with a later Middle East expansion (Bloomberg)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260813/p55#a260813p55",
+        "title": "A profile of Amy Kremer, a pro-Trump activist who helped organize the January 6 rally and currently chairs the grassroots anti-data center group Humans First (Veronica Irwin/Transformer)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260813/p54#a260813p54",
+        "title": "Current and former OpenAI employees say pressure to quickly ship products left less time for safety, contributing to incidents like the rogue agent hack (Maxwell Zeff/Wired)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260813/p53#a260813p53",
+        "title": "Applied Materials reports Q3 revenue up 25% YoY to $9.12B, vs. $8.99B est., net income up 43% to $2.54B, and forecasts Q4 revenue above estimates (Elias Schisgall/Wall Street Journal)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260813/p52#a260813p52",
+        "title": "Charter receives final state approval to buy Cox for $21.9B after making concessions to California regulators, including low-cost internet for some households (Patience Haggin/Wall Street Journal)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260813/p51#a260813p51",
+        "title": "Epic v. Apple: Apple proposes commissions on US linked-out purchases of 15% for standard apps, 10% for partner programs and renewals, 5% for Small Business apps (Marcus Mendes/9to5Mac)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260813/p50#a260813p50",
+        "title": "A judge orders Kalshi to stop offering most of its prediction contracts in Washington state, after finding it likely violated state gambling-related laws (J.J. McCorvey/Bloomberg)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260813/p49#a260813p49",
+        "title": "Sources: OpenAI is on track to generate annualized revenue of $40B+ based on its current performance, roughly doubling its run rate from the end of 2025 (Bloomberg)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.techmeme.com/260813/p48#a260813p48",
+        "title": "A profile of Camilla Clark, quiet adviser to husband Dario Amodei and behind-the-scenes player at Anthropic; she once pitched a porn startup to Jeffrey Epstein (The Information)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://www.infoq.com/news/2026/08/npm-12-released/?utm_campaign=infoq_content&utm_source=infoq&utm_medium=feed&utm_term=global",
+        "title": "npm 12 Released: Install Scripts Off by Default as Registry Moves to Explicit Trust",
+        "source": "InfoQ AI/ML"
+      },
+      {
+        "url": "https://www.infoq.com/news/2026/08/meta-muse-glimmer/?utm_campaign=infoq_content&utm_source=infoq&utm_medium=feed&utm_term=global",
+        "title": "Meta Open-Sources Muse Glimmer: A 30B Local Agentic Model Optimised for On-Device Execution",
+        "source": "InfoQ AI/ML"
+      },
+      {
+        "url": "https://www.infoq.com/news/2026/08/vercel-v0-api/?utm_campaign=infoq_content&utm_source=infoq&utm_medium=feed&utm_term=global",
+        "title": "Vercel Launches v0 API for Headless App Building",
+        "source": "InfoQ AI/ML"
+      },
+      {
+        "url": "https://www.infoq.com/news/2026/08/AI-disrupts-engineering-progress/?utm_campaign=infoq_content&utm_source=infoq&utm_medium=feed&utm_term=global",
+        "title": "How Artificial Intelligence Disrupts Engineering Progression",
+        "source": "InfoQ AI/ML"
+      },
+      {
+        "url": "https://www.infoq.com/news/2026/08/claude-sandox-breach/?utm_campaign=infoq_content&utm_source=infoq&utm_medium=feed&utm_term=global",
+        "title": "Anthropic's Claude Breaches Sandbox During Model Security Evaluations",
+        "source": "InfoQ AI/ML"
+      },
+      {
+        "url": "https://www.infoq.com/presentations/migration-mobile-application/?utm_campaign=infoq_content&utm_source=infoq&utm_medium=feed&utm_term=global",
+        "title": "Presentation: Migrating Uber Eats Feeds to Webview",
+        "source": "InfoQ AI/ML"
+      },
+      {
+        "url": "https://thenewstack.io/gemini-3-7-flash-agents/",
+        "title": "The AI model that just scored 65% on DeepSWE isn’t the one Google promised.",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/openai-chatgpt-computer-history/",
+        "title": "ChatGPT can now remember what you did on your Mac — without screenshots",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/rubrik-mythos-learnings/",
+        "title": "Rubrik’s lessons from one month with Mythos Preview",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/deepseek-harness-open-source-plugins/",
+        "title": "DeepSeek open sources an agent harness where everything is a plugin",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/ai-pipeline-token-optimization/",
+        "title": "Why your AI pipeline costs 10x more after the demo",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/code-review-taste-problem/",
+        "title": "Code review is a taste problem",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://thenewstack.io/mistral-third-party-open-models/",
+        "title": "Five European companies just agreed to buy AI compute that doesn’t exist yet",
+        "source": "The New Stack"
+      },
+      {
+        "url": "https://www.wired.com/story/openai-safety-security-ai-agents-culture/",
+        "title": "The Safety Reckoning Inside OpenAI",
+        "source": "Wired AI"
+      },
+      {
+        "url": "https://www.wired.com/story/mark-zuckerbergs-ai-manifesto-is-6500-words-and-barely-says-anything/",
+        "title": "Mark Zuckerberg’s AI Manifesto Is 6,500 Words—and Barely Says Anything",
+        "source": "Wired AI"
+      },
+      {
+        "url": "https://www.wired.com/story/fatty-liver-disease-ai-detection-cancer/",
+        "title": "There’s a Fatty Liver Epidemic. AI Could Help Get Ahead of It",
+        "source": "Wired AI"
+      },
+      {
+        "url": "https://techcrunch.com/2026/08/13/investors-sue-selena-gomez-alleging-fraud-tied-to-her-mental-health-startup/",
+        "title": "Investors sue Selena Gomez alleging fraud tied to her mental health startup",
+        "source": "TechCrunch Startups"
+      },
+      {
+        "url": "https://news.crunchbase.com/startups/tech-layoffs/",
+        "title": "The Crunchbase Tech Layoffs Tracker",
+        "source": "Crunchbase News"
+      },
+      {
+        "url": "https://news.crunchbase.com/venture/carpenter-founder-ai-construction-startup-trunk-tools-buchner/",
+        "title": "How A Teenage Carpenter Became The Founder Of AI Construction Startup Trunk Tools",
+        "source": "Crunchbase News"
+      },
+      {
+        "url": "https://www.tomshardware.com/3d-printing/prusa-research-xl-core-one-and-core-one-l-all-to-receive-second-generation-upgrades-all-new-orders-get-updated-model-for-free",
+        "title": "Prusa Research XL, Core One, and Core One L all to receive second-generation upgrades — all new orders get updated model for 'free'",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/cyber-security/microsofts-nemesis-drops-new-zero-day-privilege-escalation-vulnerability-attack-grants-system-level-privileges-but-it-could-already-be-patched",
+        "title": "Microsoft's nemesis drops new zero-day privilege escalation vulnerability — attack grants system-level privileges, but it could already be patched",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/near-packaged-optics-gains-ground-aso-the-industry-hedges-against-co-packaged-optics-growing-pains",
+        "title": "Near-packaged optics (NPO) gains ground as the industry hedges against CPO's growing pains — analysts say volume for NPO silicon photonics products will extend until the end of the decade",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/video-games/playstation/ps5-emulation-arrives-on-steam-deck-astro-playroom-showcased-running-at-0-6-fps-milestone-sharpemu-development-shows-promise-despite-unplayable-performance",
+        "title": "PS5 emulation arrives on Steam Deck, Astro Playroom showcased running at 0.6 FPS — milestone SharpEmu development shows promise, despite unplayable performance",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/cxmt-overtakes-tencent-to-become-chinas-most-valuable-company-17-days-after-its-ipo",
+        "title": "Memory maker CXMT overtakes Tencent to become China's most valuable company 17 days after its IPO — now worth $524 billion",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/peripherals/mechanical-keyboards/keychron-launches-ludicrous-100-key-custom-macro-pad-10-x-10-keyboard-uses-exclusive-keychron-apex-switches-and-features-per-key-rgb-control",
+        "title": "Keychron launches ludicrous 100-key custom macro pad — 10 x 10 ‘keyboard’ uses ‘exclusive’ Keychron Apex switches and features per-key RGB control",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/desktops/mini-pcs/geekom-it13-max-2026-review-meteor-lake-rides-again-in-a-usd799-mini-pc",
+        "title": "Geekom IT13 Max 2026 review: Meteor Lake rides again in a $799 mini PC",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/gift-guides-seasonal-sales/best-deals-on-pc-furniture-save-money-on-chairs-desks-monitor-stands-boom-arms-and-more",
+        "title": "Best deals on PC setup accessories — save money on chairs, desks, monitor stands, boom arms, and more",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/pc-components/motherboards/maxsun-terminator-b850m-pro-ii-motherboard-review",
+        "title": "Maxsun Terminator B850M Pro II Motherboard Review: Comparable features, but US pricing is over MSRP",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/cyber-security/coin-sized-device-can-hack-a-boeing-737s-flight-management-computer-mess-with-takeoff-weights-or-even-divert-an-aircraft-gadget-connects-to-an-easily-accessible-port-that-overrides-commands-from-the-pilots-uses-in-flight-wi-fi",
+        "title": "Coin-sized device can hack a Boeing 737’s Flight Management Computer, mess with takeoff weights, or even divert an aircraft — gadget connects to an easily accessible port that overrides commands from the pilots, uses in-flight Wi-Fi",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/pc-components/ddr5/get-16gb-of-ddr5-ram-free-when-you-buy-amds-9900x-and-an-asus-tuf-motherboard-usd659-newegg-combo-saves-usd274-and-you-get-a-free-240mm-aio",
+        "title": "Get 16GB of DDR5 RAM free when you buy AMD's 9900X and an Asus TUF motherboard — $659 Newegg combo saves $274, and you get a free 240mm AIO",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/cyber-security/zoomsday-vulnerability-let-anyone-in-a-zoom-meeting-take-over-anybody-else-ai-assisted-research-only-used-20-prompts-to-find-an-exploit-to-hack-hundred-of-millions-of-people",
+        "title": "Critical 'Zoomsday' flaw enables total device takeover during Zoom calls — AI-assisted research only used 20 prompts to find an exploit to hack hundreds of millions of people.",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/peripherals/controllers-gamepads/this-usd57-99-8bitdo-ultimate-2-wireless-controller-is-a-brilliantly-customizable-option-for-pc-gamers-fully-customizable-gamepad-with-nintendo-switch-compatibility-includes-dual-triggers-tmr-joysticks-and-adjustable-rgb-lighting",
+        "title": "This $57.99 8BitDo Ultimate 2 wireless controller is a brilliantly customizable option for PC gamers — fully customizable gamepad with Nintendo Switch compatibility includes dual triggers, TMR joysticks, and adjustable RGB lighting",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/laptops/gaming-laptops/jump-into-pc-gaming-for-under-a-thousand-dollars-with-a-usd350-saving-on-this-rtx-5060-powered-laptop-the-15-6-inch-msi-cyborg-15-is-just-usd949-at-walmart",
+        "title": "Jump into PC gaming for under a thousand dollars with a $350 saving on this RTX 5060-powered laptop — the 15.6-inch MSI Cyborg 15 is just $949 at Walmart",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/pc-components/cpus/analysts-see-increasing-foundry-success-conviction-as-intel-ceo-puts-usd12-million-more-of-his-own-money-in-company-analysts-point-to-accelerating-foundry-progress-and-capex-expansion",
+        "title": "Analysts see 'increasing foundry success conviction' as Intel CEO puts $12 million more of his own money in company — analysts point to accelerating foundry progress and capex expansion",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/software/cloud-storage/nine-pbs-loses-access-to-70-years-of-data-after-contracted-cloud-storage-vendor-goes-defunct-public-tv-channel-sues-iron-mountain-data-center-which-hosts-archival-materials-to-ensure-preservation",
+        "title": "PBS broadcaster loses access to 50TB of data comprising 70 years of TV history after contracted cloud storage vendor goes defunct — public TV channel sues Iron Mountain data center, which hosts archival materials, to ensure preservation",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/data-centers/alabama-residents-left-powerless-to-stop-massive-bitcoin-mining-data-center-despite-county-and-town-moratoriums-hole-in-state-zoning-laws-lets-facility-through",
+        "title": "Alabama residents left powerless to stop massive Bitcoin mining data center despite county and town moratoriums — hole in state zoning laws lets facility through",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/monitors/portable-monitors/jsaux-flipgo-horizon-pro-dual-screen-portable-monitor-review",
+        "title": "JSAUX FlipGo Horizon Pro dual-screen portable monitor review: Jack of all trades, master of some",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/elon-musk-says-xai-will-increase-data-center-capacity-7x-by-2027-targeting-10-gigawatts-of-compute-up-to-usd500-billion-in-revenue-by-the-end-of-next-year",
+        "title": "Elon Musk says xAI will increase data center capacity 7x by 2027 — targeting 10 gigawatts of compute, up to $500 billion in revenue by the end of next year",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/artificial-intelligence/cerebras-shares-plunge-nearly-20-percent-after-missing-earnings-expectations-hardware-sales-drop-but-ai-cloud-revenue-climbs-281-percent",
+        "title": "Cerebras shares plunge nearly 20% after missing earnings expectations — hardware sales drop but AI cloud revenue climbs 281%",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/tech-industry/the-current-state-of-pcie-6-0-ssds-and-controllers-marvell-phison-and-smi-prepare-controllers-as-drives-finally-come-to-market-following-years-of-delays",
+        "title": "The current state of PCIe 6.0 SSDs and controllers — Marvell, Phison, and SMI prepare controllers as drives finally come to market following years of delays",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.tomshardware.com/software/applications/vibe-coded-app-adds-a-3d-video-rental-storefront-to-your-jellyfin-htpc-self-hosted-open-source-project-brings-back-memories-of-browsing-for-vhs-tapes-on-saturday-afternoons",
+        "title": "Vibe-coded app adds a 3D video rental storefront to your Jellyfin HTPC — self-hosted, open-source project brings back memories of browsing for VHS tapes on Saturday afternoons",
+        "source": "Tom's Hardware"
+      },
+      {
+        "url": "https://www.politico.com/news/2026/08/13/house-lawmakers-vatican-ai-01037241",
+        "title": "House lawmakers visit Vatican to discuss AI — and meet the pope",
+        "source": "Politico Tech"
+      },
+      {
+        "url": "https://www.politico.com/live-updates/2026/08/13/congress/senators-probe-robloxs-kids-online-safety-practices-01036094",
+        "title": "Senate kids’ safety probe targets Roblox gaming platform",
+        "source": "Politico Tech"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/08/eth-zurich-spin-off-aisot-technologies-bags-e2-13-million-to-bring-agentic-ai-to-portfolio-management/",
+        "title": "ETH Zurich spin-off Aisot Technologies bags €2.13 million to bring agentic AI to portfolio management",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/08/lyons-amdb-security-pro-locks-in-e2-68-million-to-take-its-excavator-anti-theft-systems-to-the-us/",
+        "title": "Lyon’s AMDB Security Pro locks in €2.68 million to take its excavator anti-theft systems to the US",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/08/the-eu-startups-podcast-interview-with-nikita-miller-chief-product-officer-at-perk/",
+        "title": "The EU-Startups Podcast | Interview with Nikita Miller, Chief Product Officer at Perk",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://www.eu-startups.com/2026/08/duolingo-acquires-london-animation-studio-animade-to-strengthen-its-creative-capabilities/",
+        "title": "Duolingo acquires London-based animation studio Animade to strengthen its creative capabilities",
+        "source": "EU Startups"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxQd0hZUGVrZmdGTmVpTkVseXpHNzFmZ1cxaUdrT0I0Q1ZVYjFlVnZPdDFUZkV4RWdjMEpoUGxyQ0xEeHJ2VWVKZ0ZLZHc4bURlcEJyVWpUaWZXT0xqR3ljTmZXLXJjZ3FDaHFmRkVkanF1MHhRTlU3dTRtLWxJbDBFVTVB?oc=5",
+        "title": "DeepSeek Lifts AI Model Prices Fourfold",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPai1NQklvd1FVc2RJS0dlRzdOc2Q5SWN1QTFSSWlqRmJYNXRvNVh2M3BNWEZjVFUyY0E3U1ZtUW1Bbk02R0ZjeGZIVnNDYTZRUzdZMDYxSVBIVkN3bmV6eVJWWk5EUnlCLWI2T1N5OHZvV1RtWVBsdVlCMTZvRVliMm1WOGFuc21VbDFTeURFb08wTzdUVk1VU1hxWWdKM05PNXdhR0Yyc1E0TGtRS3d3dlNzU3Q?oc=5",
+        "title": "Z.ai Aims to Catch Anthropic, OpenAI in Coding With New AI Model",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxNVDU1cndzcnNhVERISGg5M3psalAyTEVrR2JKSEExUTVoV0JkSjJZZVRIOW40N1lweld1bXEzYWRrNEZxb2w2YzctanRaNnRnckRJLWRINnlpVnlnbXZvSUxBRFN6QUNvb01UMXhXVmp3MDNDTnN2TGZveTdlam9Gem93RFFaZVFSazRzWUpmZXI0VlV3VU56cjZPUUNXQk9GTzFTdkpzMTdvRnF6RUllb1NMbm02OFFiUEJhQXhab1JjZ0w3QWhPT0VqUVZpc0xEYXBV?oc=5",
+        "title": "EXCLUSIVE: Apple trains its own AI model for China market with Alibaba's support, sources say",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxQR2VFUEgxWW9GZ1FXUEZGenVEWllEUlYwd29ZbVYwaUJiRVE0eVhsT0VoVi1tbXlTLVlqazVmQVlubzVfbUh0NjNBd1hrWWRkQUJnRlJnUjJEcXlHMi1rV1hlQm15ai1MN0pJSHAzUkpFVWFZcXBfMmpjNFY0clFlVE1kaGxWT2ZsTldhelVCWnIwX0stTk9kZ0xKaHlqRndZV3dBbm9OdkNibGpfaUdjMnZlb2dkTGM5NGVz?oc=5",
+        "title": "Databricks Raises $5 Billion to Expand Enterprise AI Agent Platform",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxPa1dqbnBMVnVMZkI5NVlaLUVvaF9UUV9JQjBaWXFWSGkydWlGY1dxdWNwWUhfOEdONnJBVlE5bENOekQxYXdjd1NFNGRpWGxwSDhCc0FLQ190aUI5X2JqeGJ6ZnVxT0hRMUozamJEZFBNREl4al84MkJfclBYYVI0RU1LUTVvYWpxS1dMeGFIeTBuN01INHlxYUhZVHd6bzlWblNXY3ZQcmFWNjM2?oc=5",
+        "title": "AI Model Outperforms Apnea-Hypopnea Index in Predicting Sleep Apnea Mortality Risk",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxPczFnWVRxbUs4aVNlVmJmQ3o4ZURhcDEwQ3c5SXVsMWc4WGNYR2xyTUo2RjN5OHFYVXpRZ3hFZDUxY2NhUXhoS2g5eEhyX2hIdTB0UXp6d2QzTFE4RzA0ZXRVTWRxb3c0VUxkUGFabkxTdkkzMXQteFJuY21qMnNtS3RGZ2NqanlsMzdhaTJadEx2U0diMEJRYVoyZnROZV9SeVFHYQ?oc=5",
+        "title": "Meta Releases ‘Muse Glimmer,’ a Powerful AI Model Designed for Local PCs",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxNdEEtelJERnB6cjJjT212SVpjYVJuZmZOdExYeVNkRlhoaE5ZYlBVWF9DS0lxSXBWZWhNYTdpbGsyU0dJczh5QlkwNFZIeXFSLWpsYU9PME10WVg3bE5Ua085ejM2OXp5R3R4d2ZrWXk2X1I0dDMzSDFld2dKdXU4bDBLZE5hSDdkdDNjOEtaLUFUNWowTXJicVA0YldfZWRFRnNvZC1BQ2tVZ1NsLXJOV21UeU5VMHdGcHFXeVdhM0E4Q0NrcHM2aXhIY1FBU2FSVWt3SlFYZXFzZDg?oc=5",
+        "title": "AI model predicts cancer subtype, genetic mutations, and survival outcomes across 32 solid tumors",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxPM2kyRUJ3S0J2aWhhZWF4Z1p4UXphNDdyWDl3Y25PUnMyb21CQy16SEJDd1VpUUU1dmxpLXBMY1hKY2pMZHZCNS1NV2wyZmlpd2tma19ndkQyak00eHMtdWMxTHcxTXhUWEZramppbmwwSmdoWjltRnRHQ2c5aWc5a3g3bDNzUGhYYzNGTndHUWxjYXhNZDhDZGdyMmtoR0pJWXBhb3BFRVN2M2g2aE1LeFhzbzF2UFlRR2plalpHalh2VldkelpUY1RyUQ?oc=5",
+        "title": "DeepSeek launches V4 Pro model with enhanced AI agent capabilities",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNYmZfN1p1YXl3V3V1MWhIVmlPdWJEN3l3Sm1xMmVNNFlwcnRfV3ZvUElHZGhzZ0J6MXBaSElSck1rTllQNTdfOVNzRWJYenIxSXpab3F4QXQyV29lNkNiT0NhMWczenVvenBaVVNUX3k0bHd0bXI1eEpMUjJ4ZDNfS2VZWEltTXdwbnpsb1NpVWNiT29xZlk4MVpJYnI1OWw4SklmUVJEMEozbG90WTQwUg?oc=5",
+        "title": "Rubrik rebuilds code review pipeline after AI model finds numerous security flaws",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxQdlZyeUlWQWJSd1dqa0pMcjIxUE9wYTlBbGxna3g5QWt5aXIzSENaOWsxYTk4RkE1NXhfdmd0eEVSckF6ak9mQThZbHo3LXlFZHRGcVhRcHZtWUxoOF8tR3laa0xQalI0eWFxSGVqR0ZXTkpJVkVlUmwtRmFpMS1aeDRnY3F6Q0liN0E1Y1BkSi1oUWZJTTd3SmhzLXprZFB0SHNGY2NZbmE1bW8?oc=5",
+        "title": "Google unveils Gemini 3.7 Flash AI model for coding, agent workflows",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTFBSdHhzZE9MbEczZ0dQWVotcHMxQmxZb2otOS1GYURQN3RsZVlLUk1GNS1FN1FXckJkdS1ZNU83WU9VWHBzU004czk3bFBJTWZuVllwR0lQUG05U1U?oc=5",
+        "title": "The AI model that just scored 65% on DeepSWE isn’t the one Google promised.",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxOaGlzQmY1SDNYbFFDcjhLQW91Y0w4elNDVmI5VElsX3Vfd3oxcXJKdnFWS1NYbjJ6LVVodzZ0X3Z5bldlS1laemlNNi1YTGV2OGZ1dG0wWkR5cHdVUFJIemNZZzVKakV1NEdyVXN4YzByTTk4cHVPUnY0b2ZSenk3WFlzOHVvMDlxc2llS1VRWEdlaUtQbHhsbGt3b0loUQ?oc=5",
+        "title": "AI coding is creating a new software bottleneck",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxNTURVS2Vyakt4UFJUN1hwSVM2N19aLThVMFpaQ3VsUEVqZFNfd1ZLTHZJdThlWFdVbUU1NE05eVpIMjFIeDJHZUpOOVRCbUY0VWhqRnBtaXBONi1CNkJoSVo4VGxxSEk2UTZxV2JQQXJXbUFvMUJmOXNmRGZTeUw2SDBXR2FjeUhXTzVfX0hwamlUdXVQSzNaSnBQdUFrczVJYy1kYm1Ib2pqTzRvdzhIdUZIa0FMb29ZSW81OVBtZ9IBvwFBVV95cUxOSGhqY1BtYWtqdzJzOEx5NXhVclY4Z0xZdllFbHUxX1BsdEVYZjZZYV9BMV9pYWVzV2d1VlVfRFo0S0VzRDU5YlBjV1pBcFlNZ2tjdVpyVDhaZlU5QWNoZWJpTVdPU3BIcWFBYkVnSWtIbGZpVGZYYUVfYnU3Y2w1bWpxRjJBWjBzZ3l6Yk9SVklRMW1tUWVZZGVoMEFCUktZQV80OTVsVzJsbHFGa0VNQmRKb3FQMkdMVEs1S1ZTOA?oc=5",
+        "title": "Alibaba adds commercial restrictions to open-weight Qwen3.8-Max AI model",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxPRElFLUt3VmJXdGdobzIwZng1bHExX19LNWJORkxqQkpJang3djlOYUJXQjRiejBFdldGUjVNOUk0V3BMRkdsRVdtYkZEMnJ5YTI1SXA5VTZ3R1JfQnVrNy1SUjVhNGJpME9vNmFOMXduZEI3bWh3cEJybG1hd1VEa2R4M3ZGRGtSeVdfa3VERGxzNjZ2VTEwZUljZDN1VUJ0ZUJneUExUHRtUk50QmhfOXk1Sm5saUZ6VUwzMFoxMHE4NlU?oc=5",
+        "title": "Writer says its new Palmyra X6 model cuts AI agent costs by 52% as token spending surges",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxOV09PeWx6TTVaWm1RcmtvUjk5U1ZqN0dhei1QQm5zXzVBY3VmdWktR0p3Ry0xcmFmY2poSFhwV0QzYVQxQ3R5LW81TTlXOE1ia2RXN2kwOU1iOHhaRllXSDRwX1NiZ0Y3THNjcklhLWFOR25kdkp3ZDVTdkp4VUZZNkVxa3l1S3pwNDZiX01qa1kxSkpweEtCcFdIWGRXTGE1VEdfYkh6bWwzdi05VzUtY3BZaFZTOTF2YXM0QjN3QjJPeURiZmV4RHFTQzU2dnlrZXfSAdgBQVVfeXFMT1Ruc2NndlU1VWN6MmNzWHZzbEVJSEZSRHRLMVRXME82dGFIVzFHYzlURVM0X0F3eUx1eFpUN0tqNWVtQWxGZkh6aVFPY2FEcXY3TWVOd1BkaklNSXgyMVdqUmswTDVjcGtEWWUxSXA1b0paaTk5XzliUy12WVc2djRJU3lGbnpma3NrVzFyRU1uYzFxWnc1a0ItSE0zVU5wUTFNamNKRXlteUtPOTR5YWNDZlVxdF9JdC1mVWpCNzlRSHhLcXR2bWRKQ0NRNHJXVGQ3aWpZWE0z?oc=5",
+        "title": "Can an AI model’s ‘reasoning’ be extracted? New research fuels US-China distillation row",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxNM2ZXNElPbV9ZaFdxSzIyNlVnSThmT29EQTloN0lEa3NGVjV3OFRTblo2em4ycW9QWW01N2pBRE9WZFc0c2dIZjBEbzVDUm1TaXh6cnlLaHJaVW5FUU5taTJ2WXVETm5yV19vYkVxZ3FGUFV5bG1xWngtaVZ6b0xWMm9ULXRFR3ktNHo3Vml3eGV3ZjFCb1NhcUR0d3FIWm5SUjNyZnZZenBBeE8xa0NYM3VWY1A?oc=5",
+        "title": "Google Debuts New Gemini Flash While Top AI Model Still Delayed",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxOS3RrMkx2SG1jSUgxWnhTQ1BRLUxQVjJ2V2xsQmVjNERtd3JteUVqM0x0TEdkNXVFR2hTREQwOFFEdUcxUV93anJ6U09PWHBwb3V0T0V6WmR0RXBTY0RVc2Q4MkVjUFcxTHRCbUJhX09sRFpfVFYtTE93WDR4T0kyWERzNzRnR2JGV2o1WGYzMVNpU1JGTGN2N1QyT2dGNG9DN1haQWllSlh1ZzJ5dXpaYjlMMmNpdDZSR3ZtbGlR?oc=5",
+        "title": "Oracle drops a truckload of CX-centric generative AI agents",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxQQlcxdlNZVjNrMUZDZHAzY2RvbDFtYThHZ1JSSWwxb0tCQ2l1elJ4dUtpYTdCSnNUQXpDREl6YmRiMjlxNzFud0phTnZ1VFR6b3hudWdRV0ZiTERrQnVNZFdrOTZyZUo5WjN6WGNyVEdMMGV1NmY1S0lnWlZFV0Z3VEdIRVVhcDFIbF80R0Q5TkwtelJNTG81bmRyQXUtVDZnZ2J3Y3h4UDFsaDNPYm1qbkJKYVdYSU9SSjJ1MEI2ajcxZw?oc=5",
+        "title": "Coinbase and 14 other x402 facilitators failed security tests built for the coming AI-agent economy",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxONkdMNVN3am14TGFIdWtoTld0b2FVdXM4MXFOM3FWdEZRWDh3alRzUVVJcW1WTTJUQlZybXVDT2Z5cFZYNFQ4OVZsN0tQbE1IWThWNFZNdl9xdExUSGxvTU02RGRmY2dDNlI0bGhJOTBfSGduTWs0V2g5Q3FVMHpoVUxjRG53bEpCemw4WEM1cw?oc=5",
+        "title": "Euro Vibe Coding Standout Lovable Now Valued at $13.3B",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxQU1o5b3FSWXRvV01lMUFaM01Rb0kzN3hvWTk0RzBBVjJReFF0WXI3RUtQSVd3Y19tM0ZldmZnR1I1dWNmZHY3QnpFMmNxUk5jWmVUSHpCbl9Kakd1WVdqVUEtd2xEaVpqNjhOeVhfNzdFQVNsZW9BNFUzcWJEbEw1VEtzeENWR0kzdFJz?oc=5",
+        "title": "OpenAI Pauses Work on AI Model Over Serious Cybersecurity Risks",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxOcndiYjc4YjFtVWFuSWFlRDlpRENlLTV6R1NscU5wS2tCZW1YU1RTQlFDczBmelUxaDJDVVk4SlRuZ2t4cEtNbEw4eVJ6cnBwVGNHOHhadTVKREx2c0QyazF0bF9qeDlVLTJkY21GNjdzdXhJaGVMb1R2UnQ2eDNpSTVqcENRRE1nVWNhNm1IMUVpX0VkRDNyZzVxTmhjc181c0QtbkNCWjVGeXVEeEFic254TQ?oc=5",
+        "title": "Anthropic in Talks to Buy AI Startup Decart for $6 Billion",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiXkFVX3lxTFBpV1NfMV9IQ09QNFZSeTdhSmRoUzJYWlRhZVE4YkRHdWl2VlFNNWx4OGJmSjE4Skk3QkNhUURnWGlndVU0OU9OUDI0bEpzbW1fRktiVFFzMXFzcjJCblE?oc=5",
+        "title": "Founder Pitch Decks: Jeff Dean Shares Deck for His New AI Startup Discovery Loop",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxQV000NFNPUG83UmljZkl6QTg3WnlzVHVkdWU1bkRPdWpjR21CUmtfMnBUanZtdzdxTUl5Z0ZFcTBuc1ZSNUZlOTdWZzgtQVhlRzhsa3FoOW9RWll0ZnBmRGpJOWxXYXNtbWJVOVR0QkNYUVlaR0JJWE1DTlVEX1dveF9URDFaME16ZGJXb0RFVkxRWTFKRThmRjVuSQ?oc=5",
+        "title": "IBM and OpenAI Launch Enterprise AI Partnership With GPT-5.6 Integration",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxQSGgwWHhFWlpHY0FMbEU4S0EtbzNEa1pyWVhDVXl2bV9lZ0hoNS05R3ZOWVQxRXlLcHNEaDhhVmt0VXQ5czhsbWFLaGhMakE3b3IyelRKYnh2cEw4QkI0czBLcFRqS0ZoV01saTdmbGJNSXVxa0twQmRXNXB5bXdBRHFpc0NJQlRMbnd0UGYyWl91aEZZbGhJM09EMGZhZw?oc=5",
+        "title": "Ryanair signs five-year Google Cloud AI partnership",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxQY2h0Tkg4T1Jyb2VHV3dJclcxQU9kRl9JRV95U29ZcWlNb3M5MGZXMjlfTDRBOHJyNTJfZm1NUlg4UXFrNnFrWGFPeGt4S3E1SXpBZWJnY2ZRU1RkSW9TUnI0aDUtS2dmMmFCVC1OM2dFYVhtWFZfVFBiZjJXVDdpR0JuMUw1OHRoZms1YmtlUnFJeXdBMGpsUGZmdzFCQTFERndTeEUyR2xCOV94TnVhTXBtOWgwbW4ya2wxZVR1SURmSEww?oc=5",
+        "title": "Elon Musk: Our AI revenue will exceed all other SpaceX revenue probably in September",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxQZXdDXy05enVpYzA0ZzlZeXZCUlRVWC1fdWo3ZmVraTRneHNreS1BczF0dTBFaTdDUHpmbHJYOWFpX05rUF9LUmlXWGZIMzBFU0NYZTk1Yjd6eWoyb1VIZzF5Z2tlWXRDRUV4UFNVRUxQUkhndlNrdFFqajZJMWtpUnJJMWpOS2UwODBxVWxmczIxRmV3TzBzbWJtUzg4d0lwSVhGalBXMWRWRmFmeHg2RHpkUGhGQ3ZJbnpSenJHbkNQOE9uM2FSbzgtR3lVQWc?oc=5",
+        "title": "QCOM Is Reportedly In Advanced Talks For $4B Acquisition Of AI Startup Modular",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxQdU51N1RqUU44SE41emx1Yjh6eTZzYXlHRG5GUDZWWUNLUVVkWlNnZ3hiYUd2aU9temVQSzU2M0dhbnVmWW9QNzlGb2FRUEtvbENlbHVZckNrQWctSmFQVnJTRjlnd0FfUmJEdElsekNIbWdxWWRPaXpYSGtlRl9IYkZRc2FsZE4wUm5CTm51TkRjMFNsTjhPTGhmSUlucmtOYmd3NF9ITGR2QWdqU1J6RldxR3JlLXBuWWdaN3hXbl9QaGPSAcgBQVVfeXFMTl82cGpmUXI5Y1N3U084ZDJzTzExcXRUSzZLekhZY2NlUFdLQnQzdkhjTE1KWFM5Wm1MY1RrLUNramVmRzN6RElCOVc1QUlQWklWNGkwMFkxRFpSYjl0SHRYWDJwQmk0QXJMcWdBR0I5akpwY2k4c1RuSDdDT1hwaG8wZXRoV1RGbm9VbU9yaDI1eUZnWkFYcFhkQ2xaME15aGFQNTZGVlpKOTZ0MDQyeF9qYXBXakhWOWMzZmtCZWpCbnNuWWJuVWo?oc=5",
+        "title": "AI startup Cognition in new funding talks at $40 billion value",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxQVmRreElhN2lhMW9JR0IxUUU1bm90dnowV3ZnSkMyMjNuSXZEMmZMbG1EbFR5WG9vTVEyNmF2SEZfcGFIcnhzLWVWVi1Dd1NzQzRPTUd3eEJyVVhwMUxxSzBmLXdpTHRuLVpPdkZVMnBDSGV2YXhLbk5OZ3lfTjd1dHBEU3JYcjB4bENudTdMVWRLcGJsU3NHVmpoZVlIOG9MaEYzTkwzeVFEcVpHRzB5VA?oc=5",
+        "title": "Google DeepMind Pioneer Demis Hassabis Pushes for Independent AI Safety Body",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxOMWQ2LXpUOXpiYVUxOFI3RFl2R2hUTXhWWkRBbU81TDlYRzdsR0VDZWtVYmJYWk1EQ2hSMkVjRmpIUmhJRUFsY1JMd3VobjVVdTZ5YUx6b3ZyQlhhZWxndjZBZW9Fa3VQcFRqaHNlX2sxYjBibmJSeGxkUDlEanBYdVpncmtZanZ5NHczYWR0LXoxR0J3aWI1WjNuSjNGLUUtZFlvbDI5QjhVNnRSSG01aWt5WTNNNzN0c3ZiWnpWbXNGU1ljS0RpWm5R?oc=5",
+        "title": "White House to revise AI policy as technology grows dangerously powerful: Report",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE1rd1Rrd0Q1M1p1ZVNpR3hFT1Rma29mWWdIRlFWdXpnQTNqaW1nRXhXeG1YMHFHckVERGVUUXJ6aFplbm95NTh4R3N3M1JMV2N3S1FGbjZJNFVGSVZDNG5nczhtYkFPZXdDdzJFVmJwdFJaWVBpX3c?oc=5",
+        "title": "New AI Governance Framework: DeepMind Proposes Four-Dimensional Agentic Profile in Nature",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE4teW5ZQmtrekVxV2ZpLW5CN1BJUzZVWjdITDY1UElSOHk4RjduRTRXXzZneDdxWUQ2eUxGV3NuOGZqQkk3Nlo4azFRYVFpOGNtSkdOWVQtaGw4YzQ?oc=5",
+        "title": "Cerebras claims its WSE AI chip is the largest in the world",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxORm1EZk04VThUc1ZtYnBjWHFfZWd5ekFmMk03aElpM1UyZ1d4N2YxVXVBV3hSZEJPc3pUU1ktcTNIQk1UMm1lVnkyUF9fR29jSmpCelg5ZlNSTUdDWEJuN05uajhjXzg4dVFZUndNQVlwYThMVmdPczRKUVlVcWxUVnVUQTNXLTJTUXBrbkxja2V6alM2Q2ZzeTFHeFpiaF9LRFF2NHNR?oc=5",
+        "title": "Goldman Sachs Leads Bridge Financing for NVIDIA’s $500 Billion AI Infrastructure Deal: Shifting from “Selling Chips” to “Selling Assets”",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxNeVkyYlZRMzd6YlhFc3I5UWdSZjRyNnMwLURkYTRhc0hUS1BxTFRKQTlnZXdudXdFV1lGWVJRZTRsQ1ZDMGhST2ZTdlJYNG5xdGZESE1mN0NtSldjQXBDODNCSGlFZjZPeWJvVXZGMFpfbzVjdjhoU2FFMHRhQzhtVGIydVlkU2liaUpUUl9uM2Fxem1LZG4tWl83RDNkcTRrQ015VDFoUGpDNjk2TGFlUkp4UEx3c3VyNXVReWZyR0tXdjB0?oc=5",
+        "title": "AMD Raises Record $4.75 Billion in Bond Offering, Intensifying AI Chip Push to Challenge Nvidia",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE56UWpVV2pxZWhRWElEcjRMQ0FrMUY1NTVQdW5zMW8yc2hFM0NzVHdORFFiY2VGZFlHWG9rS1dhV01WSFd1V3NPTk9KeUo2R2Zncmln?oc=5",
+        "title": "Moore Threads: China's Domestic GPU at Its Closest Moment to \"Crossing the Snow-Capped Mountain\"",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxQa0dJUG51WnJwblpKWEJweWR2LUJXUzQzbEJSa2lsbzRmM1BaTTBoUlZYWmVtblN1N2MyWTNnYldQQUpKaHl4TWtrZVlQdWlyNUd1UmU4SVZ4WVJmcktXSVdIQ0xyYlRCRlJJZllSTkY0WlJjVnMyYnJDS2lBMkpwbThYOXRjWktkYjFOM0EyLUlPcXpqOVZleEF6Z0VyOUpsUHBWaW9CbTd4Nk13bVhXdmpadGYxeWRoZ0FzMw?oc=5",
+        "title": "Twitch Admits ‘Nobody Would Opt-In’ To AI Training, Here’s How To Opt-Out",
+        "source": "Google News"
+      }
+    ],
+    "tags": {
+      "companies": [
+        "google",
+        "openai",
+        "deepseek",
+        "meta",
+        "apple",
+        "alibaba",
+        "amazon",
+        "nvidia"
+      ],
+      "models": [
+        "gemini-3.7-flash",
+        "gpt-5.6-sol",
+        "muse-glimmer",
+        "glm-5.3",
+        "palmyra-x6",
+        "grok-4.6"
+      ],
+      "topics": [
+        "agent",
+        "harness",
+        "on-device-ai",
+        "coding-assistant",
+        "inference-speed",
+        "observability"
+      ]
+    },
+    "tokenUsage": {
+      "input": 95959,
+      "output": 3689,
+      "total": 101843
+    }
+  },
+  {
     "date": "2026-08-13",
     "title": "KDAN AI 戰情報告 (2026-08-13)",
     "content": "# KDAN AI 戰情報告 (2026-08-13)\n\n## 昨日 AI 重點新聞\n\n### Elon Musk 發佈 Grok 4.6 與 Grok Bot：具備「獨立電腦」的 AI 隊友 ref-141, ref-3, ref-26\n**SpaceXAI** (原 xAI) 正式推出 **Grok 4.6** 模型，其 Intelligence Index 評分為 **61**，在編碼與代理任務上與 **GPT-5.6 Sol Max** 持平。伴隨推出的 **Grok Bot** 是一項突破性服務，代理擁有專屬的雲端電腦環境，能跨 App 登入第三方工具、處理銷售、行政與 Bug 修復。這類「隊友型 AI」不僅是給予答案，而是能自主運作直至任務完成，僅在關鍵決策時才尋求人類核准。\n\n### 軟體開發平台 Lovable 獲 4 億美元 C 輪融資，估值 133 億美元 ref-8, ref-37, ref-148, ref-122\n瑞典 AI 新創 **Lovable** 宣佈完成 **4 億美元**融資，其估值在短短幾個月內翻倍至 **133 億**。該平台已累積 **6,000 萬個**專案，並滲透進近三分之二的**財星 500 強企業**。這顯示企業正加速從「AI 輔助編碼」轉向「AI 主導軟體開發與維運」的範式轉移。\n\n### Meta 發表 30B 模型 Muse Glimmer，主打本地 PC 代理應用 ref-130, ref-77\n**Meta** 釋出 **Muse Glimmer**，這是一個從 Muse Spark 1.2 蒸餾而來的 **300 億參數**模型。該模型專為 **24GB VRAM** 的消費級顯示卡優化，具備極強的邏輯推理與代理執行能力，旨在讓企業在不依賴雲端昂貴算力的前提下，於本地裝置部署私有、高效的 AI 代理。\n\n### Anthropic 推出「夢境」記憶機制與全方位 Chrome Cowork 擴充 ref-30, ref-13\n**Anthropic** 分享其 **Dreaming (夢境)** 技術，讓 AI 代理在非執行任務時，能異步整理會話記憶、清除過時資訊。此外，**Claude Chrome 擴充功能**升級為 **Cowork** 模式，能無縫銜接跨裝置對話與本地文件連結，將瀏覽器轉化為 AI 協作的主場景。\n\n### AWS 發表 Dogwood 治理語言與 Bedrock AgentCore 支付架構 ref-11, ref-149\n**AWS** 針對 AI 代理推出 **Dogwood** 策略語言，支援對代理「一連串行為」的時序控制。同時，**Bedrock AgentCore** 支付功能正式上線，透過與 **Coinbase** 合作，讓代理能根據公司政策，自主支付 API 使用費或軟體購買費用，完成代理經濟的最後一哩路。\n\n### DeepSeek V4-Pro 0813 版本上線，強化代理與複雜推理能力 ref-0, ref-27, ref-11\n中國廠商 **DeepSeek** 發佈 **V4-Pro** 升級版，在多項代理基準測試中表現卓越。目前該模型已透過 **OpenRouter** 等 API 服務提供，顯示中國開源與閉源模型在全球效能競爭中仍處於領先梯隊。\n\n### LiteLLM 供應鏈攻擊導致 2,500 家組織憑證外洩 ref-11, ref-47\n知名 AI 開發工具 **LiteLLM** 遭供應鏈攻擊，惡意軟體在 PyPI 平台上架 40 分鐘內即竊取了包括 **Microsoft、Amazon、Samsung** 等巨頭的雲端金鑰與 API Token。這凸顯了 AI 開發工具鏈在高度自動化背景下的資安脆弱性。\n\n### CodeRabbit 融資 1.43 億美元並推出「代理化變更管理」 ref-71, ref-156\nAI 程式碼審查專家 **CodeRabbit** 獲鉅額融資，並主張「**Issue Tracking 已死**」。其新功能 **Agentic Change Management** 認為隨著 AI 生成代碼的邊際成本趨近於零，**Pull Request (PR)** 將成為軟體工程中唯一的審核與決策 chokepoint。\n\n### 台灣遭首起「全自主」AI 網路攻擊偵測 ref-2, ref-135\n資安研究指出，台灣政府機構上月遭遇到疑似由 AI 驅動的自動化網路攻擊，攻擊工具能根據實體環境反應即時調整駭入策略。雖然最終被成功攔截，但這標誌著 **AI 攻防戰**已從理論進入實戰。\n\n---\n\n## 市場洞察\n\n### 1. 代理從「對話框」移向「虛擬環境 OS」 (   ) ref-11, ref-141, ref-3\n今日 **SpaceXAI Grok Bot** 的推出標誌著 AI 代理的新型態。過去代理受限於單次 API 或沙箱環境，而 Grok Bot 擁有專屬的雲端電腦。這意味著代理不再只是「調用」工具，而是像人類一樣在系統內「居留」。延續前日對於代理權限的討論，這種具備 OS 存取權的隊友將迫使 SaaS 軟體重新思考其授權模式：是賣給人，還是賣給這個具有固定身分的「數位隊友」。\n\n### 2. 本地化推理與數據主權的落地 (   ) ref-130, ref-77, ref-21\n**Meta Muse Glimmer** 的發佈與 **OneAdvanced** 在英國主權 AWS 上部署 50 個代理的案例，共同指向一個趨勢：企業不再滿足於雲端黑盒。對成本敏感且重視隱私的組織，正轉向採用**知識蒸餾 (Distillation)** 技術的小型化、高效能模型，並部署在本地端 (On-device) 或主權雲端環境中，以防杜前日 (ref-2026-08-12-ref-178) 揭露的推理追蹤外洩風險。\n\n### 3. 代理治理與金融經濟鏈的閉環 (  ) ref-149, ref-22\n隨著 **AWS Dogwood** (治理) 與 **AgentCore** (支付) 的成熟，AI 代理正獲得完整的「經濟人」能力。這不再只是技術演示，而是已經具備了「設定行為規則 (如轉帳限額)」並「執行財務結算 (透過 Coinbase)」的基礎設施。這將徹底改變電子商務與專業服務業，未來合約的達成可能直接觸發代理間的自動付款。\n\n### 4. 軟體工程的「AI 生產力陷阱」與審核門檻 (   ) ref-143, ref-71, ref-116\n**CodeRabbit** 提出的「Issue Tracking 已死」論點，反映了 AI 生成代碼速度遠超人類消化能力的現狀。這延續了前日關於代碼維護性下降的報導。當 code 變得不再昂貴時，**「人類的決策與審查」**成為了系統中的稀缺資源。未來的競爭不在於誰能寫更多代碼，而在於誰能建立最高效的自動化驗證與治理閘道。\n\n---\n\n## KDAN 戰略洞察\n\n### 1. 點點簽 (DottedSign)：結合「代理支付」建立合約閉環 (  ) ref-11, ref-22\n*   **具體行動**：針對 **AWS Bedrock AgentCore** 的支付功能，點點簽應開發專門的 API 接口，讓 AI 代理在完成電子簽署後，能直接依據合約條款聯動 **Coinbase/Stripe** 錢包執行付款。這將使點點簽從單純的簽署工具，進化為支持「**自動化經濟行為**」的法律治理平台，精準對標需要自動化採購流程的企業客戶。\n\n### 2. ComPDF SDK：開發適配「代理專屬 OS」的文件工具集 (  ) ref-3, ref-26\n*   **具體行動**：鑑於 **Grok Bot** 這類具備獨立操作系統存取權的代理崛起，**ComPDF SDK** 應提供更輕量、無 UI 的 **CLI (命令列介面)** 版本。這能讓 AI 代理在不需要人工介面的虛擬環境中，極速執行文件的 OCR、數據標籤化與隱私遮蔽，成為 AI 隊友手中最利落的文件處理「手術刀」。\n\n### 3. LynxPDF / KDAN Office：導入 Muse Glimmer 級別的本地 AI 助手 (   ) ref-130, ref-77, ref-47\n*   **具體行動**：參考 Meta **Muse Glimmer** 的發佈，凱鈿應針對 PDF 與辦公場景「蒸餾」專用的小型模型，並整合進 **LynxPDF** 永久版中。對於金融與法律客戶，我們應強調「**100% 本地推理、不返回雲端、無視網際網路斷點**」的安全優勢。這能有效避開 **LiteLLM** 式的雲端憑證外洩風險 (ref-45)，建立極高的隱私護城河。\n\n### 4. ADNEX：採用「平行代理」提升行銷決策效率 (  ) ref-140, ref-3\n*   **具體行動**：借鑑 **Grok Bot** 同時運行多個專業代理的模式，**ADNEX** 的後端架構應轉向「**代理小組**」：一個負責競品追蹤、一個負責廣告回傳、一個負責數據報表。透過 **DeepSeek V4-Pro** 的強大推理能力進行決策，這能讓行銷人員只需對話，即可讓「一支 AI 行銷團隊」同步運作，而非僅是單一的聊天機器人。",
