@@ -5,8 +5,8 @@ dist/
 # generated types
 .astro/
 
-# dependencies
-node_modules/
+# dependencies (no trailing slash: a symlinked node_modules must match too)
+node_modules
 
 # logs
 npm-debug.log*
@@ -15,11 +15,10 @@ yarn-error.log*
 pnpm-debug.log*
 
 
-# pipeline (stays on Mac Studio)
+# pipeline state (lives on bennett-hub)
 pipeline/warroom.db
 pipeline/warroom.db-shm
 pipeline/warroom.db-wal
-pipeline/output/
 pipeline/logs/
 pipeline/__pycache__/
 pipeline/**/__pycache__/
@@ -41,4 +40,6 @@ pipeline/legacy_issues.sql
 pipeline/periodic_summaries.json
 pipeline/periodic_summaries.sql
 # candidates (Jev shadow run output, local only)
+pipeline/data/
+pipeline/.venv/
 pipeline/data/

@@ -1,15 +1,8 @@
 """
-Database layer — SQLite storage for digests, summaries, raw items, and legacy data.
+Database layer: SQLite storage for summaries, candidate raw items and lab items.
 """
 
 from db.connection import get_conn, init_db
-from db.digests import (
-    save_digest,
-    get_recent_digests,
-    get_digest_by_date,
-    search_related_history,
-    DigestRecord,
-)
 from db.summaries import (
     save_summary,
     get_latest_summary,
@@ -24,11 +17,6 @@ from db.competitor_items import save_competitor_items, get_competitor_items, get
 __all__ = [
     "get_conn",
     "init_db",
-    "save_digest",
-    "get_recent_digests",
-    "get_digest_by_date",
-    "search_related_history",
-    "DigestRecord",
     "save_summary",
     "get_latest_summary",
     "get_latest_summaries",

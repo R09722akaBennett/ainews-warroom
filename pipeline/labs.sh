@@ -10,4 +10,4 @@ set +a
 export PATH="$HOME/.local/bin:$PATH"
 ARGS=()
 [ "$(date +%u)" = "1" ] && ARGS+=(--classify)
-exec uv run --no-sync python -m competitor "${ARGS[@]}" "$@"
+exec uv run --no-sync python -m labs "${ARGS[@]}" "$@"

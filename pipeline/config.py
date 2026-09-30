@@ -1,6 +1,5 @@
 """
-Configuration for AI News Pipeline.
-All source definitions and settings live here.
+Source settings shared by the candidate collector and the lab tracker.
 """
 
 # ---------------------------------------------------------------------------
@@ -22,26 +21,6 @@ HACKERNEWS_AI_KEYWORDS = [
     "deepseek", "qwen", "phi", "mcp", "moe", "mixture of experts",
 ]
 
-# ---------------------------------------------------------------------------
-# Reddit
-# ---------------------------------------------------------------------------
-
-REDDIT_SUBREDDITS = [
-    "MachineLearning",
-    "LocalLLaMA",
-    "artificial",
-    "ChatGPT",
-    "ClaudeAI",
-    "singularity",
-    "StableDiffusion",
-    "OpenAI",
-    "LangChain",
-    "MLOps",
-    "deeplearning",
-    "LanguageTechnology",
-]
-REDDIT_TOP_N_PER_SUB = 10
-REDDIT_TIME_FILTER = "day"
 
 # ---------------------------------------------------------------------------
 # RSS Feeds
@@ -144,28 +123,3 @@ GOOGLE_NEWS_QUERIES = [
 # ---------------------------------------------------------------------------
 
 LOBSTERS_AI_TAGS = ["ai", "ml"]
-
-# ---------------------------------------------------------------------------
-# Product Hunt
-# ---------------------------------------------------------------------------
-
-PRODUCTHUNT_ENABLED = True
-
-# ---------------------------------------------------------------------------
-# ArXiv
-# ---------------------------------------------------------------------------
-
-ARXIV_CATEGORIES = ["cs.AI", "cs.CL", "cs.CV", "cs.LG", "cs.MA", "stat.ML"]
-ARXIV_MAX_RESULTS = 30
-
-# ---------------------------------------------------------------------------
-# GitHub Trending
-# ---------------------------------------------------------------------------
-
-GITHUB_TRENDING_LANGUAGES = ["python", "jupyter-notebook", ""]
-
-# ---------------------------------------------------------------------------
-# Output
-# ---------------------------------------------------------------------------
-
-OUTPUT_DIR = "output"

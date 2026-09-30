@@ -5,7 +5,7 @@ file from warroom.db, and on bennett-hub that database only holds data from
 2026-10-01 on, so running it there would wipe the site's history.
 
 labs.json holds the lab list with display attributes (from
-competitor.config) and every relevant, classified item. Weekly reports and
+labs.config) and every relevant, classified item. Weekly reports and
 token usage records (periods labs_weekly and labs_classify) are merged into
 summaries.json, replacing earlier copies of those two periods only.
 
@@ -20,7 +20,7 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
-from competitor.config import LABS
+from labs.config import LABS
 from db.connection import get_conn, init_db
 
 DATA = Path(__file__).resolve().parents[2] / "src" / "data"
