@@ -278,6 +278,39 @@ def _parse_overview_full_table(html: str) -> list[dict]:
     return rows
 
 
+# full-table column → text sub-category slug ("" is the overall text ranking)
+TEXT_SUBCATEGORIES = {
+    "overall": "",
+    "expert": "expert",
+    "hard_prompts": "hard-prompts",
+    "coding": "coding",
+    "math": "math",
+    "creative_writing": "creative-writing",
+    "instruction_following": "instruction-following",
+    "longer_query": "longer-query",
+}
+
+
+def _fetch_full_table(headers: dict) -> list[dict]:
+    """Return one row per text model with its rank in each sub-category."""
+    ranks: dict[str, dict[str, int]] = {}
+    for column, sub in TEXT_SUBCATEGORIES.items():
+        url = f"{BASE_URL}/text/{sub}".rstrip("/")
+        resp = httpx.get(url, headers=headers, timeout=30, follow_redirects=True)
+        resp.raise_for_status()
+        rows = _parse_category_page(resp.text)
+        if column == "overall" and not rows:
+            return []
+        for r in rows:
+            entry = ranks.setdefault(r["model"], {"model": r["model"], "org": r.get("org", "")})
+            entry[column] = r.get("rank")
+    full = [r for r in ranks.values() if r.get("overall") is not None]
+    for r in full:
+        for column in TEXT_SUBCATEGORIES:
+            r.setdefault(column, None)
+    return sorted(full, key=lambda r: r["overall"])
+
+
 def fetch_leaderboard() -> dict:
     """Fetch arena.ai leaderboard — one request per category + overview."""
     headers = {
@@ -305,12 +338,12 @@ def fetch_leaderboard() -> dict:
             console.print(f"[red]error: {e}[/]")
             categories[slug] = []
 
-    # Overview full table (cross-category rankings)
-    console.print("  Fetching [cyan]overview[/] (full table)...", end=" ")
+    # Cross-category table. arena.ai dropped the overview <table> some time
+    # after 2026-09-08, so build it from the text leaderboard plus one page per
+    # text sub-category, keyed by model name.
+    console.print("  Fetching [cyan]text sub-categories[/] (full table)...", end=" ")
     try:
-        resp = httpx.get(BASE_URL, headers=headers, timeout=30, follow_redirects=True)
-        resp.raise_for_status()
-        full = _parse_overview_full_table(resp.text)
+        full = _fetch_full_table(headers)
         console.print(f"[green]{len(full)} models[/]")
     except Exception as e:
         console.print(f"[red]error: {e}[/]")
@@ -324,7 +357,8 @@ def fetch_leaderboard() -> dict:
     }
 
 
-def main():
+def main() -> bool:
+    """Refresh the JSON file; return False when it was left untouched."""
     console.print("\n[bold]Fetching Arena AI Leaderboard...[/]\n")
 
     try:
@@ -332,15 +366,33 @@ def main():
     except Exception as e:
         console.print(f"[red]Error: {e}[/]")
         console.print("[yellow]Keeping existing leaderboard.json if present.[/]")
-        return
+        return False
 
     total = len(data["full"]) + sum(len(v) for v in data["categories"].values())
     if total == 0:
         console.print("[yellow]Warning: no data extracted. Page structure may have changed.[/]")
-        return
+        return False
+
+    # The home page requires `full`, and an empty category tab looks broken,
+    # so a part that failed keeps its previous data and the run reports failure.
+    path = os.path.join(DATA_DIR, "leaderboard.json")
+    try:
+        with open(path, encoding="utf-8") as f:
+            previous = json.load(f)
+    except (OSError, json.JSONDecodeError):
+        previous = {}
+    stale = []
+    if not data["full"] and previous.get("full"):
+        data["full"] = previous["full"]
+        stale.append("full")
+    for slug, rows in data["categories"].items():
+        if not rows and previous.get("categories", {}).get(slug):
+            data["categories"][slug] = previous["categories"][slug]
+            stale.append(slug)
+    if stale:
+        console.print(f"[yellow]Warning: kept previous data for {', '.join(stale)}.[/]")
 
     os.makedirs(DATA_DIR, exist_ok=True)
-    path = os.path.join(DATA_DIR, "leaderboard.json")
     with open(path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
@@ -349,6 +401,7 @@ def main():
         f"\n[bold green]Done! {cat_total} category entries + "
         f"{len(data['full'])} full rankings → src/data/leaderboard.json[/]"
     )
+    return not stale
 
 
 if __name__ == "__main__":

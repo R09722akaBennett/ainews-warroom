@@ -1,162 +1,108 @@
-"""Scrape alphaxiv.org trending papers — Hot + Likes top 10."""
+"""Fetch alphaxiv.org trending papers (Hot + Likes, top 20 each).
+
+Uses the JSON feed the alphaxiv web app itself calls. The HTML pages sit
+behind a Cloudflare challenge for datacenter IPs (bennett-hub gets 403 since
+at least 2026-10-01), while api.alphaxiv.org does not.
+
+Each run is a snapshot that replaces papers.json; nothing accumulates across
+days, so a paper staying on the list for several days is expected and is not
+a duplicate. Within one ranking a paper appears once.
+"""
 
 from __future__ import annotations
 
 import json
 import os
-import re
 from datetime import datetime, timezone
 
 import httpx
-from bs4 import BeautifulSoup
 from rich.console import Console
 
 console = Console()
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "..", "src", "data")
 
-BASE_URL = "https://www.alphaxiv.org/"
+FEED_URL = "https://api.alphaxiv.org/papers/v3/feed"
+HEADERS = {"User-Agent": "Mozilla/5.0"}
+# papers.json key → API sort value. The site labels "Hot" as "Trending".
+SORTS = {"hot": "Hot", "likes": "Likes"}
+# The web app defaults to a 7-day window; the API rejects a missing interval.
+INTERVAL = "7 Days"
 
 
-def _scrape_papers(sort: str, limit: int = 10) -> list[dict]:
-    """Scrape top papers from alphaxiv sorted by Hot or Likes."""
-    resp = httpx.get(
-        f"{BASE_URL}?sort={sort}",
-        headers={
-            "User-Agent": (
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
-                "AppleWebKit/537.36 (KHTML, like Gecko) "
-                "Chrome/131.0.0.0 Safari/537.36"
-            ),
-        },
-        timeout=30,
-        follow_redirects=True,
-    )
+def _fetch(sort: str, limit: int) -> list[dict]:
+    resp = httpx.get(FEED_URL, headers=HEADERS, timeout=30, params={
+        "pageNum": "0", "pageSize": str(limit), "sort": sort,
+        "interval": INTERVAL, "topics": "[]", "linkBlogs": "true",
+    })
     resp.raise_for_status()
-    soup = BeautifulSoup(resp.text, "html.parser")
-
-    papers: list[dict] = []
-    seen: set[str] = set()
-
-    for link in soup.select('a[href^="/abs/"]'):
-        arxiv_id = link.get("href", "").replace("/abs/", "").strip()
-        title = link.get_text(strip=True)
-        if not arxiv_id or arxiv_id in seen or not title or len(title) < 10:
-            continue
-        seen.add(arxiv_id)
-
-        # Walk up to card container
-        card = link
-        for _ in range(8):
-            if card.parent and "rounded-xl" in " ".join(card.parent.get("class", [])):
-                card = card.parent
-                break
-            card = card.parent or card
-
-        # Date
-        card_text = card.get_text(" | ", strip=True)
-        date_match = re.search(r"(\d{1,2}\s+\w{3}\s+\d{4})", card_text)
-        date_str = date_match.group(1) if date_match else ""
-
-        # Authors from individual name divs
-        authors: list[str] = []
-        for div in card.select("div.flex.items-center"):
-            classes = " ".join(div.get("class", []))
-            if "gap-1.5" in classes and "font" in classes:
-                name = div.get_text(strip=True)
-                if name and re.match(r"^[A-Z]", name) and len(name) < 40:
-                    authors.append(name)
-
-        # Numbers: votes and visits
-        all_nums = [
-            n.strip()
-            for n in card.find_all(string=re.compile(r"^[\d,]+$"))
-            if n.strip()
-        ]
-        votes = int(all_nums[0].replace(",", "")) if all_nums else 0
-        visits = int(all_nums[-1].replace(",", "")) if len(all_nums) > 1 else 0
-
-        # GitHub stars
-        gh_stars = 0
-        gh_link = card.select_one('a[href*="github.com"]')
-        if gh_link:
-            star_text = gh_link.get_text(strip=True)
-            star_match = re.search(r"([\d,]+)", star_text)
-            if star_match:
-                gh_stars = int(star_match.group(1).replace(",", ""))
-
-        # Summary from alphaxiv's AI-generated description
-        summary_el = card.select_one("p.line-clamp-4")
-        summary = summary_el.get_text(strip=True) if summary_el else ""
-
-        # Categories (both main + sub)
-        categories = []
-        for a in card.select('a'):
-            href = a.get("href", "")
-            if "categories=" in href or "subcategories=" in href:
-                tag = a.get_text(strip=True).lstrip("#")
-                if tag and tag not in categories:
-                    categories.append(tag)
-
-        papers.append({
-            "rank": len(papers) + 1,
-            "arxivId": arxiv_id,
-            "title": title,
-            "summary": summary,
-            "date": date_str,
-            "authors": authors[:5],
-            "votes": votes,
-            "visits": visits,
-            "ghStars": gh_stars,
-            "categories": categories[:3],
-            "url": f"https://arxiv.org/abs/{arxiv_id}",
-            "alphaxivUrl": f"https://www.alphaxiv.org/abs/{arxiv_id}",
-        })
-
-        if len(papers) >= limit:
-            break
-
-    return papers
+    return resp.json().get("papers") or []
 
 
-def fetch_trending_papers() -> dict:
-    """Fetch Hot and Likes papers from alphaxiv."""
-    console.print("  Fetching [cyan]Hot[/] papers...", end=" ")
-    hot = _scrape_papers("Hot", limit=20)
-    console.print(f"[green]{len(hot)} papers[/]")
-
-    console.print("  Fetching [cyan]Likes[/] papers...", end=" ")
-    likes = _scrape_papers("Likes", limit=20)
-    console.print(f"[green]{len(likes)} papers[/]")
-
+def _to_item(rank: int, p: dict) -> dict:
+    aid = p.get("universal_paper_id") or ""
+    metrics = p.get("metrics") or {}
+    summary = p.get("paper_summary") or {}
+    published = (p.get("publication_date") or p.get("first_publication_date") or "")[:10]
+    try:
+        date = datetime.strptime(published, "%Y-%m-%d").strftime("%d %b %Y")
+    except ValueError:
+        date = ""
+    topics = [t for t in (p.get("topics") or []) if t != "Computer Science"]
     return {
-        "updatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "hot": hot,
-        "likes": likes,
+        "rank": rank,
+        "arxivId": aid,
+        "title": (p.get("title") or "").strip(),
+        "summary": (summary.get("summary") if isinstance(summary, dict) else "") or (p.get("abstract") or "")[:400],
+        "date": date,
+        "authors": (p.get("authors") or [])[:5],
+        "votes": int(metrics.get("public_total_votes") or metrics.get("total_votes") or 0),
+        "visits": int((metrics.get("visits_count") or {}).get("all") or 0),
+        "ghStars": int(p.get("github_stars") or 0),
+        "categories": topics[:3],
+        "url": f"https://arxiv.org/abs/{aid}",
+        "alphaxivUrl": f"https://www.alphaxiv.org/abs/{aid}",
     }
 
 
-def main():
-    console.print("\n[bold]Fetching alphaxiv Trending Papers...[/]\n")
+def _scrape_papers(sort: str, limit: int = 20) -> list[dict]:
+    items, seen = [], set()
+    for p in _fetch(sort, limit):
+        aid = p.get("universal_paper_id")
+        if not aid or aid in seen:
+            continue
+        seen.add(aid)
+        items.append(_to_item(len(items) + 1, p))
+    return items
 
+
+def fetch_trending_papers() -> dict:
+    """Fetch Hot and Likes rankings from alphaxiv."""
+    result = {"updatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")}
+    for key, sort in SORTS.items():
+        console.print(f"  Fetching [cyan]{sort}[/] papers...", end=" ")
+        result[key] = _scrape_papers(sort, limit=20)
+        console.print(f"[green]{len(result[key])} papers[/]")
+    return result
+
+
+def main() -> bool:
+    """Refresh the JSON file; return False when it was left untouched."""
+    console.print("\n[bold]Fetching alphaxiv Trending Papers...[/]\n")
     try:
         data = fetch_trending_papers()
     except Exception as e:
         console.print(f"[red]Error: {e}[/]")
         console.print("[yellow]Keeping existing papers.json if present.[/]")
-        return
-
-    total = len(data["hot"]) + len(data["likes"])
-    if total == 0:
-        console.print("[yellow]Warning: no papers extracted.[/]")
-        return
-
+        return False
+    if not data["hot"] or not data["likes"]:
+        console.print("[yellow]Warning: a ranking came back empty. Keeping existing data.[/]")
+        return False
     os.makedirs(DATA_DIR, exist_ok=True)
-    path = os.path.join(DATA_DIR, "papers.json")
-    with open(path, "w", encoding="utf-8") as f:
+    with open(os.path.join(DATA_DIR, "papers.json"), "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
-
     console.print(f"\n[bold green]Done! {len(data['hot'])} hot + {len(data['likes'])} liked → src/data/papers.json[/]")
+    return True
 
 
 if __name__ == "__main__":
