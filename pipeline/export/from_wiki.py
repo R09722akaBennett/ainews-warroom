@@ -46,9 +46,28 @@ def _frontmatter(text: str) -> tuple[dict, str]:
     return meta, body.lstrip("\n")
 
 
+def _archive_commit_files(wiki: Path, date: str) -> list[Path]:
+    """Return the archive files daily_news.py committed for the note of this date.
+
+    Archive files are named by the article's publish date, which is usually
+    the day before the note (the 2026-09-30 note used only 09-29 articles),
+    so matching file names to the note date misses them. The run commits its
+    archive as "library: news 原文存檔 <date>" just before the note, which
+    ties files to notes exactly.
+    """
+    out = subprocess.run(
+        ["git", "-C", str(wiki), "log", "--fixed-strings", f"--grep=news 原文存檔 {date}（",
+         "--diff-filter=A", "--name-only", "--format="],
+        capture_output=True, text=True, check=False).stdout
+    paths = {wiki / line for line in out.splitlines()
+             if line.startswith("library/news/") and line.endswith(".md")}
+    return sorted(path for path in paths if path.exists())
+
+
 def _archive_items(wiki: Path, date: str) -> list[dict]:
     items = []
-    for path in sorted((wiki / "library" / "news").glob(f"*/{date} *.md")):
+    paths = _archive_commit_files(wiki, date) or sorted((wiki / "library" / "news").glob(f"*/{date} *.md"))
+    for path in paths:
         meta, _ = _frontmatter(path.read_text(encoding="utf-8"))
         if meta.get("url"):
             title = meta.get("title", "")
@@ -59,6 +78,42 @@ def _archive_items(wiki: Path, date: str) -> list[dict]:
             items.append({"url": meta["url"], "title": title,
                           "source": SOURCE_NAMES.get(path.parent.name, path.parent.name)})
     return items
+
+
+PICKS_HEADING = "## 📌 今日建議深讀"
+ARXIV_WIKILINK = re.compile(r"\[\[(\d{4}\.\d{4,5})\]\]")
+WIKILINK = re.compile(r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\]")
+PICK_LINE = re.compile(r"^(T\d+)\. (.+)$")
+# Dropped 2026-10-01; notes written before then still carry it.
+REPLY_HINT = re.compile(r"\n*> 回覆「排 T1」[^\n]*")
+
+
+def _web_content(md: str) -> str:
+    """Return the note markdown adapted for the website.
+
+    Obsidian wikilinks mean nothing on the site, so arXiv ids become arXiv
+    links and other wikilinks become plain text. The picks section relies on
+    single line breaks, which Obsidian and WhatsApp keep but marked joins
+    into one paragraph, so each pick becomes a list item with a hard break
+    before its reason.
+    """
+    md = REPLY_HINT.sub("", md)
+    md = ARXIV_WIKILINK.sub(lambda m: f"[{m.group(1)}](https://arxiv.org/abs/{m.group(1)})", md)
+    md = WIKILINK.sub(lambda m: m.group(2) or m.group(1), md)
+    head, sep, picks = md.partition(PICKS_HEADING)
+    if not sep:
+        return md
+    lines: list[str] = []
+    for line in picks.split("\n"):
+        pick = PICK_LINE.match(line)
+        if pick:
+            lines.append(f"- **{pick.group(1)}** {pick.group(2)}")
+        elif line.startswith("　→") and lines:
+            lines[-1] += "  "
+            lines.append("  " + line.lstrip("　"))
+        else:
+            lines.append(line)
+    return head + sep + "\n".join(lines).rstrip() + "\n"
 
 
 def _slug(name: str) -> str:
@@ -112,7 +167,7 @@ def build_reports(wiki: Path) -> list[dict]:
             report = {
                 "date": date,
                 "title": data.get("title") or f"每日 AI 快報 {date}",
-                "content": data["content"],
+                "content": _web_content(data["content"]),
                 "newsItems": data.get("newsItems") or [],
                 "rawCount": data.get("rawCount") or len(data.get("newsItems") or []),
                 "createdAt": data.get("createdAt") or f"{date}T14:30:00",
@@ -122,7 +177,7 @@ def build_reports(wiki: Path) -> list[dict]:
         else:
             _, body = _frontmatter(note.read_text(encoding="utf-8"))
             items = _archive_items(wiki, date)
-            report = {"date": date, "title": f"每日 AI 快報 {date}", "content": body,
+            report = {"date": date, "title": f"每日 AI 快報 {date}", "content": _web_content(body),
                       "newsItems": items, "rawCount": len(items), "createdAt": f"{date}T14:30:00"}
         report["origin"] = "wiki"
         reports.append(report)
