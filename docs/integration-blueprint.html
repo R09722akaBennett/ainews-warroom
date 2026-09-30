@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI 戰情室整合藍圖</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column (72ch) with a sticky section nav; tables and diagrams may run wider inside scroll boxes. */
+:root {
+  --bg: #f6f7f5;
+  --panel: #ffffff;
+  --fg: #1c2321;
+  --muted: #5b6662;
+  --line: #d9ded9;
+  --accent: #0f6e63;
+  --accent-soft: #dcefeb;
+  --keep: #2f7d4f;
+  --cut: #b3432b;
+  --new: #2a5db0;
+  --warn-bg: #fdf3e3;
+  --warn-fg: #7a4b09;
+  --font-body: "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14191a; --panel: #1c2324; --fg: #e6ebe8; --muted: #9aa6a1; --line: #2d3739;
+    --accent: #5fc4b3; --accent-soft: #1f3a37; --keep: #6fc48f; --cut: #e0836c; --new: #7ea6e6;
+    --warn-bg: #3a2c12; --warn-fg: #f0c574; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14191a; --panel: #1c2324; --fg: #e6ebe8; --muted: #9aa6a1; --line: #2d3739;
+  --accent: #5fc4b3; --accent-soft: #1f3a37; --keep: #6fc48f; --cut: #e0836c; --new: #7ea6e6;
+  --warn-bg: #3a2c12; --warn-fg: #f0c574; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.7; padding-inline: 16px; padding-block: 0 64px; margin: 0; }
+.wrap { max-width: 78ch; margin: 0 auto; }
+header.top { padding-block: 40px 20px; border-bottom: 1px solid var(--line); }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-size: 30px; line-height: 1.25; margin: 6px 0 10px; text-wrap: balance; }
+.lede { color: var(--muted); margin: 0; max-width: 62ch; }
+nav.toc { position: sticky; top: env(safe-area-inset-top, 0px); background: var(--bg); border-bottom: 1px solid var(--line); z-index: 2; }
+nav.toc ul { list-style: none; margin: 0; padding: 8px 0; display: flex; gap: 4px 14px; flex-wrap: wrap; font-size: 13px; }
+nav.toc a { color: var(--muted); text-decoration: none; padding: 2px 0; border-bottom: 2px solid transparent; }
+nav.toc a:hover, nav.toc a:focus-visible { color: var(--accent); border-color: var(--accent); outline: none; }
+section { padding-block: 34px 6px; border-bottom: 1px solid var(--line); }
+h2 { font-size: 21px; margin: 0 0 14px; text-wrap: balance; }
+h3 { font-size: 16px; margin: 22px 0 8px; }
+p { margin: 0 0 12px; max-width: 70ch; }
+ul, ol { margin: 0 0 12px; padding-left: 1.3em; max-width: 70ch; }
+li { margin-bottom: 4px; }
+code, .mono { font-family: var(--font-mono); font-size: .92em; }
+code { background: var(--accent-soft); padding: 1px 5px; border-radius: 4px; }
+pre { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; overflow-x: auto; font-family: var(--font-mono); font-size: 13px; line-height: 1.55; }
+pre code { background: none; padding: 0; }
+.tbl { overflow-x: auto; margin: 0 0 16px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 500; color: var(--muted); font-size: 12.5px; letter-spacing: .03em; white-space: nowrap; }
+tr:last-child td { border-bottom: none; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--font-mono); }
+.tag { display: inline-block; font-family: var(--font-mono); font-size: 11.5px; padding: 1px 7px; border-radius: 999px; border: 1px solid currentColor; line-height: 1.5; white-space: nowrap; }
+.tag.keep { color: var(--keep); } .tag.cut { color: var(--cut); } .tag.new { color: var(--new); } .tag.change { color: var(--accent); }
+.callout { background: var(--warn-bg); color: var(--warn-fg); border-radius: 6px; padding: 12px 14px; margin: 0 0 16px; max-width: 70ch; }
+.callout p:last-child { margin-bottom: 0; }
+.principles { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin: 0 0 8px; }
+.principle { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; min-width: 0; }
+.principle b { display: block; margin-bottom: 4px; }
+.principle p { font-size: 13.5px; color: var(--muted); margin: 0; }
+.phase { border-left: 3px solid var(--accent); padding: 4px 0 4px 16px; margin: 0 0 18px; }
+.phase h3 { margin-top: 0; }
+.phase .meta { font-family: var(--font-mono); font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.phase p.accept { background: var(--accent-soft); border-radius: 4px; padding: 6px 10px; font-size: 13.5px; }
+.mermaid { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px; overflow-x: auto; margin: 0 0 16px; }
+.qa { margin: 0 0 18px; }
+.qa .q { font-weight: 700; margin-bottom: 4px; }
+.qa .a { max-width: 70ch; }
+.small { font-size: 13px; color: var(--muted); }
+@media (max-width: 480px) { h1 { font-size: 25px; } body { font-size: 14.5px; } }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow">bennett-hub · 2026-09-30,決定更新 2026-10-01</div>
+  <h1>AI 戰情室整合藍圖</h1>
+  <p class="lede">把 ainews-warroom(原公司戰情室)併入 bennett-hub 的 wiki 管線,做成個人版:WhatsApp 每天主動送日報,Notion、Obsidian、knowledge DB 三者各司其職,網站是打開看更多的地方。以下是四組調查整合後的結論、目標架構與執行順序。</p>
+</header>
+
+<nav class="toc" aria-label="章節">
+  <ul>
+    <li><a href="#principles">原則</a></li>
+    <li><a href="#findings">現況發現</a></li>
+    <li><a href="#arch">目標架構</a></li>
+    <li><a href="#data">三個資料庫</a></li>
+    <li><a href="#sources">新聞來源與 Jev</a></li>
+    <li><a href="#labs">Labs 追蹤</a></li>
+    <li><a href="#notion">Notion 與 arXiv 整併</a></li>
+    <li><a href="#site">網站頁面</a></li>
+    <li><a href="#cron">排程表</a></li>
+    <li><a href="#phases">執行順序</a></li>
+    <li><a href="#decisions">待決定</a></li>
+  </ul>
+</nav>
+
+<section id="principles">
+  <h2>三個原則</h2>
+  <div class="principles">
+    <div class="principle"><b>單一事實來源</b><p>knowledge DB(Postgres)加 wiki git。Notion、Obsidian、網站都是單向投影,不做雙向同步。</p></div>
+    <div class="principle"><b>日報品質不動</b><p>WhatsApp 日報維持 4 個精選來源全覆蓋。廣來源只能經過 Jev 篩選後以「補充」身分進來,而且先影子跑一週。</p></div>
+    <div class="principle"><b>一台機器、一條鏈</b><p>全部在 bennett-hub 用 alert-wrap 包成 cron 鏈。Mac 與 GCP 不再參與;Notion 只由 knowledge-api 寫。</p></div>
+  </div>
+</section>
+
+<section id="findings">
+  <h2>現況發現</h2>
+  <p>四個 subagent 唯讀盤點了 VPS 與 warroom repo,以下是會影響規劃的事實。</p>
+
+  <h3>Daily Dose 的「整理」cron 就在 bennett-hub</h3>
+  <p>不在 n8n(已完全不存在),也不在 hermes(bennett profile 的 cron jobs 是空的)。它是 crontab 上的三段接力:</p>
+  <div class="tbl"><table>
+    <tr><th>時間</th><th>工作</th><th>做什麼</th></tr>
+    <tr><td class="mono">08:00</td><td><code>ingest_daily_dose.py --live</code></td><td>IMAP 抓 avi@dailydoseofds.com 的信,POST 到 knowledge-api,source_key <code>gmail:daily_dose_of_ds</code></td></tr>
+    <tr><td class="mono">08:02</td><td><code>POST /sync/process</code></td><td>每個 section 跑 Gemini 抽 summary、key_takeaways、entities。這一步就是「整理」</td></tr>
+    <tr><td class="mono">09:00</td><td><code>POST /sync/notion</code></td><td>每期一頁推到 Notion Knowledge Base(Documents DB)。552 期中 550 期有頁,1 期每天同步失敗</td></tr>
+  </table></div>
+  <p>同一批摘要 08:30 也經 export-library 匯進 wiki 的 library,再 push 到 GitHub、由 Mac 拉進 Obsidian。所以 Daily Dose 整理已經有兩個消費端。</p>
+
+  <h3>arXiv 這條線在浪費資源</h3>
+  <div class="callout">
+    <p><b>refresh_rq(09:30)每天跑約 7 小時、噴 2,500 多個 400 錯誤。</b>4,150 篇論文只有 1,577 篇曾寫進 Notion Reading Queue,其餘每天重試、每天失敗;cron log 只看到 curl 60 秒 timeout,所以從外面看不出來。這也是 Notion 看起來「零散」的原因:同一個資料庫有一半論文從來沒進去。</p>
+  </div>
+  <p>另外 hf_daily(07:00)與 daily_news(14:30)對同一批論文各做一次「該不該讀」的 LLM 判斷,興趣設定都讀 <code>USER_INTERESTS</code>,只是一個寫 Notion、一個發 WhatsApp。</p>
+
+  <h3>warroom 的來源品質不如想像</h3>
+  <div class="tbl"><table>
+    <tr><th>項目</th><th>事實</th><th>影響</th></tr>
+    <tr><td>Google News</td><td>近 30 天佔全部項目 60%(4,801 / ~8,000)</td><td>大量重複與低品質;是唯一有前置 LLM 篩選的來源</td></tr>
+    <tr><td>Reddit</td><td>近 30 天 0 筆,憑證已失效</td><td>已決定拿掉這個來源(2026-10-01)</td></tr>
+    <tr><td>RSS 55 個</td><td>Tom's Hardware、資安、政治類佔不少</td><td>建議砍到 20 到 25 個 AI 官方 blog 與少數媒體</td></tr>
+    <tr><td>MCP Market</td><td>資料停在 2026-05-10;原本靠 class 名稱 regex,網站改版後靜默失敗</td><td>已改讀頁面的 JSON-LD,10/01 試抓 50 servers + 20 skills 成功;category 欄 JSON-LD 沒有,先留空</td></tr>
+    <tr><td>alphaxiv</td><td>資料停在 2026-08-12:sort=Hot 改名 Trending,且完整 Chrome UA 會被 403</td><td>已改讀 JSON-LD 加 arXiv API 補日期、作者、分類;每次是快照覆寫,不跨日累積,所以不需去重</td></tr>
+    <tr><td>網站</td><td>頁面全用 <code>as any</code> 讀 JSON,只依賴少數欄位</td><td>換資料來源不用動頁面主體</td></tr>
+    <tr><td>Pagefind、Giscus</td><td>Pagefind 未接進 integrations,Giscus 指向模板作者的 repo 且無頁面引用</td><td>清理時一併決定</td></tr>
+  </table></div>
+
+  <h3>wiki 已經有的與缺的</h3>
+  <p>日報、週報、threads、library 匯出四條產線都在跑,全是 Gemini 產 markdown 落 git。網站要的日報 JSON 七成可從既有欄位拼出,缺三樣:編號 refs、token 用量、結構化 tags。tags 不需要新的 LLM 呼叫,<code>knowledge.extractions.raw_json.entities</code> 已有 type、canonical_name、salience,直接分桶即可。</p>
+</section>
+
+<section id="arch">
+  <h2>目標架構</h2>
+  <pre class="mermaid">
+flowchart LR
+  subgraph IN[來源]
+    F4[4 精選 feed<br/>smol / TLDR / TechCrunch / Import AI]
+    WIDE[廣來源<br/>HN / 官方 blog RSS / TechMeme / Google News]
+    HF[HF daily papers]
+    DD[Daily Dose 電子報]
+    LB[arena.ai / alphaxiv]
+  end
+  JEV[Jev Stage A<br/>重要度 · lab 歸屬 · 類別]
+  WIDE --> JEV
+  KDB[(knowledge DB<br/>Postgres + Qdrant + Neo4j)]
+  F4 --> KDB
+  JEV -- top 40 --> DN
+  DD --> KDB
+  HF --> KDB
+  DN[daily_news<br/>Gemini 日報]
+  F4 --> DN
+  KDB --> DN
+  DN --> WA[WhatsApp 群組]
+  DN --> WIKI[(wiki git<br/>notes / library / threads)]
+  KDB --> WIKI
+  JEV --> LABS[labs tracker]
+  LABS --> WIKI
+  LB --> SITE
+  WIKI --> SITE[Astro 網站<br/>Vercel]
+  KDB --> NOTION[Notion<br/>Knowledge Base / Reading Queue / Knowledge Map]
+  WIKI --> OBS[Obsidian<br/>Mac ~/wiki]
+  </pre>
+  <p>箭頭全部單向。Notion 與 Obsidian 是投影,網站也是投影;人只在 Obsidian 編 notes 與 pages,那本來就是 wiki 的 source 層。</p>
+</section>
+
+<section id="data">
+  <h2>三個資料庫的分工</h2>
+  <div class="tbl"><table>
+    <tr><th>層</th><th>放什麼</th><th>誰寫</th><th>誰讀</th></tr>
+    <tr><td><b>knowledge DB</b><br/><span class="small">Postgres、Qdrant、Neo4j</span></td><td>原文、LLM 摘要、entities、embedding、社群</td><td>knowledge-api 的 connectors(ddods、hf_daily、rss)</td><td>wiki 匯出、Notion sink、網站 tags、weekly digest</td></tr>
+    <tr><td><b>wiki git</b><br/><span class="small">Obsidian vault</span></td><td>notes(日報、週報、dig)、pages(人寫的 concept、entity、topic)、library(DB 鏡像)、threads</td><td>daily_news、weekly_digest、update_threads、export-library;人在 Obsidian 寫 pages</td><td>Obsidian、網站 export、hermes 的 wiki-api</td></tr>
+    <tr><td><b>Notion</b></td><td>Knowledge Base(Daily Dose 每期一頁)、Reading Queue(論文)、Knowledge Map(社群)</td><td>只有 knowledge-api 的 sinks</td><td>你在手機或瀏覽器上看與勾 Read</td></tr>
+  </table></div>
+  <p>「彼此同步」在這個設計裡的意思是:同一筆資料從 DB 出發,分別投影到 Notion 與 Obsidian,兩邊自然一致。唯一值得做的回寫是 Notion 的 Read 勾選寫回 DB 的 status,列在第二期。</p>
+</section>
+
+<section id="sources">
+  <h2>新聞來源與 Jev 篩選</h2>
+  <div class="qa">
+    <div class="q">warroom 的來源不用會不會浪費?</div>
+    <div class="a"><p>不會太浪費,因為六成是 Google News、Reddit 已失效。真正值得留的是 HN、20 幾個官方 blog RSS(OpenAI、Anthropic、DeepMind、Hugging Face、Mistral、Meta AI 等)與 TechMeme。這些經 Jev 篩過後進日報當補充,同時餵 labs 追蹤,就沒有浪費的問題。</p></div>
+  </div>
+  <div class="qa">
+    <div class="q">網站與 WhatsApp 內容會不會不一樣?</div>
+    <div class="a"><p>不會。網站的 Reports 頁直接由當天的日報 markdown 產生,兩邊是同一份。網站另外有 Sources 頁列出全部候選與 Jev 分數,所以被篩掉的仍然看得到。</p></div>
+  </div>
+
+  <h3>Jev 是什麼、能做什麼</h3>
+  <p>TypeSafe 的 Jev 是判斷模型,不生成文字。單一 endpoint <code>POST /v1/systemone</code>,三種題型:Noul(是非,回校準機率)、Choice(單選,回各選項機率)、Score(等級)。同一 request 可放多題並行。每 request 約 600 到 1,200 input tokens,價格只算 input。</p>
+  <div class="tbl"><table>
+    <tr><th>指標</th><th class="num">估計</th><th>來源</th></tr>
+    <tr><td>每天候選數</td><td class="num">300 – 500</td><td>warroom sources.json 近 30 天中位數 190,精簡來源後會更低</td></tr>
+    <tr><td>每天成本</td><td class="num">US$0.01 – 0.03</td><td>$0.042 / Mtok,含去重題</td></tr>
+    <tr><td>總延遲</td><td class="num">15 – 30 秒</td><td>單次 0.3 到 0.5 秒,12 併發</td></tr>
+    <tr><td>Rate limit</td><td class="num">40 req/s</td><td>文件標明會動態調整</td></tr>
+  </table></div>
+
+  <h3>兩階段設計</h3>
+  <ol>
+    <li><b>Stage A(Jev)</b>:code 先做 URL 正規化去重、丟掉 36 小時以上的舊項、snippet 截 600 字。每則一個 request、四題:<code>important</code>(Noul)、<code>lab_present</code>(Noul)、<code>lab</code>(Choice,選項是 labs 清單加 none)、<code>category</code>(Choice)。依 <code>important</code> 排序,對 top 80 再問「是否與 4 精選 feed 已有項目同一事件」,合併後取 top 40,寫成 JSON 給 Stage B 與 labs。</li>
+    <li><b>Stage B(Gemini)</b>:日報 prompt 不變,多一段「補充候選(含 Jev 分數與 ref id)」。所有材料事先編號,要求日報用 <code>[n]</code> 引用,這樣網站的 ref 連結才有東西對。</li>
+  </ol>
+
+  <h3>不重複、只收新的</h3>
+  <ul>
+    <li><b>URL 正規化</b>:去 utm 與 query、去尾斜線、Google News 連結解成原站 URL,再做同日去重。</li>
+    <li><b>跨日去重</b>:對 knowledge DB 近 7 天的 canonical_url 與候選表比對,出現過的直接丟。</li>
+    <li><b>新鮮度</b>:<code>published_at</code> 超過 36 小時丟掉;沒有日期的來源(HN、部分 RSS)以「首次看到的時間」當日期,只收當天首次出現的。</li>
+    <li><b>同一事件</b>:對 top 80 用 Jev 問「是否與 4 精選 feed 今日項目、或前 3 天日報已寫過的事件相同」,相同就併入 ref 不另列。</li>
+    <li>以上四條在 code 裡做,Jev 只負責判斷語意上的同一事件;它不擅長比日期與計數。</li>
+  </ul>
+  <h3>校準與保險</h3>
+  <ul>
+    <li>先影子跑一週:Jev 只記錄分數不影響日報。把 4 精選 feed 的項目也過一次 Jev,以「日報實際寫到的項目」當正例,門檻取正例 90% recall 的位置,再人工抽 30 則看 precision。</li>
+    <li>定好門檻就 pin <code>jev-1.13.0</code>,不用 alias,因為換版會改變答案。</li>
+    <li>Stage A 整段包 try,設 120 秒 deadline 與 10% 失敗率上限;超過就 log 降級,日報只用 4 精選 feed 照發。</li>
+    <li>rubric 用英文寫、寫成明確條件;日期與計數在 code 做,Jev 不擅長。</li>
+  </ul>
+  <p class="small">與 Gemini Flash 做同一件事的差別:Jev 的機率是訓練成校準的,可以設門檻與量 recall;Flash 的自評分數不是。Flash 能順便給一句理由,Jev 不能。兩者成本同一量級。</p>
+</section>
+
+<section id="labs">
+  <h2>Labs 追蹤</h2>
+  <p>取代 competitor 模組。清單以 arena.ai leaderboard 的 52 個組織為種子,分兩級;每家帶 region 與 openness 兩個屬性,網站頁面用這兩個做篩選 pill,並與 leaderboard 的最佳模型與名次連動。</p>
+  <div class="tbl"><table>
+    <tr><th>級別</th><th>美國</th><th>中國</th><th>歐洲 / 其他</th></tr>
+    <tr><td><b>Tier 1</b><br/><span class="small">每天收集、週報逐家摘要</span></td>
+      <td>OpenAI(closed)、Anthropic(closed)、Google DeepMind(closed)、xAI(closed)、Meta(mixed)、Thinking Machines(closed)</td>
+      <td>DeepSeek(open)、Alibaba Qwen(open)、Zhipu / Z.ai(open)、Moonshot Kimi(open)、Bytedance Seed(mixed)</td>
+      <td>Mistral(open,法國)</td></tr>
+    <tr><td><b>Tier 2</b><br/><span class="small">每天收集、只進週報總覽</span></td>
+      <td>Microsoft AI、Nvidia(open)、Ai2(open)、SSI、Reflection AI</td>
+      <td>MiniMax、Tencent Hunyuan、Baidu、Stepfun、Xiaomi MiMo</td>
+      <td>Cohere(加拿大)、Sakana(日本)、Aleph Alpha(德國)</td></tr>
+  </table></div>
+  <ul>
+    <li><b>類別</b>:model_release、research、product、policy、talent、funding、infra、other。</li>
+    <li><b>資料來源</b>:每家一條 Google News 查詢(沿用 <code>when:3d</code>)加官方 blog RSS,再併入 Stage A 標到該 lab 的項目。分類先沿用 Gemini 批次(30 則一 chunk),之後可換 Jev Choice。</li>
+    <li><b>週報</b>:週一逐家一次 LLM 摘要、再合併一次,period 改名 <code>labs_weekly</code>,refItems 連回項目。</li>
+    <li><b>新 lab 自動提示</b>:leaderboard 前 20 名出現清單外的組織時,在週報末尾列出,由你決定是否加入。</li>
+    <li>DB 表沿用 <code>competitor_items</code>,region 與 openness 從 config join,不用 migrate。</li>
+  </ul>
+</section>
+
+<section id="notion">
+  <h2>Notion 與 arXiv 整併</h2>
+  <div class="tbl"><table>
+    <tr><th>Notion DB</th><th>現況</th><th>處置</th></tr>
+    <tr><td>Knowledge Base(Documents)</td><td>Daily Dose 每期一頁,550 / 552</td><td><span class="tag keep">keep</span> 查那 1 期每天失敗的原因並修;不加新寫入者</td></tr>
+    <tr><td>Reading Queue(arXiv)</td><td>1,577 / 4,150 篇有頁;refresh_rq 每天 7 小時失敗</td><td><span class="tag change">change</span> 拿掉 refresh_rq;只對有 page id 的 doc 重繪並加 sleep;歷史未寫入的只補 relevance 高於門檻者</td></tr>
+    <tr><td>Knowledge Map(社群)</td><td>週日與每月 1 日重建</td><td><span class="tag keep">keep</span></td></tr>
+  </table></div>
+  <h3>論文只判斷一次</h3>
+  <p>hf_daily 07:00 已經對每篇論文算出 relevance 與 recommended action。daily_news 的「今日建議深讀 T1 到 T3」改成直接讀 DB 裡這個分數(加 wiki topics 加權),不再另外呼叫 Gemini。反向,被日報推薦或你回「排 T1」的論文,在 Reading Queue 上標一個 <code>Recommended</code> 屬性。這樣 Notion、WhatsApp、wiki 佇列看到的是同一個判斷。</p>
+  <h3>順手清理</h3>
+  <ul>
+    <li><code>infra/cron/sync.crontab</code> 與現行 crontab 脫節,更新或刪除。</li>
+    <li>hermes knowledge-hub skill 把 <code>/sync/notion</code> 寫成 from Notion,方向反了,改正。</li>
+    <li>10 個 exited 的 hermes sandbox 容器與兩個一次性 cleanup endpoint 可移除。</li>
+  </ul>
+</section>
+
+<section id="site">
+  <h2>網站頁面對照</h2>
+  <div class="tbl"><table>
+    <tr><th>頁面</th><th>處置</th><th>新資料來源</th></tr>
+    <tr><td>Daily News / Reports</td><td><span class="tag change">change</span></td><td>wiki <code>notes/news/*.md</code> 加同名 sidecar JSON(refs、counts、usage、tags)。頁面 <code>ref-N</code> 對 sidecar 的 newsItems</td></tr>
+    <tr><td>Sources</td><td><span class="tag change">change</span></td><td>Stage A 全部候選加 Jev 分數,可看被篩掉的</td></tr>
+    <tr><td>Insights / Trends</td><td><span class="tag change">change</span></td><td>wiki 週報,加月報與季報(從 compress 移植,只留 industry 軌)</td></tr>
+    <tr><td>Threads</td><td><span class="tag new">new</span></td><td><code>library/threads/*.md</code>,跨日事件時間線;update_threads 同步寫 sidecar</td></tr>
+    <tr><td>Labs</td><td><span class="tag change">change</span></td><td>取代 Competitors;labs.json 帶 region、openness,與 leaderboard 名次連動</td></tr>
+    <tr><td>Leaderboard</td><td><span class="tag keep">keep</span></td><td>arena.ai 爬蟲原封搬 VPS</td></tr>
+    <tr><td>Trending</td><td><span class="tag keep">keep</span></td><td>alphaxiv、MCP Market 爬蟲已修;GitHub trending 與 Product Hunt 在 build 時抓</td></tr>
+    <tr><td>Papers / 我的閱讀佇列</td><td><span class="tag new">new</span></td><td>DB 的 arxiv:paper 加 relevance、status,與 Notion Reading Queue 同源(可選)</td></tr>
+    <tr><td>Analytics</td><td><span class="tag keep">keep</span></td><td>token 用量改由 daily_news、weekly、threads 三支各自記 usageMetadata;tags 由 entities 分桶</td></tr>
+    <tr><td>Archive</td><td><span class="tag keep">keep</span></td><td>9/8 前的 reports 與 2023 到 2026-03 的 legacy 原樣保留</td></tr>
+    <tr><td>IDP、Competitors 舊頁</td><td><span class="tag cut">cut</span></td><td></td></tr>
+  </table></div>
+  <p><b>部署與命名(2026-10-01 決定)</b>:網址先維持 <code>https://ainews-warroom.vercel.app</code>,所有 KDAN 字眼改成 bennettlabs.dev;之後再換成子網域或 <code>bennettlabs.dev/aiwarroom</code> 路徑。若走路徑,Astro 要設 <code>base: "/aiwarroom"</code> 並由 bennettlabs.dev 的反向代理轉發,子網域則只要改 site URL,建議子網域。</p>
+  <p>品牌與部署觸點要改的檔案清單已在調查報告裡:<code>consts.ts</code>、<code>Head.astro</code>、<code>Header.astro</code>、<code>Footer.astro</code>、<code>about.astro</code>、<code>astro.config.mjs</code> 的 site URL、KDAN logo;pipeline 側刪 <code>bin/</code>、<code>Dockerfile</code>、<code>notify/</code>、<code>idp/</code>、<code>kdan-context.md</code>,三個 prompt 的公司人設改成個人視角。</p>
+</section>
+
+<section id="cron">
+  <h2>目標排程表(bennett-hub,Asia/Taipei)</h2>
+  <div class="tbl"><table>
+    <tr><th>時間</th><th>工作</th><th>狀態</th></tr>
+    <tr><td class="mono">07:00</td><td>hf_daily 抓論文、triage、寫 Reading Queue</td><td><span class="tag keep">keep</span></td></tr>
+    <tr><td class="mono">08:00 / 08:02</td><td>Daily Dose ingest、LLM 摘要</td><td><span class="tag keep">keep</span></td></tr>
+    <tr><td class="mono">08:30</td><td>export-library 到 wiki</td><td><span class="tag keep">keep</span></td></tr>
+    <tr><td class="mono">09:00</td><td>sync_notion(Knowledge Base)</td><td><span class="tag keep">keep</span></td></tr>
+    <tr><td class="mono">09:30</td><td>refresh_rq</td><td><span class="tag cut">cut</span></td></tr>
+    <tr><td class="mono">14:00</td><td>warroom-collect 廣來源 + Jev Stage A,寫候選 JSON</td><td><span class="tag new">new</span></td></tr>
+    <tr><td class="mono">14:30</td><td>daily-news:4 feed + Stage A top 40,寫 note、sidecar、WhatsApp</td><td><span class="tag change">change</span></td></tr>
+    <tr><td class="mono">15:00</td><td>labs-watch 收集、分類</td><td><span class="tag new">new</span></td></tr>
+    <tr><td class="mono">15:10</td><td>update-threads</td><td><span class="tag keep">keep</span></td></tr>
+    <tr><td class="mono">15:30</td><td>leaderboard、alphaxiv、mcpmarket</td><td><span class="tag new">new</span></td></tr>
+    <tr><td class="mono">16:00</td><td>export-site:組 JSON、commit、push warroom repo,Vercel 自動部署</td><td><span class="tag new">new</span></td></tr>
+    <tr><td class="mono">16:00</td><td>process-queue 策展</td><td><span class="tag keep">keep</span>(與 export-site 錯開到 16:20)</td></tr>
+    <tr><td class="mono">Mon 09:00</td><td>weekly-digest,加 labs 週報;每月 1 日月報、季初季報</td><td><span class="tag change">change</span></td></tr>
+    <tr><td class="mono">Mon 09:05</td><td>上週 cron 狀態總結到 WhatsApp DM</td><td><span class="tag keep">keep</span></td></tr>
+  </table></div>
+  <p class="small">每一條都走 alert-wrap,失敗告警仍發個人 DM,日報才發群組。</p>
+</section>
+
+<section id="phases">
+  <h2>執行順序</h2>
+  <p>每一期獨立可驗收,前三期不改日報內容。估時是實作加驗證,不含影子觀察週。</p>
+
+  <div class="phase">
+    <h3>第 0 期 止血與清理</h3>
+    <div class="meta">約半天 · 只動 VPS 排程</div>
+    <ul>
+      <li>拿掉 refresh_rq,或改成只重繪有 page id 的 doc 並限速。</li>
+      <li>查並修 sync_notion 每天失敗的那 1 期 Daily Dose。</li>
+      <li>更新 sync.crontab、hermes skill 文案;Obsidian remote 由你手動改指 bennett-hub。</li>
+    </ul>
+    <p class="accept">驗收:隔天 cron 總結沒有 refresh_rq;sync_notion 回 failed 0;Mac 的 ~/wiki 拉到當天 commit。</p>
+  </div>
+
+  <div class="phase">
+    <h3>第 1 期 網站搬家</h3>
+    <div class="meta">約 1 到 2 天 · 不碰日報</div>
+    <ul>
+      <li>clone warroom 到 VPS,用 uv 建環境(uv 已在 <code>~/.local/bin</code>,cron 要補 PATH)。</li>
+      <li>接 leaderboard、alphaxiv 兩個爬蟲進 cron,export 只推這兩個 JSON,git push。</li>
+      <li>Vercel 綁個人帳號,改 site URL 與 domain。</li>
+    </ul>
+    <p class="accept">驗收:Leaderboard 與 Trending 頁的更新時間是當天;Vercel 部署由 VPS 的 push 觸發。</p>
+  </div>
+
+  <div class="phase">
+    <h3>第 2 期 Reports 接 wiki</h3>
+    <div class="meta">約 2 天</div>
+    <ul>
+      <li>daily_news 在寫 md 的同一步多寫同名 sidecar JSON:材料編號 refs、counts、Gemini usageMetadata、由 entities 分桶的 tags。</li>
+      <li>日報 prompt 加 <code>[n]</code> 引用要求;weekly 與 threads 同樣寫 sidecar。</li>
+      <li>export 新增 from_notes,產 reports.json 與 summaries.json;Archive 保留舊資料。</li>
+    </ul>
+    <p class="accept">驗收:網站 Reports 當天內容等於 WhatsApp 那則;ref 連結可點;Analytics 有當天 token 數。</p>
+  </div>
+
+  <div class="phase">
+    <h3>第 3 期 Jev 篩選,先影子跑</h3>
+    <div class="meta">實作 1 天 · 觀察 1 週</div>
+    <ul>
+      <li>collector 搬 VPS,來源砍到 20 到 25 個;Reddit 視憑證決定。</li>
+      <li>Stage A 只記錄分數;一週後定門檻、pin 模型版本,接進日報當補充。</li>
+      <li>Sources 頁改讀候選 JSON 與分數。</li>
+    </ul>
+    <p class="accept">驗收:一週影子資料算得出 recall 與 precision;接上後日報長度仍在 WhatsApp 單則上限內;Jev 故障時日報照發。</p>
+  </div>
+
+  <div class="phase">
+    <h3>第 4 期 Labs</h3>
+    <div class="meta">約 2 天</div>
+    <ul>
+      <li>config 換成 labs 清單,加 region、openness;兩個 prompt 換人設與類別。</li>
+      <li>export labs.json;頁面加篩選 pill 與 leaderboard 連動;週報 period 改 labs_weekly。</li>
+    </ul>
+    <p class="accept">驗收:每家 Tier 1 lab 有近 7 天項目;週一產出 labs 週報;清單外新組織會被提示。</p>
+  </div>
+
+  <div class="phase">
+    <h3>第 5 期 arXiv 整併</h3>
+    <div class="meta">約 1 到 2 天</div>
+    <ul>
+      <li>daily_news 的 T1 到 T3 改讀 hf_daily 的 relevance;Reading Queue 加 Recommended 屬性。</li>
+      <li>歷史未寫入的論文只補 relevance 高於門檻者,限速寫入。</li>
+      <li>可選:網站加「我的閱讀佇列」頁。</li>
+    </ul>
+    <p class="accept">驗收:同一篇論文在 Notion、WhatsApp、wiki 佇列的推薦狀態一致;不再有第二次 triage 呼叫。</p>
+  </div>
+
+  <div class="phase">
+    <h3>第 6 期 月季壓縮與品牌清理</h3>
+    <div class="meta">約 2 天</div>
+    <ul>
+      <li>compress 的 monthly、quarterly 移植進 weekly_digest,只留 industry 軌;Trends 頁改讀。</li>
+      <li>刪 IDP、Mattermost、GCP、kdan-context;改品牌與 about;決定 Giscus 與 Pagefind 去留。</li>
+    </ul>
+    <p class="accept">驗收:repo 內 grep 不到 KDAN 與 IDP;build 通過 astro check;首頁無公司字樣。</p>
+  </div>
+</section>
+
+<section id="decisions">
+  <h2>待你決定</h2>
+  <p>已定(2026-10-01):Reddit 拿掉;網址先用 ainews-warroom.vercel.app、KDAN 改 bennettlabs.dev;MCP Market 與 alphaxiv 爬蟲已修好保留;廣來源經 Jev 篩選並套用上面的去重與新鮮度規則。</p>
+  <ol>
+    <li><b>Labs 清單</b>:上面的 Tier 1 與 Tier 2 是否照這樣,還是有要加減的。</li>
+    <li><b>Jev 影子週</b>:接受先觀察一週再影響日報,還是要更快。</li>
+    <li><b>Reading Queue 歷史補寫</b>:2,573 篇從未寫進 Notion 的論文,只補高分的,還是全部放棄。</li>
+  </ol>
+  <p class="small">決定後從第 0 期開始。第 0 期只動 VPS 排程,不碰任何內容。</p>
+</section>
+</div>
+<script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+const dark = matchMedia("(prefers-color-scheme: dark)").matches;
+mermaid.initialize({ startOnLoad: true, theme: dark ? "dark" : "neutral", securityLevel: "loose" });
+</script>
+</body>
+</html>
