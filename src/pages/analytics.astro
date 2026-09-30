@@ -208,11 +208,9 @@ const tokenChartData = {
           <div class="flex gap-1.5 flex-wrap" id="token-type-filters">
             <button data-ttype="all" class="tag-filter tag-filter-active">All</button>
             <button data-ttype="daily" class="tag-filter" title="Daily Report">Daily Report</button>
-            <button data-ttype="weekly" class="tag-filter" title="Warroom Weekly">Weekly</button>
-            <button data-ttype="monthly" class="tag-filter" title="Warroom Monthly">Monthly</button>
-            <button data-ttype="quarterly" class="tag-filter" title="Warroom Quarterly">Quarterly</button>
-            <button data-ttype="competitor_classify" class="tag-filter" title="Competitor Classify">Comp. Classify</button>
-            <button data-ttype="competitor_weekly" class="tag-filter" title="Competitor Weekly">Comp. Weekly</button>
+            <button data-ttype="raw_weekly" class="tag-filter" title="Industry Weekly">Weekly</button>
+            <button data-ttype="raw_monthly" class="tag-filter" title="Industry Monthly">Monthly</button>
+            <button data-ttype="raw_quarterly" class="tag-filter" title="Industry Quarterly">Quarterly</button>
             <button data-ttype="labs_classify" class="tag-filter" title="Labs Classify">Labs Classify</button>
             <button data-ttype="labs_weekly" class="tag-filter" title="Labs Weekly">Labs Weekly</button>
           </div>
@@ -509,7 +507,6 @@ const tokenChartData = {
   function getTypeBadge(type) {
     if (type === "daily") return "D";
     if (type.indexOf("classify") >= 0) return "CC";
-    if (type.indexOf("competitor") >= 0) return "CW";
     if (type.indexOf("labs") >= 0) return "LW";
     return type.replace("raw_", "").charAt(0).toUpperCase();
   }
@@ -521,11 +518,9 @@ const tokenChartData = {
     return "quarterly";
   }
   function getTypeTitle(type) {
-    var m = { daily: "Daily Report", competitor_classify: "Competitor Classify (daily)",
-      competitor_weekly: "Competitor Weekly Report", labs_classify: "Labs Classify (daily)",
+    var m = { daily: "Daily Report", labs_classify: "Labs Classify (daily)",
       labs_weekly: "Labs Weekly Report", raw_weekly: "Industry Weekly",
-      raw_monthly: "Industry Monthly", raw_quarterly: "Industry Quarterly",
-      weekly: "Warroom Weekly", monthly: "Warroom Monthly", quarterly: "Warroom Quarterly" };
+      raw_monthly: "Industry Monthly", raw_quarterly: "Industry Quarterly" };
     return m[type] || type;
   }
 

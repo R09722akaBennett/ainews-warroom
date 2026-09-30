@@ -1,4 +1,9 @@
-"""Merge the wiki's daily digests into src/data/reports.json.
+"""Merge the wiki's daily digests and periodic reports into the site data.
+
+Daily digests go to src/data/reports.json. Weekly, monthly and quarterly
+notes (notes/weekly, notes/monthly, notes/quarterly) go to
+src/data/summaries.json as the industry periods raw_weekly, raw_monthly and
+raw_quarterly, which the Trends page and the home page read.
 
 The wiki pipeline (bennett-hub ~/wiki/tools/daily_news.py) writes
 notes/news/YYYY-MM-DD.md plus a .json sidecar with ref-numbered content,
@@ -19,6 +24,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import datetime
 import json
 import os
 import re
@@ -27,6 +33,10 @@ from collections import Counter
 from pathlib import Path
 
 DATA = Path(__file__).resolve().parents[2] / "src" / "data" / "reports.json"
+SUMMARIES = DATA.with_name("summaries.json")
+PERIODS = {"weekly": "raw_weekly", "monthly": "raw_monthly", "quarterly": "raw_quarterly"}
+# The company-era KDAN track and competitor records; dropped on every run.
+RETIRED_PERIODS = {"weekly", "monthly", "quarterly", "competitor_weekly", "competitor_classify"}
 SOURCE_NAMES = {"smol": "smol.ai", "tldr": "TLDR AI", "techcrunch": "TechCrunch", "importai": "Import AI"}
 TAG_TYPES = {"companies": ("org", "company"), "models": ("model",), "topics": ("concept", "method")}
 # Too generic to be useful as a tag; they top every day's counts.
@@ -116,6 +126,41 @@ def _web_content(md: str) -> str:
     return head + sep + "\n".join(lines).rstrip() + "\n"
 
 
+
+COMPANY_WORDS = re.compile(r"(?i)kdan|凱鈿")
+COMPANY_LEAD = re.compile(r"凱鈿應關注之重大競品動向[：:]\s*")
+COMPANY_SECTION = re.compile(r"\n(?:---\n+)?## KDAN 戰略洞察\n[\s\S]*?(?=\n## |\Z)")
+
+
+def _retire_company(report: dict) -> dict:
+    """Return a company-era report without its KDAN strategy section and branding.
+
+    Reports up to 2026-09-08 came from the company agent and end with a
+    "KDAN 戰略洞察" section of product advice; the news analysis before it
+    is kept as the archive. Applying this twice changes nothing.
+    """
+    report = dict(report)
+    for key in ("title", "content"):
+        report[key] = (report.get(key) or "").replace("KDAN AI 戰情報告", "AI 戰情報告")
+    content = COMPANY_SECTION.sub("", report["content"]).rstrip().removesuffix("---").rstrip()
+    content = COMPANY_LEAD.sub("", content)
+    report["content"] = "\n".join(_drop_company_sentences(line) for line in content.split("\n")
+                                  if not _only_company(line)) + "\n"
+    return report
+
+
+def _only_company(line: str) -> bool:
+    return bool(COMPANY_WORDS.search(line)) and not _drop_company_sentences(line).strip(" *-#>")
+
+
+def _drop_company_sentences(line: str) -> str:
+    # Trend paragraphs also carry asides such as "對於 KDAN 而言……"; only
+    # those sentences go, the news analysis around them stays.
+    if not COMPANY_WORDS.search(line):
+        return line
+    return "".join(part for part in re.split(r"(?<=[。！？])", line) if not COMPANY_WORDS.search(part))
+
+
 def _slug(name: str) -> str:
     return re.sub(r"\s+", "-", name.strip().lower())
 
@@ -184,13 +229,61 @@ def build_reports(wiki: Path) -> list[dict]:
     return reports
 
 
+
+def _week_range(name: str) -> tuple[str, str]:
+    year, week = name.split("-w")
+    monday = datetime.date.fromisocalendar(int(year), int(week), 1)
+    return str(monday), str(monday + datetime.timedelta(days=6))
+
+
+def build_summaries(wiki: Path) -> list[dict]:
+    """Return one summaries.json entry per wiki weekly, monthly or quarterly note.
+
+    Weekly notes written before 2026-10-01 have no period_start in their
+    frontmatter, so their range comes from the ISO week in the file name.
+    """
+    out = []
+    for kind, period in PERIODS.items():
+        for note in sorted((wiki / "notes" / kind).glob("*.md")):
+            meta, body = _frontmatter(note.read_text(encoding="utf-8"))
+            heading = re.match(r"# (.+)\n", body)
+            body = body[heading.end():].lstrip("\n") if heading else body
+            if meta.get("period_start"):
+                start, end = meta["period_start"], meta["period_end"]
+            elif kind == "weekly":
+                start, end = _week_range(note.stem)
+            else:
+                continue
+            title = meta.get("title") or (heading.group(1) if heading else note.stem)
+            if kind != "weekly":  # the note repeats the title as a quote under the heading
+                body = re.sub(r"^(>.*\n)+\n?", "", body)
+            entry = {"period": period, "startDate": start, "endDate": end, "title": title,
+                     "content": _web_content(body), "createdAt": f"{meta.get('created', end)}T09:00:00",
+                     "tags": {k: [] for k in TAG_TYPES}, "origin": "wiki"}
+            if meta.get("token_usage"):
+                entry["tokenUsage"] = json.loads(meta["token_usage"])
+            out.append(entry)
+    return out
+
+
+def merge_summaries(wiki: Path) -> tuple[int, int]:
+    """Rewrite summaries.json with fresh wiki entries; return (wiki entries, dropped retired)."""
+    existing = json.loads(SUMMARIES.read_text(encoding="utf-8")) if SUMMARIES.exists() else []
+    kept = [s for s in existing if s.get("origin") != "wiki" and s.get("period") not in RETIRED_PERIODS]
+    fresh = build_summaries(wiki)
+    dropped = sum(1 for s in existing if s.get("period") in RETIRED_PERIODS)
+    merged = sorted(kept + fresh, key=lambda s: (s.get("endDate") or "", s.get("period")), reverse=True)
+    SUMMARIES.write_text(json.dumps(merged, ensure_ascii=False, indent=2), encoding="utf-8")
+    return len(fresh), dropped
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="把 wiki 日報合併進 src/data/reports.json")
     parser.add_argument("--wiki", default=os.path.expanduser("~/wiki"), help="wiki repo 路徑")
     args = parser.parse_args()
 
     existing = json.loads(DATA.read_text(encoding="utf-8")) if DATA.exists() else []
-    kept = [r for r in existing if r.get("origin") != "wiki"]
+    kept = [_retire_company(r) for r in existing if r.get("origin") != "wiki"]
     taken = {r["date"] for r in kept}
     fresh = [r for r in build_reports(Path(args.wiki)) if r["date"] not in taken]
     tags = _tags_by_date([r["date"] for r in fresh])
@@ -201,6 +294,9 @@ def main() -> None:
     print(f"from_wiki: {len(fresh)} wiki reports merged, {len(kept)} kept, "
           f"{sum(1 for r in fresh if r['newsItems'])} with sources, "
           f"{sum(1 for r in fresh if any(r['tags'].values()))} with tags")
+    n_summaries, n_dropped = merge_summaries(Path(args.wiki))
+    print(f"from_wiki: {n_summaries} wiki periodic reports merged into summaries.json, "
+          f"{n_dropped} retired entries dropped")
 
 
 if __name__ == "__main__":

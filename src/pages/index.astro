@@ -18,9 +18,6 @@ const latestReport = reportsData[0];
 const recentReports = reportsData.slice(1, 11);
 
 const summaries = summariesData as any[];
-const warWeekly = summaries.find((s) => s.period === "weekly");
-const warMonthly = summaries.find((s) => s.period === "monthly");
-const warQuarterly = summaries.find((s) => s.period === "quarterly");
 const industryWeekly = summaries.find((s) => s.period === "raw_weekly");
 const industryMonthly = summaries.find((s) => s.period === "raw_monthly");
 const industryQuarterly = summaries.find((s) => s.period === "raw_quarterly");
@@ -325,46 +322,6 @@ try {
       <!-- Trend Cards -->
       <section class="space-y-6">
         <div class="section-title">Trend Signals</div>
-
-        <!-- KDAN Warroom -->
-        <div class="space-y-2">
-          <div class="text-xs font-semibold uppercase tracking-wider" style="color: var(--color-accent-warm);">KDAN Warroom</div>
-          <div class="grid gap-4 md:grid-cols-3">
-            {warWeekly && (
-              <a href="/trends#warroom" class="card card-accent-warm block p-5 no-underline space-y-2.5">
-                <div class="flex items-center justify-between">
-                  <span class="period-label period-weekly">Weekly</span>
-                  <span class="meta">{warWeekly.startDate?.slice(5)}</span>
-                </div>
-                <p class="text-sm font-medium leading-snug" style="color: var(--color-text);">
-                  {truncate(warWeekly.title, 90)}
-                </p>
-              </a>
-            )}
-            {warMonthly && (
-              <a href="/trends#warroom" class="card card-accent-warm block p-5 no-underline space-y-2.5">
-                <div class="flex items-center justify-between">
-                  <span class="period-label period-monthly">Monthly</span>
-                  <span class="meta">{warMonthly.startDate?.slice(0,7)}</span>
-                </div>
-                <p class="text-sm font-medium leading-snug" style="color: var(--color-text);">
-                  {truncate(warMonthly.title, 90)}
-                </p>
-              </a>
-            )}
-            {warQuarterly && (
-              <a href="/trends#warroom" class="card card-accent-warm block p-5 no-underline space-y-2.5">
-                <div class="flex items-center justify-between">
-                  <span class="period-label period-quarterly">Quarterly</span>
-                  <span class="meta">{warQuarterly.startDate?.slice(0,7)}</span>
-                </div>
-                <p class="text-sm font-medium leading-snug" style="color: var(--color-text);">
-                  {truncate(warQuarterly.title, 90)}
-                </p>
-              </a>
-            )}
-          </div>
-        </div>
 
         <!-- Industry -->
         <div class="space-y-2">

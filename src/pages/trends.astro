@@ -5,12 +5,6 @@ import { marked } from "marked";
 
 import summariesData from "../data/summaries.json";
 
-const warroom = {
-  quarterly: summariesData.filter((s: any) => s.period === "quarterly").sort((a: any, b: any) => b.endDate.localeCompare(a.endDate)),
-  monthly: summariesData.filter((s: any) => s.period === "monthly").sort((a: any, b: any) => b.endDate.localeCompare(a.endDate)),
-  weekly: summariesData.filter((s: any) => s.period === "weekly").sort((a: any, b: any) => b.endDate.localeCompare(a.endDate)),
-};
-
 const industry = {
   quarterly: summariesData.filter((s: any) => s.period === "raw_quarterly").sort((a: any, b: any) => b.endDate.localeCompare(a.endDate)),
   monthly: summariesData.filter((s: any) => s.period === "raw_monthly").sort((a: any, b: any) => b.endDate.localeCompare(a.endDate)),
@@ -26,7 +20,7 @@ const periodMeta: Record<PeriodKey, { label: string; badge: string; accent: stri
 const periods: PeriodKey[] = ["weekly", "monthly", "quarterly"];
 ---
 
-<Layout title="Trends" description="AI industry and KDAN strategic trend summaries">
+<Layout title="Trends" description="Weekly, monthly and quarterly AI industry summaries">
   <Container>
     <div class="space-y-8">
       <div>
@@ -34,13 +28,10 @@ const periods: PeriodKey[] = ["weekly", "monthly", "quarterly"];
         <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Trends & Summaries</h1>
       </div>
 
-      <!-- Top-level tabs: Industry / Warroom -->
+      <!-- Top-level tab: Industry -->
       <div class="flex gap-1" id="trend-tabs" style="border-bottom: 1px solid var(--color-border);">
         <button data-tab="industry" class="tab-pill tab-pill-active">
           <span class="period-label period-industry">Industry</span>
-        </button>
-        <button data-tab="warroom" class="tab-pill">
-          <span class="period-label period-warroom">KDAN Warroom</span>
         </button>
       </div>
 
@@ -81,49 +72,13 @@ const periods: PeriodKey[] = ["weekly", "monthly", "quarterly"];
         ))}
       </div>
 
-      <!-- Warroom -->
-      <div id="tab-warroom" class="tab-content hidden">
-        <!-- Period sub-tabs -->
-        <div class="flex gap-1.5 mb-6" data-period-tabs="warroom">
-          {periods.map((p, i) => (
-            <button data-period={p} class:list={["tab-pill", { "tab-pill-active": i === 0 }]}>
-              <span class={`period-label period-${periodMeta[p].accent}`}>{periodMeta[p].badge}</span>
-              <span>{periodMeta[p].label}</span>
-              <span class="tab-pill-count">{warroom[p].length}</span>
-            </button>
-          ))}
-        </div>
-
-        {periods.map((p, i) => (
-          <div data-period-content={p} class:list={["period-content space-y-3", { hidden: i !== 0 }]} data-track="warroom">
-            {warroom[p].length > 0 ? warroom[p].map((s: any) => (
-              <details class={`card card-accent-${periodMeta[p].accent} group`}>
-                <summary class="flex cursor-pointer items-center gap-4 px-5 py-4">
-                  <span class={`period-label period-${periodMeta[p].accent}`}>{periodMeta[p].badge}</span>
-                  <span class="meta min-w-[10rem]">{s.startDate} ~ {s.endDate}</span>
-                  <span class="flex-1 text-sm font-medium" style="color: var(--color-text);">{s.title}</span>
-                  {s.tokenUsage && <span class="meta hidden sm:inline">In: {s.tokenUsage.input?.toLocaleString()} · Out: {s.tokenUsage.output?.toLocaleString()}</span>}
-                  <svg class="size-4 shrink-0 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 16 16" fill="currentColor" style="color: var(--color-text-muted);">
-                    <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                  </svg>
-                </summary>
-                <div class="px-5 pb-5 pt-2" style="border-top: 1px solid var(--color-border);">
-                  <article set:html={marked.parse(s.content)} />
-                </div>
-              </details>
-            )) : (
-              <p class="text-sm" style="color: var(--color-text-muted);">No {periodMeta[p].label.toLowerCase()} summaries yet.</p>
-            )}
-          </div>
-        ))}
-      </div>
     </div>
   </Container>
 </Layout>
 
 <script>
   function initTrends() {
-    // === Top-level tabs (Industry / Warroom) ===
+    // === Top-level tabs ===
     const topBtns = document.querySelectorAll<HTMLButtonElement>('#trend-tabs .tab-pill');
     topBtns.forEach(btn => {
       if (btn.dataset.bound) return;
@@ -159,7 +114,7 @@ const periods: PeriodKey[] = ["weekly", "monthly", "quarterly"];
 
     // Restore from hash
     const hash = location.hash.replace('#', '');
-    if (hash === 'industry' || hash === 'warroom') {
+    if (hash === 'industry') {
       topBtns.forEach(b => b.classList.toggle('tab-pill-active', b.dataset.tab === hash));
       document.querySelectorAll<HTMLElement>('.tab-content').forEach(c =>
         c.classList.toggle('hidden', c.id !== `tab-${hash}`)
