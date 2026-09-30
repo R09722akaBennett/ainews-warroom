@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import vercel from "@astrojs/vercel";
 
 export default defineConfig({
-  site: "https://ai-warroom.kdan.com",
+  site: "https://ainews-warroom.vercel.app",
 
   integrations: [sitemap()],
 
