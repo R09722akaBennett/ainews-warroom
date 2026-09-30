@@ -18,14 +18,14 @@ console = Console()
 
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3-flash-preview")
 
-COMPANY_SUMMARY_PROMPT = """You are a competitive intelligence analyst for KDAN Mobile.
+COMPANY_SUMMARY_PROMPT = """You track frontier AI labs for an ML engineer.
 Summarize the following news about {company_name} ({domain}) from the past week.
 
 Focus on:
-- Significant product launches or AI features
-- Pricing or business model changes
-- Acquisitions, partnerships, or strategic moves
-- What KDAN should pay attention to
+- Model releases, benchmark results and research
+- Products, APIs and pricing changes
+- Compute, funding, acquisitions and partnerships
+- People moving in or out, and policy or legal events
 
 Write 3-5 bullet points in Traditional Chinese. Be concise and actionable.
 If there's nothing significant, write "本週無重大動態".
@@ -66,6 +66,13 @@ def _parse_json(text: str) -> dict:
             text = text[:-3]
         text = text.strip()
     return json.loads(text)
+
+
+def _describe(config: dict) -> str:
+    region = {"us": "US", "china": "China", "europe": "Europe"}.get(config.get("region"), "other region")
+    openness = {"open": "open weights", "closed": "closed models", "mixed": "open and closed models"}.get(
+        config.get("openness"), "")
+    return ", ".join(x for x in (region, openness) if x)
 
 
 def generate_weekly_report(date: str) -> dict | None:
@@ -111,12 +118,17 @@ def generate_weekly_report(date: str) -> dict | None:
                 "company": company_key,
             })
 
-    # Step 1: Per-company summaries
+    # Step 1: Per-company summaries for tier 1; tier 2 labs are listed as-is
+    # and summarized only inside the combined report.
     company_summaries: dict[str, str] = {}
     for company_key, items in by_company.items():
         config = COMPETITORS.get(company_key, {})
+        if config.get("tier", 1) != 1:
+            company_summaries[company_key] = "\n".join(
+                f"- [ref-{it['_ref_idx']}] [{it['category']}] {it['title']}" for it in items)
+            continue
         name = config.get("name", company_key)
-        domain = config.get("domain", "")
+        domain = _describe(config)
 
         console.print(f"  Summarizing [cyan]{name}[/] ({len(items)} items)...", end=" ")
 
@@ -147,9 +159,10 @@ def generate_weekly_report(date: str) -> dict | None:
     for company_key, summary_text in company_summaries.items():
         config = COMPETITORS.get(company_key, {})
         name = config.get("name", company_key)
-        domain = config.get("domain", "")
+        domain = _describe(config)
         item_count = len(by_company.get(company_key, []))
-        news_parts.append(f"### {name} ({domain}) — {item_count} items\n{summary_text}")
+        tier = config.get("tier", 1)
+        news_parts.append(f"### [Tier {tier}] {name} ({domain}) — {item_count} items\n{summary_text}")
 
     news_text = "\n\n---\n\n".join(news_parts)
 
@@ -164,11 +177,11 @@ def generate_weekly_report(date: str) -> dict | None:
     # Parse the report
     try:
         result = _parse_json(text)
-        title = result.get("title", f"競品週報 ({start} ~ {date})")
+        title = result.get("title", f"實驗室週報 ({start} ~ {date})")
         content = result.get("content", text)
         tags = result.get("tags") or {}
     except (json.JSONDecodeError, KeyError):
-        title = f"競品週報 ({start} ~ {date})"
+        title = f"實驗室週報 ({start} ~ {date})"
         content = text
         tags = {}
 
@@ -177,7 +190,7 @@ def generate_weekly_report(date: str) -> dict | None:
 
     # Save to periodic_summaries
     save_summary(
-        "competitor_weekly", start, date,
+        "labs_weekly", start, date,
         title, content, tags, total_tokens,
     )
 

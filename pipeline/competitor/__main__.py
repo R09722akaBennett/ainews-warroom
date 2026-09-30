@@ -88,7 +88,8 @@ def run_classify(date: str):
     for company_key, items in items_by_company.items():
         config = COMPETITORS.get(company_key, {})
         name = config.get("name", company_key)
-        domain = config.get("domain", "")
+        from competitor.weekly import _describe
+        domain = _describe(config)
 
         console.print(f"  Classifying [cyan]{name}[/] ({len(items)} items)...", end=" ")
         classified, token_usage = classify_batch(name, domain, items)
@@ -116,8 +117,8 @@ def run_classify(date: str):
         # Save token usage for analytics tracking
         from db import save_summary
         save_summary(
-            "competitor_classify", date, date,
-            f"Competitor Classify ({date})",
+            "labs_classify", date, date,
+            f"Labs Classify ({date})",
             f"Classified {sum(len(v) for v in items_by_company.values())} items across {len(items_by_company)} companies",
             tags={"companies": list(items_by_company.keys())},
             token_usage=total_tokens,
