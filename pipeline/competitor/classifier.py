@@ -14,7 +14,7 @@ from prompts.competitor_prompt import COMPETITOR_CLASSIFY_PROMPT
 
 console = Console()
 
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3-flash-preview")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
 BATCH_SIZE = 30  # Max items per LLM call to avoid truncated responses
 MAX_RETRIES = 3
 RETRY_DELAY = 5  # seconds

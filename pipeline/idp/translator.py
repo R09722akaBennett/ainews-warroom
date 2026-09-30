@@ -15,7 +15,7 @@ from prompts.idp_prompt import IDP_WEEKLY_RECAP_PROMPT, IDP_OPINION_PROMPT
 
 console = Console()
 
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3-flash-preview")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
 MAX_RETRIES = 3
 RETRY_DELAY = 5
 MAX_TEXT_CHARS = 30000  # safety cap on raw_text

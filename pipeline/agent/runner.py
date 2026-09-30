@@ -53,7 +53,7 @@ from agent.ref_fixer import fix_refs
 
 console = Console()
 
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3-flash-preview")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
 
 
 def _build_user_prompt(

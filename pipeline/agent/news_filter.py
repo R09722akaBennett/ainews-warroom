@@ -12,7 +12,7 @@ from models import NewsItem
 
 console = Console()
 
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3-flash-preview")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
 
 FILTER_PROMPT = """你是一位 AI 新聞編輯。以下是從 Google News 收集到的新聞標題列表。
 

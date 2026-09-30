@@ -16,7 +16,7 @@ from prompts.competitor_prompt import COMPETITOR_WEEKLY_PROMPT
 
 console = Console()
 
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3-flash-preview")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
 
 COMPANY_SUMMARY_PROMPT = """You track frontier AI labs for an ML engineer.
 Summarize the following news about {company_name} ({domain}) from the past week.

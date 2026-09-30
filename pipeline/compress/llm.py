@@ -7,7 +7,7 @@ import os
 
 import google.genai as genai
 
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3-flash-preview")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
 
 
 def compress_with_llm(prompt: str) -> tuple[str, str, dict | None, dict | None]:
