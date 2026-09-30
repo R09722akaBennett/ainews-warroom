@@ -3,24 +3,31 @@ import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
 import ExternalIcon from "@components/ExternalIcon.astro";
 
-import competitorsData from "../data/competitors.json";
+import labsData from "../data/labs.json";
 import summariesData from "../data/summaries.json";
 import { marked } from "marked";
 
-const items = competitorsData as any[];
+const labsMeta = (labsData as any).labs as { key: string; name: string; tier: number; region: string; openness: string }[];
+const items = ((labsData as any).items || []) as any[];
+const labByKey = new Map(labsMeta.map((l) => [l.key, l]));
 
-// Get competitor weekly summaries
+// Weekly lab reports
 const weeklyReports = (summariesData as any[])
-  .filter((s: any) => s.period === "competitor_weekly")
+  .filter((s: any) => s.period === "labs_weekly")
   .sort((a: any, b: any) => b.endDate.localeCompare(a.endDate));
 
-// Group by company
+// Group by lab; tier 1 first, then by name
 const companies = new Map<string, any[]>();
 for (const item of items) {
-  if (!companies.has(item.company)) companies.set(item.company, []);
-  companies.get(item.company)!.push(item);
+  if (!companies.has(item.lab)) companies.set(item.lab, []);
+  companies.get(item.lab)!.push(item);
 }
-const companyKeys = [...companies.keys()].sort();
+const companyKeys = [...companies.keys()].sort((a, b) =>
+  ((labByKey.get(a)?.tier ?? 9) - (labByKey.get(b)?.tier ?? 9)) || (companyNames(a)).localeCompare(companyNames(b)));
+const regionLabels: Record<string, string> = { us: "US", china: "China", europe: "Europe", other: "Other" };
+const opennessLabels: Record<string, string> = { open: "Open weights", closed: "Closed", mixed: "Mixed" };
+const regions = [...new Set(items.map((i: any) => labByKey.get(i.lab)?.region).filter(Boolean))] as string[];
+const opennessValues = [...new Set(items.map((i: any) => labByKey.get(i.lab)?.openness).filter(Boolean))] as string[];
 
 // Collect all categories
 const categories = [...new Set(items.map((i: any) => i.category))].sort();
@@ -35,36 +42,31 @@ for (const report of weeklyReports) {
   });
 }
 
-// Company display names (from competitor config)
-const companyNames: Record<string, string> = {
-  adobe: "Adobe", docusign: "DocuSign", foxit: "Foxit", smallpdf: "Smallpdf",
-  pandadoc: "PandaDoc", canva: "Canva", notion: "Notion", hubspot: "HubSpot",
-  mailchimp: "Mailchimp", jasper: "Jasper", copyai: "Copy.ai",
-  hootsuite: "Hootsuite", buffer: "Buffer", semrush: "SEMrush",
-};
+function companyNames(key: string): string {
+  return labByKey.get(key)?.name || key;
+}
 
 const categoryColors: Record<string, string> = {
-  product_launch: "var(--color-quarterly)",
-  pricing: "var(--color-accent-warm)",
-  acquisition: "var(--color-accent-purple)",
-  partnership: "var(--color-monthly)",
-  hiring: "var(--color-accent-cool)",
+  model_release: "var(--color-quarterly)",
+  research: "var(--color-accent-cool)",
+  product: "var(--color-monthly)",
+  policy: "#ef4444",
+  talent: "var(--color-accent-purple)",
   funding: "var(--color-accent-orange)",
-  strategy: "var(--color-text-muted)",
-  legal: "#ef4444",
+  infra: "var(--color-accent-warm)",
   other: "var(--color-text-muted)",
 };
 ---
 
-<Layout title="Competitors" description="Competitor intelligence tracker">
+<Layout title="Labs" description="Frontier AI lab tracker">
   <Container>
     <div class="space-y-8">
       <div>
-        <div class="section-title mb-2">Competitive Intelligence</div>
-        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Competitors</h1>
+        <div class="section-title mb-2">Frontier Labs</div>
+        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Labs</h1>
         <p class="mt-1 text-sm" style="color: var(--color-text-muted);">
-          Tracking {Object.keys(companyNames).length} competitors across PDF, eSign, creative, and marketing.
-          {items.length > 0 ? `${items.length} classified items.` : "Data will appear after weekly classification."}
+          Tracking {labsMeta.length} frontier AI labs across the US, China and Europe, open and closed.
+          {items.length > 0 ? `${items.length} classified items.` : "Data will appear after the first daily run."}
         </p>
       </div>
 
@@ -115,10 +117,9 @@ const categoryColors: Record<string, string> = {
       {/* Individual Items */}
       {items.length === 0 ? (
         <div class="card p-12 text-center">
-          <p class="text-lg font-semibold mb-2" style="color: var(--color-text);">No competitor data yet</p>
+          <p class="text-lg font-semibold mb-2" style="color: var(--color-text);">No lab data yet</p>
           <p class="text-sm" style="color: var(--color-text-muted);">
-            The competitor tracker collects news daily and classifies them weekly (every Monday).
-            Check back after the first weekly classification runs.
+            The lab tracker collects and classifies news daily and writes a weekly report every Monday.
           </p>
         </div>
       ) : (
@@ -131,7 +132,7 @@ const categoryColors: Record<string, string> = {
             </button>
             {companyKeys.map(key => (
               <button data-comp={key} class="tab-pill">
-                {companyNames[key] || key}
+                {companyNames(key)}
                 <span class="tab-pill-count">{companies.get(key)!.length}</span>
               </button>
             ))}
@@ -148,6 +149,16 @@ const categoryColors: Record<string, string> = {
             ))}
           </div>
 
+          {/* Region and openness filters */}
+          <div class="flex gap-1.5 flex-wrap" id="region-filters">
+            <button data-region="all" class="cat-pill cat-pill-active">All regions</button>
+            {regions.map(r => <button data-region={r} class="cat-pill">{regionLabels[r] || r}</button>)}
+          </div>
+          <div class="flex gap-1.5 flex-wrap" id="open-filters">
+            <button data-open="all" class="cat-pill cat-pill-active">Open & closed</button>
+            {opennessValues.map(o => <button data-open={o} class="cat-pill">{opennessLabels[o] || o}</button>)}
+          </div>
+
           {/* Items list */}
           <div class="space-y-1" id="comp-items">
             {items.map((item: any) => (
@@ -157,11 +168,13 @@ const categoryColors: Record<string, string> = {
                 rel="noopener"
                 class="comp-row"
                 id={urlToRef.has(item.url) ? urlToRef.get(item.url) : undefined}
-                data-company={item.company}
+                data-company={item.lab}
                 data-category={item.category}
+                data-region={labByKey.get(item.lab)?.region}
+                data-open={labByKey.get(item.lab)?.openness}
               >
                 <span class="comp-date meta">{item.date}</span>
-                <span class="comp-company-badge">{companyNames[item.company] || item.company}</span>
+                <span class="comp-company-badge">{companyNames(item.lab)}</span>
                 <span class="comp-cat-badge" style={`color: ${categoryColors[item.category] || 'var(--color-text-muted)'}; border-color: ${categoryColors[item.category] || 'var(--color-border)'};`}>
                   {item.category.replace(/_/g, " ")}
                 </span>
@@ -297,12 +310,33 @@ const categoryColors: Record<string, string> = {
     const rows = document.querySelectorAll<HTMLElement>(".comp-row");
     let activeComp = "all";
     let activeCat = "all";
+    let activeRegion = "all";
+    let activeOpen = "all";
 
     function filterRows() {
       rows.forEach(row => {
         const matchComp = activeComp === "all" || row.dataset.company === activeComp;
         const matchCat = activeCat === "all" || row.dataset.category === activeCat;
-        row.style.display = (matchComp && matchCat) ? "" : "none";
+        const matchRegion = activeRegion === "all" || row.dataset.region === activeRegion;
+        const matchOpen = activeOpen === "all" || row.dataset.open === activeOpen;
+        row.style.display = (matchComp && matchCat && matchRegion && matchOpen) ? "" : "none";
+      });
+    }
+
+    // Region and openness filters
+    for (const [selector, attr, set] of [
+      ["#region-filters .cat-pill", "region", (v: string) => (activeRegion = v)],
+      ["#open-filters .cat-pill", "open", (v: string) => (activeOpen = v)],
+    ] as const) {
+      const btns = document.querySelectorAll<HTMLButtonElement>(selector);
+      btns.forEach(btn => {
+        if (btn.dataset.bound) return;
+        btn.dataset.bound = "true";
+        btn.addEventListener("click", () => {
+          set(btn.dataset[attr]!);
+          btns.forEach(b => b.classList.toggle("cat-pill-active", b === btn));
+          filterRows();
+        });
       });
     }
 
@@ -347,6 +381,8 @@ const categoryColors: Record<string, string> = {
         const allCatBtn = document.querySelector<HTMLButtonElement>('#cat-filters [data-cat="all"]');
         if (allCompBtn) allCompBtn.click();
         if (allCatBtn) allCatBtn.click();
+        document.querySelector<HTMLButtonElement>('#region-filters [data-region="all"]')?.click();
+        document.querySelector<HTMLButtonElement>('#open-filters [data-open="all"]')?.click();
 
         // Scroll with header offset
         requestAnimationFrame(() => {

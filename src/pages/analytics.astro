@@ -213,6 +213,8 @@ const tokenChartData = {
             <button data-ttype="quarterly" class="tag-filter" title="Warroom Quarterly">Quarterly</button>
             <button data-ttype="competitor_classify" class="tag-filter" title="Competitor Classify">Comp. Classify</button>
             <button data-ttype="competitor_weekly" class="tag-filter" title="Competitor Weekly">Comp. Weekly</button>
+            <button data-ttype="labs_classify" class="tag-filter" title="Labs Classify">Labs Classify</button>
+            <button data-ttype="labs_weekly" class="tag-filter" title="Labs Weekly">Labs Weekly</button>
           </div>
         </div>
 
@@ -508,6 +510,7 @@ const tokenChartData = {
     if (type === "daily") return "D";
     if (type.indexOf("classify") >= 0) return "CC";
     if (type.indexOf("competitor") >= 0) return "CW";
+    if (type.indexOf("labs") >= 0) return "LW";
     return type.replace("raw_", "").charAt(0).toUpperCase();
   }
   function getTypePeriodClass(type) {
@@ -519,7 +522,8 @@ const tokenChartData = {
   }
   function getTypeTitle(type) {
     var m = { daily: "Daily Report", competitor_classify: "Competitor Classify (daily)",
-      competitor_weekly: "Competitor Weekly Report", raw_weekly: "Industry Weekly",
+      competitor_weekly: "Competitor Weekly Report", labs_classify: "Labs Classify (daily)",
+      labs_weekly: "Labs Weekly Report", raw_weekly: "Industry Weekly",
       raw_monthly: "Industry Monthly", raw_quarterly: "Industry Quarterly",
       weekly: "Warroom Weekly", monthly: "Warroom Monthly", quarterly: "Warroom Quarterly" };
     return m[type] || type;
