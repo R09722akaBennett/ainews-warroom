@@ -235,35 +235,6 @@ def export_competitors():
     return len(items)
 
 
-def export_idp():
-    """Export IDP Community items (RSS + LLM translations)."""
-    from db.idp_items import get_all_idp_items
-
-    items = get_all_idp_items()
-
-    out = []
-    for it in items:
-        out.append({
-            "guid": it["guid"],
-            "url": it["url"],
-            "title": it["title"],
-            "kind": it["kind"],
-            "publishedAt": it["published_at"],
-            "vendors": it["vendors"],
-            "categories": it["categories"],
-            "translatedTitle": it.get("translated_title"),
-            "translatedMd": it.get("translated_md"),
-            "tokenUsage": it.get("token_usage"),
-        })
-
-    path = os.path.join(DATA_DIR, "idp.json")
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(out, f, ensure_ascii=False, indent=2)
-
-    console.print(f"  [green]✓[/] idp.json: {len(out)} items")
-    return len(out)
-
-
 def main():
     init_db()
     os.makedirs(DATA_DIR, exist_ok=True)
@@ -274,10 +245,9 @@ def main():
     s = export_summaries()
     lg = export_legacy()
     c = export_competitors()
-    idp = export_idp()
 
     console.print(
-        f"\n[bold green]Done! {r} reports + {s} summaries + {lg} legacy + {c} competitor items + {idp} idp items → src/data/[/]"
+        f"\n[bold green]Done! {r} reports + {s} summaries + {lg} legacy + {c} competitor items → src/data/[/]"
     )
 
 

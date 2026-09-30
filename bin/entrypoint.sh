@@ -50,9 +50,6 @@ if [ "$(date +%u)" = "1" ]; then
   uv run python -m competitor --classify
 fi
 
-echo "[3.5/7] idp..."
-uv run python -m idp || echo "  WARN: idp failed (exit $?), continuing"
-
 echo "[4/7] export DB → JSON..."
 uv run python -m export
 

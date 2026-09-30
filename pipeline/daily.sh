@@ -47,10 +47,6 @@ if [ "$(date +%u)" = "1" ]; then
     uv run python -m competitor --classify
 fi
 
-# Step 3.5: IDP Community RSS + LLM translation
-echo "[3.5/7] Fetching IDP Community RSS..."
-uv run python -m idp || echo "WARNING: IDP fetch failed (exit $?), continuing..."
-
 # Step 3: Export DB → JSON for website
 echo "[4/7] Exporting site data..."
 uv run python -m export
@@ -65,7 +61,7 @@ echo "[6/7] Mattermost notification disabled; skipping."
 # Step 6: Push to git → triggers Vercel deploy
 echo "[7/7] Pushing to git..."
 cd "$REPO_DIR"
-git add src/data/reports.json src/data/sources.json src/data/summaries.json src/data/legacy.json src/data/leaderboard.json src/data/papers.json src/data/competitors.json src/data/mcpmarket.json src/data/idp.json
+git add src/data/reports.json src/data/sources.json src/data/summaries.json src/data/legacy.json src/data/leaderboard.json src/data/papers.json src/data/competitors.json src/data/mcpmarket.json
 if git diff --cached --quiet; then
     echo "No changes to push."
 else
