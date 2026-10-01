@@ -104,6 +104,8 @@ PICK_LINE = re.compile(r"^(T\d+)\. (.+)$")
 REPLY_HINT = re.compile(r"\n*> 回覆「排 T1」[^\n]*")
 
 
+LEADING_H1 = re.compile(r"\A\s*# [^\n]*\n+")
+
 def _web_content(md: str) -> str:
     """Return the note markdown adapted for the website.
 
@@ -113,6 +115,9 @@ def _web_content(md: str) -> str:
     into one paragraph, so each pick becomes a list item with a hard break
     before its reason.
     """
+    # The report page renders the title itself, so a leading "# title" line
+    # would show it twice.
+    md = LEADING_H1.sub("", md, count=1)
     md = REPLY_HINT.sub("", md)
     md = ARXIV_WIKILINK.sub(lambda m: f"[{m.group(1)}](https://arxiv.org/abs/{m.group(1)})", md)
     md = WIKILINK.sub(lambda m: m.group(2) or m.group(1), md)
@@ -150,6 +155,7 @@ def _retire_company(report: dict) -> dict:
         report[key] = (report.get(key) or "").replace("KDAN AI 戰情報告", "AI 戰情報告")
     content = COMPANY_SECTION.sub("", report["content"]).rstrip().removesuffix("---").rstrip()
     content = COMPANY_LEAD.sub("", content)
+    content = LEADING_H1.sub("", content, count=1)  # the page header already shows the title
     report["content"] = "\n".join(_drop_company_sentences(line) for line in content.split("\n")
                                   if not _only_company(line)) + "\n"
     return report
