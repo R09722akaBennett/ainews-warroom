@@ -1,8 +1,8 @@
 """Collect and score wide-source candidates for the day.
 
-Since 2026-10-01 the wiki daily digest (16:30) reads each day's output and
+Since 2026-10-01 the wiki daily digest (18:00) reads each day's output and
 takes the items Jev rates important at 0.75 or more, deduplicated, as extra
-material; this job runs at 16:05 so the file is ready.
+material; this job runs at 17:35 so the file is ready.
 
 Usage:
     cd pipeline
