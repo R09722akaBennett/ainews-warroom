@@ -31,7 +31,9 @@ SCRAPE_RC=$?
 set -e
 
 cd "$REPO"
-if git diff --quiet -- "${FILES[@]}"; then
+# Every exporter rewrites its "updatedAt", so a plain diff never comes back
+# clean; a day whose data did not change must not commit and redeploy.
+if git diff -I '"updatedAt"' --quiet -- "${FILES[@]}"; then
   echo "site-data: no changes"
 elif [ "$PUSH" = 0 ]; then
   echo "[dry-run] Will commit and push:"

@@ -3,16 +3,19 @@
 The analytics page already estimates Gemini from each report's tokenUsage;
 this file adds the rest, per day since SITE_SINCE:
 
-- X API: posts billed per UTC day, from data/x_state.json (labs/x_source.py).
+- X API: posts billed and users looked up per UTC day, from
+  data/x_state.json (labs/x_source.py).
 - Jev: input tokens of the warroom candidates (data/candidates/<date>.json)
   and of the wiki radar (the daily note sidecar's jevUsage).
 - Subscriptions: fixed yearly fees, spread evenly per month.
 
-Prices are as published on 2026-10-01: X $0.005 per post read and $0.01 per
-user lookup; Jev $0.042 per million input tokens, output free
-(docs.typesafe.ai/models). The September X backfill ran before x_state
-counted per day, so it is the one-off entry taken from the X console
-(535 billable events, $2.79) and daily X counts start on 2026-10-02.
+Prices as published: X $0.005 per post read and $0.01 per user lookup; Jev
+$0.042 per million input tokens, output free (docs.typesafe.ai/models). The
+September X backfill ran before x_state counted per day, so it is the
+one-off entry taken from the X console (535 billable events, $2.79). That
+entry covers the backfill only; the regular reads later on its day are
+counted per day like every other day, which is why X_DAILY_FROM is that
+same day.
 
 Usage:
     cd pipeline
@@ -31,7 +34,7 @@ X_STATE = ROOT / "pipeline" / "data" / "x_state.json"
 CANDIDATES = ROOT / "pipeline" / "data" / "candidates"
 WIKI_NEWS = Path.home() / "wiki" / "notes" / "news"
 SITE_SINCE = "2026-09-01"
-X_DAILY_FROM = "2026-10-02"
+X_DAILY_FROM = "2026-10-01"
 PRICES = {"x_post": 0.005, "x_user_lookup": 0.01, "jev_per_mtok_input": 0.042}
 SUBSCRIPTIONS = [{"name": "Latent Space（AINews 付費全文）", "usd_per_year": 69}]
 ONE_OFF = [{"date": "2026-10-01", "item": "X", "label": "9 月官方貼文回補與 23 個帳號查詢",
@@ -49,11 +52,16 @@ def main() -> None:
     days: dict[str, dict] = {}
 
     def day(d: str) -> dict:
-        return days.setdefault(d, {"date": d, "x_posts_billed": 0, "jev_calls": 0, "jev_input_tokens": 0})
+        return days.setdefault(d, {"date": d, "x_posts_billed": 0, "x_user_lookups": 0,
+                                   "jev_calls": 0, "jev_input_tokens": 0})
 
-    for d, n in (_read_json(X_STATE).get("billed") or {}).items():
+    x_state = _read_json(X_STATE)
+    for d, n in (x_state.get("billed") or {}).items():
         if d >= X_DAILY_FROM:
             day(d)["x_posts_billed"] += int(n)
+    for d, n in (x_state.get("lookups") or {}).items():
+        if d >= X_DAILY_FROM:
+            day(d)["x_user_lookups"] += int(n)
     for f in sorted(CANDIDATES.glob("*.json")):
         if f.stem >= SITE_SINCE:
             jev = _read_json(f).get("jev") or {}
@@ -68,7 +76,7 @@ def main() -> None:
     rows = []
     for d in sorted(days):
         r = days[d]
-        r["x_usd"] = round(r["x_posts_billed"] * PRICES["x_post"], 4)
+        r["x_usd"] = round(r["x_posts_billed"] * PRICES["x_post"] + r["x_user_lookups"] * PRICES["x_user_lookup"], 4)
         r["jev_usd"] = round(r["jev_input_tokens"] / 1e6 * PRICES["jev_per_mtok_input"], 4)
         rows.append(r)
     DATA.write_text(json.dumps({

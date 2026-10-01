@@ -11,8 +11,8 @@ newsItems and token usage. Reports this module produces carry
 origin="wiki" and are rebuilt on every run; reports without that marker
 (the old in-repo agent, up to 2026-09-08) are kept for the dates the wiki
 has no note for. Where both exist (2026-08-09 to 09-08) the wiki note wins:
-those notes were rebuilt with the real AINews issues on 2026-10-01 and are
-the digest the owner reads.
+those notes were rebuilt with the real AINews issues and are the digest the
+owner reads.
 
 Notes written before sidecars existed (2026-09-09 .. 2026-09-30) are
 exported from the markdown alone, with newsItems rebuilt from that day's
@@ -31,6 +31,7 @@ import json
 import os
 import re
 import subprocess
+import sys
 from collections import Counter
 from pathlib import Path
 
@@ -44,6 +45,9 @@ TAG_TYPES = {"companies": ("org", "company"), "models": ("model",), "topics": ("
 # Too generic to be useful as a tag; they top every day's counts.
 TAG_STOPWORDS = {"ai", "artificial intelligence", "llm", "llms", "large language models", "ai models"}
 TAGS_PER_KIND = 8
+# Entities below this salience are passing mentions, which would flood the
+# tags. No recorded reason for 0.6; chosen by trial.
+MIN_SALIENCE = 0.6
 
 
 def _frontmatter(text: str) -> tuple[dict, str]:
@@ -62,7 +66,7 @@ def _archive_commit_files(wiki: Path, date: str) -> list[Path]:
     """Return the archive files daily_news.py committed for the note of this date.
 
     Archive files are named by the article's publish date, which is usually
-    the day before the note (the 2026-09-30 note used only 09-29 articles),
+    the day before the note (one note used only the previous day's articles),
     so matching file names to the note date misses them. The run commits its
     archive as "library: news 原文存檔 <date>" just before the note, which
     ties files to notes exactly.
@@ -96,7 +100,7 @@ PICKS_HEADING = "## 📌 今日建議深讀"
 ARXIV_WIKILINK = re.compile(r"\[\[(\d{4}\.\d{4,5})\]\]")
 WIKILINK = re.compile(r"\[\[([^\]|]+)(?:\|([^\]]+))?\]\]")
 PICK_LINE = re.compile(r"^(T\d+)\. (.+)$")
-# Dropped 2026-10-01; notes written before then still carry it.
+# The wiki no longer writes this hint; older notes still carry it.
 REPLY_HINT = re.compile(r"\n*> 回覆「排 T1」[^\n]*")
 
 
@@ -172,7 +176,9 @@ def _tags_by_date(dates: list[str]) -> dict[str, dict]:
 
     Uses the per-document LLM extraction that knowledge-api already stored,
     so no model call happens here. Missing dates (extraction not finished
-    yet) simply get empty tags and are filled on the next run.
+    yet) simply get empty tags and are filled on the next run. Never raises
+    for an unreachable postgres (restarting, docker missing): it warns on
+    stderr and returns {}, so the digests still reach reports.json untagged.
     """
     if not dates:
         return {}
@@ -188,10 +194,18 @@ def _tags_by_date(dates: list[str]) -> dict[str, dict]:
         left join knowledge.entity_merge_map m on m.member_lower = lower(e->>'canonical_name')
         where s.source_key like 'rss:%'
           and (d.created_at at time zone 'Asia/Taipei')::date in ({date_list})
-          and coalesce((e->>'salience')::numeric, 0) >= 0.6) t"""
-    out = subprocess.run(
-        ["docker", "exec", "-i", "postgres", "psql", "-U", "postgres", "-d", "kdan", "-At", "-v", "ON_ERROR_STOP=1"],
-        input=sql, capture_output=True, text=True, check=True).stdout.strip()
+          and coalesce((e->>'salience')::numeric, 0) >= {MIN_SALIENCE}) t"""
+    try:
+        out = subprocess.run(
+            ["docker", "exec", "-i", "postgres", "psql", "-U", "postgres", "-d", "kdan", "-At", "-v", "ON_ERROR_STOP=1"],
+            input=sql, capture_output=True, text=True, check=True).stdout.strip()
+    except subprocess.CalledProcessError as e:
+        print(f"from_wiki: warning: knowledge DB tag query failed (exit {e.returncode}: "
+              f"{(e.stderr or '').strip()[:200]}); reports are exported without tags", file=sys.stderr)
+        return {}
+    except OSError as e:
+        print(f"from_wiki: warning: cannot run docker ({e}); reports are exported without tags", file=sys.stderr)
+        return {}
     counters: dict[str, dict[str, Counter]] = {}
     for row in json.loads(out or "[]"):
         name = (row.get("name") or "").strip()
@@ -241,8 +255,8 @@ def _week_range(name: str) -> tuple[str, str]:
 def build_summaries(wiki: Path) -> list[dict]:
     """Return one summaries.json entry per wiki weekly, monthly or quarterly note.
 
-    Weekly notes written before 2026-10-01 have no period_start in their
-    frontmatter, so their range comes from the ISO week in the file name.
+    Older weekly notes have no period_start in their frontmatter, so their
+    range comes from the ISO week in the file name.
     """
     out = []
     for kind, period in PERIODS.items():
@@ -269,7 +283,12 @@ def build_summaries(wiki: Path) -> list[dict]:
 
 
 def merge_summaries(wiki: Path) -> tuple[int, int]:
-    """Rewrite summaries.json with fresh wiki entries; return (wiki entries, dropped retired)."""
+    """Rewrite summaries.json with fresh wiki entries.
+
+    Returns:
+        The number of wiki entries written and the number of retired
+        company-era entries dropped.
+    """
     existing = json.loads(SUMMARIES.read_text(encoding="utf-8")) if SUMMARIES.exists() else []
     kept = [s for s in existing if s.get("origin") != "wiki" and s.get("period") not in RETIRED_PERIODS]
     fresh = build_summaries(wiki)

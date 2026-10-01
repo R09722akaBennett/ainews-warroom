@@ -8,11 +8,15 @@ the parsed episode kept in the raw payload), and write a structured Chinese
 summary with Gemini. Each episode is cached as data/podcasts/<slug>.json, so
 an episode is fetched and summarised once; --force redoes one slug.
 
-Some posts (the 🔬 science series, checked 2026-10-01) publish show notes
+Some posts (the 🔬 science series) publish show notes
 but no transcript; those are summarised from the notes and exported with an
 empty transcript and no quotes. Quotes the model returns are kept only when
 they occur verbatim in the transcript, so a paraphrase never shows up inside
 quotation marks.
+
+When Gemini's answer cannot be parsed, <slug>.failed in the cache records the
+error and the attempt count; after MAX_SUMMARY_ATTEMPTS the slug is skipped
+so one bad episode does not cost a Gemini call every day. --force retries it.
 
 Usage:
     cd pipeline
@@ -42,17 +46,22 @@ SITE_SINCE = "2026-09-01"
 CACHE = Path(__file__).resolve().parents[1] / "data" / "podcasts"
 API = os.getenv("KNOWLEDGE_API", "http://127.0.0.1:8000")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
-# Substack's API answers 403 to Python's default User-Agent (checked 2026-10-01);
+# Substack's API answers 403 to Python's default User-Agent;
 # a browser UA for the custom domain and curl's for substack.com both work.
 UA_SITE = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36"
 UA_API = "curl/8.5.0"
 TRANSCRIPT_CHARS = 400_000  # a 141-minute episode is about 160k characters
+MAX_SUMMARY_ATTEMPTS = 3
 _client = None
+
+
+class SummaryParseError(ValueError):
+    """Gemini's answer for an episode was not the JSON the prompt asks for."""
 
 
 def _gemini():
     # One client for the run: a client created inline is garbage-collected
-    # while its request is still open ("client has been closed", 2026-10-01).
+    # while its request is still open ("client has been closed").
     global _client
     _client = _client or genai.Client()
     return _client
@@ -82,7 +91,36 @@ def _norm(s: str) -> str:
     return re.sub(r"\W+", " ", s.lower().replace("’", "'")).strip()
 
 
+def _failed_path(slug: str) -> Path:
+    return CACHE / f"{slug}.failed"
+
+
+def _failed_attempts(slug: str) -> int:
+    try:
+        return int(json.loads(_failed_path(slug).read_text(encoding="utf-8")).get("attempts", 0))
+    except (OSError, ValueError):
+        return 0
+
+
+def _record_failure(slug: str, error: Exception) -> int:
+    """Count one more failed summary for slug in its .failed file; return the new count."""
+    attempts = _failed_attempts(slug) + 1
+    _failed_path(slug).write_text(json.dumps({
+        "attempts": attempts, "error": f"{type(error).__name__}: {str(error)[:300]}",
+        "at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")}, ensure_ascii=False), encoding="utf-8")
+    return attempts
+
+
 def summarise(ep: dict) -> tuple[dict, dict | None]:
+    """Write the episode's structured Chinese summary with Gemini.
+
+    Returns:
+        The summary dict, with quotes kept only when they occur verbatim in
+        the transcript, and the token usage (None without usage metadata).
+
+    Raises:
+        SummaryParseError: The answer was empty or not a JSON object.
+    """
     turns = "\n".join(f"{t['speaker']} [{t['t']}]: {t['text']}" for c in ep["transcript"] for t in c["turns"])
     prompt = PODCAST_PROMPT.format(
         title=ep["title"], subtitle=ep.get("subtitle") or "", intro="\n".join(ep["intro"]),
@@ -92,7 +130,12 @@ def summarise(ep: dict) -> tuple[dict, dict | None]:
         transcript=turns[:TRANSCRIPT_CHARS] or "（原文沒有逐字稿，只根據上面的編者介紹整理；quotes 回傳空陣列）")
     resp = _gemini().models.generate_content(
         model=GEMINI_MODEL, contents=prompt, config={"response_mime_type": "application/json"})
-    data = json.loads(resp.text)
+    try:
+        data = json.loads(resp.text)
+    except (TypeError, ValueError) as e:  # TypeError: text is None (blocked answer)
+        raise SummaryParseError(f"unparseable summary: {e}") from e
+    if not isinstance(data, dict):
+        raise SummaryParseError(f"summary is a {type(data).__name__}, not an object")
     body = _norm(turns)
     # Without a transcript the show notes are the editor's words, not the guests'.
     data["quotes"] = [q for q in data.get("quotes", []) if q.get("en") and body and _norm(q["en"]) in body]
@@ -125,6 +168,7 @@ def ingest(ep: dict) -> str:
 
 
 def collect(post: dict) -> dict:
+    """Fetch and parse one post in full; raise ValueError when it has neither transcript nor notes."""
     sid = os.environ["SUBSTACK_SID"]
     full = _get_json(f"https://substack.com/api/v1/posts/by-id/{post['id']}", UA_API, sid)
     full = full.get("post") or full
@@ -148,6 +192,11 @@ def main() -> int:
     CACHE.mkdir(parents=True, exist_ok=True)
     posts = list_episodes()
     todo = [p for p in posts if not (CACHE / f"{p['slug']}.json").exists() or p["slug"] == args.force]
+    given_up = [p for p in todo if p["slug"] != args.force and _failed_attempts(p["slug"]) >= MAX_SUMMARY_ATTEMPTS]
+    todo = [p for p in todo if p not in given_up]
+    for p in given_up:
+        print(f"podcasts: {p['slug']} skipped after {MAX_SUMMARY_ATTEMPTS} unparseable summaries "
+              f"(see {p['slug']}.failed; --force {p['slug']} retries)")
     if not args.live:
         for p in todo:
             print(f"[dry-run] Will collect {p['post_date'][:10]} {p['slug']} — {p['title'][:70]}")
@@ -157,10 +206,17 @@ def main() -> int:
     for p in todo:
         try:
             ep = collect(p)
-            ep["summary"], ep["tokenUsage"] = summarise(ep)
+            try:
+                ep["summary"], ep["tokenUsage"] = summarise(ep)
+            except SummaryParseError as e:
+                attempts = _record_failure(p["slug"], e)
+                failed += 1
+                print(f"podcasts: {p['slug']} failed ({e}); attempt {attempts} of {MAX_SUMMARY_ATTEMPTS}")
+                continue
             ep["knowledge"] = ingest(ep)
             ep["collectedAt"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
             (CACHE / f"{p['slug']}.json").write_text(json.dumps(ep, ensure_ascii=False, indent=1), encoding="utf-8")
+            _failed_path(p["slug"]).unlink(missing_ok=True)
             turns = sum(len(c["turns"]) for c in ep["transcript"])
             print(f"podcasts: {p['slug']} ok ({len(ep['transcript'])} chapters, {turns} turns, "
                   f"{len(ep['summary'].get('quotes', []))} quotes, knowledge {ep['knowledge']})")
