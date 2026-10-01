@@ -1,5 +1,4 @@
-processed-emails/
-.vercel/output/
+.vercel/
 # build output
 dist/
 # generated types
@@ -14,7 +13,6 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-
 # pipeline state (lives on bennett-hub)
 pipeline/warroom.db
 pipeline/warroom.db-shm
@@ -22,6 +20,8 @@ pipeline/warroom.db-wal
 pipeline/logs/
 pipeline/__pycache__/
 pipeline/**/__pycache__/
+pipeline/data/
+pipeline/.venv/
 
 # environment variables
 .env
@@ -32,17 +32,6 @@ pipeline/**/__pycache__/
 
 # jetbrains setting folder
 .idea/
-src/data/legacy-content.json
-.git-backup/
-
-# pipeline legacy/periodic files
-pipeline/legacy_issues.sql
-pipeline/periodic_summaries.json
-pipeline/periodic_summaries.sql
-# candidates (Jev shadow run output, local only)
-pipeline/data/
-pipeline/.venv/
-pipeline/data/
 
 # wrangler local dev state
 .wrangler/
