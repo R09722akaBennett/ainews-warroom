@@ -27,6 +27,7 @@ replaced by their expanded URLs.
 
 from __future__ import annotations
 
+import html
 import json
 import os
 from datetime import datetime, timedelta, timezone
@@ -101,7 +102,8 @@ def _full_text(post: dict) -> str:
     for u in ((long.get("entities") or {}).get("urls") or []) + ((post.get("entities") or {}).get("urls") or []):
         if u.get("url") and u.get("expanded_url"):
             text = text.replace(u["url"], u["expanded_url"])
-    return text.strip()
+    # X returns post text HTML-escaped ("&amp;", "&lt;"), which showed up as-is on the site.
+    return html.unescape(text).strip()
 
 
 def _item(handle: str, post: dict) -> dict:

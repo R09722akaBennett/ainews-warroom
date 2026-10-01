@@ -19,6 +19,7 @@ Usage:
 
 from __future__ import annotations
 
+import html
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -28,6 +29,37 @@ from db.connection import get_conn, init_db
 
 DATA = Path(__file__).resolve().parents[2] / "src" / "data"
 PERIODS = ("labs_daily", "labs_weekly", "labs_classify")
+
+
+def _merge_threads(items: list[dict]) -> list[dict]:
+    """Return items with each thread folded into one post and duplicates and replies dropped.
+
+    The September 2026 backfill stored every part of a thread as its own post
+    (61 groups posted by one lab within the same second), StepFun's Step Code
+    thread twice under different ids, and 23 replies to other accounts. Newer
+    posts arrive merged from labs/x_source.py. Merged parts keep their URLs in
+    "aliases" so brief links to any part still find the post.
+    """
+    items = [i for i in items if not i["content"].lstrip().startswith("@")]
+    groups: dict[tuple, list[dict]] = {}
+    for i in items:
+        groups.setdefault((i["lab"], (i["publishedAt"] or i["url"])[:19]), []).append(i)
+    out, seen = [], set()
+    for group in groups.values():
+        group.sort(key=lambda i: int(i["url"].rsplit("/", 1)[-1]) if i["url"].rsplit("/", 1)[-1].isdigit() else 0)
+        head = dict(group[0])
+        texts = []
+        for part in group:
+            if part["content"] not in texts:
+                texts.append(part["content"])
+        head["content"] = "\n\n".join(texts)
+        head["aliases"] = [p["url"] for p in group[1:]]
+        key = (head["lab"], head["content"])
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(head)
+    return sorted(out, key=lambda i: (i["date"], i["publishedAt"] or ""), reverse=True)
 
 
 def main() -> None:
@@ -45,10 +77,12 @@ def main() -> None:
 
     labs = [{"key": k, "name": v["name"], "tier": v["tier"], "region": v["region"], "openness": v["openness"]}
             for k, v in LABS.items()]
-    items = [{"date": r["date"], "lab": r["company"], "title": r["title"], "url": r["url"], "source": r["source"],
-              "publishedAt": r["published_at"], "category": r["category"], "summary": r["summary"],
-              "content": r["content"] or ""}
-             for r in rows if r["company"] in LABS]
+    # Posts stored before 2026-10-01 keep X's HTML escaping; unescape on the way out.
+    items = _merge_threads([{"date": r["date"], "lab": r["company"], "title": html.unescape(r["title"]),
+                             "url": r["url"], "source": r["source"], "publishedAt": r["published_at"],
+                             "category": r["category"], "summary": r["summary"],
+                             "content": html.unescape(r["content"] or "")}
+                            for r in rows if r["company"] in LABS])
     (DATA / "labs.json").write_text(json.dumps({
         "updatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "labs": labs, "items": items}, ensure_ascii=False, indent=2), encoding="utf-8")
