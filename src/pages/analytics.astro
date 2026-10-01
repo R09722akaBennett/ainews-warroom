@@ -91,9 +91,12 @@ const chartData = {
 };
 
 // === Token Cost Dashboard ===
-// Gemini 3 Flash Preview pricing (per 1M tokens)
-const PRICE_INPUT = 0.05;   // $0.05 / 1M input tokens
-const PRICE_OUTPUT = 3.00;  // $3.00 / 1M output tokens (text + reasoning)
+// gemini-3.8-flash standard paid tier, per 1M tokens. These are launch prices
+// valid through 2026-12-31; from 2027-01-01 Google doubles them to $1.50 input
+// and $7.50 output (ai.google.dev/gemini-api/docs/pricing, checked 2026-10-01).
+// Every entry is costed at today's price, including runs on older models.
+const PRICE_INPUT = 0.75;
+const PRICE_OUTPUT = 3.75;  // output includes reasoning tokens
 
 type TokenEntry = {
   label: string;
@@ -202,7 +205,7 @@ const tokenChartData = {
           <div>
             <h2 class="text-lg font-semibold" style="color: var(--color-text);">Token Usage & Cost</h2>
             <p class="text-xs mt-0.5" style="color: var(--color-text-muted);">
-              Gemini 3 Flash Preview: ${PRICE_INPUT}/1M input · ${PRICE_OUTPUT}/1M output
+              以 gemini-3.8-flash 現價估算：${PRICE_INPUT}/1M input · ${PRICE_OUTPUT}/1M output
             </p>
           </div>
           <div class="flex gap-1.5 flex-wrap" id="token-type-filters">
@@ -496,8 +499,8 @@ const tokenChartData = {
   var tokenChartData = ad.tokenChartData;
   var tokenEntries = ad.tokenEntries || [];
   var sqData = ad.sqData || [];
-  var PRICE_INPUT = ad.PRICE_INPUT || 0.05;
-  var PRICE_OUTPUT = ad.PRICE_OUTPUT || 3;
+  var PRICE_INPUT = ad.PRICE_INPUT || 0.75;
+  var PRICE_OUTPUT = ad.PRICE_OUTPUT || 3.75;
 
   // === Global filter state ===
   var globalDateFrom = "";
