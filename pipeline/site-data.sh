@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# 每日更新網站資料並 push：wiki 日報 → reports.json、實驗室動態 → labs.json，加上 arena.ai 排行、alphaxiv 論文、MCP Market，
+# 每日更新網站資料並 push：wiki 日報 → reports.json、實驗室動態 → labs.json、電子報深讀 → reading.json，加上 arena.ai 排行、alphaxiv 論文、MCP Market，
 # Vercel 會在 main 被 push 時自動部署。由 bennett-hub cron 經 alert-wrap.sh 執行。
 #
 # 用法：site-data.sh [--push]
@@ -10,7 +10,7 @@ REPO="$(cd "$(dirname "$0")/.." && pwd)"
 export PATH="$HOME/.local/bin:$PATH"
 PUSH=0
 [ "${1:-}" = "--push" ] && PUSH=1
-FILES=(src/data/reports.json src/data/labs.json src/data/summaries.json src/data/leaderboard.json src/data/papers.json src/data/mcpmarket.json)
+FILES=(src/data/reports.json src/data/labs.json src/data/summaries.json src/data/leaderboard.json src/data/papers.json src/data/mcpmarket.json src/data/reading.json)
 
 cd "$REPO"
 if [ "$PUSH" = 1 ]; then
@@ -22,6 +22,7 @@ set +e
 uv run --no-sync python -m export.from_wiki
 EXPORT_RC=$?
 uv run --no-sync python -m export.labs || EXPORT_RC=$?
+uv run --no-sync python -m export.reading || EXPORT_RC=$?
 uv run --no-sync python -m leaderboard
 SCRAPE_RC=$?
 set -e

@@ -1,0 +1,114 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+
+import readingData from "../data/reading.json";
+
+type Item = { source: string; title: string; url: string | null; date: string; summary: string; summarised: boolean; headings: string[] };
+const data = readingData as { sources: { key: string; name: string; cadence: string }[]; items: Item[] };
+const sources = data.sources.filter((s) => data.items.some((i) => i.source === s.key));
+const nameOf = new Map(data.sources.map((s) => [s.key, s.name]));
+const items = data.items;
+
+function truncate(text: string, n: number): string {
+  if (!text || text.length <= n) return text || "";
+  return text.slice(0, n).trimEnd() + "…";
+}
+---
+
+<Layout title="Reading" description="Engineering and data science explainers from the newsletters worth keeping">
+  <Container>
+    <div class="space-y-8">
+      <div>
+        <div class="section-title mb-2">Reading</div>
+        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">深讀</h1>
+        <p class="mt-1 text-sm leading-relaxed" style="color: var(--color-text-muted);">
+          不是新聞，是值得慢慢讀的解說與教學：從電子報整理進 knowledge DB，最近 120 天共 {items.length} 篇。
+          每日新聞在 Daily News，週月季趨勢在 Insights。
+        </p>
+      </div>
+
+      <div class="flex flex-wrap gap-1.5" id="reading-tabs">
+        <button data-source="all" class="tab-pill tab-pill-active">
+          <span>All</span><span class="tab-pill-count">{items.length}</span>
+        </button>
+        {sources.map((s) => (
+          <button data-source={s.key} class="tab-pill" title={s.cadence}>
+            <span>{s.name}</span><span class="tab-pill-count">{items.filter((i) => i.source === s.key).length}</span>
+          </button>
+        ))}
+      </div>
+
+      <div class="space-y-3" id="reading-list">
+        {items.map((item) => (
+          <article class="card reading-item p-5 space-y-2" data-source={item.source}>
+            <div class="flex items-center gap-2">
+              <span class="reading-chip">{nameOf.get(item.source)}</span>
+              <span class="meta">{item.date}</span>
+            </div>
+            {item.url ? (
+              <a href={item.url} target="_blank" rel="noopener noreferrer" class="reading-title">{item.title} ↗</a>
+            ) : (
+              <span class="reading-title">{item.title}</span>
+            )}
+            {item.summary && (
+              <p class="text-sm leading-relaxed" style="color: var(--color-text-muted);">{truncate(item.summary, 360)}</p>
+            )}
+            {item.headings.length > 0 && (
+              <div class="flex flex-wrap gap-1.5 pt-1">
+                {item.headings.map((h) => <span class="reading-heading">{truncate(h, 60)}</span>)}
+              </div>
+            )}
+          </article>
+        ))}
+      </div>
+    </div>
+  </Container>
+</Layout>
+
+<style>
+  .reading-chip {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--color-accent-cool);
+    border: 1px solid var(--color-border);
+  }
+  .reading-title {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+  a.reading-title:hover { text-decoration: underline; text-underline-offset: 2px; }
+  .reading-heading {
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--color-text-muted);
+    background-color: var(--color-surface-muted);
+  }
+</style>
+
+<script>
+  function initReading() {
+    const tabs = document.querySelectorAll<HTMLButtonElement>("#reading-tabs [data-source]");
+    tabs.forEach((btn) => {
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = "true";
+      btn.addEventListener("click", () => {
+        const source = btn.dataset.source!;
+        tabs.forEach((b) => b.classList.toggle("tab-pill-active", b === btn));
+        document.querySelectorAll<HTMLElement>(".reading-item").forEach((el) => {
+          el.classList.toggle("hidden", source !== "all" && el.dataset.source !== source);
+        });
+      });
+    });
+  }
+  initReading();
+  document.addEventListener("astro:page-load", initReading);
+</script>
