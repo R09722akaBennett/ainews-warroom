@@ -13,7 +13,7 @@ from rich.console import Console
 from db.connection import get_conn
 from db.summaries import save_summary
 from labs.config import LABS
-from labs.weekly import _call_llm
+from labs.llm import call_llm
 from prompts.labs_prompt import LABS_DAILY_PROMPT
 
 console = Console()
@@ -31,7 +31,14 @@ def _posts(date: str) -> list[dict]:
 
 
 def generate_daily_brief(date: str) -> str | None:
-    """Write and save the brief for date; return its markdown, or None when there were no posts."""
+    """Write and save the brief for date.
+
+    Returns:
+        The brief's markdown, or None when date has no classified X posts.
+
+    Raises:
+        labs.llm.LLMUnavailable: Gemini kept failing; nothing is saved.
+    """
     posts = _posts(date)
     if not posts:
         console.print(f"[yellow]Labs daily: no classified X posts for {date}, skipping[/]")
@@ -41,7 +48,7 @@ def generate_daily_brief(date: str) -> str | None:
     text = "\n\n".join(
         f"[{LABS.get(p['company'], {}).get('name', p['company'])}] {p['category']} | {p['published_at']} | {p['url']}\n"
         f"{p['content'] or p['title']}" for p in posts)
-    content, usage = _call_llm(LABS_DAILY_PROMPT.format(date=date, posts=text))
+    content, usage = call_llm(LABS_DAILY_PROMPT.format(date=date, posts=text))
     content = content.strip()
     if content == NOTHING:
         console.print(f"[dim]Labs daily: {len(posts)} posts, nothing substantive[/]")

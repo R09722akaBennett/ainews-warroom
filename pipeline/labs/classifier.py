@@ -1,26 +1,17 @@
-"""Competitor news classifier — batch LLM classification per company."""
+"""Classify the labs' posts with Gemini, one batch per lab."""
 
 from __future__ import annotations
 
 import json
-import os
-import time
 
-import google.genai as genai
-import httpx
 from rich.console import Console
 
+from labs.llm import LLMUnavailable, call_llm
 from prompts.labs_prompt import COMPETITOR_CLASSIFY_PROMPT
 
 console = Console()
 
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
 BATCH_SIZE = 30  # Max items per LLM call to avoid truncated responses
-MAX_RETRIES = 3
-RETRY_DELAY = 5  # seconds
-
-# Transient errors worth retrying
-_RETRYABLE = (httpx.RemoteProtocolError, httpx.ReadTimeout, ConnectionError)
 
 
 def _parse_json_response(text: str) -> list[dict]:
@@ -32,24 +23,21 @@ def _parse_json_response(text: str) -> list[dict]:
             text = text[:-3]
         text = text.strip()
 
-    # Try normal parse first
     try:
         return json.loads(text)
     except json.JSONDecodeError:
         pass
 
-    # Fallback: parse individual objects from truncated JSON array
-    # Handles cases like "[{...},{...},{..." where the array is cut off
+    # A long batch can be cut off mid-array ("[{...},{...},{..."); keep the
+    # objects that are complete.
     decoder = json.JSONDecoder()
     results = []
-    # Skip leading '['
     pos = text.find("[")
     if pos == -1:
         raise json.JSONDecodeError("No JSON array found", text, 0)
     pos += 1
 
     while pos < len(text):
-        # Skip whitespace and commas
         while pos < len(text) and text[pos] in " ,\n\r\t":
             pos += 1
         if pos >= len(text) or text[pos] == "]":
@@ -59,41 +47,11 @@ def _parse_json_response(text: str) -> list[dict]:
             results.append(obj)
             pos = end_pos
         except json.JSONDecodeError:
-            break  # Can't parse more — return what we have
+            break
 
     if not results:
         raise json.JSONDecodeError("No valid JSON objects found", text, 0)
     return results
-
-
-def _call_llm(prompt: str) -> tuple[str, dict | None]:
-    """Call Gemini with retry logic for transient errors."""
-    client = genai.Client()
-    last_exc = None
-
-    for attempt in range(MAX_RETRIES):
-        try:
-            response = client.models.generate_content(
-                model=GEMINI_MODEL,
-                contents=prompt,
-            )
-            token_usage = None
-            um = getattr(response, "usage_metadata", None)
-            if um:
-                token_usage = {
-                    "input": getattr(um, "prompt_token_count", 0) or 0,
-                    "output": getattr(um, "candidates_token_count", 0) or 0,
-                    "total": getattr(um, "total_token_count", 0) or 0,
-                }
-            return response.text, token_usage
-        except _RETRYABLE as e:
-            last_exc = e
-            if attempt < MAX_RETRIES - 1:
-                delay = RETRY_DELAY * (attempt + 1)
-                console.print(f"    [yellow]Retry {attempt + 1}/{MAX_RETRIES} after {delay}s ({type(e).__name__})[/]")
-                time.sleep(delay)
-
-    raise last_exc  # type: ignore[misc]
 
 
 def _classify_chunk(
@@ -102,7 +60,12 @@ def _classify_chunk(
     items: list[dict],
     index_offset: int,
 ) -> tuple[list[dict], dict | None]:
-    """Classify a single chunk of items."""
+    """Classify one chunk of items; return the model's entries and the token usage.
+
+    Entries carry the global index (index_offset plus the position in the
+    chunk). An unreadable response or a Gemini outage returns no entries, so
+    every item of the chunk stays pending.
+    """
     lines = []
     for i, item in enumerate(items):
         idx = index_offset + i
@@ -120,18 +83,20 @@ def _classify_chunk(
         articles_text=articles_text,
     )
 
-    text, token_usage = _call_llm(prompt)
-
+    try:
+        text, token_usage = call_llm(prompt)
+    except LLMUnavailable as e:
+        console.print(f"    [red]Classification skipped, {len(items)} items stay pending: {e}[/]")
+        return [], None
     try:
         classifications = _parse_json_response(text)
     except (json.JSONDecodeError, ValueError) as e:
-        console.print(f"    [red]Classification parse error: {e}[/]")
-        classifications = [
-            {"index": index_offset + i, "ai_related": True, "category": "other", "summary": item["title"]}
-            for i, item in enumerate(items)
-        ]
-
-    return classifications, token_usage
+        console.print(f"    [red]Classification parse error, {len(items)} items stay pending: {e}[/]")
+        return [], token_usage
+    if not isinstance(classifications, list):
+        console.print(f"    [red]Classification is not a list, {len(items)} items stay pending[/]")
+        return [], token_usage
+    return [c for c in classifications if isinstance(c, dict)], token_usage
 
 
 def classify_batch(
@@ -139,16 +104,19 @@ def classify_batch(
     domain: str,
     items: list[dict],
 ) -> tuple[list[dict], dict | None]:
-    """Classify a batch of items for one company.
+    """Classify one lab's items in chunks of BATCH_SIZE.
 
-    Returns (classified_items, token_usage).
-    Each item gets added fields: ai_related, category, summary.
-    Items are split into chunks of BATCH_SIZE to avoid truncated LLM responses.
+    Returns:
+        The items in input order and the summed token usage (None when no
+        call reported any). An item the model classified gets ai_related,
+        category and summary from the response. An item missing from the
+        response, or in a chunk whose response could not be parsed, comes
+        back unchanged with category "pending", so the caller must not write
+        it and the next run classifies it again.
     """
     if not items:
         return [], None
 
-    # Split into chunks
     all_classifications: list[dict] = []
     total_usage: dict | None = None
 
@@ -160,22 +128,24 @@ def classify_batch(
         classifications, token_usage = _classify_chunk(company_name, domain, chunk, start)
         all_classifications.extend(classifications)
 
-        # Aggregate token usage
         if token_usage:
             if total_usage is None:
                 total_usage = {"input": 0, "output": 0, "total": 0}
             for k in ("input", "output", "total"):
                 total_usage[k] += token_usage[k]
 
-    # Merge classifications into items
+    by_index = {c.get("index"): c for c in all_classifications}
     classified = []
     for i, item in enumerate(items):
-        cls = next((c for c in all_classifications if c.get("index") == i), None)
+        cls = by_index.get(i)
+        if cls is None:
+            classified.append({**item, "category": "pending"})
+            continue
         classified.append({
             **item,
-            "ai_related": cls.get("ai_related", True) if cls else True,
-            "category": cls.get("category", "other") if cls else "other",
-            "summary": cls.get("summary", item["title"]) if cls else item["title"],
+            "ai_related": cls.get("ai_related", True),
+            "category": cls.get("category", "other"),
+            "summary": cls.get("summary", item["title"]),
         })
 
     return classified, total_usage
