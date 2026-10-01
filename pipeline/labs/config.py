@@ -10,8 +10,9 @@ Sources per lab are Google News (press coverage: funding, people, policy) and
 the lab's official X accounts, read by labs/x_source.py. Official blog RSS was
 dropped on 2026-10-01: only 8 of the labs had a feed, and their X accounts link
 every blog post anyway. Founders and leaders post far more often than the labs
-and can be added once the official accounts' daily volume is known. SSI has no
-official account. Microsoft AI was dropped from the list on 2026-10-01.
+and can be added once the official accounts' daily volume is known.
+Microsoft AI, Safe Superintelligence and Reflection AI were
+dropped from the list on 2026-10-01; the last two mostly matched unrelated news.
 """
 
 from __future__ import annotations
@@ -69,11 +70,6 @@ LABS: dict[str, dict] = {
     "ai2": {"x_accounts": ['allen_ai'],
             "name": "Ai2", "tier": 2, "region": "us", "openness": "open",
             "google_queries": _q("Allen Institute for AI", "Ai2 OLMo")},
-    "ssi": {"name": "Safe Superintelligence", "tier": 2, "region": "us", "openness": "closed",
-            "google_queries": _q("Safe Superintelligence", "Ilya Sutskever", extra="AI OR startup")},
-    "reflection": {"x_accounts": ['reflection_ai'],
-                   "name": "Reflection AI", "tier": 2, "region": "us", "openness": "open",
-                   "google_queries": _q("Reflection AI")},
     "minimax": {"x_accounts": ['MiniMax__AI'],
                 "name": "MiniMax", "tier": 2, "region": "china", "openness": "open",
                 "google_queries": _q("MiniMax")},
