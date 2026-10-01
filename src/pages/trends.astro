@@ -3,10 +3,13 @@ import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
 import { renderMarkdown } from "@lib/markdown";
 
+import { SITE_SINCE } from "@consts";
 import allSummaries from "../data/summaries.json";
 
-// Summaries without origin "wiki" came from the retired pipeline.
-const summariesData = (allSummaries as any[]).filter((s) => s.origin === "wiki");
+// Summaries without origin "wiki" came from the retired pipeline. A period is
+// shown when it ends on or after SITE_SINCE, so a week or quarter that spans
+// the cut-over stays and everything that ended before it goes to the archive.
+const summariesData = (allSummaries as any[]).filter((s) => s.origin === "wiki" && s.endDate >= SITE_SINCE);
 
 const industry = {
   quarterly: summariesData.filter((s: any) => s.period === "raw_quarterly").sort((a: any, b: any) => b.endDate.localeCompare(a.endDate)),
