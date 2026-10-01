@@ -2,23 +2,25 @@
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
 
+import { SITE_SINCE } from "@consts";
 import reportsData from "../data/reports.json";
-import sourcesData from "../data/sources.json";
 import summariesData from "../data/summaries.json";
 
-const reports = reportsData as any[];
-const sources = sourcesData as any[];
-const summaries = summariesData as any[];
+const reports = (reportsData as any[]).filter((r) => r.date >= SITE_SINCE);
+const summaries = (summariesData as any[]).filter((s) => (s.startDate || "") >= SITE_SINCE);
 
 // === Source Quality Analytics (per-date for client-side filtering) ===
-// Collected: per date per source
+// Collected: per date per source, from the items each report was written from
 type SQDateEntry = { date: string; source: string; collected: number; referenced: number };
 const sqByDateSource: Record<string, Record<string, { collected: number; referenced: number }>> = {};
-for (const s of sources) {
-  const key = s.date;
-  if (!sqByDateSource[key]) sqByDateSource[key] = {};
-  if (!sqByDateSource[key][s.source]) sqByDateSource[key][s.source] = { collected: 0, referenced: 0 };
-  sqByDateSource[key][s.source].collected += 1;
+for (const r of reports) {
+  for (const item of r.newsItems || []) {
+    const src = item.source || "";
+    if (!src) continue;
+    if (!sqByDateSource[r.date]) sqByDateSource[r.date] = {};
+    if (!sqByDateSource[r.date][src]) sqByDateSource[r.date][src] = { collected: 0, referenced: 0 };
+    sqByDateSource[r.date][src].collected += 1;
+  }
 }
 // Referenced: parse ref-N from each report
 for (const r of reports) {
@@ -29,8 +31,10 @@ for (const r of reports) {
   for (const m of refMatches) {
     citedIndices.add(parseInt(m[1], 10));
   }
+  // Wiki digests number refs from 0; the retired agent numbered them from 1.
+  const offset = r.origin === "wiki" ? 0 : 1;
   for (const idx of citedIndices) {
-    const item = newsItems[idx - 1];
+    const item = newsItems[idx - offset];
     if (item) {
       const src = item.source || "";
       if (src) {
@@ -153,6 +157,23 @@ const totalCost = tokenEntries.reduce((s, e) => s + e.cost, 0);
 const tokenChartDates = [...new Set(tokenEntries.map(e => e.date))].sort();
 const tokenTypes = [...new Set(tokenEntries.map(e => e.type))];
 
+const tokenTypeLabels: Record<string, [string, string]> = {
+  daily: ["Daily Report", "Daily Report"],
+  raw_weekly: ["Weekly", "Industry Weekly"],
+  raw_monthly: ["Monthly", "Industry Monthly"],
+  raw_quarterly: ["Quarterly", "Industry Quarterly"],
+  labs_classify: ["Labs Classify", "Labs Classify"],
+  labs_weekly: ["Labs Weekly", "Labs Weekly"],
+};
+// Only offer filters for types that have entries in the shown range.
+const tokenTypeButtons = Object.keys(tokenTypeLabels)
+  .filter((t) => tokenTypes.includes(t))
+  .concat(tokenTypes.filter((t) => !(t in tokenTypeLabels)))
+  .map((t) => ({ type: t, label: tokenTypeLabels[t]?.[0] || t, title: tokenTypeLabels[t]?.[1] || t }));
+
+const rangeStart = reports.map((r) => r.date).sort()[0] || SITE_SINCE;
+const rangeEnd = reports.map((r) => r.date).sort().at(-1) || SITE_SINCE;
+
 // Per-type per-date totals
 const tokenByTypeDate: Record<string, Record<string, { input: number; output: number }>> = {};
 for (const e of tokenEntries) {
@@ -177,7 +198,7 @@ const tokenChartData = {
         <div class="section-title mb-2">Analytics</div>
         <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Analytics</h1>
         <p class="mt-1 text-sm" style="color: var(--color-text-muted);">
-          LLM token cost, tag trends, and source quality across {reports.length} reports
+          LLM token cost, tag trends, and source quality across {reports.length} reports ({rangeStart} ~ {rangeEnd})
         </p>
       </div>
 
@@ -210,12 +231,9 @@ const tokenChartData = {
           </div>
           <div class="flex gap-1.5 flex-wrap" id="token-type-filters">
             <button data-ttype="all" class="tag-filter tag-filter-active">All</button>
-            <button data-ttype="daily" class="tag-filter" title="Daily Report">Daily Report</button>
-            <button data-ttype="raw_weekly" class="tag-filter" title="Industry Weekly">Weekly</button>
-            <button data-ttype="raw_monthly" class="tag-filter" title="Industry Monthly">Monthly</button>
-            <button data-ttype="raw_quarterly" class="tag-filter" title="Industry Quarterly">Quarterly</button>
-            <button data-ttype="labs_classify" class="tag-filter" title="Labs Classify">Labs Classify</button>
-            <button data-ttype="labs_weekly" class="tag-filter" title="Labs Weekly">Labs Weekly</button>
+            {tokenTypeButtons.map((b) => (
+              <button data-ttype={b.type} class="tag-filter" title={b.title}>{b.label}</button>
+            ))}
           </div>
         </div>
 

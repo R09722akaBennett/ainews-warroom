@@ -2,52 +2,40 @@
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
 
-import sourcesData from "../data/sources.json";
+import { SITE_SINCE } from "@consts";
+import reportsData from "../data/reports.json";
 
-type SourceItem = { date: string; title: string; url: string; source: string; score: number };
-
-// Group by date → source, sort items by score
+type SourceItem = { url: string; title: string; source: string };
 type SourceGroup = { name: string; items: SourceItem[] };
 type DayData = { groups: SourceGroup[]; total: number };
+
+const reports = reportsData.filter((r: any) => r.date >= SITE_SINCE);
+
 const byDate: Record<string, DayData> = {};
-
-for (const item of sourcesData as SourceItem[]) {
-  if (!byDate[item.date]) byDate[item.date] = { groups: [], total: 0 };
-  byDate[item.date].total++;
-}
-
-// Build source groups per date
-const allItems = sourcesData as SourceItem[];
-const dateSourceMap: Record<string, Record<string, SourceItem[]>> = {};
-for (const item of allItems) {
-  if (!dateSourceMap[item.date]) dateSourceMap[item.date] = {};
-  const src = item.source || "Other";
-  if (!dateSourceMap[item.date][src]) dateSourceMap[item.date][src] = [];
-  dateSourceMap[item.date][src].push(item);
-}
-
-for (const date of Object.keys(dateSourceMap)) {
-  const groups: SourceGroup[] = Object.entries(dateSourceMap[date])
-    .map(([name, items]) => ({
-      name,
-      items: items.sort((a, b) => (b.score || 0) - (a.score || 0)),
-    }))
-    .sort((a, b) => b.items.length - a.items.length);
-  byDate[date] = { groups, total: groups.reduce((sum, g) => sum + g.items.length, 0) };
+for (const report of reports as any[]) {
+  const bySource: Record<string, SourceItem[]> = {};
+  for (const item of (report.newsItems || []) as SourceItem[]) {
+    if (!item?.url) continue;
+    (bySource[item.source || "Other"] ||= []).push(item);
+  }
+  const groups = Object.entries(bySource)
+    .map(([name, items]) => ({ name, items }))
+    .sort((a, b) => b.items.length - a.items.length || a.name.localeCompare(b.name));
+  byDate[report.date] = { groups, total: groups.reduce((sum, g) => sum + g.items.length, 0) };
 }
 
 const dates = Object.keys(byDate).sort().reverse();
-const totalItems = allItems.length;
+const totalItems = dates.reduce((sum, d) => sum + byDate[d].total, 0);
 ---
 
-<Layout title="News" description="Daily AI news collected from 80+ sources">
+<Layout title="Sources" description="News items behind each daily report, grouped by source">
   <Container>
     <div class="space-y-8">
       <div>
         <div class="section-title mb-2">Daily Feed</div>
-        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">News</h1>
+        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Sources</h1>
         <p class="mt-1 text-sm leading-relaxed" style="color: var(--color-text-muted);">
-          Daily AI news collected from <a href="/about" style="color: var(--color-accent-cool); font-weight: 600; text-decoration: underline; text-underline-offset: 2px;">80+ sources</a>, categorized by source platform and sorted by importance. Total {totalItems} items across {dates.length} days.
+          每日快報引用的新聞,依日期與<a href="/about" style="color: var(--color-accent-cool); font-weight: 600; text-decoration: underline; text-underline-offset: 2px;">來源</a>分組。{SITE_SINCE} 起共 {totalItems} 則,{dates.length} 天。
         </p>
       </div>
 
@@ -89,9 +77,6 @@ const totalItems = allItems.length;
                               <path d="M4 12L12 4M12 4H6M12 4v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                           </div>
-                          {item.score > 0 && (
-                            <span class="news-score">{item.score}</span>
-                          )}
                         </a>
                       ))}
                     </div>
@@ -221,16 +206,5 @@ const totalItems = allItems.length;
   }
   .news-item:hover .news-external {
     opacity: 1;
-  }
-  .news-score {
-    font-family: var(--font-mono);
-    font-size: 0.625rem;
-    font-weight: 500;
-    color: var(--color-accent-warm);
-    background-color: color-mix(in srgb, var(--color-accent-warm) 8%, transparent);
-    padding: 1px 5px;
-    border-radius: 2px;
-    flex-shrink: 0;
-    white-space: nowrap;
   }
 </style>

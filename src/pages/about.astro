@@ -2,6 +2,7 @@
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
 import labsData from "../data/labs.json";
+import { SITE_SINCE } from "@consts";
 
 // Keep in step with the pipelines on bennett-hub: ~/wiki/tools/daily_news.py
 // (daily digest), knowledge-api hf_daily (papers), pipeline/candidates/config.py
@@ -11,10 +12,10 @@ const labs = (labsData as any).labs || [];
 const sources = [
   {
     category: "每日快報",
-    note: "每天 14:30 整理成快報，推到 WhatsApp，也是本站 Daily News 的內容。",
+    note: "每天 16:30（台北時間）把這四份電子報加上最多 15 則 Jev 篩選過的候選新聞整理成快報。WhatsApp 收到一則摘要與完整報告的連結，完整內容在 Reports，引用的新聞列在 Sources。",
     icon: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z",
     items: [
-      { name: "smol.ai AINews", url: "https://news.smol.ai" },
+      { name: "AINews（Latent Space）", desc: "含付費全文", url: "https://www.latent.space" },
       { name: "TLDR AI", url: "https://tldr.tech/ai" },
       { name: "TechCrunch AI", url: "https://techcrunch.com/category/artificial-intelligence" },
       { name: "Import AI", url: "https://importai.substack.com" },
@@ -31,7 +32,7 @@ const sources = [
   },
   {
     category: "候選新聞",
-    note: "更廣的來源先用 Jev 篩掉重複與舊聞，觀察期間只留紀錄，之後才併進快報。",
+    note: "更廣的來源先用 Jev 篩掉重複與舊聞，每天最多 15 則併進快報。",
     icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4",
     items: [
       { name: "OpenAI Blog" }, { name: "Anthropic News" }, { name: "Anthropic Research" },
@@ -51,7 +52,7 @@ const sources = [
   },
   {
     category: "前沿實驗室",
-    note: "每天 14:40 收集各實驗室新聞並分類，週一產生 Labs 週報。",
+    note: "追蹤各前沿實驗室官方 X 帳號的貼文，每天整理成「今日前沿實驗室」，週一產生 Labs 週報。",
     icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z",
     items: labs.map((lab: any) => ({ name: lab.name, desc: `Tier ${lab.tier} · ${lab.region} · ${lab.openness}` })),
   },
@@ -68,7 +69,7 @@ const sources = [
   },
   {
     category: "排行榜",
-    note: "每天 15:30 跟著網站資料一起更新。",
+    note: "每天跟著網站資料一起更新。",
     icon: "M13 7h8m0 0v8m0-8l-8 8-4-4-6 6",
     items: [
       { name: "arena.ai", url: "https://arena.ai/leaderboard" },
@@ -95,6 +96,7 @@ const totalCategories = sources.length;
           個人的 AI 戰情室，資料由 bennett-hub 上的排程產生：
           <strong style="color: var(--color-text);">{totalCategories} 類、{totalSources} 個來源</strong>。
           wiki、Notion 與資料庫是同一份資料的三個出口，這裡是瀏覽用的網頁版。
+          本站顯示 {SITE_SINCE} 起的資料，更早的每日報告在 <a href="/archive">Archive</a>。
         </p>
       </div>
 

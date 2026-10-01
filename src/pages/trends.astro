@@ -3,7 +3,10 @@ import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
 import { marked } from "marked";
 
-import summariesData from "../data/summaries.json";
+import allSummaries from "../data/summaries.json";
+
+// Summaries without origin "wiki" came from the retired pipeline.
+const summariesData = (allSummaries as any[]).filter((s) => s.origin === "wiki");
 
 const industry = {
   quarterly: summariesData.filter((s: any) => s.period === "raw_quarterly").sort((a: any, b: any) => b.endDate.localeCompare(a.endDate)),

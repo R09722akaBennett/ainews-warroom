@@ -3,7 +3,21 @@ import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
 import { markdownToHtml } from "../../utils/textUtils";
 
+import { SITE_SINCE } from "@consts";
 import legacyData from "../../data/legacy.json";
+import reportsData from "../../data/reports.json";
+
+const oldReports = reportsData
+  .filter((r: any) => r.date < SITE_SINCE)
+  .sort((a: any, b: any) => b.date.localeCompare(a.date));
+
+type ReportGroup = Record<string, any[]>;
+const reportsByMonth = oldReports.reduce((acc: ReportGroup, r: any) => {
+  const month = r.date.slice(0, 7);
+  (acc[month] ||= []).push(r);
+  return acc;
+}, {} as ReportGroup);
+const reportMonths = Object.keys(reportsByMonth).sort().reverse();
 
 type Grouped = Record<string, Record<string, any[]>>;
 
@@ -25,20 +39,56 @@ const monthNames: Record<string, string> = {
 };
 ---
 
-<Layout title="Archive" description="Historical AI news archive">
+<Layout title="Archive" description="Daily reports before 2026-09 and historical AI news digests">
   <Container>
     <div class="space-y-10">
       <div>
         <div class="section-title mb-2">Historical Data</div>
         <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Archive</h1>
         <p class="mt-1 text-sm" style="color: var(--color-text-muted);">
-          {legacyData.length} AI news digests, 2023 ~ 2026
+          {SITE_SINCE} 以前的每日報告 {oldReports.length} 篇,以及 {legacyData.length} 期 AI news digest(2023 ~ 2026)
         </p>
+      </div>
+
+      <section class="space-y-4">
+        <div class="flex items-center gap-3">
+          <h2 class="text-lg font-semibold" style="color: var(--color-text);">Daily Reports</h2>
+          <span class="meta">{oldReports.length} reports before {SITE_SINCE}</span>
+        </div>
+        {reportMonths.map((monthKey) => {
+          const [yy, mm] = monthKey.split("-");
+          const reports = reportsByMonth[monthKey];
+          return (
+            <details class="group">
+              <summary class="flex cursor-pointer items-center gap-3 rounded-md px-4 py-2.5 transition-colors" style="color: var(--color-text);">
+                <svg class="size-3.5 shrink-0 transition-transform duration-200 group-open:rotate-90" viewBox="0 0 16 16" style="color: var(--color-text-muted);">
+                  <path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                <span class="font-medium">{monthNames[mm]} {yy}</span>
+                <span class="meta">{reports.length} reports</span>
+              </summary>
+              <div class="mt-2 space-y-1.5 pl-4">
+                {reports.map((report: any) => (
+                  <a href={`/reports/${report.date}`} class="card flex items-center gap-5 px-5 py-3 no-underline">
+                    <span class="meta min-w-[5.5rem]">{report.date}</span>
+                    <span class="flex-1 text-sm font-medium" style="color: var(--color-text);">{report.title}</span>
+                    <span class="meta hidden sm:inline">{report.rawCount} src</span>
+                  </a>
+                ))}
+              </div>
+            </details>
+          );
+        })}
+      </section>
+
+      <div class="flex items-center gap-3">
+        <h2 class="text-lg font-semibold" style="color: var(--color-text);">AI News Digests</h2>
+        <span class="meta">{legacyData.length} issues · 原文已不保存,僅列摘要</span>
       </div>
 
       {years.map((year) => (
         <section class="space-y-4">
-          <h2 class="text-lg font-semibold" style="color: var(--color-text);">{year}</h2>
+          <h3 class="text-base font-semibold" style="color: var(--color-text);">{year}</h3>
           {Object.keys(grouped[year]).sort().reverse().map((monthKey) => {
             const mm = monthKey.split("-")[1];
             const issues = grouped[year][monthKey];
@@ -53,20 +103,13 @@ const monthNames: Record<string, string> = {
                 </summary>
                 <div class="mt-2 space-y-1.5 pl-4">
                   {issues.map((issue: any) => {
-                    const Tag = issue.hasContent ? "a" : "div";
                     return (
-                      <Tag
-                        href={issue.hasContent ? `/archive/${issue.date}` : undefined}
-                        class={`card block px-5 py-3.5 no-underline ${issue.hasContent ? "cursor-pointer" : ""}`}
-                      >
+                      <div class="card block px-5 py-3.5">
                         <div class="flex items-start gap-4">
                           <span class="meta min-w-[5.5rem] pt-0.5">{issue.date}</span>
                           <div class="flex-1 space-y-1.5">
                             <div class="flex items-center gap-2">
                               <span class="text-sm font-medium" style="color: var(--color-text);">{issue.title}</span>
-                              {issue.hasContent && (
-                                <span class="text-xs" style="color: var(--color-accent-cool);">→</span>
-                              )}
                             </div>
                             {issue.description && (
                               <p class="text-xs leading-relaxed line-clamp-2" style="color: var(--color-text-muted);"
@@ -84,7 +127,7 @@ const monthNames: Record<string, string> = {
                             )}
                           </div>
                         </div>
-                      </Tag>
+                      </div>
                     );
                   })}
                 </div>

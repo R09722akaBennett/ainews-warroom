@@ -2,7 +2,10 @@
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
 
-import reportsData from "../../data/reports.json";
+import { SITE_SINCE } from "@consts";
+import allReports from "../../data/reports.json";
+
+const reportsData = allReports.filter((r: any) => r.date >= SITE_SINCE);
 
 type Grouped = Record<string, Record<string, any[]>>;
 
@@ -30,7 +33,7 @@ const monthNames: Record<string, string> = {
       <div>
         <div class="section-title mb-2">Daily Briefings</div>
         <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">All Reports</h1>
-        <p class="mt-1 text-sm" style="color: var(--color-text-muted);">{reportsData.length} reports</p>
+        <p class="mt-1 text-sm" style="color: var(--color-text-muted);">{reportsData.length} reports since {SITE_SINCE} · older ones in the <a href="/archive">Archive</a></p>
         <div class="mt-4">
           <input
             type="text"

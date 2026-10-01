@@ -1,7 +1,7 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
-import { SITE, HOME } from "@consts";
+import { SITE, HOME, SITE_SINCE } from "@consts";
 
 import reportsData from "../data/reports.json";
 import summariesData from "../data/summaries.json";
@@ -14,10 +14,14 @@ const mcp = mcpData as any;
 const topServers = (mcp.servers || []).slice(0, 3);
 const topSkills = (mcp.skills || []).slice(0, 3);
 
-const latestReport = reportsData[0];
-const recentReports = reportsData.slice(1, 11);
+const reports = reportsData.filter((r: any) => r.date >= SITE_SINCE);
+const latestReport = reports[0];
+const recentReports = reports.slice(1, 11);
 
-const summaries = summariesData as any[];
+// Summaries without origin "wiki" came from the retired pipeline.
+const summaries = (summariesData as any[])
+  .filter((s) => s.origin === "wiki")
+  .sort((a, b) => (b.startDate || "").localeCompare(a.startDate || ""));
 const industryWeekly = summaries.find((s) => s.period === "raw_weekly");
 const industryMonthly = summaries.find((s) => s.period === "raw_monthly");
 const industryQuarterly = summaries.find((s) => s.period === "raw_quarterly");
