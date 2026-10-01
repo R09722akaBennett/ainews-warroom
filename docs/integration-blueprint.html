@@ -181,7 +181,7 @@ flowchart LR
   JEV --> LABS[labs tracker]
   LABS --> WIKI
   LB --> SITE
-  WIKI --> SITE[Astro 網站<br/>Vercel]
+  WIKI --> SITE[Astro 網站<br/>Cloudflare Workers]
   KDB --> NOTION[Notion<br/>Knowledge Base / Reading Queue / Knowledge Map]
   WIKI --> OBS[Obsidian<br/>Mac ~/wiki]
   </pre>
@@ -301,7 +301,7 @@ flowchart LR
     <tr><td>Archive</td><td><span class="tag keep">keep</span></td><td>9/8 前的 reports 與 2023 到 2026-03 的 legacy 原樣保留</td></tr>
     <tr><td>IDP、Competitors 舊頁</td><td><span class="tag cut">cut</span></td><td></td></tr>
   </table></div>
-  <p><b>部署與命名(2026-10-01 決定)</b>:網址先維持 <code>https://ainews-warroom.vercel.app</code>,所有 KDAN 字眼改成 bennettlabs.dev;之後再換成子網域或 <code>bennettlabs.dev/aiwarroom</code> 路徑。若走路徑,Astro 要設 <code>base: "/aiwarroom"</code> 並由 bennettlabs.dev 的反向代理轉發,子網域則只要改 site URL,建議子網域。</p>
+  <p><b>部署與命名(2026-10-01 決定)</b>:網站部署在 Cloudflare Workers 靜態資產,網址 <code>https://aiwarroom.bennettlabs.dev</code>,所有 KDAN 字眼改成 bennettlabs.dev。</p>
   <p>品牌與部署觸點要改的檔案清單已在調查報告裡:<code>consts.ts</code>、<code>Head.astro</code>、<code>Header.astro</code>、<code>Footer.astro</code>、<code>about.astro</code>、<code>astro.config.mjs</code> 的 site URL、KDAN logo;pipeline 側刪 <code>bin/</code>、<code>Dockerfile</code>、<code>notify/</code>、<code>idp/</code>、<code>kdan-context.md</code>,三個 prompt 的公司人設改成個人視角。</p>
 </section>
 
@@ -319,8 +319,8 @@ flowchart LR
     <tr><td class="mono">15:00</td><td>labs-watch 收集、分類</td><td><span class="tag new">new</span></td></tr>
     <tr><td class="mono">15:10</td><td>update-threads</td><td><span class="tag keep">keep</span></td></tr>
     <tr><td class="mono">15:30</td><td>leaderboard、alphaxiv、mcpmarket</td><td><span class="tag new">new</span></td></tr>
-    <tr><td class="mono">16:00</td><td>export-site:組 JSON、commit、push warroom repo,Vercel 自動部署</td><td><span class="tag new">new</span></td></tr>
-    <tr><td class="mono">16:00</td><td>process-queue 策展</td><td><span class="tag keep">keep</span>(與 export-site 錯開到 16:20)</td></tr>
+    <tr><td class="mono">18:00</td><td>site-data.sh --push:組 JSON、commit、push warroom repo,Cloudflare Workers Builds 自動部署;由 daily-news 在快報寫完後呼叫,21:30 再跑一次備援</td><td><span class="tag new">new</span></td></tr>
+    <tr><td class="mono">16:00</td><td>process-queue 策展</td><td><span class="tag keep">keep</span></td></tr>
     <tr><td class="mono">Mon 09:00</td><td>weekly-digest,加 labs 週報;每月 1 日月報、季初季報</td><td><span class="tag change">change</span></td></tr>
     <tr><td class="mono">Mon 09:05</td><td>上週 cron 狀態總結到 WhatsApp DM</td><td><span class="tag keep">keep</span></td></tr>
   </table></div>
@@ -348,9 +348,9 @@ flowchart LR
     <ul>
       <li>clone warroom 到 VPS,用 uv 建環境(uv 已在 <code>~/.local/bin</code>,cron 要補 PATH)。</li>
       <li>接 leaderboard、alphaxiv 兩個爬蟲進 cron,export 只推這兩個 JSON,git push。</li>
-      <li>Vercel 綁個人帳號,改 site URL 與 domain。</li>
+      <li>Cloudflare Workers 綁個人帳號,改 site URL 與 domain。</li>
     </ul>
-    <p class="accept">驗收:Leaderboard 與 Trending 頁的更新時間是當天;Vercel 部署由 VPS 的 push 觸發。</p>
+    <p class="accept">驗收:Leaderboard 與 Trending 頁的更新時間是當天;Cloudflare Workers Builds 部署由 VPS 的 push 觸發。</p>
   </div>
 
   <div class="phase">
@@ -409,7 +409,7 @@ flowchart LR
 
 <section id="decisions">
   <h2>待你決定</h2>
-  <p>已定(2026-10-01):Reddit 拿掉;網址先用 ainews-warroom.vercel.app、KDAN 改 bennettlabs.dev;MCP Market 與 alphaxiv 爬蟲已修好保留;廣來源經 Jev 篩選並套用上面的去重與新鮮度規則。</p>
+  <p>已定(2026-10-01):Reddit 拿掉;網址用 aiwarroom.bennettlabs.dev(Cloudflare Workers)、KDAN 改 bennettlabs.dev;MCP Market 與 alphaxiv 爬蟲已修好保留;廣來源經 Jev 篩選並套用上面的去重與新鮮度規則。</p>
   <ol>
     <li><b>Labs 清單</b>:上面的 Tier 1 與 Tier 2 是否照這樣,還是有要加減的。</li>
     <li><b>Jev 影子週</b>:接受先觀察一週再影響日報,還是要更快。</li>
