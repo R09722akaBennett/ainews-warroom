@@ -1,4 +1,10 @@
-# Same caching as on Vercel: browsers keep a page for an hour, so a daily
-# update can take up to an hour to show for a returning reader.
+# Pages must revalidate on every visit so the daily rebuild shows up on the
+# next load instead of after a cache lifetime.
 /*
-  Cache-Control: public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Files under /_astro/ carry a content hash in their name and never change,
+# so they can be cached for a year. The "!" line drops the rule above first.
+/_astro/*
+  ! Cache-Control
+  Cache-Control: public, max-age=31536000, immutable

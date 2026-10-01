@@ -4,7 +4,7 @@ import Container from "@components/Container.astro";
 
 import reportsData from "../../data/reports.json";
 import ExternalIcon from "@components/ExternalIcon.astro";
-import { marked } from "marked";
+import { renderMarkdown } from "@lib/markdown";
 
 export function getStaticPaths() {
   return reportsData.map((report: any) => ({
@@ -19,39 +19,39 @@ const idx = reportsData.findIndex((r: any) => r.date === report.date);
 const prevReport = idx < reportsData.length - 1 ? reportsData[idx + 1] : null;
 const nextReport = idx > 0 ? reportsData[idx - 1] : null;
 
-// newsItems: prompt-order items with index = ref ID
+// The report prompt numbers news items in this order, so ref-N is newsItems[N].
 const newsItems: { url: string; title: string; source?: string }[] = report.newsItems || [];
-// Set of valid ref IDs for resolving
-const validRefs = new Set<string>();
-newsItems.forEach((_: any, i: number) => validRefs.add(String(i)));
+
+// A ref the model invented past the end of the list has no row to jump to,
+// so it stays plain text instead of becoming a dead link.
+// The model sometimes zero-pads (ref-07) while the rows are id="ref-7".
+function refLink(num: string, label = `ref-${num}`): string {
+  const n = parseInt(num, 10);
+  return n < newsItems.length ? `<a href="#ref-${n}" class="ref-link">${label}</a>` : label;
+}
 
 function normalizeRefToken(token: string): string | null {
-  // "ref-29" → "29", "29" → "29", else null
   const t = token.trim();
   const m = t.match(/^(?:ref-)?(\d+)$/);
   return m ? m[1] : null;
 }
 
 function processRefs(html: string): string {
-  // Add anchors to h3 headings containing ref-N (single or multiple like ref-33, ref-55)
   html = html.replace(
     /<h3>(.+?)\s+((?:ref-\d+(?:,\s*)?)+)<\/h3>/g,
     (_match, title, refStr) => {
       const refLinks = (refStr as string).split(/,\s*/).map((r: string) => {
-        const num = r.replace('ref-', '').trim();
-        return `<a href="#ref-${num}" class="ref-link">${r.trim()}</a>`;
+        return refLink(r.replace('ref-', '').trim(), r.trim());
       }).join(', ');
       return `<h3>${title} ${refLinks}</h3>`;
     }
   );
 
-  // Convert parenthesized refs: (ref-1), (ref-1, ref-4), (29, ref-184), (29)
-  // Matches any combination of bare numbers and ref-N inside parentheses
+  // Parenthesized lists mix forms: (ref-1), (ref-1, ref-4), (29, ref-184), (29).
   html = html.replace(
     /\(((?:ref-)?\d+(?:,\s*(?:ref-)?\d+)*)\)/g,
     (_match, inner) => {
       const tokens = (inner as string).split(/,\s*/);
-      // Only treat as refs if at least one token looks like a ref
       const hasRef = tokens.some((t: string) => /ref-\d+/.test(t) || /^\d{1,3}$/.test(t.trim()));
       if (!hasRef) return _match;
       const links = tokens.map((t: string) => {
@@ -65,48 +65,45 @@ function processRefs(html: string): string {
     }
   );
 
-  // Bare ref-N in text (not already inside a tag)
+  // The lookarounds skip refs already turned into links above.
   html = html.replace(
     /(?<![">\/\-])ref-(\d+)(?![<"\d])/g,
-    (_match, num) => `<a href="#ref-${num}" class="ref-link">ref-${num}</a>`
+    (_match, num) => refLink(num)
   );
 
-  // Markdown-style [ref-N](#ref-N) links
   html = html.replace(
     /<a href="#ref-(\d+)">ref-\d+<\/a>/g,
-    (_match, num) => `<a href="#ref-${num}" class="ref-link">ref-${num}</a>`
+    (_match, num) => refLink(num)
   );
 
   return html;
 }
 
-// Strip "Source: ..." lines (redundant now that refs link to Sources section)
+// "Source: ..." lines repeat what the refs already link to in the Sources list.
 const cleanedContent = (report.content || "").replace(/^\*?Source:\s*\[?[^\]\n]*\]?\(?[^)\n]*\)?\*?\s*$/gm, "");
-const rawHtml = await marked.parse(cleanedContent);
+const rawHtml = renderMarkdown(cleanedContent);
 const htmlContent = processRefs(rawHtml);
 
 ---
 
-<Layout title={report.title} description={`AI War Room report for ${report.date}`}>
+<Layout title={report.title} description={`${report.date} 的 AI War Room 每日快報。`}>
   <Container>
     <div class="mx-auto max-w-3xl space-y-10">
-      <!-- Back link -->
-      <a href="/reports" class="inline-flex items-center gap-1.5 text-sm no-underline transition-colors" style="color: var(--color-text-muted);">
+      <a href="/reports" class="rp-back inline-flex items-center gap-1.5 text-sm no-underline transition-colors" style="color: var(--color-text-muted);">
         <svg viewBox="0 0 16 16" fill="none" class="h-3.5 w-3.5">
           <path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         Reports
       </a>
 
-      <!-- Report header -->
       <div class="space-y-3" style="border-left: 3px solid var(--color-accent-warm); padding-left: 1.25rem;">
         <div class="flex items-center gap-3 flex-wrap">
-          <span class="period-label period-warroom">Report</span>
+          <span class="period-label period-warroom">快報</span>
           <span class="meta">{report.date}</span>
-          <span class="meta">{report.rawCount} sources</span>
+          <span class="meta">{report.rawCount} 則來源</span>
           {report.tokenUsage && (
             <span class="meta">
-              Input Tokens: {report.tokenUsage.input?.toLocaleString()} · Output Tokens: {report.tokenUsage.output?.toLocaleString()} · Total Tokens: {report.tokenUsage.total?.toLocaleString()}
+              輸入 {report.tokenUsage.input?.toLocaleString()} · 輸出 {report.tokenUsage.output?.toLocaleString()} · 合計 {report.tokenUsage.total?.toLocaleString()} tokens
             </span>
           )}
         </div>
@@ -128,18 +125,16 @@ const htmlContent = processRefs(rawHtml);
         )}
       </div>
 
-      <!-- Report content -->
       <article set:html={htmlContent} />
 
-      <!-- Sources Section (collapsed by default) -->
       <section id="sources-section">
         <details id="sources-details" class="group" style="border-top: 1px solid var(--color-border);">
           <summary class="flex cursor-pointer items-center gap-3 py-4 transition-colors">
             <svg class="size-4 shrink-0 transition-transform duration-200 group-open:rotate-90" viewBox="0 0 16 16" style="color: var(--color-text-muted);">
               <path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
-            <span class="text-lg font-semibold" style="color: var(--color-text);">Sources</span>
-            <span class="meta">{newsItems.length} items</span>
+            <span class="text-lg font-semibold" style="color: var(--color-text);">引用來源</span>
+            <span class="meta">{newsItems.length} 則</span>
           </summary>
           <div id="refs-view" class="space-y-0.5 pb-4">
             {newsItems.length > 0 ? newsItems.map((item: any, i: number) => (
@@ -156,21 +151,20 @@ const htmlContent = processRefs(rawHtml);
                 <ExternalIcon />
               </a>
             )) : (
-              <p class="text-sm" style="color: var(--color-text-muted);">No source items available.</p>
+              <p class="text-sm" style="color: var(--color-text-muted);">這份快報沒有附來源清單。</p>
             )}
           </div>
         </details>
       </section>
 
-      <!-- Prev/Next -->
       <nav class="flex items-center justify-between pt-4" style="border-top: 1px solid var(--color-border);">
         {prevReport ? (
-          <a href={`/reports/${prevReport.date}`} class="meta no-underline hover:underline">
+          <a href={`/reports/${prevReport.date}`} class="meta rp-nav no-underline hover:underline" rel="prev" aria-label={`前一天的快報 ${prevReport.date}`}>
             &larr; {prevReport.date}
           </a>
         ) : <span />}
         {nextReport ? (
-          <a href={`/reports/${nextReport.date}`} class="meta no-underline hover:underline">
+          <a href={`/reports/${nextReport.date}`} class="meta rp-nav no-underline hover:underline" rel="next" aria-label={`後一天的快報 ${nextReport.date}`}>
             {nextReport.date} &rarr;
           </a>
         ) : <span />}
@@ -180,23 +174,24 @@ const htmlContent = processRefs(rawHtml);
 </Layout>
 
 <style>
-  /* === Ref links in report body === */
-  .ref-link {
-    color: var(--color-accent-warm);
+  /* The report body comes from set:html, which scoped styles cannot reach. */
+  :global(.ref-link) {
+    color: var(--color-accent-warm-text);
     text-decoration: none;
     font-size: 0.8em;
     font-weight: 500;
     cursor: pointer;
   }
-  .ref-link:hover {
+  :global(.ref-link:hover) {
     text-decoration: underline;
   }
 
-  /* === Source rows === */
+  .rp-back, .rp-nav { min-height: 40px; display: inline-flex; align-items: center; }
   .ref-row {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    min-height: 40px;
     padding: 0.5rem 0.75rem;
     font-size: 0.8125rem;
     text-decoration: none;
@@ -215,7 +210,7 @@ const htmlContent = processRefs(rawHtml);
     font-family: var(--font-mono, "Geist Mono", monospace);
     font-size: 0.6875rem;
     font-weight: 600;
-    color: var(--color-accent-warm);
+    color: var(--color-accent-warm-text);
     min-width: 3rem;
     flex-shrink: 0;
   }
@@ -226,7 +221,7 @@ const htmlContent = processRefs(rawHtml);
     font-family: var(--font-mono, "Geist Mono", monospace);
     font-size: 0.625rem;
     font-weight: 500;
-    color: var(--color-accent-cool);
+    color: var(--color-accent-cool-text);
     background-color: color-mix(in srgb, var(--color-accent-cool) 8%, transparent);
     border: 1px solid color-mix(in srgb, var(--color-accent-cool) 20%, transparent);
     flex-shrink: 0;
@@ -235,27 +230,26 @@ const htmlContent = processRefs(rawHtml);
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-
-  .hidden { display: none; }
 </style>
 
 <script>
   function initReportPage() {
     const details = document.getElementById("sources-details") as HTMLDetailsElement | null;
 
-    // === Ref click: open sources, scroll to item, highlight ===
-    document.querySelectorAll('a.ref-link[href^="#ref-"]').forEach(link => {
+    document.querySelectorAll<HTMLAnchorElement>('a.ref-link[href^="#ref-"]').forEach(link => {
+      if (link.dataset.bound) return;
+      link.dataset.bound = "true";
       link.addEventListener("click", (e) => {
         e.preventDefault();
-        const href = (link as HTMLAnchorElement).getAttribute("href")!;
+        const href = link.getAttribute("href")!;
         const targetId = href.slice(1);
 
-        // Open the collapsed sources section
+        // The target row is inside the collapsed Sources section.
         if (details && !details.open) {
           details.open = true;
         }
 
-        // Wait a frame for the DOM to update after opening
+        // The row has no layout position until the opened details renders.
         requestAnimationFrame(() => {
           const target = document.getElementById(targetId);
           if (!target) return;
@@ -271,6 +265,6 @@ const htmlContent = processRefs(rawHtml);
     });
   }
 
-  initReportPage();
+  // astro:page-load also fires on the first load.
   document.addEventListener("astro:page-load", initReportPage);
 </script>

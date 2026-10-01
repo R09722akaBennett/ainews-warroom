@@ -1,7 +1,7 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
-import { marked } from "marked";
+import { renderMarkdown } from "@lib/markdown";
 
 import allSummaries from "../data/summaries.json";
 
@@ -16,35 +16,26 @@ const industry = {
 
 type PeriodKey = "weekly" | "monthly" | "quarterly";
 const periodMeta: Record<PeriodKey, { label: string; badge: string; accent: string }> = {
-  weekly: { label: "Weekly", badge: "W", accent: "weekly" },
-  monthly: { label: "Monthly", badge: "M", accent: "monthly" },
-  quarterly: { label: "Quarterly", badge: "Q", accent: "quarterly" },
+  weekly: { label: "週報", badge: "週", accent: "weekly" },
+  monthly: { label: "月報", badge: "月", accent: "monthly" },
+  quarterly: { label: "季報", badge: "季", accent: "quarterly" },
 };
 const periods: PeriodKey[] = ["weekly", "monthly", "quarterly"];
+const total = periods.reduce((t, p) => t + industry[p].length, 0);
 ---
 
-<Layout title="Trends" description="Weekly, monthly and quarterly AI industry summaries">
+<Layout title="Insights" description="每週、每月與每季的 AI 產業趨勢整理。">
   <Container>
     <div class="space-y-8">
       <div>
-        <div class="section-title mb-2">Analysis</div>
-        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Trends & Summaries</h1>
+        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Insights</h1>
+        <p class="mt-1 text-sm" style="color: var(--color-text-muted);">每週、每月與每季的 AI 產業趨勢整理，共 {total} 份。</p>
       </div>
 
-      <!-- Top-level tab: Industry -->
-      <div class="flex gap-1" id="trend-tabs" style="border-bottom: 1px solid var(--color-border);">
-        <button data-tab="industry" class="tab-pill tab-pill-active">
-          <span class="period-label period-industry">Industry</span>
-        </button>
-      </div>
-
-      <!-- Industry -->
-      <div id="tab-industry" class="tab-content">
-        <!-- Period sub-tabs -->
-        <div class="flex gap-1.5 mb-6" data-period-tabs="industry">
+      <div>
+        <div class="flex flex-wrap gap-1.5 mb-6" data-period-tabs="industry">
           {periods.map((p, i) => (
-            <button data-period={p} class:list={["tab-pill", { "tab-pill-active": i === 0 }]}>
-              <span class={`period-label period-${periodMeta[p].accent}`}>{periodMeta[p].badge}</span>
+            <button type="button" data-period={p} class:list={["tab-pill", { "tab-pill-active": i === 0 }]}>
               <span>{periodMeta[p].label}</span>
               <span class="tab-pill-count">{industry[p].length}</span>
             </button>
@@ -55,21 +46,21 @@ const periods: PeriodKey[] = ["weekly", "monthly", "quarterly"];
           <div data-period-content={p} class:list={["period-content space-y-3", { hidden: i !== 0 }]} data-track="industry">
             {industry[p].length > 0 ? industry[p].map((s: any) => (
               <details class={`card card-accent-${periodMeta[p].accent} group`}>
-                <summary class="flex cursor-pointer items-center gap-4 px-5 py-4">
+                <summary class="flex cursor-pointer flex-wrap items-center gap-x-4 gap-y-1 px-5 py-4">
                   <span class={`period-label period-${periodMeta[p].accent}`}>{periodMeta[p].badge}</span>
-                  <span class="meta min-w-[10rem]">{s.startDate} ~ {s.endDate}</span>
-                  <span class="flex-1 text-sm font-medium" style="color: var(--color-text);">{s.title}</span>
-                  {s.tokenUsage && <span class="meta hidden sm:inline">In: {s.tokenUsage.input?.toLocaleString()} · Out: {s.tokenUsage.output?.toLocaleString()}</span>}
+                  <span class="meta">{s.startDate} ~ {s.endDate}</span>
+                  <span class="min-w-0 flex-1 basis-60 text-sm font-medium" style="color: var(--color-text);">{s.title}</span>
+                  {s.tokenUsage && <span class="meta hidden sm:inline">輸入 {s.tokenUsage.input?.toLocaleString()} · 輸出 {s.tokenUsage.output?.toLocaleString()} tokens</span>}
                   <svg class="size-4 shrink-0 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 16 16" fill="currentColor" style="color: var(--color-text-muted);">
                     <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                   </svg>
                 </summary>
                 <div class="px-5 pb-5 pt-2" style="border-top: 1px solid var(--color-border);">
-                  <article set:html={marked.parse(s.content)} />
+                  <article set:html={renderMarkdown(s.content)} />
                 </div>
               </details>
             )) : (
-              <p class="text-sm" style="color: var(--color-text-muted);">No {periodMeta[p].label.toLowerCase()} summaries yet.</p>
+              <p class="text-sm" style="color: var(--color-text-muted);">還沒有{periodMeta[p].label}，第一份產生後會出現在這裡。</p>
             )}
           </div>
         ))}
@@ -81,22 +72,6 @@ const periods: PeriodKey[] = ["weekly", "monthly", "quarterly"];
 
 <script>
   function initTrends() {
-    // === Top-level tabs ===
-    const topBtns = document.querySelectorAll<HTMLButtonElement>('#trend-tabs .tab-pill');
-    topBtns.forEach(btn => {
-      if (btn.dataset.bound) return;
-      btn.dataset.bound = "true";
-      btn.addEventListener('click', () => {
-        const tab = btn.dataset.tab!;
-        topBtns.forEach(b => b.classList.toggle('tab-pill-active', b.dataset.tab === tab));
-        document.querySelectorAll<HTMLElement>('.tab-content').forEach(c =>
-          c.classList.toggle('hidden', c.id !== `tab-${tab}`)
-        );
-        history.replaceState(null, '', `#${tab}`);
-      });
-    });
-
-    // === Period sub-tabs (W / M / Q) per track ===
     document.querySelectorAll<HTMLElement>('[data-period-tabs]').forEach(container => {
       if (container.dataset.bound) return;
       container.dataset.bound = "true";
@@ -107,24 +82,14 @@ const periods: PeriodKey[] = ["weekly", "monthly", "quarterly"];
         btn.addEventListener('click', () => {
           const period = btn.dataset.period!;
           btns.forEach(b => b.classList.toggle('tab-pill-active', b.dataset.period === period));
-          // Show/hide period content within same track
           document.querySelectorAll<HTMLElement>(`.period-content[data-track="${track}"]`).forEach(c =>
             c.classList.toggle('hidden', c.dataset.periodContent !== period)
           );
         });
       });
     });
-
-    // Restore from hash
-    const hash = location.hash.replace('#', '');
-    if (hash === 'industry') {
-      topBtns.forEach(b => b.classList.toggle('tab-pill-active', b.dataset.tab === hash));
-      document.querySelectorAll<HTMLElement>('.tab-content').forEach(c =>
-        c.classList.toggle('hidden', c.id !== `tab-${hash}`)
-      );
-    }
   }
 
-  initTrends();
+  // astro:page-load also fires on the first load.
   document.addEventListener('astro:page-load', initTrends);
 </script>

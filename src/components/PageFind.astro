@@ -6,7 +6,10 @@ import Search from "astro-pagefind/components/Search";
   <div
     transition:persist
     id="backdrop"
-    class="bg-[rgba(0, 0, 0, 0.5] invisible fixed left-0 top-0 z-50 flex h-screen w-full justify-center p-6 backdrop-blur-xs"
+    role="dialog"
+    aria-modal="true"
+    aria-label="搜尋"
+    class="invisible fixed left-0 top-0 z-50 flex h-screen w-full justify-center bg-black/50 p-6 backdrop-blur-xs"
   >
     <div
       id="pagefind-container"
@@ -22,75 +25,96 @@ import Search from "astro-pagefind/components/Search";
         }}
       />
       <div class="mr-2 pb-1 pt-4 text-right text-xs dark:prose-invert">
-        Press <span class="prose text-xs dark:prose-invert"
-          ><kbd class="">Esc</kbd></span
-        > or click anywhere to close
+        按 <span class="prose text-xs dark:prose-invert"><kbd>Esc</kbd></span> 或點擊外側即可關閉。
       </div>
     </div>
   </div>
 </aside>
 
-<script is:inline>
-  const magnifyingGlass = document.getElementById("magnifying-glass");
+{/* A bundled module runs once per visit; the overlay and the header buttons
+    are both transition:persist, so the listeners bound here outlive page
+    swaps without being added again. */}
+<script>
   const backdrop = document.getElementById("backdrop");
 
+  function isOpen(): boolean {
+    return !!backdrop && backdrop.classList.contains("visible");
+  }
+
   function openPagefind() {
-    const searchDiv = document.getElementById("search");
-    const search = searchDiv.querySelector("input");
+    if (!backdrop) return;
+    backdrop.classList.remove("invisible");
+    backdrop.classList.add("visible");
+    // The input only takes focus once the overlay is visible.
     setTimeout(() => {
-      search.focus();
+      document.querySelector<HTMLInputElement>("#search input")?.focus();
     }, 0);
-    backdrop?.classList.remove("invisible");
-    backdrop?.classList.add("visible");
   }
 
   function closePagefind() {
-    const search = document.getElementById("search");
-    search.value = "";
-    backdrop?.classList.remove("visible");
-    backdrop?.classList.add("invisible");
+    if (!backdrop) return;
+    const input = document.querySelector<HTMLInputElement>("#search input");
+    if (input) {
+      input.value = "";
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+    backdrop.classList.remove("visible");
+    backdrop.classList.add("invisible");
   }
 
-  // open pagefind
-  magnifyingGlass?.addEventListener("click", () => {
-    openPagefind();
-  });
+  function isTypingTarget(target: EventTarget | null): boolean {
+    if (!(target instanceof HTMLElement)) return false;
+    return target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName);
+  }
 
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "/") {
-      e.preventDefault();
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    if (target.closest("[data-open-search]")) {
       openPagefind();
-    } else if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-      e.preventDefault();
-      openPagefind();
+    } else if (target.closest(".pagefind-ui__result-link")) {
+      closePagefind();
     }
   });
 
-  // close pagefind
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
-      closePagefind();
+      if (isOpen()) closePagefind();
+      return;
     }
-  });
-
-  // close pagefind when searched result(link) clicked
-  document.addEventListener("click", (event) => {
-    if (event.target.classList.contains("pagefind-ui__result-link")) {
-      closePagefind();
+    if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+      e.preventDefault();
+      openPagefind();
+      return;
+    }
+    if (e.key === "/" && !e.metaKey && !e.ctrlKey && !e.altKey && !isTypingTarget(e.target)) {
+      e.preventDefault();
+      openPagefind();
     }
   });
 
   backdrop?.addEventListener("click", (event) => {
-    if (!event.target.closest("#pagefind-container")) {
+    if (!(event.target as Element).closest("#pagefind-container")) {
       closePagefind();
     }
   });
 
-  // prevent form submission
-  const form = document.getElementById("form");
-  form?.addEventListener("submit", (event) => {
-    event.preventDefault();
-  });
+  document.addEventListener("astro:before-swap", closePagefind);
+
+  // Pagefind indexes dist/<page>/index.html and so links to "/page/", which
+  // Cloudflare (html_handling: drop-trailing-slash) answers with a redirect.
+  // uiOptions is serialized to a data attribute, so a processResult callback
+  // cannot be passed; rewrite the rendered links instead.
+  const searchRoot = document.getElementById("search");
+  if (searchRoot) {
+    new MutationObserver(() => {
+      searchRoot.querySelectorAll<HTMLAnchorElement>("a[href^=\"/\"]").forEach((a) => {
+        const href = a.getAttribute("href") || "";
+        const fixed = href.replace(/^(\/[^?#]*?)\/+(?=$|[?#])/, "$1");
+        if (fixed !== href) a.setAttribute("href", fixed);
+      });
+    }).observe(searchRoot, { childList: true, subtree: true });
+  }
 </script>
 
 <style is:global>

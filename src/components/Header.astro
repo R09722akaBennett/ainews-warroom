@@ -5,7 +5,7 @@ import { SITE } from "@consts";
 const pathname = Astro.url.pathname.replace(/\/$/, "") || "/";
 function isActive(href: string): boolean {
   const h = href.replace(/\/$/, "") || "/";
-  return pathname === h || (h !== "/" && pathname.startsWith(h));
+  return pathname === h || (h !== "/" && pathname.startsWith(h + "/"));
 }
 ---
 
@@ -19,38 +19,39 @@ function isActive(href: string): boolean {
         </span>
       </a>
 
-      <!-- Desktop nav -->
       <nav class="hidden xl:flex items-center gap-1">
-        <a href="/sources" class:list={["nav-link", { "nav-active": isActive("/sources") }]}>Sources</a>
+        <a href="/sources" class:list={["nav-link", { "nav-active": isActive("/sources") }]} aria-current={isActive("/sources") ? "page" : undefined}>Sources</a>
         <span class="nav-sep">/</span>
-        <a href="/reports" class:list={["nav-link", { "nav-active": isActive("/reports") }]}>Reports</a>
+        <a href="/reports" class:list={["nav-link", { "nav-active": isActive("/reports") }]} aria-current={isActive("/reports") ? "page" : undefined}>Reports</a>
         <span class="nav-sep">/</span>
-        <a href="/trends" class:list={["nav-link", { "nav-active": isActive("/trends") }]}>Insights</a>
+        <a href="/trends" class:list={["nav-link", { "nav-active": isActive("/trends") }]} aria-current={isActive("/trends") ? "page" : undefined}>Insights</a>
         <span class="nav-sep">/</span>
-        <a href="/reading" class:list={["nav-link", { "nav-active": isActive("/reading") }]}>Reading</a>
+        <a href="/reading" class:list={["nav-link", { "nav-active": isActive("/reading") }]} aria-current={isActive("/reading") ? "page" : undefined}>Reading</a>
         <span class="nav-sep">/</span>
-        <a href="/podcasts" class:list={["nav-link", { "nav-active": isActive("/podcasts") }]}>Podcasts</a>
+        <a href="/podcasts" class:list={["nav-link", { "nav-active": isActive("/podcasts") }]} aria-current={isActive("/podcasts") ? "page" : undefined}>Podcasts</a>
         <span class="nav-sep">/</span>
-        <a href="/leaderboard" class:list={["nav-link", { "nav-active": isActive("/leaderboard") }]}>Leaderboard</a>
+        <a href="/leaderboard" class:list={["nav-link", { "nav-active": isActive("/leaderboard") }]} aria-current={isActive("/leaderboard") ? "page" : undefined}>Leaderboard</a>
         <span class="nav-sep">/</span>
-        <a href="/trending" class:list={["nav-link", { "nav-active": isActive("/trending") }]}>Trending</a>
+        <a href="/trending" class:list={["nav-link", { "nav-active": isActive("/trending") }]} aria-current={isActive("/trending") ? "page" : undefined}>Trending</a>
         <span class="nav-sep">/</span>
-        <a href="/labs" class:list={["nav-link", { "nav-active": isActive("/labs") }]}>Labs</a>
+        <a href="/labs" class:list={["nav-link", { "nav-active": isActive("/labs") }]} aria-current={isActive("/labs") ? "page" : undefined}>Labs</a>
         <span class="nav-sep">/</span>
-        <a href="/analytics" class:list={["nav-link", { "nav-active": isActive("/analytics") }]}>Analytics</a>
+        <a href="/analytics" class:list={["nav-link", { "nav-active": isActive("/analytics") }]} aria-current={isActive("/analytics") ? "page" : undefined}>Analytics</a>
         <span class="nav-sep">/</span>
-        <a href="/archive" class:list={["nav-link", { "nav-active": isActive("/archive") }]}>Archive</a>
+        <a href="/archive" class:list={["nav-link", { "nav-active": isActive("/archive") }]} aria-current={isActive("/archive") ? "page" : undefined}>Archive</a>
         <span class="nav-sep">/</span>
-        <a href="/about" class:list={["nav-link", { "nav-active": isActive("/about") }]}>About</a>
+        <a href="/about" class:list={["nav-link", { "nav-active": isActive("/about") }]} aria-current={isActive("/about") ? "page" : undefined}>About</a>
 
-        <!-- Hidden theme buttons (used by Head.astro script) -->
-        <button id="light-theme-button" class="hidden"></button>
-        <button id="dark-theme-button" class="hidden"></button>
-        <button id="system-theme-button" class="hidden"></button>
+        {/* Head.astro's inline script owns the theme logic and listens on these. */}
+        <button id="light-theme-button" class="hidden" tabindex="-1" aria-hidden="true"></button>
+        <button id="dark-theme-button" class="hidden" tabindex="-1" aria-hidden="true"></button>
 
-        <!-- Theme toggle: light ↔ dark -->
-        <button id="theme-toggle" aria-label="Toggle theme" class="theme-btn">
-          <!-- Sun (shown in dark mode → click to go light) -->
+        <button type="button" data-open-search aria-label="搜尋" class="theme-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/>
+          </svg>
+        </button>
+        <button id="theme-toggle" aria-label="切換深淺色" class="theme-btn">
           <svg id="icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
             <circle cx="12" cy="12" r="5"/>
             <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
@@ -58,16 +59,19 @@ function isActive(href: string): boolean {
             <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
             <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
           </svg>
-          <!-- Moon (shown in light mode → click to go dark) -->
           <svg id="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
           </svg>
         </button>
       </nav>
 
-      <!-- Mobile: theme toggle + hamburger -->
       <div class="flex items-center gap-1 xl:hidden">
-        <button id="theme-toggle-m" aria-label="Toggle theme" class="theme-btn">
+        <button type="button" data-open-search aria-label="搜尋" class="theme-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/>
+          </svg>
+        </button>
+        <button id="theme-toggle-m" aria-label="切換深淺色" class="theme-btn">
           <svg id="icon-sun-m" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
             <circle cx="12" cy="12" r="5"/>
             <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
@@ -82,7 +86,7 @@ function isActive(href: string): boolean {
         <button
           id="menu-toggle"
           type="button"
-          aria-label="Toggle menu"
+          aria-label="開關選單"
           aria-controls="mobile-menu"
           aria-expanded="false"
           class="theme-btn"
@@ -97,19 +101,18 @@ function isActive(href: string): boolean {
       </div>
     </div>
 
-    <!-- Mobile dropdown menu -->
     <nav id="mobile-menu" class="mobile-menu xl:hidden" hidden>
-      <a href="/sources" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/sources") }]}>Sources</a>
-      <a href="/reports" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/reports") }]}>Reports</a>
-      <a href="/trends" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/trends") }]}>Insights</a>
-      <a href="/reading" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/reading") }]}>Reading</a>
-      <a href="/podcasts" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/podcasts") }]}>Podcasts</a>
-      <a href="/leaderboard" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/leaderboard") }]}>Leaderboard</a>
-      <a href="/trending" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/trending") }]}>Trending</a>
-      <a href="/labs" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/labs") }]}>Labs</a>
-      <a href="/analytics" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/analytics") }]}>Analytics</a>
-      <a href="/archive" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/archive") }]}>Archive</a>
-      <a href="/about" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/about") }]}>About</a>
+      <a href="/sources" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/sources") }]} aria-current={isActive("/sources") ? "page" : undefined}>Sources</a>
+      <a href="/reports" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/reports") }]} aria-current={isActive("/reports") ? "page" : undefined}>Reports</a>
+      <a href="/trends" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/trends") }]} aria-current={isActive("/trends") ? "page" : undefined}>Insights</a>
+      <a href="/reading" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/reading") }]} aria-current={isActive("/reading") ? "page" : undefined}>Reading</a>
+      <a href="/podcasts" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/podcasts") }]} aria-current={isActive("/podcasts") ? "page" : undefined}>Podcasts</a>
+      <a href="/leaderboard" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/leaderboard") }]} aria-current={isActive("/leaderboard") ? "page" : undefined}>Leaderboard</a>
+      <a href="/trending" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/trending") }]} aria-current={isActive("/trending") ? "page" : undefined}>Trending</a>
+      <a href="/labs" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/labs") }]} aria-current={isActive("/labs") ? "page" : undefined}>Labs</a>
+      <a href="/analytics" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/analytics") }]} aria-current={isActive("/analytics") ? "page" : undefined}>Analytics</a>
+      <a href="/archive" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/archive") }]} aria-current={isActive("/archive") ? "page" : undefined}>Archive</a>
+      <a href="/about" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/about") }]} aria-current={isActive("/about") ? "page" : undefined}>About</a>
     </nav>
   </Container>
 </header>
@@ -140,8 +143,12 @@ function isActive(href: string): boolean {
   }
   .theme-btn {
     display: flex;
-    width: 1.75rem;
-    height: 1.75rem;
+    flex-shrink: 0;
+    min-width: 40px;
+    min-height: 40px;
+    /* A 40px tap target without growing the header past the 61px that the
+       sticky sub-navs on podcast and labs pages are offset by. */
+    margin-block: -0.375rem;
     align-items: center;
     justify-content: center;
     border-radius: 0.375rem;
@@ -168,8 +175,10 @@ function isActive(href: string): boolean {
     display: flex;
   }
   .mobile-nav-link {
-    display: block;
-    padding: 0.5rem 0.75rem;
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 0.75rem;
     border-radius: 0.375rem;
     font-size: 0.875rem;
     font-weight: 500;
@@ -252,7 +261,6 @@ function isActive(href: string): boolean {
       syncMenuState(false);
     });
 
-    // Close menu on link click
     menu.querySelectorAll("a").forEach(link => {
       link.addEventListener("click", () => {
         syncMenuState(false);
@@ -262,10 +270,24 @@ function isActive(href: string): boolean {
     toggle.dataset.mobileMenuBound = "true";
   }
 
-  setupMobileMenu();
-  setupThemeToggle();
+  // The header is transition:persist, so the active link rendered at build
+  // time belongs to whichever page was opened first; recompute it on every
+  // navigation with the same prefix rule as isActive() in the frontmatter.
+  function syncActiveLinks() {
+    const pathname = location.pathname.replace(/\/$/, "") || "/";
+    document.querySelectorAll<HTMLAnchorElement>("header a.nav-link, header a.mobile-nav-link").forEach((link) => {
+      const h = (link.getAttribute("href") || "").replace(/\/$/, "") || "/";
+      const active = pathname === h || (h !== "/" && pathname.startsWith(h + "/"));
+      link.classList.toggle(link.classList.contains("nav-link") ? "nav-active" : "mobile-nav-active", active);
+      if (active) link.setAttribute("aria-current", "page");
+      else link.removeAttribute("aria-current");
+    });
+  }
+
+  // astro:page-load also fires on the first load.
   document.addEventListener("astro:page-load", () => {
     setupMobileMenu();
     setupThemeToggle();
+    syncActiveLinks();
   });
 </script>

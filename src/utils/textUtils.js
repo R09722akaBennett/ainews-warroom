@@ -1,39 +1,25 @@
-/**
- * Removes null characters (\u0000) from a string.
- * Handles null or undefined inputs gracefully.
- * @param {string | null | undefined} str The input string.
- * @returns {string} The sanitized string, or an empty string if input is null/undefined.
- */
-export function sanitizeString(str) {
-  if (str == null) {
-    return '';
-  }
-  // Ensure input is treated as a string before replacing
-  return String(str).replace(/\u0000/g, '');
-}
+const ESCAPES = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
 
 /**
- * Simple markdown to HTML converter for inline formatting.
- * Converts bold, italics, code, and links.
+ * Convert inline markdown (bold, italics, code, links) to HTML for set:html.
+ *
+ * The input is HTML-escaped first, so raw tags in it render as text, and a
+ * link whose URL is not http(s) or relative keeps only its text. Null or
+ * undefined input returns an empty string.
  * @param {string | null | undefined} text The input markdown string.
  * @returns {string} The converted HTML string.
  */
 export function markdownToHtml(text) {
   if (!text) return '';
 
-  let html = String(text);
+  let html = String(text).replace(/[&<>"']/g, (c) => ESCAPES[c]);
 
-  // Convert bold (**text**)
   html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-  // Convert italics (*text*)
   html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-
-  // Convert code blocks (`text`)
   html = html.replace(/`(.*?)`/g, '<code>$1</code>');
-
-  // Convert links [text](url). must come after images
-  html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>');
+  html = html.replace(/\[(.*?)\]\((.*?)\)/g, (_m, label, url) =>
+    /^(?:https?:\/\/|\/|#)/i.test(url) ? `<a href="${url}">${label}</a>` : label
+  );
 
   return html;
 }

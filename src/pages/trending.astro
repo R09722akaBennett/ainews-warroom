@@ -9,10 +9,10 @@ const papers = papersData as any;
 const mcp = mcpData as any;
 const mcpServers: any[] = mcp.servers || [];
 const mcpSkills: any[] = mcp.skills || [];
-const mcpUpdated = mcp.updatedAt
-  ? new Date(mcp.updatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })
-  : "";
-// Collect unique paper categories (excluding generic "computer-science")
+const monthDay = (d: string) =>
+  new Date(d).toLocaleDateString("zh-TW", { timeZone: "Asia/Taipei", month: "numeric", day: "numeric" });
+const mcpUpdated = mcp.updatedAt ? monthDay(mcp.updatedAt) : "";
+// "computer-science" is on nearly every paper, so it would not filter anything.
 const paperCats: string[] = [];
 const _catCount: Record<string, number> = {};
 for (const p of [...(papers.hot || []), ...(papers.likes || [])]) {
@@ -26,11 +26,8 @@ Object.entries(_catCount)
   .sort((a, b) => b[1] - a[1])
   .forEach(([cat]) => paperCats.push(cat));
 
-const papersUpdated = papers.updatedAt
-  ? new Date(papers.updatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })
-  : "";
+const papersUpdated = papers.updatedAt ? monthDay(papers.updatedAt) : "";
 
-// === Product Hunt: build-time fetch ===
 type Product = { name: string; tagline: string; url: string; author: string; date: string };
 let products: Product[] = [];
 try {
@@ -50,7 +47,7 @@ try {
       ? taglineMatch[1].replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").trim()
       : "";
     if (title && link) {
-      const dateStr = published ? new Date(published).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "";
+      const dateStr = published ? monthDay(published) : "";
       products.push({ name: title.trim(), tagline, url: link, author, date: dateStr });
     }
   }
@@ -59,52 +56,48 @@ try {
 }
 ---
 
-<Layout title="Trending" description="Trending GitHub repos and Product Hunt products">
+<Layout title="Trending" description="GitHub 熱門 repo、Product Hunt 新產品、alphaXiv 熱門論文與 MCP Market 排行。">
   <Container>
     <div class="space-y-8">
       <div>
-        <div class="section-title mb-2">Trending</div>
         <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Trending</h1>
         <p class="mt-1 text-sm" style="color: var(--color-text-muted);">
-          Trending repos, products, research papers &amp; MCP tools
+          GitHub 熱門 repo、Product Hunt 新產品、alphaXiv 熱門論文與 MCP Market 排行。
         </p>
       </div>
 
-      <!-- Top-level Tabs -->
       <div class="top-tabs" id="top-tabs">
-        <button data-top="repos" class="tab-pill tab-pill-active">
+        <button type="button" data-top="repos" class="tab-pill tab-pill-active">
           <span class="tab-pill-icon">{"\u{1F4BB}"}</span>
           GitHub Repos
         </button>
-        <button data-top="products" class="tab-pill">
+        <button type="button" data-top="products" class="tab-pill">
           <span class="tab-pill-icon">{"\u{1F680}"}</span>
           Product Hunt
           <span class="tab-pill-count">{products.length}</span>
         </button>
-        <button data-top="papers" class="tab-pill">
+        <button type="button" data-top="papers" class="tab-pill">
           <span class="tab-pill-icon">{"\u{1F4D1}"}</span>
-          Papers
+          論文
         </button>
-        <button data-top="mcpservers" class="tab-pill">
+        <button type="button" data-top="mcpservers" class="tab-pill">
           <span class="tab-pill-icon">{"\u{1F50C}"}</span>
           MCP Servers
           <span class="tab-pill-count">{mcpServers.length}</span>
         </button>
-        <button data-top="skills" class="tab-pill">
+        <button type="button" data-top="skills" class="tab-pill">
           <span class="tab-pill-icon">{"\u{1F916}"}</span>
           Agent Skills
           <span class="tab-pill-count">{mcpSkills.length}</span>
         </button>
       </div>
 
-      <!-- === Repos Section === -->
       <div data-section="repos" class="section-content">
-        <!-- Language sub-tabs -->
         <div class="flex gap-1 flex-wrap" id="lang-tabs" style="border-bottom: 1px solid var(--color-border);"></div>
 
         <div id="repos-container" class="mt-4">
           <div class="flex items-center justify-center py-12">
-            <span class="text-sm" style="color: var(--color-text-muted);">Fetching trending repos...</span>
+            <span class="text-sm" style="color: var(--color-text-muted);">正在抓取 GitHub 熱門 repo…</span>
           </div>
         </div>
 
@@ -113,14 +106,13 @@ try {
         </div>
       </div>
 
-      <!-- === Products Section === -->
       <div data-section="products" class="section-content hidden">
         {products.length === 0 ? (
           <div class="text-center py-12">
-            <p class="text-sm" style="color: var(--color-text-muted);">Could not load products.</p>
+            <p class="text-sm" style="color: var(--color-text-muted);">這次更新沒有抓到 Product Hunt 的產品。</p>
             <a href="https://www.producthunt.com" target="_blank" rel="noopener noreferrer"
-               class="inline-block mt-2 text-xs no-underline" style="color: var(--color-accent-warm);">
-              Visit Product Hunt →
+               class="trend-more mt-2 text-xs no-underline" style="color: var(--color-accent-warm-text);">
+              前往 Product Hunt →
             </a>
           </div>
         ) : (
@@ -150,23 +142,21 @@ try {
             ))}
             <div class="text-center pt-6 pb-2">
               <a href="https://www.producthunt.com" target="_blank" rel="noopener noreferrer"
-                 class="text-xs no-underline hover:underline" style="color: var(--color-accent-warm);">
-                View more on Product Hunt →
+                 class="trend-more text-xs no-underline hover:underline" style="color: var(--color-accent-warm-text);">
+                到 Product Hunt 看更多 →
               </a>
             </div>
           </div>
         )}
       </div>
 
-      <!-- === Papers Section === -->
       <div data-section="papers" class="section-content hidden">
         <div class="flex gap-1 mb-3" style="border-bottom: 1px solid var(--color-border);">
-          <button data-paper-tab="hot" class="tab-btn tab-active">Hot</button>
-          <button data-paper-tab="likes" class="tab-btn">Most Liked</button>
+          <button type="button" data-paper-tab="hot" class="tab-btn tab-active">熱門</button>
+          <button type="button" data-paper-tab="likes" class="tab-btn">最受喜愛</button>
         </div>
         <p class="text-xs mb-3" style="color: var(--color-text-muted);">
-          Top 20 from <a href="https://www.alphaxiv.org" target="_blank" rel="noopener" style="color: var(--color-accent-cool); text-decoration: underline;">alphaxiv.org</a>
-          &middot; Updated {papersUpdated}
+          <a href="https://www.alphaxiv.org" target="_blank" rel="noopener" style="color: var(--color-accent-cool-text); text-decoration: underline;">alphaXiv</a> 前 20 名{papersUpdated && `，更新於 ${papersUpdated}`}。
         </p>
         <div class="flex gap-1.5 flex-wrap mb-4" id="paper-filters"></div>
 
@@ -189,9 +179,9 @@ try {
                     <span class="text-xs" style="color: var(--color-text-muted);">{p.authors.slice(0, 3).join(", ")}{p.authors.length > 3 ? " et al." : ""}</span>
                   )}
                   {p.date && <span class="meta">{p.date}</span>}
-                  <span class="paper-stat">{p.votes.toLocaleString()} votes</span>
-                  <span class="paper-stat">{p.visits.toLocaleString()} visits</span>
-                  {p.ghStars > 0 && <span class="paper-stat">{p.ghStars.toLocaleString()} stars</span>}
+                  <span class="paper-stat">{p.votes.toLocaleString()} 票</span>
+                  <span class="paper-stat">{p.visits.toLocaleString()} 次瀏覽</span>
+                  {p.ghStars > 0 && <span class="paper-stat">☆ {p.ghStars.toLocaleString()}</span>}
                   {p.categories?.length > 0 && p.categories.map((c: string) => (
                     <span class="paper-cat">{c}</span>
                   ))}
@@ -220,9 +210,9 @@ try {
                     <span class="text-xs" style="color: var(--color-text-muted);">{p.authors.slice(0, 3).join(", ")}{p.authors.length > 3 ? " et al." : ""}</span>
                   )}
                   {p.date && <span class="meta">{p.date}</span>}
-                  <span class="paper-stat">{p.votes.toLocaleString()} votes</span>
-                  <span class="paper-stat">{p.visits.toLocaleString()} visits</span>
-                  {p.ghStars > 0 && <span class="paper-stat">{p.ghStars.toLocaleString()} stars</span>}
+                  <span class="paper-stat">{p.votes.toLocaleString()} 票</span>
+                  <span class="paper-stat">{p.visits.toLocaleString()} 次瀏覽</span>
+                  {p.ghStars > 0 && <span class="paper-stat">☆ {p.ghStars.toLocaleString()}</span>}
                   {p.categories?.length > 0 && p.categories.map((c: string) => (
                     <span class="paper-cat">{c}</span>
                   ))}
@@ -233,11 +223,9 @@ try {
         </div>
       </div>
 
-      <!-- === MCP Servers Section === -->
       <div data-section="mcpservers" class="section-content hidden">
         <p class="text-xs mb-3" style="color: var(--color-text-muted);">
-          Top 50 from <a href="https://mcpmarket.com/leaderboards" target="_blank" rel="noopener" style="color: var(--color-accent-cool); text-decoration: underline;">mcpmarket.com</a>
-          · Ranked by GitHub stars · Updated {mcpUpdated}
+          <a href="https://mcpmarket.com/leaderboards" target="_blank" rel="noopener" style="color: var(--color-accent-cool-text); text-decoration: underline;">MCP Market</a> 前 50 名，依 GitHub star 數排序{mcpUpdated && `，更新於 ${mcpUpdated}`}。
         </p>
         <div class="flex gap-1.5 flex-wrap mb-4" id="mcp-server-filters"></div>
         <div class="space-y-0.5">
@@ -263,11 +251,9 @@ try {
         </div>
       </div>
 
-      <!-- === Agent Skills Section === -->
       <div data-section="skills" class="section-content hidden">
         <p class="text-xs mb-3" style="color: var(--color-text-muted);">
-          Top 50 from <a href="https://mcpmarket.com/tools/skills/leaderboard" target="_blank" rel="noopener" style="color: var(--color-accent-cool); text-decoration: underline;">mcpmarket.com</a>
-          · Ranked by GitHub stars · Updated {mcpUpdated}
+          <a href="https://mcpmarket.com/tools/skills/leaderboard" target="_blank" rel="noopener" style="color: var(--color-accent-cool-text); text-decoration: underline;">MCP Market</a> 前 50 名，依 GitHub star 數排序{mcpUpdated && `，更新於 ${mcpUpdated}`}。
         </p>
         <div class="flex gap-1.5 flex-wrap mb-4" id="mcp-skill-filters"></div>
         <div class="space-y-0.5">
@@ -297,27 +283,33 @@ try {
 </Layout>
 
 <style>
-  /* tab-pill styles defined in global.css */
-  .tab-pills {
-    display: flex;
-    gap: 0.375rem;
-  }
   .top-tabs {
     display: flex;
     gap: 0.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin: 0 -1rem;
+    padding: 0 1rem;
   }
+  .top-tabs::-webkit-scrollbar { display: none; }
   .top-tabs .tab-pill {
+    flex-shrink: 0;
+    min-height: 40px;
+    white-space: nowrap;
     font-size: 0.9375rem;
     padding: 0.5rem 1.25rem;
   }
+  .trend-more { display: inline-flex; align-items: center; min-height: 40px; }
   .tab-pill-icon {
     font-size: 1.125rem;
     line-height: 1;
   }
 
-  /* === Language sub-tabs === */
-  .tab-btn {
+  /* Language tabs and repo rows are built in the browser, where scoped
+     styles cannot reach them. */
+  :global(.tab-btn) {
     cursor: pointer;
+    min-height: 40px;
     border-radius: 0.375rem 0.375rem 0 0;
     padding: 0.5rem 0.75rem;
     font-size: 0.875rem;
@@ -329,17 +321,21 @@ try {
     margin-bottom: -1px;
     color: var(--color-text-muted);
   }
-  .tab-btn:hover {
+  :global(.tab-btn:hover) {
     background-color: var(--color-surface-muted);
   }
-  .tab-active {
+  :global(.tab-btn.tab-active) {
     background-color: var(--color-surface-raised);
     border-color: var(--color-border);
     color: var(--color-text);
   }
+  :global(.tab-btn-count) { margin-left: 0.25rem; }
 
-  /* === Repo rows === */
-  .repo-row {
+  :global(.repo-panel) {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  :global(.repo-row) {
     display: flex;
     align-items: flex-start;
     gap: 1rem;
@@ -348,11 +344,15 @@ try {
     border-radius: 0.375rem;
     transition: background-color 0.15s;
   }
-  .repo-row:hover {
+  :global(a.repo-row:hover) {
     background-color: var(--color-surface-muted);
   }
+  :global(.repo-rank) { min-width: 1.5rem; text-align: right; }
+  :global(.repo-body) { flex: 1; min-width: 0; }
+  :global(.repo-title-line) { display: flex; align-items: center; gap: 0.5rem; }
+  :global(.repo-name) { font-weight: 600; color: var(--color-text); overflow-wrap: anywhere; }
+  :global(.repo-desc) { color: var(--color-text-muted); margin-top: 0.25rem; line-height: 1.5; }
 
-  /* === Product rows === */
   .product-row {
     display: flex;
     align-items: flex-start;
@@ -375,17 +375,16 @@ try {
     font-family: var(--font-mono);
     font-size: 0.7rem;
     font-weight: 600;
-    color: var(--color-text-muted);
+    color: var(--color-text-muted-on-muted);
     background-color: var(--color-surface-muted);
     flex-shrink: 0;
     margin-top: 0.125rem;
   }
   .product-rank-top {
-    color: var(--color-accent-warm);
+    color: var(--color-accent-warm-text);
     background-color: color-mix(in srgb, var(--color-accent-warm) 12%, transparent);
   }
 
-  /* === Papers === */
   .paper-row {
     display: flex;
     align-items: flex-start;
@@ -408,13 +407,16 @@ try {
     font-family: var(--font-mono);
     font-size: 0.7rem;
     font-weight: 600;
-    color: var(--color-accent-cool);
+    color: var(--color-accent-cool-text);
     background-color: color-mix(in srgb, var(--color-accent-cool) 10%, transparent);
     flex-shrink: 0;
     margin-top: 0.125rem;
   }
   :global(.paper-filter) {
-    padding: 0.2rem 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 0.625rem;
     border-radius: 0.375rem;
     font-size: 0.6875rem;
     font-weight: 500;
@@ -433,7 +435,7 @@ try {
   :global(.paper-filter-active) {
     background-color: color-mix(in srgb, var(--color-accent-purple) 12%, transparent);
     border-color: var(--color-accent-purple);
-    color: var(--color-accent-purple);
+    color: var(--color-accent-purple-text);
     font-weight: 600;
   }
   .paper-summary {
@@ -452,12 +454,11 @@ try {
     font-size: 0.625rem;
     padding: 0.05rem 0.35rem;
     border-radius: 0.25rem;
-    color: var(--color-accent-purple);
+    color: var(--color-accent-purple-text);
     background-color: color-mix(in srgb, var(--color-accent-purple) 8%, transparent);
     border: 1px solid color-mix(in srgb, var(--color-accent-purple) 20%, transparent);
   }
 
-  /* === MCP rows === */
   .mcp-row {
     display: flex;
     align-items: flex-start;
@@ -480,14 +481,14 @@ try {
     font-family: var(--font-mono);
     font-size: 0.7rem;
     font-weight: 600;
-    color: var(--color-text-muted);
+    color: var(--color-text-muted-on-muted);
     background-color: var(--color-surface-muted);
     flex-shrink: 0;
     margin-top: 0.125rem;
   }
   .mcp-rank-top {
-    color: var(--color-accent-cool);
-    background-color: color-mix(in srgb, var(--color-accent-cool) 12%, transparent);
+    color: var(--color-accent-cool-text);
+    background-color: color-mix(in srgb, var(--color-accent-cool) 10%, transparent);
   }
   .mcp-desc {
     color: var(--color-text-muted);
@@ -500,7 +501,7 @@ try {
     font-size: 0.625rem;
     padding: 0.05rem 0.35rem;
     border-radius: 0.25rem;
-    color: var(--color-accent-cool);
+    color: var(--color-accent-cool-text);
     background-color: color-mix(in srgb, var(--color-accent-cool) 8%, transparent);
     border: 1px solid color-mix(in srgb, var(--color-accent-cool) 20%, transparent);
     text-transform: uppercase;
@@ -513,7 +514,10 @@ try {
     color: var(--color-text-muted);
   }
   :global(.mcp-filter) {
-    padding: 0.2rem 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 0.625rem;
     border-radius: 0.375rem;
     font-size: 0.6875rem;
     font-weight: 500;
@@ -530,17 +534,14 @@ try {
     color: var(--color-text);
   }
   :global(.mcp-filter-active) {
-    background-color: color-mix(in srgb, var(--color-accent-cool) 12%, transparent);
+    background-color: color-mix(in srgb, var(--color-accent-cool) 10%, transparent);
     border-color: var(--color-accent-cool);
-    color: var(--color-accent-cool);
+    color: var(--color-accent-cool-text);
     font-weight: 600;
   }
-
-  .hidden { display: none; }
 </style>
 
 <script>
-  // === Top-level tab switching ===
   function initTopTabs() {
     const topTabs = document.getElementById("top-tabs");
     if (!topTabs || topTabs.dataset.bound) return;
@@ -555,9 +556,9 @@ try {
     });
   }
 
-  // === GitHub trending (client-side RSS) ===
+  // Fetched in the browser so the list is live rather than as old as the last build.
   const FEEDS = [
-    { key: "all", label: "All Languages", url: "https://mshibanami.github.io/GitHubTrendingRSS/daily/all.xml" },
+    { key: "all", label: "全部語言", url: "https://mshibanami.github.io/GitHubTrendingRSS/daily/all.xml" },
     { key: "python", label: "Python", url: "https://mshibanami.github.io/GitHubTrendingRSS/daily/python.xml" },
     { key: "typescript", label: "TypeScript", url: "https://mshibanami.github.io/GitHubTrendingRSS/daily/typescript.xml" },
     { key: "rust", label: "Rust", url: "https://mshibanami.github.io/GitHubTrendingRSS/daily/rust.xml" },
@@ -567,20 +568,25 @@ try {
   type Repo = { name: string; url: string; description: string };
   type FeedResult = { key: string; label: string; repos: Repo[] };
 
+  // The feed description is an HTML fragment with the summary in a <p>.
+  // DOMParser in "text/html" mode never runs scripts or loads images, so
+  // reading textContent from it cannot execute anything the feed carries.
   function parseDescription(html: string): string {
     const match = html.match(/<p>(.*?)<\/p>/s);
     if (!match) return "";
-    const div = document.createElement("div");
-    div.innerHTML = match[1];
-    return (div.textContent || "").trim().slice(0, 200);
+    const doc = new DOMParser().parseFromString(match[1], "text/html");
+    return (doc.body.textContent || "").trim().slice(0, 200);
+  }
+
+  function safeRepoUrl(url: string): string | null {
+    const u = url.trim();
+    return u.startsWith("https://github.com/") ? u : null;
   }
 
   function parseRSS(xml: string): Repo[] {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(xml, "text/xml");
-    const items = doc.querySelectorAll("item");
+    const doc = new DOMParser().parseFromString(xml, "text/xml");
     const repos: Repo[] = [];
-    items.forEach(item => {
+    doc.querySelectorAll("item").forEach(item => {
       const title = item.querySelector("title")?.textContent || "";
       const link = item.querySelector("link")?.textContent || "";
       const desc = item.querySelector("description")?.textContent || "";
@@ -589,24 +595,70 @@ try {
     return repos;
   }
 
-  function renderRepos(repos: Repo[]): string {
+  const SVG_NS = "http://www.w3.org/2000/svg";
+
+  function externalIcon(): SVGSVGElement {
+    const svg = document.createElementNS(SVG_NS, "svg");
+    svg.setAttribute("class", "h-3 w-3");
+    svg.setAttribute("viewBox", "0 0 16 16");
+    svg.setAttribute("aria-hidden", "true");
+    svg.style.color = "var(--color-text-muted)";
+    const path = document.createElementNS(SVG_NS, "path");
+    path.setAttribute("d", "M4 12L12 4M12 4H6M12 4v6");
+    path.setAttribute("fill", "none");
+    path.setAttribute("stroke", "currentColor");
+    path.setAttribute("stroke-width", "1.5");
+    path.setAttribute("stroke-linecap", "round");
+    path.setAttribute("stroke-linejoin", "round");
+    svg.appendChild(path);
+    return svg;
+  }
+
+  // Feed fields are third-party text, so they only ever reach the DOM through
+  // textContent and a github.com-only href.
+  function renderRepos(repos: Repo[]): HTMLElement[] {
     if (repos.length === 0) {
-      return '<p class="text-sm" style="color: var(--color-text-muted);">No trending repos found.</p>';
+      const p = document.createElement("p");
+      p.className = "text-sm";
+      p.style.color = "var(--color-text-muted)";
+      p.textContent = "目前沒有抓到熱門 repo。";
+      return [p];
     }
-    return repos.map((repo, i) => `
-      <a href="${repo.url}" target="_blank" rel="noopener" class="repo-row">
-        <span class="meta" style="min-width: 1.5rem; text-align: right;">${i + 1}</span>
-        <div style="flex: 1;">
-          <div style="display: flex; align-items: center; gap: 0.5rem;">
-            <span class="text-sm" style="font-weight: 600; color: var(--color-text);">${repo.name}</span>
-            <svg class="h-3 w-3" viewBox="0 0 16 16" style="color: var(--color-text-muted);">
-              <path d="M4 12L12 4M12 4H6M12 4v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-          </div>
-          ${repo.description ? `<p class="text-xs" style="color: var(--color-text-muted); margin-top: 0.25rem; line-height: 1.5;">${repo.description}</p>` : ""}
-        </div>
-      </a>
-    `).join("");
+    return repos.map((repo, i) => {
+      const href = safeRepoUrl(repo.url);
+      const row = document.createElement(href ? "a" : "div");
+      row.className = "repo-row";
+      if (href && row instanceof HTMLAnchorElement) {
+        row.href = href;
+        row.target = "_blank";
+        row.rel = "noopener noreferrer";
+      }
+
+      const rank = document.createElement("span");
+      rank.className = "meta repo-rank";
+      rank.textContent = String(i + 1);
+
+      const body = document.createElement("div");
+      body.className = "repo-body";
+      const titleLine = document.createElement("div");
+      titleLine.className = "repo-title-line";
+      const name = document.createElement("span");
+      name.className = "text-sm repo-name";
+      name.textContent = repo.name;
+      titleLine.append(name);
+      if (href) titleLine.append(externalIcon());
+      body.append(titleLine);
+
+      if (repo.description) {
+        const desc = document.createElement("p");
+        desc.className = "text-xs repo-desc";
+        desc.textContent = repo.description;
+        body.append(desc);
+      }
+
+      row.append(rank, body);
+      return row;
+    });
   }
 
   async function loadTrending() {
@@ -629,17 +681,28 @@ try {
     const settled = await Promise.all(fetches);
     results.push(...settled);
 
-    tabsEl.innerHTML = results.map((feed, i) => `
-      <button data-tab="${feed.key}" class="tab-btn ${i === 0 ? "tab-active" : ""}">
-        ${feed.label} <span class="meta" style="margin-left: 0.25rem;">(${feed.repos.length})</span>
-      </button>
-    `).join("");
+    const tabButtons = results.map((feed, i) => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.dataset.tab = feed.key;
+      btn.className = i === 0 ? "tab-btn tab-active" : "tab-btn";
+      btn.append(`${feed.label} `);
+      const count = document.createElement("span");
+      count.className = "meta tab-btn-count";
+      count.textContent = `(${feed.repos.length})`;
+      btn.append(count);
+      return btn;
+    });
+    tabsEl.replaceChildren(...tabButtons);
 
-    containerEl.innerHTML = results.map((feed, i) => `
-      <div data-tab-content="${feed.key}" style="display: ${i === 0 ? "flex" : "none"}; flex-direction: column; gap: 0.25rem;">
-        ${renderRepos(feed.repos)}
-      </div>
-    `).join("");
+    containerEl.replaceChildren(...results.map((feed, i) => {
+      const panel = document.createElement("div");
+      panel.dataset.tabContent = feed.key;
+      panel.className = "repo-panel";
+      panel.style.display = i === 0 ? "flex" : "none";
+      panel.append(...renderRepos(feed.repos));
+      return panel;
+    }));
 
     function switchTab(activeKey: string) {
       tabsEl!.querySelectorAll(".tab-btn").forEach(b => {
@@ -650,21 +713,19 @@ try {
       });
     }
 
-    tabsEl.querySelectorAll<HTMLButtonElement>(".tab-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        switchTab(btn.dataset.tab!);
-      });
+    tabButtons.forEach(btn => {
+      btn.addEventListener("click", () => switchTab(btn.dataset.tab!));
     });
 
     const now = new Date();
-    timeEl.textContent = `Live · ${now.toLocaleString()}`;
+    timeEl.textContent = `即時抓取於 ${now.toLocaleString("zh-TW", { hour12: false })}`;
   }
 
   function switchTopTab(key: string) {
     const topTabs = document.getElementById("top-tabs");
     if (!topTabs) return;
     topTabs.querySelectorAll(".tab-pill").forEach(b =>
-      b.classList.toggle("top-tab-active", (b as HTMLElement).dataset.top === key)
+      b.classList.toggle("tab-pill-active", (b as HTMLElement).dataset.top === key)
     );
     document.querySelectorAll(".section-content").forEach(s =>
       s.classList.toggle("hidden", (s as HTMLElement).dataset.section !== key)
@@ -678,8 +739,17 @@ try {
     }
   }
 
+  // Category names come from scraped leaderboards, so they are set as text.
+  function filterButton(dataKey: string, value: string, label: string, className: string): HTMLButtonElement {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = className;
+    btn.dataset[dataKey] = value;
+    btn.textContent = label;
+    return btn;
+  }
+
   function initMcpFilters() {
-    // Build category filters for both MCP Servers and Agent Skills sections
     const sections = [
       { filterId: "mcp-server-filters", sectionAttr: "servers" },
       { filterId: "mcp-skill-filters", sectionAttr: "skills" },
@@ -698,8 +768,10 @@ try {
       });
 
       const sorted = Object.entries(catCount).sort((a, b) => b[1] - a[1]);
-      filtersEl.innerHTML = `<button data-mcp-filter="all" class="mcp-filter mcp-filter-active">All</button>`
-        + sorted.map(([cat]) => `<button data-mcp-filter="${cat}" class="mcp-filter">${cat}</button>`).join("");
+      filtersEl.replaceChildren(
+        filterButton("mcpFilter", "all", "全部", "mcp-filter mcp-filter-active"),
+        ...sorted.map(([cat]) => filterButton("mcpFilter", cat, cat, "mcp-filter")),
+      );
 
       filtersEl.querySelectorAll<HTMLButtonElement>("[data-mcp-filter]").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -726,7 +798,6 @@ try {
 
     function buildFilters() {
       if (!filtersEl) return;
-      // Collect categories from the active tab's visible papers
       const activeContent = document.querySelector<HTMLElement>(`[data-paper-content="${activeTab}"]`);
       if (!activeContent) return;
 
@@ -738,17 +809,17 @@ try {
       });
 
       const sorted = Object.entries(catCount).sort((a, b) => b[1] - a[1]);
-      filtersEl.innerHTML = `<button data-cat-filter="all" class="paper-filter paper-filter-active">All</button>`
-        + sorted.map(([cat]) => `<button data-cat-filter="${cat}" class="paper-filter">${cat}</button>`).join("");
+      filtersEl.replaceChildren(
+        filterButton("catFilter", "all", "全部", "paper-filter paper-filter-active"),
+        ...sorted.map(([cat]) => filterButton("catFilter", cat, cat, "paper-filter")),
+      );
 
-      // Bind filter clicks
       filtersEl.querySelectorAll<HTMLButtonElement>("[data-cat-filter]").forEach(btn => {
         btn.addEventListener("click", () => {
           const cat = btn.dataset.catFilter!;
           filtersEl!.querySelectorAll(".paper-filter").forEach(b =>
             b.classList.toggle("paper-filter-active", (b as HTMLElement).dataset.catFilter === cat)
           );
-          // Filter rows in BOTH tabs (so switching tabs keeps filter)
           document.querySelectorAll<HTMLElement>(".paper-row").forEach(row => {
             if (cat === "all") {
               row.style.display = "";
@@ -770,13 +841,12 @@ try {
         document.querySelectorAll<HTMLElement>("[data-paper-content]").forEach(c =>
           c.classList.toggle("hidden", c.dataset.paperContent !== activeTab)
         );
-        // Reset filter and rebuild for new tab
+        // The two tabs have different categories, so the filter starts over.
         document.querySelectorAll<HTMLElement>(".paper-row").forEach(row => row.style.display = "");
         buildFilters();
       });
     });
 
-    // Initial build
     buildFilters();
   }
 
@@ -788,6 +858,7 @@ try {
     restoreFromHash();
   }
 
-  init();
+  // astro:page-load also fires on the first load, so calling init() directly
+  // as well would fetch the feeds twice.
   document.addEventListener("astro:page-load", init);
 </script>

@@ -14,11 +14,13 @@ interface Props {
   description: string;
 }
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+// Cloudflare serves pages without a trailing slash (html_handling:
+// drop-trailing-slash), so canonical and og:url must match that form.
+const canonicalPath = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const canonicalURL = new URL(canonicalPath, Astro.site);
 const { title, description } = Astro.props;
 ---
 
-<!-- Global Metadata -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" href="/favicon.ico" sizes="any" />
@@ -26,115 +28,54 @@ const { title, description } = Astro.props;
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <meta name="generator" content={Astro.generator} />
 
-<!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
 
-<!-- Primary Meta Tags -->
 <title>{title}</title>
 <meta name="title" content={title} />
 <meta name="description" content={description} />
 
-<!-- Open Graph -->
 <meta property="og:type" content="website" />
-<meta property="og:url" content={Astro.url} />
+<meta property="og:url" content={canonicalURL} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:site_name" content="AI War Room · bennettlabs.dev" />
 
-<!-- Twitter/X -->
 <meta property="twitter:card" content="summary" />
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 
-<!-- PageFind -->
-<link href="/pagefind/pagefind-ui.css" rel="stylesheet" />
-<script is:inline src="/pagefind/pagefind-ui.js"></script>
-
 <ClientRouter />
 
+{/* Inline and in the head so the stored theme is applied before first paint. */}
 <script is:inline>
   function init() {
     preloadTheme();
     onScroll();
-    animate();
-    updateThemeButtons();
     addCopyCodeButtons();
 
-    const backToTop = document.getElementById("back-to-top");
-    backToTop?.addEventListener("click", (event) => scrollToTop(event));
+    document.getElementById("back-to-top")?.addEventListener("click", scrollToTop);
 
-    const backToPrev = document.getElementById("back-to-prev");
-    backToPrev?.addEventListener("click", () => window.history.back());
-
+    // The theme buttons live in the persisted header, so they survive page
+    // swaps and must only be bound once.
     const lightThemeButton = document.getElementById("light-theme-button");
-    lightThemeButton?.addEventListener("click", () => {
-      localStorage.setItem("theme", "light");
-      toggleTheme(false);
-      updateThemeButtons();
-    });
+    if (lightThemeButton && !lightThemeButton.dataset.bound) {
+      lightThemeButton.dataset.bound = "true";
+      lightThemeButton.addEventListener("click", () => {
+        localStorage.setItem("theme", "light");
+        toggleTheme(false);
+      });
+    }
 
     const darkThemeButton = document.getElementById("dark-theme-button");
-    darkThemeButton?.addEventListener("click", () => {
-      localStorage.setItem("theme", "dark");
-      toggleTheme(true);
-      updateThemeButtons();
-    });
-
-    const systemThemeButton = document.getElementById("system-theme-button");
-    systemThemeButton?.addEventListener("click", () => {
-      localStorage.setItem("theme", "system");
-      toggleTheme(window.matchMedia("(prefers-color-scheme: dark)").matches);
-      updateThemeButtons();
-    });
-
-    window
-      .matchMedia("(prefers-color-scheme: dark)")
-      .addEventListener("change", (event) => {
-        if (localStorage.theme === "system") {
-          toggleTheme(event.matches);
-        }
+    if (darkThemeButton && !darkThemeButton.dataset.bound) {
+      darkThemeButton.dataset.bound = "true";
+      darkThemeButton.addEventListener("click", () => {
+        localStorage.setItem("theme", "dark");
+        toggleTheme(true);
       });
+    }
 
     document.addEventListener("scroll", onScroll);
-  }
-
-  function updateThemeButtons() {
-    const theme = localStorage.getItem("theme");
-    const lightThemeButton = document.getElementById("light-theme-button");
-    const darkThemeButton = document.getElementById("dark-theme-button");
-    const systemThemeButton = document.getElementById("system-theme-button");
-
-    function removeActiveButtonTheme(button) {
-      button?.classList.remove("bg-black/5");
-      button?.classList.remove("dark:bg-white/5");
-    }
-
-    function addActiveButtonTheme(button) {
-      button?.classList.add("bg-black/5");
-      button?.classList.add("dark:bg-white/5");
-    }
-
-    removeActiveButtonTheme(lightThemeButton);
-    removeActiveButtonTheme(darkThemeButton);
-    removeActiveButtonTheme(systemThemeButton);
-
-    if (theme === "light") {
-      addActiveButtonTheme(lightThemeButton);
-    } else if (theme === "dark") {
-      addActiveButtonTheme(darkThemeButton);
-    } else {
-      addActiveButtonTheme(systemThemeButton);
-    }
-  }
-
-  function animate() {
-    const animateElements = document.querySelectorAll(".animate");
-
-    animateElements.forEach((element, index) => {
-      setTimeout(() => {
-        element.classList.add("show");
-      }, index * 100);
-    });
   }
 
   function onScroll() {
@@ -153,6 +94,8 @@ const { title, description } = Astro.props;
     });
   }
 
+  // Disabling transitions for one frame keeps every element from animating
+  // its colors when the theme flips.
   function toggleTheme(dark) {
     const css = document.createElement("style");
 
@@ -181,15 +124,10 @@ const { title, description } = Astro.props;
     document.head.removeChild(css);
   }
 
+  // Anything but an explicit "dark" choice, including a "system" value left
+  // by an older version of the toggle, renders light.
   function preloadTheme() {
-    const userTheme = localStorage.theme;
-
-    if (userTheme === "dark") {
-      toggleTheme(true);
-    } else {
-      // Default to light
-      toggleTheme(false);
-    }
+    toggleTheme(localStorage.theme === "dark");
   }
 
   function addCopyCodeButtons() {
@@ -216,6 +154,7 @@ const { title, description } = Astro.props;
       const copyButton = document.createElement("button");
       copyButton.innerText = copyButtonLabel;
       copyButton.classList = "copy-code";
+      copyButton.setAttribute("aria-label", "複製程式碼");
 
       codeBlock.setAttribute("tabindex", "0");
       codeBlock.appendChild(copyButton);

@@ -100,7 +100,7 @@ const chartData = {
 // === Token Cost Dashboard ===
 // gemini-3.8-flash standard paid tier, per 1M tokens. These are launch prices
 // valid through 2026-12-31; from 2027-01-01 Google doubles them to $1.50 input
-// and $7.50 output (ai.google.dev/gemini-api/docs/pricing, checked 2026-10-01).
+// and $7.50 output (ai.google.dev/gemini-api/docs/pricing).
 // Every entry is costed at today's price, including runs on older models.
 const PRICE_INPUT = 0.75;
 const PRICE_OUTPUT = 3.75;  // output includes reasoning tokens
@@ -166,23 +166,16 @@ for (const ep of ((podcastsData as any).episodes || []) as any[]) {
 
 tokenEntries.sort((a, b) => b.date.localeCompare(a.date));
 
-const totalInput = tokenEntries.reduce((s, e) => s + e.input, 0);
-const totalOutput = tokenEntries.reduce((s, e) => s + e.output, 0);
-const totalTokens = tokenEntries.reduce((s, e) => s + e.total, 0);
-const totalCost = tokenEntries.reduce((s, e) => s + e.cost, 0);
-
-// Chart data: token usage over time, grouped by task type
-const tokenChartDates = [...new Set(tokenEntries.map(e => e.date))].sort();
 const tokenTypes = [...new Set(tokenEntries.map(e => e.type))];
 
 const tokenTypeLabels: Record<string, [string, string]> = {
-  daily: ["Daily Report", "Daily Report"],
-  raw_weekly: ["Weekly", "Industry Weekly"],
-  raw_monthly: ["Monthly", "Industry Monthly"],
-  raw_quarterly: ["Quarterly", "Industry Quarterly"],
-  labs_classify: ["Labs Classify", "Labs Classify"],
-  labs_weekly: ["Labs Weekly", "Labs Weekly"],
-  podcast: ["Podcast", "Podcast summaries"],
+  daily: ["每日快報", "每日快報"],
+  raw_weekly: ["週報", "產業週報"],
+  raw_monthly: ["月報", "產業月報"],
+  raw_quarterly: ["季報", "產業季報"],
+  labs_classify: ["Labs 分類", "Labs 貼文分類"],
+  labs_weekly: ["Labs 週報", "Labs 週報"],
+  podcast: ["Podcast", "Podcast 摘要"],
 };
 // Only offer filters for types that have entries in the shown range.
 const tokenTypeButtons = Object.keys(tokenTypeLabels)
@@ -192,15 +185,6 @@ const tokenTypeButtons = Object.keys(tokenTypeLabels)
 
 const rangeStart = reports.map((r) => r.date).sort()[0] || SITE_SINCE;
 const rangeEnd = reports.map((r) => r.date).sort().at(-1) || SITE_SINCE;
-
-// Per-type per-date totals
-const tokenByTypeDate: Record<string, Record<string, { input: number; output: number }>> = {};
-for (const e of tokenEntries) {
-  if (!tokenByTypeDate[e.type]) tokenByTypeDate[e.type] = {};
-  if (!tokenByTypeDate[e.type][e.date]) tokenByTypeDate[e.type][e.date] = { input: 0, output: 0 };
-  tokenByTypeDate[e.type][e.date].input += e.input;
-  tokenByTypeDate[e.type][e.date].output += e.output;
-}
 
 // === Running costs ===
 type CostDay = { date: string; x_posts_billed: number; x_usd: number; jev_calls: number; jev_input_tokens: number; jev_usd: number };
@@ -258,56 +242,48 @@ const monthLabel = (m: string) => (m === thisMonth ? "本月" : `${Number(m.slic
 const subsSource = subscriptions.map((x) => `$${x.usd_per_year}/年`).join(" + ");
 const usd = (n: number) => (n >= 1 ? `$${n.toFixed(2)}` : `$${n.toFixed(4)}`);
 
-// Also keep aggregate for "all" view
-const tokenChartData = {
-  dates: tokenChartDates,
-  types: tokenTypes,
-  byType: tokenByTypeDate,
-};
 ---
 
-<Layout title="Analytics" description="Source quality and tag trend analytics">
+<Layout title="Analytics" description="AI War Room 的 LLM token 成本、營運成本、標籤趨勢與來源品質。">
   <Container>
     <div class="space-y-12">
       <div>
-        <div class="section-title mb-2">Analytics</div>
         <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Analytics</h1>
         <p class="mt-1 text-sm" style="color: var(--color-text-muted);">
-          LLM token cost, tag trends, and source quality across {reports.length} reports ({rangeStart} ~ {rangeEnd})
+          {rangeStart} ~ {rangeEnd} 共 {reports.length} 份快報的 LLM token 成本、營運成本、標籤趨勢與來源品質。
         </p>
       </div>
 
       {/* Global Time Range */}
       <div class="flex flex-wrap items-center gap-3" style="border-bottom: 1px solid var(--color-border); padding-bottom: 0.75rem;">
-        <span class="meta">Time Range:</span>
-        <div class="flex gap-1" id="global-range-btns">
-          <button data-grange="today" class="tag-filter">Today</button>
-          <button data-grange="yesterday" class="tag-filter">Yesterday</button>
-          <button data-grange="7" class="tag-filter">7d</button>
-          <button data-grange="30" class="tag-filter">30d</button>
-          <button data-grange="90" class="tag-filter">90d</button>
-          <button data-grange="all" class="tag-filter tag-filter-active">All</button>
+        <span class="meta">時間範圍</span>
+        <div class="flex flex-wrap gap-1" id="global-range-btns">
+          <button type="button" data-grange="today" class="tag-filter">今天</button>
+          <button type="button" data-grange="yesterday" class="tag-filter">昨天</button>
+          <button type="button" data-grange="7" class="tag-filter">7 天</button>
+          <button type="button" data-grange="30" class="tag-filter">30 天</button>
+          <button type="button" data-grange="90" class="tag-filter">90 天</button>
+          <button type="button" data-grange="all" class="tag-filter tag-filter-active">全部</button>
         </div>
         <div class="flex items-center gap-1.5">
-          <input type="date" id="global-date-from" class="date-input" />
+          <input type="date" id="global-date-from" class="date-input" aria-label="開始日期" />
           <span class="meta">~</span>
-          <input type="date" id="global-date-to" class="date-input" />
+          <input type="date" id="global-date-to" class="date-input" aria-label="結束日期" />
         </div>
       </div>
 
-      <!-- Token Cost Dashboard -->
       <section class="space-y-4">
         <div class="flex items-center justify-between flex-wrap gap-2">
           <div>
-            <h2 class="text-lg font-semibold" style="color: var(--color-text);">Token Usage & Cost</h2>
+            <h2 class="text-lg font-semibold" style="color: var(--color-text);">Token 用量與成本</h2>
             <p class="text-xs mt-0.5" style="color: var(--color-text-muted);">
-              以 gemini-3.8-flash 現價估算：${PRICE_INPUT}/1M input · ${PRICE_OUTPUT}/1M output
+              以 gemini-3.8-flash 現價估算：每百萬 input token ${PRICE_INPUT}、output token ${PRICE_OUTPUT}。
             </p>
           </div>
           <div class="flex gap-1.5 flex-wrap" id="token-type-filters">
-            <button data-ttype="all" class="tag-filter tag-filter-active">All</button>
+            <button type="button" data-ttype="all" class="tag-filter tag-filter-active">全部</button>
             {tokenTypeButtons.map((b) => (
-              <button data-ttype={b.type} class="tag-filter" title={b.title}>{b.label}</button>
+              <button type="button" data-ttype={b.type} class="tag-filter" title={b.title}>{b.label}</button>
             ))}
           </div>
         </div>
@@ -315,46 +291,46 @@ const tokenChartData = {
         {/* Summary cards (JS-driven) */}
         <div class="grid gap-4 grid-cols-2 md:grid-cols-4" id="token-cards">
           <div class="card p-4 text-center">
-            <div class="meta mb-1">Total Input</div>
+            <div class="meta mb-1">輸入</div>
             <div class="text-lg font-mono font-bold" style="color: var(--color-text);" id="card-input">—</div>
           </div>
           <div class="card p-4 text-center">
-            <div class="meta mb-1">Total Output</div>
+            <div class="meta mb-1">輸出</div>
             <div class="text-lg font-mono font-bold" style="color: var(--color-text);" id="card-output">—</div>
           </div>
           <div class="card p-4 text-center">
-            <div class="meta mb-1">Total Tokens</div>
+            <div class="meta mb-1">合計</div>
             <div class="text-lg font-mono font-bold" style="color: var(--color-text);" id="card-total">—</div>
           </div>
           <div class="card p-4 text-center">
-            <div class="meta mb-1">Est. Cost</div>
-            <div class="text-lg font-mono font-bold" style="color: var(--color-quarterly);" id="card-cost">—</div>
+            <div class="meta mb-1">估算成本</div>
+            <div class="text-lg font-mono font-bold" style="color: var(--color-quarterly-text);" id="card-cost">—</div>
           </div>
         </div>
 
         {/* Chart */}
         <div class="card p-4" style="position: relative; height: 300px;">
-          <canvas id="token-chart"></canvas>
+          <canvas id="token-chart" role="img" aria-label="每日 token 用量長條圖"></canvas>
         </div>
 
         {/* Detailed table (JS-driven) */}
         <details class="group">
-          <summary class="flex cursor-pointer items-center gap-3 py-2 text-sm font-semibold" style="color: var(--color-text);">
+          <summary class="flex cursor-pointer items-center gap-3 py-2 text-sm font-semibold" style="color: var(--color-text); min-height: 40px;">
             <svg class="size-3.5 shrink-0 transition-transform duration-200 group-open:rotate-90" viewBox="0 0 16 16" style="color: var(--color-text-muted);">
               <path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
-            <span id="breakdown-title">Detailed breakdown</span>
+            <span id="breakdown-title">明細</span>
           </summary>
           <div class="overflow-x-auto mt-2">
             <table class="source-table">
               <thead>
                 <tr>
-                  <th style="width: 7rem;">Date</th>
-                  <th style="width: 3rem;">Type</th>
-                  <th style="text-align: right; width: 7rem;">Input</th>
-                  <th style="text-align: right; width: 7rem;">Output</th>
-                  <th style="text-align: right; width: 7rem;">Total</th>
-                  <th style="text-align: right; width: 6rem;">Cost</th>
+                  <th style="width: 7rem;">日期</th>
+                  <th style="width: 3rem;">類型</th>
+                  <th style="text-align: right; width: 7rem;">輸入</th>
+                  <th style="text-align: right; width: 7rem;">輸出</th>
+                  <th style="text-align: right; width: 7rem;">合計</th>
+                  <th style="text-align: right; width: 6rem;">成本</th>
                 </tr>
               </thead>
               <tbody id="breakdown-body"></tbody>
@@ -363,19 +339,18 @@ const tokenChartData = {
         </details>
       </section>
 
-      <!-- Running costs -->
       <section class="space-y-4" id="running-costs">
         <div class="flex items-center justify-between flex-wrap gap-2">
           <div>
             <h2 class="text-lg font-semibold" style="color: var(--color-text);">營運成本</h2>
             <p class="text-xs mt-0.5" style="color: var(--color-text-muted);">
-              Gemini、X API、Jev 與訂閱的實際花費，從 {SITE_SINCE} 起算，以月為單位。
+              Gemini、X API（含帳號查詢）、Jev 與訂閱的實際花費，從 {SITE_SINCE} 起算，以月為單位。
             </p>
           </div>
           {monthCosts.length > 1 && (
             <div class="flex gap-1.5 flex-wrap" id="cost-month-tabs">
               {monthCosts.map((m, i) => (
-                <button data-cmonth={m.month} class:list={["tag-filter cost-tab", { "tag-filter-active": i === 0 }]}>{m.month}</button>
+                <button type="button" data-cmonth={m.month} class:list={["tag-filter", { "tag-filter-active": i === 0 }]}>{m.month}</button>
               ))}
             </div>
           )}
@@ -393,13 +368,13 @@ const tokenChartData = {
               </div>
               <div class="card p-4">
                 <div class="meta mb-1">Gemini</div>
-                <div class="text-lg font-mono font-bold" style="color: var(--color-quarterly);">{usd(m.gemini)}</div>
+                <div class="text-lg font-mono font-bold" style="color: var(--color-quarterly-text);">{usd(m.gemini)}</div>
                 <div class="cost-sub">依上方 token 估算</div>
               </div>
               <div class="card p-4">
-                <div class="meta mb-1">X API</div>
+                <div class="meta mb-1">X API（含帳號查詢）</div>
                 <div class="text-lg font-mono font-bold" style="color: var(--color-text);">{usd(m.x)}</div>
-                <div class="cost-sub">{m.xOneOff > 0 ? `含一次性 ${usd(m.xOneOff)}` : "每日計費"}</div>
+                <div class="cost-sub">{m.xOneOff > 0 ? `含一次性 ${usd(m.xOneOff)}` : "貼文與帳號查詢，每日計費"}</div>
               </div>
               <div class="card p-4">
                 <div class="meta mb-1">Jev</div>
@@ -424,9 +399,9 @@ const tokenChartData = {
                 <table class="source-table cost-table">
                   <thead>
                     <tr>
-                      <th>Date</th>
+                      <th>日期</th>
                       <th style="text-align: right;">Gemini</th>
-                      <th style="text-align: right;">X</th>
+                      <th style="text-align: right;">X API</th>
                       <th style="text-align: right;">Jev</th>
                       <th style="text-align: right;">小計</th>
                     </tr>
@@ -468,37 +443,37 @@ const tokenChartData = {
         )}
 
         <p class="text-xs leading-relaxed" style="color: var(--color-text-muted);">
-          X：每則貼文 ${costs.prices?.x_post ?? 0.005}、帳號查詢 ${costs.prices?.x_user_lookup ?? 0.01}；Jev：每百萬 input token ${costs.prices?.jev_per_mtok_input ?? 0.042}（output 免費，<a href="https://docs.typesafe.ai/models" target="_blank" rel="noopener noreferrer" style="color: var(--color-accent-cool);">docs.typesafe.ai/models</a>）；Gemini 依頁面上方的估算。訂閱以年費除以 12 分攤到每月。資料更新於 {costs.updatedAt?.slice(0, 10)}。
+          X：每則貼文 ${costs.prices?.x_post ?? 0.005}、帳號查詢 ${costs.prices?.x_user_lookup ?? 0.01}；Jev：每百萬 input token ${costs.prices?.jev_per_mtok_input ?? 0.042}（output 免費，<a href="https://docs.typesafe.ai/models" target="_blank" rel="noopener noreferrer" style="color: var(--color-accent-cool-text);">docs.typesafe.ai/models</a>）；Gemini 依頁面上方的估算。訂閱以年費除以 12 分攤到每月。資料更新於 {costs.updatedAt?.slice(0, 10)}。
         </p>
       </section>
 
-      <!-- Tag Trend Timeline -->
       <section class="space-y-4">
         <div class="flex items-center justify-between flex-wrap gap-2">
           <div>
-            <h2 class="text-lg font-semibold" style="color: var(--color-text);">Tag Trends</h2>
+            <h2 class="text-lg font-semibold" style="color: var(--color-text);">標籤趨勢</h2>
             <p class="text-xs mt-0.5" style="color: var(--color-text-muted);">
-              {allTags.length} tags · {reports.length} reports. Click tags below to show/hide.
+              {reports.length} 份快報裡的 {allTags.length} 個標籤。點下方的標籤可以顯示或隱藏曲線。
             </p>
           </div>
-          <div class="flex gap-1.5" id="tag-type-filters">
-            <button data-type="all" class="tag-filter tag-filter-active">All</button>
-            <button data-type="companies" class="tag-filter" style="--filter-color: #9333ea;">Companies</button>
-            <button data-type="models" class="tag-filter" style="--filter-color: var(--color-accent-cool);">Models</button>
-            <button data-type="topics" class="tag-filter" style="--filter-color: var(--color-accent-warm);">Topics</button>
+          <div class="flex flex-wrap gap-1.5" id="tag-type-filters">
+            <button type="button" data-type="all" class="tag-filter tag-filter-active">全部</button>
+            <button type="button" data-type="companies" class="tag-filter" style="--filter-color: #9333ea;">公司</button>
+            <button type="button" data-type="models" class="tag-filter" style="--filter-color: var(--color-accent-cool-text);">模型</button>
+            <button type="button" data-type="topics" class="tag-filter" style="--filter-color: var(--color-accent-warm-text);">話題</button>
           </div>
         </div>
         {allTags.length > 0 ? (
           <>
             <div class="card p-4" style="position: relative; height: 400px;">
-              <canvas id="tag-chart"></canvas>
+              <canvas id="tag-chart" role="img" aria-label="標籤累計提及次數折線圖"></canvas>
             </div>
-            {/* Custom tag list (replaces Chart.js legend) */}
+            {/* Chart.js's own legend cannot be filtered by tag type. */}
             <div class="tag-list-container" id="tag-list">
               {allTags.slice(0, 20).map((t, i) => {
-                const color = t.type === "companies" ? "#9333ea" : t.type === "models" ? "#0891b2" : "#d97706";
+                const color = t.type === "companies" ? "#9333ea" : t.type === "models" ? "var(--color-accent-cool-text)" : "var(--color-accent-warm-text)";
                 return (
                   <button
+                    type="button"
                     class="tag-list-item"
                     data-tag-idx={String(i)}
                     data-tag-type={t.type}
@@ -514,28 +489,27 @@ const tokenChartData = {
           </>
         ) : (
           <div class="card p-8 text-center">
-            <p class="text-sm" style="color: var(--color-text-muted);">Not enough data yet. Tag trends will appear as more daily reports accumulate.</p>
+            <p class="text-sm" style="color: var(--color-text-muted);">資料還不夠，累積更多每日快報後會顯示標籤趨勢。</p>
           </div>
         )}
       </section>
 
-      <!-- Source Quality -->
       <section class="space-y-4">
         <div>
-          <h2 class="text-lg font-semibold" style="color: var(--color-text);">Source Quality</h2>
+          <h2 class="text-lg font-semibold" style="color: var(--color-text);">來源品質</h2>
           <p class="text-xs mt-0.5" style="color: var(--color-text-muted);">
-            How often each source's items get referenced in daily reports. High collection + low reference = noise source.
+            各來源收錄的新聞有多少被每日快報引用；收錄多、引用少的來源多半是雜訊。
           </p>
         </div>
         <div class="overflow-x-auto">
           <table class="source-table">
             <thead>
               <tr>
-                <th style="width: 14rem;">Source</th>
-                <th style="text-align: right; width: 7rem;" title="Total items collected from this source across all days">Collected</th>
-                <th style="text-align: right; width: 7rem;" title="How many of those items were referenced in LLM-generated daily reports">Referenced</th>
-                <th style="text-align: right; width: 6rem;" title="Referenced / Collected — higher = more valuable source, lower = more noise">Rate</th>
-                <th style="width: 10rem;" title="Visual bar showing the reference rate percentage">Distribution</th>
+                <th style="width: 14rem;">來源</th>
+                <th style="text-align: right; width: 7rem;" title="這段期間從這個來源收錄的新聞則數">收錄</th>
+                <th style="text-align: right; width: 7rem;" title="其中被每日快報引用的則數">引用</th>
+                <th style="text-align: right; width: 6rem;" title="引用除以收錄，越高代表來源越有價值">引用率</th>
+                <th style="width: 10rem;" title="引用率的長條圖">分布</th>
               </tr>
             </thead>
             <tbody id="sq-body"></tbody>
@@ -549,7 +523,10 @@ const tokenChartData = {
 <style>
   /* === Tag filters === */
   .tag-filter {
-    padding: 0.2rem 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 0.625rem;
     border-radius: 0.375rem;
     font-size: 0.6875rem;
     font-weight: 500;
@@ -572,7 +549,8 @@ const tokenChartData = {
 
   /* === Date input === */
   .date-input {
-    padding: 0.2rem 0.4rem;
+    min-height: 40px;
+    padding: 0 0.4rem;
     border-radius: 0.375rem;
     border: 1px solid var(--color-border);
     background-color: var(--color-surface-raised);
@@ -590,7 +568,7 @@ const tokenChartData = {
     display: flex;
     flex-wrap: wrap;
     gap: 0.375rem;
-    max-height: 8rem;
+    max-height: 11rem;
     overflow-y: auto;
     padding: 0.5rem;
     border: 1px solid var(--color-border);
@@ -601,7 +579,8 @@ const tokenChartData = {
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    padding: 0.2rem 0.5rem;
+    min-height: 40px;
+    padding: 0 0.625rem;
     border-radius: 0.25rem;
     font-size: 0.6875rem;
     border: 1px solid var(--color-border);
@@ -610,6 +589,7 @@ const tokenChartData = {
     cursor: pointer;
     transition: all 0.15s;
     white-space: nowrap;
+    max-width: 100%;
   }
   .tag-list-item:hover {
     border-color: var(--tag-color);
@@ -675,7 +655,6 @@ const tokenChartData = {
   .cost-table th, .cost-table td { padding-left: 0.5rem; padding-right: 0.5rem; }
   .cost-num { text-align: right; font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-text-muted); white-space: nowrap; }
   .cost-oneoff { padding: 0.75rem 1rem; }
-  .cost-tab { min-height: 40px; }
   .source-table tbody tr:hover {
     background-color: var(--color-surface-muted);
   }
@@ -713,31 +692,31 @@ const tokenChartData = {
   document.addEventListener("astro:page-load", initCostTabs);
 </script>
 
-<script define:vars={{ chartData, tokenChartData, tokenEntries, PRICE_INPUT, PRICE_OUTPUT, sqData }}>
-  window.__analyticsData = { chartData, tokenChartData, tokenEntries, PRICE_INPUT, PRICE_OUTPUT, sqData };
+<script is:inline define:vars={{ chartData, tokenEntries, sqData }}>
+  window.__analyticsData = { chartData, tokenEntries, sqData };
 </script>
 
 <script is:inline src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
 
+{/* The router re-runs inline scripts on every visit, which would stack
+    astro:page-load listeners and throw on the redeclared consts; the flag
+    keeps a single listener, and tryInit re-reads the data the page inlined. */}
 <script is:inline>
-  var ad = window.__analyticsData || {};
-  var chartData = ad.chartData;
-  var tokenChartData = ad.tokenChartData;
-  var tokenEntries = ad.tokenEntries || [];
-  var sqData = ad.sqData || [];
-  var PRICE_INPUT = ad.PRICE_INPUT || 0.75;
-  var PRICE_OUTPUT = ad.PRICE_OUTPUT || 3.75;
+(function () {
+  if (window.__analyticsBound) return;
+  window.__analyticsBound = true;
 
-  // === Global filter state ===
+  var chartData = null;
+  var tokenEntries = [];
+  var sqData = [];
   var globalDateFrom = "";
   var globalDateTo = "";
   var tokenFilterType = "all";
 
   function getTypeBadge(type) {
-    if (type === "daily") return "D";
-    if (type.indexOf("classify") >= 0) return "CC";
-    if (type.indexOf("labs") >= 0) return "LW";
-    return type.replace("raw_", "").charAt(0).toUpperCase();
+    var m = { daily: "快報", labs_classify: "分類", labs_weekly: "Labs 週", raw_weekly: "週",
+      raw_monthly: "月", raw_quarterly: "季", podcast: "Podcast" };
+    return m[type] || type;
   }
   function getTypePeriodClass(type) {
     if (type === "daily") return "warroom";
@@ -747,9 +726,9 @@ const tokenChartData = {
     return "quarterly";
   }
   function getTypeTitle(type) {
-    var m = { daily: "Daily Report", labs_classify: "Labs Classify (daily)",
-      labs_weekly: "Labs Weekly Report", raw_weekly: "Industry Weekly",
-      raw_monthly: "Industry Monthly", raw_quarterly: "Industry Quarterly" };
+    var m = { daily: "每日快報", labs_classify: "Labs 每日貼文分類",
+      labs_weekly: "Labs 週報", raw_weekly: "產業週報",
+      raw_monthly: "產業月報", raw_quarterly: "產業季報", podcast: "Podcast 摘要" };
     return m[type] || type;
   }
 
@@ -781,14 +760,14 @@ const tokenChartData = {
     var tbody = document.getElementById("breakdown-body");
     var title = document.getElementById("breakdown-title");
     if (!tbody) return;
-    if (title) title.textContent = "Detailed breakdown (" + entries.length + " LLM calls)";
+    if (title) title.textContent = "明細（" + entries.length + " 次 LLM 呼叫）";
     tbody.innerHTML = entries.map(function(e) {
       return '<tr><td class="meta">' + e.date + '</td>' +
         '<td><span class="period-label period-' + getTypePeriodClass(e.type) + '" title="' + getTypeTitle(e.type) + '">' + getTypeBadge(e.type) + '</span></td>' +
         '<td style="text-align:right" class="meta">' + e.input.toLocaleString() + '</td>' +
         '<td style="text-align:right" class="meta">' + e.output.toLocaleString() + '</td>' +
         '<td style="text-align:right;font-family:var(--font-mono);font-size:0.75rem;font-weight:600;color:var(--color-text)">' + e.total.toLocaleString() + '</td>' +
-        '<td style="text-align:right;font-family:var(--font-mono);font-size:0.75rem;color:var(--color-quarterly)">$' + e.cost.toFixed(4) + '</td></tr>';
+        '<td style="text-align:right;font-family:var(--font-mono);font-size:0.75rem;color:var(--color-quarterly-text)">$' + e.cost.toFixed(4) + '</td></tr>';
     }).join("");
   }
 
@@ -858,6 +837,8 @@ const tokenChartData = {
     var canvas = document.getElementById("token-chart");
     if (!canvas || canvas.dataset.bound) return;
     canvas.dataset.bound = "true";
+    // A chart from an earlier visit still holds the swapped-out canvas.
+    if (window.__tokenChart) window.__tokenChart.destroy();
 
     var isDark = document.documentElement.classList.contains("dark");
     var gridColor = isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)";
@@ -866,10 +847,10 @@ const tokenChartData = {
     window.__tokenChart = new Chart(canvas, {
       type: "bar",
       data: { labels: [], datasets: [
-        { label: "Input (K)", data: [],
+        { label: "輸入（K）", data: [],
           backgroundColor: isDark ? "rgba(34, 211, 238, 0.5)" : "rgba(8, 145, 178, 0.5)",
           borderColor: isDark ? "#22d3ee" : "#0891b2", borderWidth: 1 },
-        { label: "Output (K)", data: [],
+        { label: "輸出（K）", data: [],
           backgroundColor: isDark ? "rgba(245, 158, 11, 0.5)" : "rgba(217, 119, 6, 0.5)",
           borderColor: isDark ? "#f59e0b" : "#d97706", borderWidth: 1 },
       ]},
@@ -888,7 +869,7 @@ const tokenChartData = {
         scales: {
           x: { stacked: true, grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10, family: "Geist Mono, monospace" } } },
           y: { stacked: true, grid: { color: gridColor }, ticks: { color: textColor, font: { size: 10, family: "Geist Mono, monospace" } },
-            title: { display: true, text: "Tokens (K)", color: textColor, font: { size: 11 } } },
+            title: { display: true, text: "Token（K）", color: textColor, font: { size: 11 } } },
         },
       },
     });
@@ -916,7 +897,7 @@ const tokenChartData = {
     if (!canvas || canvas.dataset.bound) return;
     canvas.dataset.bound = "true";
 
-    const datasets = chartData.tags.map((tag, i) => {
+    const datasets = chartData.tags.map((tag) => {
       const colors = TYPE_COLORS[tag.type] || TYPE_COLORS.topics;
       // Cumulative count for timeline
       let cumulative = 0;
@@ -947,6 +928,7 @@ const tokenChartData = {
     var gridColor = isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)";
     var textColor = isDark ? "#78859b" : "#78716c";
 
+    if (window.__tagChart) window.__tagChart.destroy();
     window.__tagChart = new Chart(canvas, {
       type: "line",
       data: {
@@ -985,7 +967,7 @@ const tokenChartData = {
             },
             title: {
               display: true,
-              text: "Cumulative mentions",
+              text: "累計提及次數",
               color: textColor,
               font: { size: 11 },
             },
@@ -1017,12 +999,13 @@ const tokenChartData = {
       });
     });
 
-    // Type filter buttons
+    // Every filter row on the page shares the .tag-filter class, so the
+    // lookup must stay inside this row or it clears the others' active state.
     var activeType = "all";
-    document.querySelectorAll("[data-type]").forEach(function(btn) {
+    document.querySelectorAll("#tag-type-filters [data-type]").forEach(function(btn) {
       btn.addEventListener("click", function() {
         activeType = btn.dataset.type;
-        document.querySelectorAll(".tag-filter").forEach(function(b) {
+        document.querySelectorAll("#tag-type-filters .tag-filter").forEach(function(b) {
           b.classList.toggle("tag-filter-active", b.dataset.type === activeType);
         });
 
@@ -1049,8 +1032,17 @@ const tokenChartData = {
     });
   }
 
-  // === Global time range controller ===
+  // Report dates are Taiwan calendar days; UTC "today" is still yesterday
+  // there until 08:00.
+  var taipeiFormat = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Taipei" });
+  function taipeiDate(ms) {
+    return taipeiFormat.format(new Date(ms));
+  }
+
   function initGlobalRange() {
+    var row = document.getElementById("global-range-btns");
+    if (!row || row.dataset.bound) return;
+    row.dataset.bound = "true";
     var fromEl = document.getElementById("global-date-from");
     var toEl = document.getElementById("global-date-to");
 
@@ -1071,19 +1063,18 @@ const tokenChartData = {
           globalDateFrom = "";
           globalDateTo = "";
         } else if (g === "today") {
-          var d = new Date().toISOString().slice(0, 10);
+          var d = taipeiDate(Date.now());
           globalDateFrom = d;
           globalDateTo = d;
         } else if (g === "yesterday") {
-          var y = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+          var y = taipeiDate(Date.now() - 86400000);
           globalDateFrom = y;
           globalDateTo = y;
         } else {
           var days = parseInt(g);
-          var to = new Date();
-          var from = new Date(to.getTime() - days * 86400000);
-          globalDateFrom = from.toISOString().slice(0, 10);
-          globalDateTo = to.toISOString().slice(0, 10);
+          var now = Date.now();
+          globalDateFrom = taipeiDate(now - days * 86400000);
+          globalDateTo = taipeiDate(now);
         }
         if (fromEl) fromEl.value = globalDateFrom;
         if (toEl) toEl.value = globalDateTo;
@@ -1125,16 +1116,30 @@ const tokenChartData = {
     window.__tagChart.update();
   }
 
-  // Retry until Chart.js is loaded
-  function tryInit() {
-    updateSourceQuality();
+  function waitForChart() {
+    if (!document.getElementById("token-chart")) return;
     if (typeof Chart !== "undefined") {
       initAnalytics();
       initGlobalRange();
     } else {
-      setTimeout(tryInit, 100);
+      setTimeout(waitForChart, 100);
     }
   }
-  tryInit();
+
+  // Bound once for the whole visit, so it also fires on the other pages.
+  function tryInit() {
+    if (!document.getElementById("token-chart")) return;
+    var ad = window.__analyticsData || {};
+    chartData = ad.chartData || null;
+    tokenEntries = ad.tokenEntries || [];
+    sqData = ad.sqData || [];
+    globalDateFrom = "";
+    globalDateTo = "";
+    tokenFilterType = "all";
+    updateSourceQuality();
+    waitForChart();
+  }
+
   document.addEventListener("astro:page-load", tryInit);
+})();
 </script>
