@@ -7,7 +7,9 @@ Each item carries its section titles and up to three section summaries, or
 the opening of the text while LLM extraction has not run yet. Items link to
 the original post (canonical_url; Daily Dose URLs are resolved from its blog
 by title). Notion pages are not linked: they are private to the workspace
-owner and the site is for reading the originals.
+owner. Instead each item carries its sections with the same summary and
+takeaways knowledge-api writes to Notion, and the site renders them as
+/reading/<slug>.
 
 Usage:
     cd pipeline
@@ -35,7 +37,7 @@ MD_LINK = re.compile(r"\[([^\]]+)\]\([^)]+\)")
 
 SQL = """
 select coalesce(json_agg(row_to_json(t) order by t.published desc), '[]') from (
-  select s.source_key as source, d.title, d.canonical_url as url,
+  select d.id::text as doc_id, s.source_key as source, d.title, d.canonical_url as url,
          to_char(coalesce(d.published_at, d.created_at), 'YYYY-MM-DD') as published,
          (select json_agg(sec.title order by sec.section_index) from knowledge.sections sec
             where sec.document_id = d.id and sec.title is not null
@@ -45,6 +47,12 @@ select coalesce(json_agg(row_to_json(t) order by t.published desc), '[]') from (
             where sec.document_id = d.id and sec.document_version_id = v.id and sec.summary is not null
               and %(not_sponsor)s
             order by sec.section_index limit 3) x) as summary,
+         (select json_agg(json_build_object('title', sec.title, 'category', sec.category, 'summary', sec.summary,
+                                            'takeaways', coalesce(sec.key_takeaways, '[]'::jsonb))
+                          order by sec.section_index)
+            from knowledge.sections sec
+            where sec.document_id = d.id and sec.document_version_id = v.id and %(not_sponsor)s
+              and sec.section_type = 'content') as sections,
          (select left(regexp_replace(sec.raw_text, '\\s+', ' ', 'g'), 400) from knowledge.sections sec
             where sec.document_id = d.id and sec.document_version_id = v.id and %(not_sponsor)s
             order by sec.section_index limit 1) as opening
@@ -58,6 +66,16 @@ select coalesce(json_agg(row_to_json(t) order by t.published desc), '[]') from (
 """.replace("%(not_sponsor)s", "coalesce(sec.title, '') !~* 'sponsor'") % (", ".join(f"'{k}'" for k in SOURCES), SINCE_DAYS)
 
 
+def _clean_heading(h: str | None) -> str:
+    return re.sub(r"\]\(https?://\S*$", "", MD_LINK.sub(r"\1", h or "")).lstrip("[").strip()
+
+
+def _slug(title: str, doc_id: str) -> str:
+    """Return a URL slug that stays the same across exports: title words plus the document id prefix."""
+    words = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")[:60].rstrip("-")
+    return f"{words}-{doc_id[:8]}" if words else doc_id[:8]
+
+
 def main() -> None:
     out = subprocess.run(
         ["docker", "exec", "-i", "postgres", "psql", "-U", "postgres", "-d", "kdan", "-At", "-v", "ON_ERROR_STOP=1"],
@@ -65,9 +83,14 @@ def main() -> None:
     rows = json.loads(out or "[]")
     items = []
     for r in rows:
-        headings = [re.sub(r"\]\(https?://\S*$", "", MD_LINK.sub(r"\1", h)).lstrip("[").strip()
-                    for h in (r.get("headings") or []) if h and h != r["title"]]
-        items.append({"source": r["source"], "title": r["title"], "url": r.get("url"), "date": r["published"],
+        headings = [_clean_heading(h) for h in (r.get("headings") or []) if h and h != r["title"]]
+        sections = [{"title": _clean_heading(x.get("title")) or None,
+                     "category": x.get("category") if x.get("category") not in (None, "article") else None,
+                     "summary": x.get("summary") or "",
+                     "takeaways": [t for t in (x.get("takeaways") or []) if t]}
+                    for x in (r.get("sections") or [])]
+        items.append({"id": _slug(r["title"], r["doc_id"]), "source": r["source"], "title": r["title"],
+                      "url": r.get("url"), "date": r["published"], "sections": sections,
                       "summary": r.get("summary") or r.get("opening") or "",
                       "summarised": bool(r.get("summary")), "headings": headings[:8]})
     DATA.write_text(json.dumps({

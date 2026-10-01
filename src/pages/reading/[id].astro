@@ -1,0 +1,166 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+
+import readingData from "../../data/reading.json";
+
+type Section = { title: string; category: string | null; summary: string; takeaways: string[] };
+type Item = {
+  id: string;
+  source: string;
+  title: string;
+  url: string | null;
+  date: string;
+  summary: string;
+  headings: string[];
+  sections?: Section[];
+};
+
+export function getStaticPaths() {
+  const data = readingData as unknown as { sources: { key: string; name: string }[]; items: Item[] };
+  const nameOf = new Map(data.sources.map((s) => [s.key, s.name]));
+  return data.items.map((item) => ({
+    params: { id: item.id },
+    props: { item, sourceName: nameOf.get(item.source) || item.source },
+  }));
+}
+
+const { item, sourceName } = Astro.props as { item: Item; sourceName: string };
+const sections = item.sections || [];
+---
+
+<Layout title={item.title} description={item.summary?.slice(0, 160) || `${sourceName} · ${item.date}`}>
+  <Container>
+    <div class="rd-wrap">
+      <a href="/reading" class="rd-back">← 回到 Reading</a>
+
+      <header class="rd-head">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="reading-chip">{sourceName}</span>
+          <span class="meta">{item.date}</span>
+        </div>
+        <h1 class="rd-title">{item.title}</h1>
+        {item.summary && <p class="rd-lede">{item.summary}</p>}
+        {item.url && (
+          <a href={item.url} target="_blank" rel="noopener noreferrer" class="rd-btn">閱讀原文 ↗</a>
+        )}
+      </header>
+
+      {sections.length > 1 && (
+        <details class="rd-toc card" id="rd-toc">
+          <summary class="rd-toc-summary">
+            <span class="section-title">目錄</span>
+            <span class="meta">{sections.length} 段</span>
+            <svg class="rd-chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+          </summary>
+          <ol class="rd-toc-list">
+            {sections.map((s, i) => (
+              <li><a href={`#s-${i}`} class="rd-toc-link"><span class="rd-toc-num">{String(i + 1).padStart(2, "0")}</span><span>{s.title}</span></a></li>
+            ))}
+          </ol>
+        </details>
+      )}
+
+      {sections.length === 0 ? (
+        <div class="card p-5 text-sm" style="color: var(--color-text-muted);">
+          這篇還沒有分段整理，請直接閱讀原文。
+        </div>
+      ) : (
+        <div class="rd-sections">
+          {sections.map((s, i) => (
+            <section id={`s-${i}`} class="rd-section">
+              {s.category && <span class="tag tag-topic">{s.category}</span>}
+              <h2 class="rd-h2">{s.title}</h2>
+              {s.summary && (
+                <div class="rd-callout">
+                  <span class="rd-callout-icon" aria-hidden="true">📝</span>
+                  <p>{s.summary}</p>
+                </div>
+              )}
+              {s.takeaways.length > 0 && (
+                <ul class="rd-takeaways">
+                  {s.takeaways.map((t) => <li>{t}</li>)}
+                </ul>
+              )}
+            </section>
+          ))}
+        </div>
+      )}
+
+      <footer class="rd-foot">
+        <a href="/reading" class="rd-back">← 回到 Reading</a>
+        {item.url && <a href={item.url} target="_blank" rel="noopener noreferrer" class="rd-back" style="color: var(--color-accent-cool);">閱讀原文 ↗</a>}
+      </footer>
+    </div>
+  </Container>
+</Layout>
+
+<style>
+  .rd-wrap { max-width: 46rem; margin: 0 auto; display: flex; flex-direction: column; gap: 1.5rem; }
+  .rd-back {
+    display: inline-flex; align-items: center; min-height: 40px;
+    font-size: 0.8125rem; color: var(--color-text-muted); text-decoration: none;
+  }
+  .rd-back:hover { color: var(--color-text); }
+  .rd-head { display: flex; flex-direction: column; gap: 0.75rem; }
+  .reading-chip {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 11px; font-family: var(--font-mono); font-weight: 600;
+    color: var(--color-accent-cool); border: 1px solid var(--color-border);
+  }
+  .rd-title { font-size: 1.5rem; line-height: 1.3; font-weight: 700; letter-spacing: -0.01em; color: var(--color-text); }
+  @media (min-width: 768px) { .rd-title { font-size: 1.875rem; } }
+  .rd-lede { font-size: 0.9375rem; line-height: 1.7; color: var(--color-text-muted); }
+  .rd-btn {
+    align-self: flex-start; display: inline-flex; align-items: center; justify-content: center;
+    min-height: 44px; padding: 0 1.125rem; border-radius: 0.5rem;
+    font-size: 0.9375rem; font-weight: 600; text-decoration: none;
+    color: var(--color-surface); background-color: var(--color-accent-cool);
+    transition: opacity 0.15s;
+  }
+  .rd-btn:hover { opacity: 0.88; }
+
+  .rd-toc { padding: 0; }
+  .rd-toc-summary {
+    display: flex; align-items: center; gap: 0.75rem; min-height: 48px; padding: 0 1rem;
+    cursor: pointer; list-style: none;
+  }
+  .rd-toc-summary::-webkit-details-marker { display: none; }
+  .rd-chev { width: 1rem; height: 1rem; margin-left: auto; color: var(--color-text-muted); transition: transform 0.2s; }
+  .rd-toc[open] .rd-chev { transform: rotate(180deg); }
+  .rd-toc-list { list-style: none; margin: 0; padding: 0 0.5rem 0.5rem; border-top: 1px solid var(--color-border); }
+  .rd-toc-link {
+    display: flex; align-items: center; gap: 0.75rem; min-height: 40px; padding: 0.375rem 0.5rem;
+    border-radius: 0.375rem; font-size: 0.875rem; line-height: 1.4;
+    color: var(--color-text); text-decoration: none;
+  }
+  .rd-toc-link:hover { background-color: var(--color-surface-muted); }
+  .rd-toc-num { font-family: var(--font-mono); font-size: 0.6875rem; color: var(--color-text-muted); flex-shrink: 0; }
+
+  .rd-sections { display: flex; flex-direction: column; gap: 2.5rem; }
+  .rd-section { display: flex; flex-direction: column; gap: 0.75rem; align-items: flex-start; }
+  .rd-h2 { font-size: 1.25rem; line-height: 1.35; font-weight: 650; color: var(--color-text); }
+  .rd-callout {
+    display: flex; gap: 0.75rem; width: 100%; padding: 0.875rem 1rem; border-radius: 0.5rem;
+    background-color: var(--color-surface-muted); border: 1px solid var(--color-border);
+  }
+  .rd-callout p { font-size: 0.9375rem; line-height: 1.75; color: var(--color-text); }
+  .rd-callout-icon { flex-shrink: 0; line-height: 1.75; }
+  .rd-takeaways { list-style: disc; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .rd-takeaways li { font-size: 0.9375rem; line-height: 1.7; color: var(--color-text); }
+  .rd-takeaways li::marker { color: var(--color-text-muted); }
+  .rd-foot {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem;
+    padding-top: 1rem; border-top: 1px solid var(--color-border);
+  }
+</style>
+
+<script>
+  // The TOC stays collapsed on phones so the first section is above the fold;
+  // wider screens have room to show it open.
+  function initToc() {
+    const toc = document.getElementById("rd-toc") as HTMLDetailsElement | null;
+    if (toc && window.matchMedia("(min-width: 768px)").matches) toc.open = true;
+  }
+  document.addEventListener("astro:page-load", initToc);
+</script>
