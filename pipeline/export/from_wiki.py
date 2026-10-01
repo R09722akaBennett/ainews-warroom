@@ -9,8 +9,10 @@ The wiki pipeline (bennett-hub ~/wiki/tools/daily_news.py) writes
 notes/news/YYYY-MM-DD.md plus a .json sidecar with ref-numbered content,
 newsItems and token usage. Reports this module produces carry
 origin="wiki" and are rebuilt on every run; reports without that marker
-(the old in-repo agent, up to 2026-09-08) are left untouched, and a wiki
-date that already has one of them is skipped.
+(the old in-repo agent, up to 2026-09-08) are kept for the dates the wiki
+has no note for. Where both exist (2026-08-09 to 09-08) the wiki note wins:
+those notes were rebuilt with the real AINews issues on 2026-10-01 and are
+the digest the owner reads.
 
 Notes written before sidecars existed (2026-09-09 .. 2026-09-30) are
 exported from the markdown alone, with newsItems rebuilt from that day's
@@ -283,9 +285,9 @@ def main() -> None:
     args = parser.parse_args()
 
     existing = json.loads(DATA.read_text(encoding="utf-8")) if DATA.exists() else []
-    kept = [_retire_company(r) for r in existing if r.get("origin") != "wiki"]
-    taken = {r["date"] for r in kept}
-    fresh = [r for r in build_reports(Path(args.wiki)) if r["date"] not in taken]
+    fresh = build_reports(Path(args.wiki))
+    wiki_dates = {r["date"] for r in fresh}
+    kept = [_retire_company(r) for r in existing if r.get("origin") != "wiki" and r["date"] not in wiki_dates]
     tags = _tags_by_date([r["date"] for r in fresh])
     for r in fresh:
         r["tags"] = tags.get(r["date"], {k: [] for k in TAG_TYPES})

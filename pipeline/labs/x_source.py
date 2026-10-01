@@ -106,6 +106,8 @@ def _item(handle: str, post: dict) -> dict:
         "source": f"X @{handle}",
         "published_at": post.get("created_at"),
         "content": text,
+        "handle": handle,
+        "raw": post,  # the X API object as returned, stored in knowledge DB
     }
 
 

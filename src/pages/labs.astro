@@ -11,6 +11,13 @@ const labsMeta = (labsData as any).labs as { key: string; name: string; tier: nu
 const items = ((labsData as any).items || []) as any[];
 const labByKey = new Map(labsMeta.map((l) => [l.key, l]));
 
+// Daily briefs ("今日前沿實驗室"), newest first
+const dailyBriefs = (summariesData as any[])
+  .filter((s: any) => s.period === "labs_daily")
+  .sort((a: any, b: any) => b.startDate.localeCompare(a.startDate));
+const latestBrief = dailyBriefs[0];
+const olderBriefs = dailyBriefs.slice(1, 15);
+
 // Weekly lab reports
 const weeklyReports = (summariesData as any[])
   .filter((s: any) => s.period === "labs_weekly")
@@ -65,10 +72,33 @@ const categoryColors: Record<string, string> = {
         <div class="section-title mb-2">Frontier Labs</div>
         <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Labs</h1>
         <p class="mt-1 text-sm" style="color: var(--color-text-muted);">
-          Tracking {labsMeta.length} frontier AI labs across the US, China and Europe, open and closed.
-          {items.length > 0 ? `${items.length} classified items.` : "Data will appear after the first daily run."}
+          Tracking {labsMeta.length} frontier AI labs across the US, China and Europe through their official X accounts.
+          {items.length > 0 ? `${items.length} posts.` : "Posts will appear after the first daily run."}
         </p>
       </div>
+
+      {/* Daily brief */}
+      {latestBrief && (
+        <section class="space-y-3">
+          <h2 class="text-lg font-semibold" style="color: var(--color-text);">今日前沿實驗室 <span class="meta">{latestBrief.startDate}</span></h2>
+          <article class="card card-accent-cool p-5 labs-brief" set:html={marked.parse(latestBrief.content)} />
+          {olderBriefs.length > 0 && (
+            <details class="group">
+              <summary class="meta cursor-pointer">往日 {olderBriefs.length} 天</summary>
+              <div class="space-y-3 pt-3">
+                {olderBriefs.map((b: any) => (
+                  <details class="card group">
+                    <summary class="flex cursor-pointer items-center gap-3 px-5 py-3">
+                      <span class="meta">{b.startDate}</span>
+                    </summary>
+                    <div class="px-5 pb-5 labs-brief" style="border-top: 1px solid var(--color-border);" set:html={marked.parse(b.content)} />
+                  </details>
+                ))}
+              </div>
+            </details>
+          )}
+        </section>
+      )}
 
       {/* Weekly Reports */}
       {weeklyReports.length > 0 && (
@@ -181,6 +211,7 @@ const categoryColors: Record<string, string> = {
                 <div class="comp-content">
                   <span class="comp-title">{item.title}</span>
                   {item.summary && <span class="comp-summary">{item.summary}</span>}
+                  {item.content && item.content !== item.title && <span class="comp-post">{item.content}</span>}
                 </div>
                 <ExternalIcon />
               </a>
@@ -193,6 +224,21 @@ const categoryColors: Record<string, string> = {
 </Layout>
 
 <style>
+  .comp-post {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    white-space: pre-line;
+    font-size: 12px;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+  }
+  .comp-row:hover .comp-post { -webkit-line-clamp: unset; }
+  :global(.labs-brief p) { margin: 0.4rem 0; }
+  :global(.labs-brief ul) { padding-left: 1.1rem; margin: 0.25rem 0 0.75rem; }
+  :global(.labs-brief li) { margin: 0.2rem 0; font-size: 0.9rem; }
+  :global(.labs-brief a) { color: var(--color-accent-cool); text-decoration: underline; text-underline-offset: 2px; }
   .comp-row {
     display: flex;
     align-items: center;

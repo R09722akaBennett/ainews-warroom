@@ -1,9 +1,8 @@
-"""Collect and score wide-source candidates for the day (shadow mode).
+"""Collect and score wide-source candidates for the day.
 
-Shadow mode: nothing here feeds the WhatsApp digest yet. Each run writes
-pipeline/data/candidates/<date>.json with every candidate, its Jev scores,
-and the same scores for the curated items the digest actually used, so a
-week of runs can set the importance threshold (see docs/integration-blueprint).
+Since 2026-10-01 the wiki daily digest (16:30) reads each day's output and
+takes the items Jev rates important at 0.75 or more, deduplicated, as extra
+material; this job runs at 16:05 so the file is ready.
 
 Usage:
     cd pipeline

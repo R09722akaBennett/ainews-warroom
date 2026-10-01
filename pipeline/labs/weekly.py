@@ -1,4 +1,9 @@
-"""Competitor weekly report — per-company summaries → combined report."""
+"""Labs weekly report.
+
+Since 2026-10-01 the Monday report compresses the past seven daily briefs
+(generate_weekly_from_daily); generate_weekly_report is the older
+per-item version, kept for reference.
+"""
 
 from __future__ import annotations
 
@@ -198,3 +203,25 @@ def generate_weekly_report(date: str) -> dict | None:
     console.print(f"  Tokens: input={total_tokens['input']:,} output={total_tokens['output']:,} total={total_tokens['total']:,}")
 
     return total_tokens
+
+
+def generate_weekly_from_daily(date: str) -> dict | None:
+    """Compress the labs_daily briefs of the 7 days before date into a labs_weekly report."""
+    from datetime import date as _date
+
+    from db.summaries import load_summaries
+    from prompts.labs_prompt import LABS_WEEKLY_FROM_DAILY_PROMPT
+
+    end = _date.fromisoformat(date) - timedelta(days=1)
+    start = end - timedelta(days=6)
+    days = [d for d in load_summaries("labs_daily", str(start), str(end)) if d["content"].strip() != "今天沒有重要動態。"]
+    if not days:
+        console.print(f"[yellow]Labs weekly: no daily briefs between {start} and {end}, skipping[/]")
+        return None
+    text = "\n\n---\n\n".join(f"### {d['start_date']}\n{d['content']}" for d in days)
+    raw, usage = _call_llm(LABS_WEEKLY_FROM_DAILY_PROMPT.format(start=start, end=end, days=text))
+    report = _parse_json(raw)
+    save_summary("labs_weekly", str(start), str(end), report["title"], report["content"],
+                 tags={"days": len(days)}, token_usage=usage)
+    console.print(f"[green]Labs weekly saved from {len(days)} daily briefs: {report['title']}[/]")
+    return report

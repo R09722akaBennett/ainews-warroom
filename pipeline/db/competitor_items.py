@@ -8,12 +8,16 @@ from db.connection import get_conn
 
 
 def save_competitor_items(date: str, company: str, items: list[dict]):
-    """Save classified competitor items. Replaces existing items for this date+company."""
+    """Add items for this date and company, skipping URLs already stored for them.
+
+    Until 2026-10-01 this replaced the day's rows. X reads only posts newer
+    than the last read, so a second run on the same day would have replaced
+    the morning's posts with nothing.
+    """
     conn = get_conn()
-    conn.execute(
-        "DELETE FROM competitor_items WHERE date = ? AND company = ?",
-        (date, company),
-    )
+    have = {r[0] for r in conn.execute(
+        "SELECT url FROM competitor_items WHERE date = ? AND company = ?", (date, company))}
+    items = [it for it in items if it.get("url", "") not in have]
     conn.executemany(
         "INSERT INTO competitor_items "
         "(date, company, title, url, source, published_at, category, ai_related, summary, content) "

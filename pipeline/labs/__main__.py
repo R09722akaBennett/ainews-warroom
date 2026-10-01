@@ -1,4 +1,4 @@
-"""Competitor tracker — collect daily, classify weekly.
+"""Frontier lab tracker: collect official X posts, classify, write the daily brief; weekly report on Mondays.
 
 Usage:
     cd pipeline
@@ -18,6 +18,7 @@ from rich.console import Console
 from db import init_db, save_competitor_items, get_competitor_urls
 from labs.config import LABS
 from labs.collector import collect_all_competitors
+from labs.knowledge import ingest_posts
 
 console = Console()
 
@@ -34,6 +35,7 @@ def run_collect(date: str):
     seen_urls = get_competitor_urls(date, days=7)
 
     total = 0
+    kb = {"created": 0, "skipped": 0, "failed": 0}
     for company_key, items in all_news.items():
         # Filter out already-seen URLs
         if seen_urls:
@@ -50,9 +52,12 @@ def run_collect(date: str):
             item.setdefault("summary", "")
 
         save_competitor_items(date, company_key, items)
+        k = ingest_posts(company_key, items)
+        for key in kb:
+            kb[key] += k[key]
         total += len(items)
 
-    console.print(f"\n[bold green]Done! {total} items saved to DB[/]")
+    console.print(f"\n[bold green]Done! {total} items saved to DB[/]; knowledge DB {kb}")
     return total
 
 
@@ -140,12 +145,14 @@ def main():
 
     run_collect(today)
     run_classify(today)
+    from labs.daily import generate_daily_brief
+    generate_daily_brief(today)
 
     if args.classify:
-        # Weekly report (only on --classify flag, triggered on Mondays)
-        from labs.weekly import generate_weekly_report
-        console.print(f"\n[bold]Generating competitor weekly report...[/]\n")
-        generate_weekly_report(today)
+        # Weekly report (only on --classify flag, triggered on Mondays): the past 7 daily briefs
+        from labs.weekly import generate_weekly_from_daily
+        console.print(f"\n[bold]Generating labs weekly report...[/]\n")
+        generate_weekly_from_daily(today)
 
 
 if __name__ == "__main__":

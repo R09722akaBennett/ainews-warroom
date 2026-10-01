@@ -1,12 +1,15 @@
 """Export the frontier-lab tracker to src/data/labs.json and summaries.json.
 
+Only the labs' official X posts are listed (the Google News items collected
+before 2026-10-01 stay in warroom.db but are no longer shown).
+
 Writes only lab data. The general `python -m export` rebuilds every JSON
 file from warroom.db, and on bennett-hub that database only holds data from
 2026-10-01 on, so running it there would wipe the site's history.
 
 labs.json holds the lab list with display attributes (from
 labs.config) and every relevant, classified item. Weekly reports and
-token usage records (periods labs_weekly and labs_classify) are merged into
+token usage records (periods labs_daily, labs_weekly and labs_classify) are merged into
 summaries.json, replacing earlier copies of those two periods only.
 
 Usage:
@@ -24,15 +27,16 @@ from labs.config import LABS
 from db.connection import get_conn, init_db
 
 DATA = Path(__file__).resolve().parents[2] / "src" / "data"
-PERIODS = ("labs_weekly", "labs_classify")
+PERIODS = ("labs_daily", "labs_weekly", "labs_classify")
 
 
 def main() -> None:
     init_db()
     conn = get_conn()
     rows = conn.execute(
-        "SELECT date, company, title, url, source, published_at, category, summary FROM competitor_items "
-        "WHERE ai_related = 1 AND category != 'pending' ORDER BY date DESC, company, id").fetchall()
+        "SELECT date, company, title, url, source, published_at, category, summary, content FROM competitor_items "
+        "WHERE ai_related = 1 AND category != 'pending' AND source LIKE 'X @%' "
+        "ORDER BY date DESC, company, id").fetchall()
     sums = conn.execute(
         f"SELECT period, start_date, end_date, title, content, tags, token_usage, created_at "
         f"FROM periodic_summaries WHERE period IN ({','.join('?' * len(PERIODS))}) "
@@ -42,7 +46,8 @@ def main() -> None:
     labs = [{"key": k, "name": v["name"], "tier": v["tier"], "region": v["region"], "openness": v["openness"]}
             for k, v in LABS.items()]
     items = [{"date": r["date"], "lab": r["company"], "title": r["title"], "url": r["url"], "source": r["source"],
-              "publishedAt": r["published_at"], "category": r["category"], "summary": r["summary"]}
+              "publishedAt": r["published_at"], "category": r["category"], "summary": r["summary"],
+              "content": r["content"] or ""}
              for r in rows if r["company"] in LABS]
     (DATA / "labs.json").write_text(json.dumps({
         "updatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
