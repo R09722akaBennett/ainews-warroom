@@ -17,45 +17,30 @@
 
   /* Command-center palette */
   --color-surface: #fafaf9;
-  --color-surface-dark: #0c0f1a;
   --color-surface-raised: #ffffff;
-  --color-surface-raised-dark: #141825;
   --color-surface-muted: #f0efed;
-  --color-surface-muted-dark: #1a1e2e;
 
   --color-border: #e2e0dc;
-  --color-border-dark: #252a3a;
 
   --color-text: #1c1917;
-  --color-text-dark: #e7e5e4;
   --color-text-muted: #78716c;
-  --color-text-muted-dark: #78859b;
 
   /* Accent: amber for highlights */
   --color-accent-warm: #d97706;
   --color-accent-warm-muted: #fef3c7;
-  --color-accent-warm-dark: #f59e0b;
-  --color-accent-warm-muted-dark: #451a03;
 
   /* Accent: cyan for industry */
   --color-accent-cool: #0891b2;
   --color-accent-cool-muted: #e0f7fa;
-  --color-accent-cool-dark: #22d3ee;
-  --color-accent-cool-muted-dark: #083344;
 
   /* Status colors for periods */
   --color-quarterly: #059669;
-  --color-quarterly-dark: #34d399;
   --color-monthly: #2563eb;
-  --color-monthly-dark: #60a5fa;
   --color-weekly: #0891b2;
-  --color-weekly-dark: #22d3ee;
 
   /* Extra accents for trending/products */
   --color-accent-purple: #8b5cf6;
-  --color-accent-purple-dark: #a78bfa;
   --color-accent-orange: #f97316;
-  --color-accent-orange-dark: #fb923c;
 }
 
 @layer base {
@@ -64,11 +49,6 @@
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-border);
-  }
-  .dark *,
-  .dark ::after,
-  .dark ::before {
     border-color: var(--color-border);
   }
 }
@@ -94,10 +74,6 @@
     color: var(--color-text);
     @apply break-words;
   }
-  .dark body {
-    background-color: var(--color-surface);
-    color: var(--color-text);
-  }
 
   header {
     @apply fixed left-0 right-0 top-0 z-50;
@@ -105,10 +81,6 @@
     background-color: color-mix(in srgb, var(--color-surface) 85%, transparent);
     backdrop-filter: blur(12px) saturate(1.5);
     border-bottom: 1px solid var(--color-border);
-  }
-  .dark header {
-    background-color: color-mix(in srgb, var(--color-surface) 85%, transparent);
-    border-bottom-color: var(--color-border);
   }
 
   main {
@@ -122,10 +94,6 @@
     border-top: 1px solid var(--color-border);
     color: var(--color-text-muted);
   }
-  .dark footer {
-    border-top-color: var(--color-border);
-    color: var(--color-text-muted);
-  }
 
   /* Article / prose styling */
   article {
@@ -137,7 +105,7 @@
     color: var(--color-text);
     --tw-prose-body: var(--color-text);
     --tw-prose-headings: var(--color-text);
-    --tw-prose-links: var(--color-accent-cool);
+    --tw-prose-links: var(--color-accent-cool-text);
     --tw-prose-bold: var(--color-text);
     --tw-prose-counters: var(--color-text-muted);
     --tw-prose-bullets: var(--color-text-muted);
@@ -154,12 +122,12 @@
   article a {
     @apply font-sans underline underline-offset-[3px];
     @apply transition-colors duration-200;
-    color: var(--color-accent-cool);
+    color: var(--color-accent-cool-text);
     text-decoration-color: var(--color-border);
   }
   article a:hover {
-    color: var(--color-accent-cool);
-    text-decoration-color: var(--color-accent-cool);
+    color: var(--color-accent-cool-text);
+    text-decoration-color: var(--color-accent-cool-text);
   }
   article blockquote {
     quotes: none;
@@ -184,15 +152,6 @@
   }
 }
 
-/* Animate */
-.animate {
-  @apply -translate-y-2 opacity-0;
-  @apply transition-all duration-500 ease-out;
-}
-.animate.show {
-  @apply translate-y-0 opacity-100;
-}
-
 html #back-to-top {
   @apply pointer-events-none opacity-0;
 }
@@ -204,10 +163,6 @@ html.scrolled #back-to-top {
 pre {
   @apply py-5 rounded-md;
   border: 1px solid var(--color-border);
-  background-color: var(--color-surface-muted) !important;
-}
-.dark pre {
-  border-color: var(--color-border);
   background-color: var(--color-surface-muted) !important;
 }
 
@@ -228,6 +183,20 @@ pre {
   --color-weekly: #0891b2;
   --color-accent-purple: #8b5cf6;
   --color-accent-orange: #f97316;
+
+  /* The accents above are kept for borders, fills and tints; at 11-13px on
+     these surfaces they fall under 4.5:1, so text uses these darker twins. */
+  --color-accent-warm-text: #a3480a;
+  --color-accent-cool-text: #0e7490;
+  --color-quarterly-text: #047857;
+  --color-monthly-text: #1d4ed8;
+  --color-weekly-text: #0e7490;
+  --color-accent-purple-text: #7c3aed;
+  --color-accent-orange-text: #b33d0b;
+  --color-danger-text: #b91c1c;
+  /* Muted text on --color-surface-muted (counts, chips) needs more contrast
+     than muted text on the page background. */
+  --color-text-muted-on-muted: #6b645f;
 
   --astro-code-foreground: #1c1917;
   --astro-code-background: #f0efed;
@@ -259,6 +228,16 @@ pre {
   --color-accent-purple: #a78bfa;
   --color-accent-orange: #fb923c;
 
+  --color-accent-warm-text: #f59e0b;
+  --color-accent-cool-text: #22d3ee;
+  --color-quarterly-text: #34d399;
+  --color-monthly-text: #60a5fa;
+  --color-weekly-text: #22d3ee;
+  --color-accent-purple-text: #a78bfa;
+  --color-accent-orange-text: #fb923c;
+  --color-danger-text: #f87171;
+  --color-text-muted-on-muted: #8b97ab;
+
   --astro-code-foreground: #e7e5e4;
   --astro-code-background: #1a1e2e;
   --astro-code-token-comment: #78859b;
@@ -277,14 +256,7 @@ pre {
   border: 1px solid var(--color-border);
   background-color: var(--color-surface);
 }
-.dark .copy-code {
-  border-color: var(--color-border);
-  background-color: var(--color-surface);
-}
 .copy-code:hover {
-  background-color: var(--color-surface-muted);
-}
-.dark .copy-code:hover {
   background-color: var(--color-surface-muted);
 }
 .copy-code:active {
@@ -297,10 +269,6 @@ pre {
   border-radius: 0.5rem;
   background-color: var(--color-surface-raised);
   transition: border-color 0.2s, box-shadow 0.2s;
-}
-.dark .card {
-  border-color: var(--color-border);
-  background-color: var(--color-surface-raised);
 }
 .card:hover {
   border-color: color-mix(in srgb, var(--color-border) 50%, var(--color-text) 20%);
@@ -315,32 +283,17 @@ pre {
 .card-accent-warm {
   border-left: 3px solid var(--color-accent-warm);
 }
-.dark .card-accent-warm {
-  border-left-color: var(--color-accent-warm);
-}
 .card-accent-cool {
   border-left: 3px solid var(--color-accent-cool);
-}
-.dark .card-accent-cool {
-  border-left-color: var(--color-accent-cool);
 }
 .card-accent-quarterly {
   border-left: 3px solid var(--color-quarterly);
 }
-.dark .card-accent-quarterly {
-  border-left-color: var(--color-quarterly);
-}
 .card-accent-monthly {
   border-left: 3px solid var(--color-monthly);
 }
-.dark .card-accent-monthly {
-  border-left-color: var(--color-monthly);
-}
 .card-accent-weekly {
   border-left: 3px solid var(--color-weekly);
-}
-.dark .card-accent-weekly {
-  border-left-color: var(--color-weekly);
 }
 .card-accent-purple {
   border-left: 3px solid var(--color-accent-purple);
@@ -350,65 +303,41 @@ pre {
 }
 
 /* Rank colors (used in leaderboard) */
-.rank-gold { color: #d97706; font-weight: 700; }
-.dark .rank-gold { color: #f59e0b; }
+.rank-gold { color: var(--color-accent-warm-text); font-weight: 700; }
 .rank-silver { color: #6b7280; font-weight: 600; }
 .dark .rank-silver { color: #9ca3af; }
 .rank-bronze { color: #b45309; font-weight: 600; }
 .dark .rank-bronze { color: #d97706; }
-.rank-top10 { color: var(--color-accent-cool); }
+.rank-top10 { color: var(--color-accent-cool-text); }
 
 /* Period labels */
 .period-label {
   @apply inline-block rounded-sm px-2 py-0.5 text-xs font-mono font-medium uppercase tracking-widest;
 }
 .period-quarterly {
-  color: var(--color-quarterly);
-  background-color: color-mix(in srgb, var(--color-quarterly) 10%, transparent);
-}
-.dark .period-quarterly {
-  color: var(--color-quarterly);
+  color: var(--color-quarterly-text);
   background-color: color-mix(in srgb, var(--color-quarterly) 10%, transparent);
 }
 .period-monthly {
-  color: var(--color-monthly);
-  background-color: color-mix(in srgb, var(--color-monthly) 10%, transparent);
-}
-.dark .period-monthly {
-  color: var(--color-monthly);
+  color: var(--color-monthly-text);
   background-color: color-mix(in srgb, var(--color-monthly) 10%, transparent);
 }
 .period-weekly {
-  color: var(--color-weekly);
-  background-color: color-mix(in srgb, var(--color-weekly) 10%, transparent);
-}
-.dark .period-weekly {
-  color: var(--color-weekly);
+  color: var(--color-weekly-text);
   background-color: color-mix(in srgb, var(--color-weekly) 10%, transparent);
 }
 .period-warroom {
-  color: var(--color-accent-warm);
-  background-color: color-mix(in srgb, var(--color-accent-warm) 10%, transparent);
-}
-.dark .period-warroom {
-  color: var(--color-accent-warm);
+  color: var(--color-accent-warm-text);
   background-color: color-mix(in srgb, var(--color-accent-warm) 10%, transparent);
 }
 .period-industry {
-  color: var(--color-accent-cool);
-  background-color: color-mix(in srgb, var(--color-accent-cool) 10%, transparent);
-}
-.dark .period-industry {
-  color: var(--color-accent-cool);
+  color: var(--color-accent-cool-text);
   background-color: color-mix(in srgb, var(--color-accent-cool) 10%, transparent);
 }
 
 /* Meta text */
 .meta {
   @apply font-mono text-xs;
-  color: var(--color-text-muted);
-}
-.dark .meta {
   color: var(--color-text-muted);
 }
 
@@ -418,9 +347,6 @@ pre {
   color: var(--color-text-muted);
   letter-spacing: 0.15em;
 }
-.dark .section-title {
-  color: var(--color-text-muted);
-}
 
 /* Shared tab styles */
 .tab-pill {
@@ -429,6 +355,7 @@ pre {
   gap: 0.375rem;
   cursor: pointer;
   border-radius: 0.5rem;
+  min-height: 40px;
   padding: 0.4rem 0.75rem;
   font-size: 0.8125rem;
   font-weight: 500;
@@ -451,7 +378,7 @@ pre {
 .tab-pill-count {
   font-size: 0.6875rem;
   font-family: var(--font-mono);
-  color: var(--color-text-muted);
+  color: var(--color-text-muted-on-muted);
   background: var(--color-surface-muted);
   padding: 0.05rem 0.3rem;
   border-radius: 0.25rem;
@@ -477,12 +404,12 @@ pre {
   border-color: color-mix(in srgb, #c084fc 20%, transparent);
 }
 .tag-model {
-  color: var(--color-accent-cool);
+  color: var(--color-accent-cool-text);
   background-color: color-mix(in srgb, var(--color-accent-cool) 8%, transparent);
   border: 1px solid color-mix(in srgb, var(--color-accent-cool) 20%, transparent);
 }
 .tag-topic {
-  color: var(--color-accent-warm);
+  color: var(--color-accent-warm-text);
   background-color: color-mix(in srgb, var(--color-accent-warm) 8%, transparent);
   border: 1px solid color-mix(in srgb, var(--color-accent-warm) 20%, transparent);
 }
