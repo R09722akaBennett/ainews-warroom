@@ -1,0 +1,12 @@
+---
+import type { GetStaticPaths } from "astro";
+import List from "../_List.astro";
+import { laterPages } from "../../_lib/paging";
+import { DAYS_PER_PAGE, dates } from "../_data";
+
+export const getStaticPaths = (({ paginate }) => laterPages(paginate, dates, DAYS_PER_PAGE)) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+---
+
+<List page={page} />

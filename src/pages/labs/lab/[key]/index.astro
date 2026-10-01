@@ -1,0 +1,13 @@
+---
+import Lab from "../../_Lab.astro";
+import { firstPage } from "../../../_lib/paging";
+import { activeLabs, posts } from "../../_data";
+
+export function getStaticPaths() {
+  return activeLabs.map((key) => ({ params: { key } }));
+}
+
+const { key } = Astro.params;
+---
+
+<Lab labKey={key!} page={firstPage(posts.filter((p) => p.lab === key), 30)} />

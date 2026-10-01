@@ -1,0 +1,12 @@
+---
+import Day from "./_Day.astro";
+import { days } from "./_data";
+
+export function getStaticPaths() {
+  return days.map((date) => ({ params: { date } }));
+}
+
+const { date } = Astro.params;
+---
+
+<Day day={date!} />

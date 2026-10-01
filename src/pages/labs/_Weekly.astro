@@ -1,0 +1,71 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+import "./_labs.css";
+import Pagination from "@components/Pagination.astro";
+import type { PageSlice } from "../_lib/paging";
+import { renderBrief, shortDate, splitWeekly, tokens, weeklyReports, type Summary } from "./_data";
+
+type Props = { page: PageSlice<Summary> };
+const { page } = Astro.props;
+// Only the newest report on the first page opens as a card; the rest are rows.
+const latest = page.currentPage === 1 ? page.data[0] : undefined;
+const latestSplit = latest ? splitWeekly(latest.content) : null;
+const older = latest ? page.data.slice(1) : page.data;
+---
+
+<Layout title={page.currentPage === 1 ? "Labs Weekly" : `Labs Weekly 第 ${page.currentPage} 頁`} description="前沿 AI 實驗室每週動態整理">
+  <Container>
+    <div class="lab-wrap">
+      <div>
+        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Labs Weekly</h1>
+        <p class="lab-intro">
+          {weeklyReports.length > 0 ? `共 ${weeklyReports.length} 份週報，每週一整理上一週的實驗室貼文。` : "第一份週報會在週一產生。"}
+          <a class="lab-link" href="/labs">回到每日貼文</a>
+        </p>
+      </div>
+
+      {latest && latestSplit && (
+        <article class="card card-accent-warm lab-weekly">
+          <div class="lab-weekly-meta">
+            <span class="period-label period-warroom">最新</span>
+            <span class="meta">{latest.startDate} ~ {latest.endDate}</span>
+            {latest.tokenUsage && <span class="meta lab-tokens ml-auto">{tokens(latest.tokenUsage)}</span>}
+          </div>
+          <h2 class="lab-weekly-title">{latest.title}</h2>
+          <div class="lab-prose" set:html={renderBrief(latestSplit.lead)} />
+          {latestSplit.rest && (
+            <details class="lab-more">
+              <summary class="lab-more-toggle">
+                <span class="lab-more-open">展開全文</span><span class="lab-more-close">收合</span>
+                <svg class="lab-caret" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+              </summary>
+              <div class="lab-prose" set:html={renderBrief(latestSplit.rest)} />
+            </details>
+          )}
+        </article>
+      )}
+
+      {older.length > 0 && (
+        <section class="lab-section" aria-label="先前的週報">
+          {latest && <h2 class="lab-h2">先前的週報</h2>}
+          <div class="lab-older">
+            {older.map((s) => (
+              <details class="card lab-row">
+                <summary class="lab-row-summary">
+                  <span class="meta lab-row-date">{shortDate(s.startDate)} ~ {shortDate(s.endDate)}</span>
+                  <span class="lab-row-title">{s.title}</span>
+                  {s.tokenUsage && <span class="meta lab-tokens">{tokens(s.tokenUsage)}</span>}
+                  <svg class="lab-caret" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+                </summary>
+                <div class="lab-prose lab-row-body" set:html={renderBrief(s.content)} />
+              </details>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <Pagination currentPage={page.currentPage} lastPage={page.lastPage} base="/labs/weekly" label="週報分頁" />
+    </div>
+  </Container>
+</Layout>

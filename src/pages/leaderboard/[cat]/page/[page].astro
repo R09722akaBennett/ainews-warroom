@@ -1,0 +1,14 @@
+---
+import type { GetStaticPaths } from "astro";
+import Board from "../../_Board.astro";
+import { laterPages } from "../../../_lib/paging";
+import { ROWS_PER_PAGE, categories, tableRows } from "../../_data";
+
+export const getStaticPaths = (({ paginate }) =>
+  Object.keys(categories).flatMap((cat) => laterPages(paginate, tableRows(cat), ROWS_PER_PAGE, { cat }))) satisfies GetStaticPaths;
+
+const { cat } = Astro.params;
+const { page } = Astro.props;
+---
+
+<Board active={cat!} page={page.currentPage} />

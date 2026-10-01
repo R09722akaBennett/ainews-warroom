@@ -1,0 +1,13 @@
+---
+import type { GetStaticPaths } from "astro";
+import List from "../../../_List.astro";
+import { laterPages } from "../../../../_lib/paging";
+import { PER_PAGE, itemsOf, sourceSlug, sources } from "../../../_data";
+
+export const getStaticPaths = (({ paginate }) =>
+  sources.flatMap((s) => laterPages(paginate, itemsOf(s.key), PER_PAGE, { key: sourceSlug(s.key) }, { source: s.key }))) satisfies GetStaticPaths;
+
+const { page, source } = Astro.props;
+---
+
+<List page={page} source={source as string} />

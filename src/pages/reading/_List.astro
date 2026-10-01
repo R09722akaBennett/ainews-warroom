@@ -1,0 +1,117 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+import Pagination from "@components/Pagination.astro";
+
+import type { PageSlice } from "../_lib/paging";
+import { items, nameOf, sourceHref, sources, type Item } from "./_data";
+
+type Props = { page: PageSlice<Item>; source?: string };
+const { page, source } = Astro.props;
+const base = source ? sourceHref(source) : "/reading";
+const sourceName = source ? nameOf.get(source) : undefined;
+
+// Chips carry the section titles, so a chip that matches a section deep-links
+// to it; anything else falls back to the top of the detail page.
+function chipHref(item: Item, heading: string): string {
+  const idx = (item.sections || []).findIndex((s) => s.title === heading);
+  return idx >= 0 ? `/reading/${item.id}#s-${idx}` : `/reading/${item.id}`;
+}
+
+function truncate(text: string, n: number): string {
+  if (!text || text.length <= n) return text || "";
+  return text.slice(0, n).trimEnd() + "…";
+}
+const pageTitle = [sourceName ? `Reading · ${sourceName}` : "Reading", page.currentPage > 1 ? `第 ${page.currentPage} 頁` : ""].filter(Boolean).join(" ");
+---
+
+<Layout title={pageTitle} description="ByteByteGo、Daily Dose of DS、Berkeley RDI 與 ExplainThis 四份電子報的分段重點整理。">
+  <Container>
+    <div class="space-y-8">
+      <div>
+        <div class="section-title mb-2">Reading</div>
+        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">深讀</h1>
+        <p class="mt-1 text-sm leading-relaxed" style="color: var(--color-text-muted);">
+          {sources.map((s) => s.name).join("、")} 這 {sources.length} 份電子報的分段重點，最近 120 天共 {items.length} 篇{sourceName && `，其中 ${sourceName} ${page.total} 篇`}。
+        </p>
+      </div>
+
+      <nav class="flex flex-wrap gap-1.5" id="reading-tabs" aria-label="依來源">
+        <a href="/reading" class:list={["tab-pill reading-tab", { "tab-pill-active": !source }]} aria-current={!source ? "page" : undefined}>
+          <span>全部</span><span class="tab-pill-count">{items.length}</span>
+        </a>
+        {sources.map((s) => (
+          <a href={sourceHref(s.key)} class:list={["tab-pill reading-tab", { "tab-pill-active": s.key === source }]} aria-current={s.key === source ? "page" : undefined} title={s.cadence}>
+            <span>{s.name}</span><span class="tab-pill-count">{items.filter((i) => i.source === s.key).length}</span>
+          </a>
+        ))}
+      </nav>
+
+      <div class="space-y-3" id="reading-list">
+        {page.data.map((item) => (
+          <article class="card reading-item p-5 space-y-2" data-source={item.source}>
+            <div class="flex items-center gap-2">
+              <span class="reading-chip">{nameOf.get(item.source)}</span>
+              <span class="meta">{item.date}</span>
+              {item.url && (
+                <a href={item.url} target="_blank" rel="noopener noreferrer" class="reading-link text-xs ml-auto">原文 ↗</a>
+              )}
+            </div>
+            <a href={`/reading/${item.id}`} class="reading-title">{item.title}</a>
+            {item.summary && (
+              <p class="text-sm leading-relaxed" style="color: var(--color-text-muted);">{truncate(item.summary, 360)}</p>
+            )}
+            {item.headings.length > 0 && (
+              <div class="flex flex-wrap gap-x-1.5">
+                {item.headings.map((h) => (
+                  <a href={chipHref(item, h)} class="reading-heading-link"><span class="reading-heading">{truncate(h, 60)}</span></a>
+                ))}
+              </div>
+            )}
+          </article>
+        ))}
+      </div>
+
+      <Pagination currentPage={page.currentPage} lastPage={page.lastPage} base={base} label="Reading 分頁" />
+    </div>
+  </Container>
+</Layout>
+
+<style>
+  .reading-tab { text-decoration: none; }
+  .reading-chip {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--color-accent-cool-text);
+    border: 1px solid var(--color-border);
+  }
+  .reading-title {
+    display: flex;
+    align-items: center;
+    min-height: 40px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+  .reading-title:hover { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--color-border); }
+  .reading-link {
+    display: inline-flex; align-items: center; min-height: 40px; padding: 0 0.25rem;
+    color: var(--color-accent-cool-text); text-decoration: none; font-family: var(--font-mono); flex-shrink: 0;
+  }
+  .reading-link:hover { text-decoration: underline; text-underline-offset: 2px; }
+  /* The link is the 40px tap target; the pill inside stays compact. */
+  .reading-heading-link { display: inline-flex; align-items: center; min-height: 40px; text-decoration: none; max-width: 100%; }
+  .reading-heading-link:hover .reading-heading { color: var(--color-text); background-color: color-mix(in srgb, var(--color-surface-muted) 70%, var(--color-text) 10%); }
+  .reading-heading {
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--color-text-muted-on-muted);
+    background-color: var(--color-surface-muted);
+  }
+</style>

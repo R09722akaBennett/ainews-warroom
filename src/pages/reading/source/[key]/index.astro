@@ -1,0 +1,13 @@
+---
+import List from "../../_List.astro";
+import { firstPage } from "../../../_lib/paging";
+import { PER_PAGE, itemsOf, sourceSlug, sources } from "../../_data";
+
+export function getStaticPaths() {
+  return sources.map((s) => ({ params: { key: sourceSlug(s.key) }, props: { source: s.key } }));
+}
+
+const { source } = Astro.props;
+---
+
+<List page={firstPage(itemsOf(source), PER_PAGE)} source={source} />

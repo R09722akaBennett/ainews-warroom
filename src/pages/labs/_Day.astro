@@ -1,0 +1,226 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+import Post from "./_Post.astro";
+import "./_labs.css";
+import {
+  briefByDay, catColor, catLabel, countBy, dayHref, dayLabel, days, labHref, labName, labsMeta, postsByDay,
+  renderBrief, shortDate, sortCats, sortLabs, tokens, updatedLabel,
+} from "./_data";
+
+type Props = { day: string };
+const { day } = Astro.props;
+
+const dayPosts = postsByDay.get(day) || [];
+const brief = briefByDay.get(day);
+const idx = days.indexOf(day);
+const newer = idx > 0 ? days[idx - 1] : undefined;
+const older = idx >= 0 && idx < days.length - 1 ? days[idx + 1] : undefined;
+// The newest day is canonical at /labs; every day also has its own
+// /labs/<date> page so links from briefs keep working after the day rolls over.
+const hrefFor = (d: string) => (d === days[0] ? "/labs" : dayHref(d));
+
+// The strip shows a two-week window around the current day; older days are
+// reached by stepping through it, so it never grows with the archive.
+const WINDOW = 14;
+const from = Math.max(0, Math.min(idx - Math.floor(WINDOW / 2), days.length - WINDOW));
+const strip = days.slice(from, from + WINDOW);
+
+const labCounts = countBy(dayPosts, (p) => p.lab);
+const labKeys = sortLabs([...labCounts.keys()], labCounts);
+const catCounts = countBy(dayPosts, (p) => p.category);
+const catKeys = sortCats(catCounts);
+---
+
+<Layout title={day === days[0] ? "Labs" : `Labs ${day}`} description={`前沿 AI 實驗室 ${day} 的每日快報與官方 X 貼文中文摘要`}>
+  <Container>
+    <div class="lab-wrap">
+      <div>
+        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Labs</h1>
+        <p class="lab-intro">
+          {day ? `${dayLabel(day)}有 ${dayPosts.length} 則貼文，追蹤 ${labsMeta.length} 家前沿實驗室。` : "第一次每日排程跑完後，貼文會出現在這裡。"}
+          {updatedLabel && <span class="meta whitespace-nowrap">更新於 {updatedLabel}</span>}
+        </p>
+      </div>
+
+      <div class="lab-section">
+        <nav class="lab-scroll" id="lab-days" aria-label="選擇日期">
+          {strip.map((d) => (
+            <a class="lab-chip" href={hrefFor(d)} aria-current={d === day ? "page" : undefined}>
+              {d === days[0] ? `最新 ${shortDate(d)}` : shortDate(d)}
+            </a>
+          ))}
+        </nav>
+        <div class="lab-daynav">
+          {older ? <a class="lab-btn" href={hrefFor(older)} rel="prev">← 前一天</a> : <span class="lab-btn lab-btn-off" aria-hidden="true">← 前一天</span>}
+          <a class="lab-link" href="/labs/weekly">週報</a>
+          {newer ? <a class="lab-btn" href={hrefFor(newer)} rel="next">後一天 →</a> : <span class="lab-btn lab-btn-off" aria-hidden="true">後一天 →</span>}
+        </div>
+      </div>
+
+      {brief && (
+        <section class="card card-accent-cool lab-daily" aria-label="每日快報">
+          <div class="lab-daily-top">
+            <h2 class="lab-h2">每日快報</h2>
+            <span class="meta">
+              {brief.startDate}
+              {brief.tags?.posts ? ` · ${brief.tags.posts} 則貼文` : ""}
+              {brief.tokenUsage && <span class="lab-tokens"> · {tokens(brief.tokenUsage)}</span>}
+            </span>
+          </div>
+          <article class="lab-prose" set:html={renderBrief(brief.content, day)} />
+        </section>
+      )}
+
+      {dayPosts.length === 0 ? (
+        <p class="card lab-empty">這一天沒有收到貼文。</p>
+      ) : (
+        <section class="lab-section" id="lab-feed" aria-label="貼文">
+          <h2 class="lab-h2">貼文</h2>
+
+          <div class="lab-scroll" id="lab-labs" role="group" aria-label="依實驗室篩選">
+            <button type="button" class="lab-chip" data-value="all" aria-pressed="true">全部 <span class="lab-count">{dayPosts.length}</span></button>
+            {labKeys.map((k) => (
+              <button type="button" class="lab-chip" data-value={k} aria-pressed="false">{labName(k)} <span class="lab-count">{labCounts.get(k)}</span></button>
+            ))}
+          </div>
+
+          <div class="lab-scroll" id="lab-cats" role="group" aria-label="依類別篩選">
+            <button type="button" class="lab-chip" data-value="all" aria-pressed="true">全部類別 <span class="lab-count">{dayPosts.length}</span></button>
+            {catKeys.map((c) => (
+              <button type="button" class="lab-chip" data-value={c} aria-pressed="false">
+                <span class="lab-dot" style={`background-color: ${catColor(c)};`}></span>{catLabel(c)} <span class="lab-count">{catCounts.get(c)}</span>
+              </button>
+            ))}
+          </div>
+
+          <div class="lab-toolbar">
+            <span class="meta" id="lab-status" aria-live="polite">共 {dayPosts.length} 則</span>
+            {labKeys.map((k) => (
+              <a class="lab-link" href={labHref(k)} data-lab-page={k} hidden>{labName(k)} 的所有貼文 →</a>
+            ))}
+          </div>
+
+          <div class="lab-posts">
+            {dayPosts.map((p) => <Post post={p} />)}
+          </div>
+
+          <p class="card lab-empty" id="lab-empty" hidden>
+            這一天沒有符合的貼文。<button type="button" class="lab-link-btn" data-reset>清除篩選</button>
+          </p>
+        </section>
+      )}
+    </div>
+  </Container>
+</Layout>
+
+<script>
+  type Dim = "lab" | "cat";
+
+  function initDay() {
+    const strip = document.getElementById("lab-days");
+    const current = strip?.querySelector<HTMLElement>("[aria-current]");
+    // Center the current day without moving the page vertically.
+    if (strip && current) strip.scrollLeft = current.offsetLeft - (strip.clientWidth - current.offsetWidth) / 2;
+
+    const feed = document.getElementById("lab-feed");
+    if (!feed || feed.dataset.bound) return;
+    feed.dataset.bound = "true";
+
+    const posts = Array.from(feed.querySelectorAll<HTMLElement>(".lab-post"));
+    const status = document.getElementById("lab-status")!;
+    const empty = document.getElementById("lab-empty")!;
+    const labLinks = Array.from(feed.querySelectorAll<HTMLElement>("[data-lab-page]"));
+    const rows: Record<Dim, HTMLElement> = { lab: document.getElementById("lab-labs")!, cat: document.getElementById("lab-cats")! };
+    const active: Record<Dim, string> = { lab: "all", cat: "all" };
+    const dims = Object.keys(active) as Dim[];
+
+    const matches = (p: HTMLElement, skip?: Dim) => dims.every((d) => d === skip || active[d] === "all" || p.dataset[d] === active[d]);
+
+    function render() {
+      let matched = 0;
+      for (const p of posts) {
+        const ok = matches(p);
+        if (ok) matched++;
+        p.classList.toggle("lab-off", !ok);
+      }
+      const filtered = dims.some((d) => active[d] !== "all");
+      status.textContent = filtered ? `共 ${posts.length} 則，符合 ${matched} 則` : `共 ${posts.length} 則`;
+      empty.hidden = matched > 0;
+      labLinks.forEach((a) => (a.hidden = a.dataset.labPage !== active.lab));
+
+      // Each chip's count answers "how many posts if I pick this", so it is
+      // computed against the other row's filter but not its own.
+      for (const d of dims) {
+        const counts = new Map<string, number>();
+        let all = 0;
+        for (const p of posts) {
+          if (!matches(p, d)) continue;
+          all++;
+          const v = p.dataset[d] || "";
+          counts.set(v, (counts.get(v) || 0) + 1);
+        }
+        rows[d].querySelectorAll<HTMLButtonElement>(".lab-chip").forEach((chip) => {
+          const v = chip.dataset.value!;
+          const n = v === "all" ? all : counts.get(v) || 0;
+          const el = chip.querySelector(".lab-count");
+          if (el) el.textContent = String(n);
+          chip.classList.toggle("is-empty", n === 0 && v !== "all");
+        });
+      }
+    }
+
+    function select(d: Dim, value: string) {
+      active[d] = value;
+      rows[d].querySelectorAll<HTMLButtonElement>(".lab-chip").forEach((c) => c.setAttribute("aria-pressed", String(c.dataset.value === value)));
+    }
+
+    for (const d of dims) {
+      rows[d].querySelectorAll<HTMLButtonElement>(".lab-chip").forEach((chip) => {
+        chip.addEventListener("click", () => {
+          select(d, chip.dataset.value!);
+          render();
+        });
+      });
+    }
+    feed.querySelectorAll<HTMLButtonElement>("[data-reset]").forEach((b) =>
+      b.addEventListener("click", () => {
+        dims.forEach((d) => select(d, "all"));
+        render();
+      }),
+    );
+
+    // A brief can cite a post that the chips have filtered out, so clear the
+    // filters before scrolling to it.
+    function reveal(id: string, smooth: boolean) {
+      const target = document.getElementById(id);
+      if (!target || !target.classList.contains("lab-post")) return false;
+      if (target.classList.contains("lab-off")) {
+        dims.forEach((d) => select(d, "all"));
+        render();
+      }
+      requestAnimationFrame(() => {
+        const y = target.getBoundingClientRect().top + window.scrollY - 110;
+        window.scrollTo({ top: y, behavior: smooth ? "smooth" : "auto" });
+        target.classList.add("lab-hl");
+        setTimeout(() => target.classList.remove("lab-hl"), 2400);
+      });
+      return true;
+    }
+
+    document.querySelectorAll<HTMLAnchorElement>("a.lab-ref[data-target]").forEach((a) => {
+      a.addEventListener("click", (e) => {
+        if (reveal(a.dataset.target!, true)) {
+          e.preventDefault();
+          history.replaceState(history.state, "", `#${a.dataset.target}`);
+        }
+      });
+    });
+
+    render();
+    const hash = decodeURIComponent(location.hash.slice(1));
+    if (hash.startsWith("post-")) reveal(hash, false);
+  }
+
+  document.addEventListener("astro:page-load", initDay);
+</script>

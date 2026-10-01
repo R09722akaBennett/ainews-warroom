@@ -1,0 +1,14 @@
+---
+import type { GetStaticPaths } from "astro";
+import Lab from "../../../_Lab.astro";
+import { laterPages } from "../../../../_lib/paging";
+import { activeLabs, posts } from "../../../_data";
+
+export const getStaticPaths = (({ paginate }) =>
+  activeLabs.flatMap((key) => laterPages(paginate, posts.filter((p) => p.lab === key), 30, { key }))) satisfies GetStaticPaths;
+
+const { key } = Astro.params;
+const { page } = Astro.props;
+---
+
+<Lab labKey={key!} page={page} />

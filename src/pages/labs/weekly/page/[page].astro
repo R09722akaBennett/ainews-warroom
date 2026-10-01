@@ -1,0 +1,12 @@
+---
+import type { GetStaticPaths } from "astro";
+import Weekly from "../../_Weekly.astro";
+import { laterPages } from "../../../_lib/paging";
+import { weeklyReports } from "../../_data";
+
+export const getStaticPaths = (({ paginate }) => laterPages(paginate, weeklyReports, 10)) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+---
+
+<Weekly page={page} />

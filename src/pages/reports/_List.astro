@@ -1,0 +1,168 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+import Pagination from "@components/Pagination.astro";
+
+import { SITE_SINCE } from "@consts";
+import type { PageSlice } from "../_lib/paging";
+
+type Props = { page: PageSlice<any> };
+const { page } = Astro.props;
+
+type Grouped = Record<string, Record<string, any[]>>;
+
+const grouped = page.data.reduce((acc: Grouped, report: any) => {
+  const year = report.date.slice(0, 4);
+  const month = report.date.slice(0, 7);
+  if (!acc[year]) acc[year] = {};
+  if (!acc[year][month]) acc[year][month] = [];
+  acc[year][month].push(report);
+  return acc;
+}, {} as Grouped);
+
+const years = Object.keys(grouped).sort().reverse();
+
+---
+
+<Layout title={page.currentPage === 1 ? "Reports" : `Reports 第 ${page.currentPage} 頁`} description="AI War Room 每日快報列表，依月份分組並可搜尋公司、模型與話題。">
+  <Container>
+    <div class="space-y-10">
+      <div>
+        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Reports</h1>
+        <p class="mt-1 text-sm" style="color: var(--color-text-muted);">{SITE_SINCE} 起共 {page.total} 份每日快報{page.lastPage > 1 && `，這頁是第 ${page.start + 1} 到 ${page.end + 1} 份`}，更早的在 <a href="/archive" class="list-link">Archive</a>。</p>
+        <div class="mt-4">
+          <input
+            type="text"
+            id="report-search"
+            placeholder="搜尋本頁的標題、公司、模型或話題"
+            aria-label="搜尋本頁的報告"
+            class="report-search-input"
+          />
+        </div>
+      </div>
+
+      {years.map((year) => (
+        <section class="space-y-6 report-year">
+          <h2 class="text-lg font-semibold" style="color: var(--color-text);">{year}</h2>
+          {Object.keys(grouped[year]).sort().reverse().map((monthKey) => {
+            const mm = monthKey.split("-")[1];
+            const reports = grouped[year][monthKey];
+            return (
+              <div class="space-y-2 report-month">
+                <div class="flex items-center gap-3">
+                  <span class="section-title">{Number(mm)} 月</span>
+                  <div class="h-px flex-1" style="background-color: var(--color-border);"></div>
+                  <span class="meta">{reports.length}</span>
+                </div>
+                <div class="space-y-1.5">
+                  {reports.map((report: any) => {
+                    const searchText = [
+                      report.title,
+                      report.date,
+                      ...(report.tags?.companies || []),
+                      ...(report.tags?.models || []),
+                      ...(report.tags?.topics || []),
+                    ].join(" ").toLowerCase();
+                    return (
+                    <a href={`/reports/${report.date}`}
+                       class="card report-card block px-5 py-3 no-underline space-y-1.5"
+                       data-search-text={searchText}>
+                      <div class="flex items-center gap-5">
+                        <span class="meta min-w-[5.5rem]">{report.date}</span>
+                        <span class="flex-1 text-sm font-medium" style="color: var(--color-text);">{report.title}</span>
+                        <span class="meta hidden sm:inline">{report.rawCount} 則</span>
+                      </div>
+                      {report.tags && (Object.keys(report.tags).length > 0) && (() => {
+                        const companies = report.tags.companies || [];
+                        const models = report.tags.models || [];
+                        const topics = report.tags.topics || [];
+                        const total = companies.length + models.length + topics.length;
+                        const shown = Math.min(companies.length, 4) + Math.min(models.length, 3) + Math.min(topics.length, 3);
+                        const overflow = total - shown;
+                        return (
+                          <div class="flex flex-wrap gap-1 pl-[5.5rem]">
+                            {companies.slice(0, 4).map((c: string) => (
+                              <span class="tag tag-company">{c}</span>
+                            ))}
+                            {models.slice(0, 3).map((m: string) => (
+                              <span class="tag tag-model">{m}</span>
+                            ))}
+                            {topics.slice(0, 3).map((t: string) => (
+                              <span class="tag tag-topic">{t}</span>
+                            ))}
+                            {overflow > 0 && (
+                              <span class="meta" style="line-height: 1.6;">+{overflow}</span>
+                            )}
+                          </div>
+                        );
+                      })()}
+                    </a>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </section>
+      ))}
+
+      <p class="text-sm" id="report-empty" style="color: var(--color-text-muted);" hidden>這一頁沒有符合的報告，其他頁的報告不在搜尋範圍內。</p>
+
+      <Pagination currentPage={page.currentPage} lastPage={page.lastPage} base="/reports" label="Reports 分頁" />
+    </div>
+  </Container>
+</Layout>
+
+<style>
+  .list-link { color: var(--color-accent-cool-text); text-decoration: underline; text-underline-offset: 2px; }
+  .report-search-input {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-surface-raised);
+    color: var(--color-text);
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .report-search-input:focus {
+    border-color: var(--color-accent-cool);
+    box-shadow: 0 0 0 3px rgba(8,145,178,0.1);
+  }
+  /* .card and the Tailwind display utilities would beat the UA rule. */
+  [hidden] { display: none !important; }
+  .report-search-input::placeholder {
+    color: var(--color-text-muted);
+  }
+</style>
+
+<script>
+  function initReportSearch() {
+    const input = document.getElementById("report-search") as HTMLInputElement | null;
+    if (!input || input.dataset.bound) return;
+    input.dataset.bound = "true";
+
+    input.addEventListener("input", () => {
+      const q = input.value.trim().toLowerCase();
+      let shown = 0;
+      document.querySelectorAll<HTMLElement>(".report-card").forEach((card) => {
+        const ok = !q || (card.dataset.searchText || "").includes(q);
+        card.hidden = !ok;
+        if (ok) shown++;
+      });
+      // A month or year whose cards are all filtered out would otherwise leave
+      // its heading behind.
+      document.querySelectorAll<HTMLElement>(".report-month, .report-year").forEach((group) => {
+        group.hidden = !group.querySelector(".report-card:not([hidden])");
+      });
+      const empty = document.getElementById("report-empty");
+      if (empty) empty.hidden = shown > 0;
+    });
+  }
+
+  initReportSearch();
+  document.addEventListener("astro:page-load", initReportSearch);
+</script>
+

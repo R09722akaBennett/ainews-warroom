@@ -1,0 +1,82 @@
+---
+import { pageHref } from "../pages/_lib/paging";
+
+type Props = {
+  currentPage: number;
+  lastPage: number;
+  /** List root; page 1 is this path and page N is `<base>/page/N`. */
+  base?: string;
+  /** Overrides the link builder, for lists whose pages are not under `<base>/page/N`. */
+  href?: (n: number) => string;
+  url?: { prev?: string; next?: string };
+  label?: string;
+};
+
+const { currentPage, lastPage, base = "", href, url = {}, label = "分頁" } = Astro.props;
+const link = href ?? ((n: number) => pageHref(base, n));
+const prev = url.prev ?? (currentPage > 1 ? link(currentPage - 1) : undefined);
+const next = url.next ?? (currentPage < lastPage ? link(currentPage + 1) : undefined);
+
+// Up to nine pages fit as plain numbers; beyond that only the ends and the
+// neighbours of the current page are listed so the row stays short on a phone.
+const numbers: (number | null)[] = [];
+if (lastPage <= 9) {
+  for (let n = 1; n <= lastPage; n++) numbers.push(n);
+} else {
+  const keep = new Set([1, 2, lastPage - 1, lastPage, currentPage - 1, currentPage, currentPage + 1]);
+  for (let n = 1; n <= lastPage; n++) {
+    if (keep.has(n)) numbers.push(n);
+    else if (numbers[numbers.length - 1] !== null) numbers.push(null);
+  }
+}
+---
+
+{lastPage > 1 && (
+  <nav class="pg" aria-label={label}>
+    <div class="pg-main">
+      {prev ? <a class="pg-btn" href={prev} rel="prev">上一頁</a> : <span class="pg-btn pg-off" aria-hidden="true">上一頁</span>}
+      <span class="pg-status">第 {currentPage} 頁，共 {lastPage} 頁</span>
+      {next ? <a class="pg-btn" href={next} rel="next">下一頁</a> : <span class="pg-btn pg-off" aria-hidden="true">下一頁</span>}
+    </div>
+    <ol class="pg-nums">
+      {numbers.map((n) =>
+        n === null ? (
+          <li class="pg-gap" aria-hidden="true">…</li>
+        ) : (
+          <li>
+            {n === currentPage ? (
+              <span class="pg-num pg-current" aria-current="page">{n}</span>
+            ) : (
+              <a class="pg-num" href={link(n)} aria-label={`第 ${n} 頁`}>{n}</a>
+            )}
+          </li>
+        ),
+      )}
+    </ol>
+  </nav>
+)}
+
+<style>
+  .pg { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; margin-top: 0.5rem; }
+  .pg-main { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; width: 100%; max-width: 28rem; }
+  .pg-btn {
+    display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 5rem; padding: 0 0.875rem;
+    border-radius: 0.5rem; border: 1px solid var(--color-border); background-color: var(--color-surface-raised);
+    color: var(--color-text); font-size: 0.875rem; font-weight: 600; text-decoration: none; transition: background-color 0.15s;
+  }
+  a.pg-btn:hover { background-color: var(--color-surface-muted); }
+  .pg-off { color: var(--color-text-muted); opacity: 0.5; }
+  .pg-status { font-size: 0.8125rem; color: var(--color-text-muted); text-align: center; white-space: nowrap; }
+  .pg-nums { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.25rem; }
+  .pg-num {
+    display: inline-flex; align-items: center; justify-content: center; min-width: 40px; min-height: 40px; padding: 0 0.5rem;
+    border-radius: 0.5rem; font-family: var(--font-mono); font-size: 0.8125rem; color: var(--color-text-muted); text-decoration: none;
+  }
+  a.pg-num:hover { color: var(--color-text); background-color: var(--color-surface-muted); }
+  .pg-current {
+    color: var(--color-text); font-weight: 700;
+    border: 1px solid color-mix(in srgb, var(--color-accent-cool) 55%, transparent);
+    background-color: var(--color-accent-cool-muted);
+  }
+  .pg-gap { display: inline-flex; align-items: center; min-height: 40px; padding: 0 0.25rem; color: var(--color-text-muted); }
+</style>

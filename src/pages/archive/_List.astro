@@ -1,0 +1,109 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+import Pagination from "@components/Pagination.astro";
+import { markdownToHtml } from "../../utils/textUtils";
+
+import { SITE_SINCE } from "@consts";
+import type { PageSlice } from "../_lib/paging";
+import { digests, oldReports, type Entry } from "./_data";
+
+type Props = { page: PageSlice<Entry> };
+const { page } = Astro.props;
+
+const monthLabel = (key: string) => `${key.slice(0, 4)} 年 ${Number(key.slice(5, 7))} 月`;
+
+function byMonth(list: Entry[]): { month: string; items: any[] }[] {
+  const out: { month: string; items: any[] }[] = [];
+  for (const e of list) {
+    const month = e.date.slice(0, 7);
+    const last = out[out.length - 1];
+    if (last && last.month === month) last.items.push(e.item);
+    else out.push({ month, items: [e.item] });
+  }
+  return out;
+}
+const reportMonths = byMonth(page.data.filter((e) => e.kind === "report"));
+const digestMonths = byMonth(page.data.filter((e) => e.kind === "digest"));
+---
+
+<Layout title={page.currentPage === 1 ? "Archive" : `Archive 第 ${page.currentPage} 頁`} description={`${SITE_SINCE} 以前的每日報告與 2023 年起的 AI news digest 摘要。`}>
+  <Container>
+    <div class="space-y-10">
+      <div>
+        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Archive</h1>
+        <p class="mt-1 text-sm" style="color: var(--color-text-muted);">
+          {SITE_SINCE} 以前的每日報告 {oldReports.length} 篇，以及 2023 到 2026 年的 AI news digest {digests.length} 期。
+        </p>
+      </div>
+
+      {reportMonths.length > 0 && (
+        <section class="space-y-4">
+          <div class="flex items-center gap-3">
+            <h2 class="text-lg font-semibold" style="color: var(--color-text);">每日報告</h2>
+            <span class="meta">{oldReports.length} 篇</span>
+          </div>
+          {reportMonths.map(({ month, items }) => (
+            <div class="space-y-2">
+              <div class="flex items-center gap-3">
+                <span class="section-title">{monthLabel(month)}</span>
+                <div class="h-px flex-1" style="background-color: var(--color-border);"></div>
+                <span class="meta">{items.length}</span>
+              </div>
+              <div class="space-y-1.5">
+                {items.map((report: any) => (
+                  <a href={`/reports/${report.date}`} class="card flex items-center gap-5 px-5 py-3 no-underline">
+                    <span class="meta min-w-[5.5rem]">{report.date}</span>
+                    <span class="flex-1 text-sm font-medium" style="color: var(--color-text);">{report.title}</span>
+                    <span class="meta hidden sm:inline">{report.rawCount} 則</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))}
+        </section>
+      )}
+
+      {digestMonths.length > 0 && (
+        <section class="space-y-4">
+          <div class="flex items-center gap-3">
+            <h2 class="text-lg font-semibold" style="color: var(--color-text);">AI news digest</h2>
+            <span class="meta">{digests.length} 期，原文已不保存，只列摘要</span>
+          </div>
+          {digestMonths.map(({ month, items }) => (
+            <div class="space-y-2">
+              <div class="flex items-center gap-3">
+                <span class="section-title">{monthLabel(month)}</span>
+                <div class="h-px flex-1" style="background-color: var(--color-border);"></div>
+                <span class="meta">{items.length}</span>
+              </div>
+              <div class="space-y-1.5">
+                {items.map((issue: any) => (
+                  <div class="card block px-5 py-3.5">
+                    <div class="flex items-start gap-4">
+                      <span class="meta min-w-[5.5rem] pt-0.5">{issue.date}</span>
+                      <div class="flex-1 min-w-0 space-y-1.5">
+                        <span class="text-sm font-medium" style="color: var(--color-text);">{issue.title}</span>
+                        {issue.description && (
+                          <p class="text-xs leading-relaxed line-clamp-2" style="color: var(--color-text-muted);" set:html={markdownToHtml(issue.description)} />
+                        )}
+                        {(issue.companies?.length > 0 || issue.models?.length > 0) && (
+                          <div class="flex flex-wrap gap-1 pt-0.5">
+                            {(issue.companies || []).slice(0, 4).map((c: string) => <span class="tag tag-company">{c}</span>)}
+                            {(issue.models || []).slice(0, 4).map((m: string) => <span class="tag tag-model">{m}</span>)}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </section>
+      )}
+
+      <Pagination currentPage={page.currentPage} lastPage={page.lastPage} base="/archive" label="Archive 分頁" />
+    </div>
+  </Container>
+</Layout>

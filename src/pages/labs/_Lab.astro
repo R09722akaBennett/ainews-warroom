@@ -1,0 +1,58 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+import Pagination from "@components/Pagination.astro";
+import Post from "./_Post.astro";
+import "./_labs.css";
+import type { PageSlice } from "../_lib/paging";
+import { activeLabs, dayHref, dayLabel, labByKey, labCounts, labHref, labName, opennessLabels, regionLabels, type Post as PostT } from "./_data";
+
+type Props = { labKey: string; page: PageSlice<PostT> };
+const { labKey, page } = Astro.props;
+const lab = labByKey.get(labKey);
+const name = labName(labKey);
+
+const groups: { day: string; posts: PostT[] }[] = [];
+for (const p of page.data) {
+  const last = groups[groups.length - 1];
+  if (last && last.day === p.day) last.posts.push(p);
+  else groups.push({ day: p.day, posts: [p] });
+}
+const facts = [lab && regionLabels[lab.region], lab && opennessLabels[lab.openness]].filter(Boolean).join("、");
+---
+
+<Layout title={page.currentPage === 1 ? `${name} · Labs` : `${name} · Labs 第 ${page.currentPage} 頁`} description={`${name} 官方 X 貼文的中文摘要`}>
+  <Container>
+    <div class="lab-wrap">
+      <div>
+        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">{name}</h1>
+        <p class="lab-intro">
+          {facts && `${facts}，`}共 {page.total} 則貼文{page.lastPage > 1 && `，這頁是第 ${page.start + 1} 到 ${page.end + 1} 則`}。
+          <a class="lab-link" href="/labs">回到每日貼文</a>
+        </p>
+      </div>
+
+      <nav class="lab-scroll" aria-label="其他實驗室">
+        {activeLabs.map((k) => (
+          <a class="lab-chip" href={labHref(k)} aria-current={k === labKey ? "page" : undefined}>{labName(k)} <span class="lab-count">{labCounts.get(k)}</span></a>
+        ))}
+      </nav>
+
+      <div class="lab-section">
+        {groups.map((g) => (
+          <section class="lab-group">
+            <div class="lab-day">
+              <a class="lab-day-label" href={dayHref(g.day)} title={`${g.day} 的每日快報與所有貼文`}>{dayLabel(g.day)}</a>
+              <span class="meta">{g.posts.length} 則</span>
+            </div>
+            <div class="lab-posts">
+              {g.posts.map((p) => <Post post={p} linkLab={false} />)}
+            </div>
+          </section>
+        ))}
+      </div>
+
+      <Pagination currentPage={page.currentPage} lastPage={page.lastPage} base={labHref(labKey)} label={`${name} 貼文分頁`} />
+    </div>
+  </Container>
+</Layout>

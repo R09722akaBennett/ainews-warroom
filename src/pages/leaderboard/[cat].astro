@@ -1,0 +1,12 @@
+---
+import Board from "./_Board.astro";
+import leaderboard from "@data/leaderboard.json";
+
+export function getStaticPaths() {
+  return ["orgs", ...Object.keys((leaderboard as any).categories)].map((cat) => ({ params: { cat } }));
+}
+
+const { cat } = Astro.params;
+---
+
+<Board active={cat!} />
