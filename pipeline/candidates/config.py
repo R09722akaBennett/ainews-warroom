@@ -1,8 +1,9 @@
-"""Candidate collection settings: trimmed RSS list, labs, Jev rubric."""
+"""Candidate collection settings: trimmed RSS list, freshness, Jev limits and answer choices."""
 
-# Subset of config.RSS_FEEDS. Dropped: feeds the curated daily digest already
-# reads (TLDR AI, Import AI, TechCrunch AI) and general tech, security,
-# policy or VC feeds that rarely carried AI news in the Sept 2026 data.
+# The feeds to read; config.RSS_FEEDS holds their URLs. Left out: feeds the
+# curated daily digest already reads (TLDR AI, Import AI, TechCrunch AI) and
+# general tech, security, policy or VC feeds that rarely carried AI news in
+# the September 2026 data.
 RSS_FEED_NAMES = [
     "OpenAI Blog", "Anthropic News", "Anthropic Research", "Google AI Blog",
     "Google DeepMind", "Google Developers Blog", "Hugging Face Blog",
@@ -15,16 +16,27 @@ RSS_FEED_NAMES = [
     "Wired AI", "SemiAnalysis",
 ]
 
+# Longer than the 24 h between runs, so an item a feed dates late or posts
+# just before a run is not lost; the cross-day URL check drops the overlap.
+# No recorded reason for 36 exactly; chosen by trial.
 FRESH_HOURS = 36
 CROSS_DAY_DAYS = 7
 SNIPPET_CHARS = 600
+# Each same-event check costs one Jev call per item, so only the top of the
+# ranking is checked; the digest takes at most its top 15 at 0.75 or more.
+# No recorded reason for 80; chosen by trial.
 TOP_FOR_DEDUP = 80
-KEEP_TOP = 40
 
 JEV_MODEL = "jev-1.13.0"  # pinned: aliases can change answers between versions
+# No recorded reason for 12 workers; chosen by trial.
 JEV_WORKERS = 12
+# The whole Jev stage must finish well before the 18:00 digest reads the file
+# (the job starts at 17:35); calls still running at the deadline count as
+# failures. No recorded reason for 120 s; chosen by trial.
 JEV_DEADLINE_S = 120
 JEV_CALL_TIMEOUT_S = 20
+# Above this share of failed calls the run is marked degraded. No recorded
+# reason for 10 %; chosen by trial.
 JEV_MAX_FAILURE_RATE = 0.10
 
 LABS = {

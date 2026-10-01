@@ -1,4 +1,4 @@
-"""Scrape arena.ai leaderboard data — per-category full tables."""
+"""Scrape the arena.ai leaderboard: one full table per category plus a cross-category text table."""
 
 from __future__ import annotations
 
@@ -73,7 +73,7 @@ _ORG_PREFIXES: list[tuple[str, str]] = [
 
 
 def _infer_org(model: str) -> str:
-    """Infer org from model name prefix."""
+    """Return the org whose model-name prefix matches model, or ""."""
     lower = model.lower()
     for prefix, org in _ORG_PREFIXES:
         if lower.startswith(prefix):
@@ -87,22 +87,20 @@ def _parse_int(text: str) -> int:
 
 
 def _parse_category_page(html: str) -> list[dict]:
-    """Parse a category-specific leaderboard page.
+    """Return one row per model from a category leaderboard page.
 
-    Columns vary by category but typically include:
-      Rank, Rank Spread, Model, Score (±CI), Votes, [Price $/M], [Context]
+    Columns vary by category; most tabs have Rank, Rank Spread, Model,
+    Score (±CI) and Votes, and some add Price ($/M) and Context.
     """
     soup = BeautifulSoup(html, "html.parser")
     tables = soup.select("table")
     if not tables:
         return []
 
-    # Use the first (usually only) table
     table = tables[0]
     ths = table.select("th")
     headers = [th.get_text(strip=True).lower() for th in ths]
 
-    # Detect column indices
     def col_idx(name: str) -> int | None:
         for i, h in enumerate(headers):
             if name in h:
@@ -116,8 +114,9 @@ def _parse_category_page(html: str) -> list[dict]:
     idx_price = col_idx("price")
     idx_context = col_idx("context")
 
-    # Model is always the column with the model name (usually index 2)
-    idx_model = 2  # Rank, Rank Spread, Model, ...
+    # The model header is empty or an icon on some tabs, so it cannot be
+    # found by name; every tab puts it third (Rank, Rank Spread, Model).
+    idx_model = 2
 
     rows = []
     for tr in table.select("tr"):
@@ -125,21 +124,16 @@ def _parse_category_page(html: str) -> list[dict]:
         if not cells or len(cells) < 4:
             continue
 
-        # --- Rank ---
         rank_text = cells[idx_rank].get_text(strip=True) if idx_rank is not None else ""
         try:
             rank = int(rank_text.replace("#", ""))
         except ValueError:
             continue
 
-        # --- Model name + org + license ---
         model_cell = cells[idx_model]
-
-        # 1) SVG <title> for org
         svg_title = model_cell.select_one("svg title")
         org = svg_title.get_text(strip=True) if svg_title else ""
 
-        # 2) Model name from <a> or <span class="truncate">
         a_tag = model_cell.select_one("a")
         model_span = model_cell.select_one("span.truncate")
         model = ""
@@ -148,11 +142,9 @@ def _parse_category_page(html: str) -> list[dict]:
         elif model_span:
             model = model_span.get_text(strip=True)
         else:
-            # Fallback: strip org prefix from full text
             full_text = model_cell.get_text(strip=True)
             model = full_text[len(org):] if org and full_text.startswith(org) else full_text
 
-        # 3) Provider + license from secondary span
         license_span = model_cell.select_one("span.text-text-secondary")
         provider_text = license_span.get_text(strip=True) if license_span else ""
         # Format: "Anthropic · Proprietary" or "Meta · Open"
@@ -163,14 +155,11 @@ def _parse_category_page(html: str) -> list[dict]:
                 org = parts[0].strip()
             license_type = parts[1].strip() if len(parts) > 1 else ""
 
-        # 4) Infer org from model name if still empty
         if not org:
             org = _infer_org(model)
 
-        # --- Rank Spread ---
         rank_spread = _parse_int(cells[idx_spread].get_text(strip=True)) if idx_spread is not None else None
 
-        # --- Score + CI ---
         score = 0
         ci = ""
         if idx_score is not None:
@@ -182,17 +171,14 @@ def _parse_category_page(html: str) -> list[dict]:
             if ci_span:
                 ci = ci_span.get_text(strip=True)  # e.g. "±6"
 
-        # --- Votes ---
         votes = _parse_int(cells[idx_votes].get_text(strip=True)) if idx_votes is not None else 0
 
-        # --- Price ---
         price = ""
         if idx_price is not None and idx_price < len(cells):
             price = cells[idx_price].get_text(strip=True)
             if price == "N/A":
                 price = ""
 
-        # --- Context ---
         context = ""
         if idx_context is not None and idx_context < len(cells):
             context = cells[idx_context].get_text(strip=True)
@@ -223,10 +209,10 @@ def _parse_category_page(html: str) -> list[dict]:
 
 
 def _parse_overview_full_table(html: str) -> list[dict]:
-    """Parse the full rankings table from the main /leaderboard page.
+    """Return one row per model from the full rankings table of the main /leaderboard page.
 
-    Columns: Model, Overall, Expert, Hard Prompts, Coding, Math,
-             Creative Writing, Instruction Following, Longer Query
+    The columns are Model, Overall, Expert, Hard Prompts, Coding, Math,
+    Creative Writing, Instruction Following and Longer Query.
     """
     soup = BeautifulSoup(html, "html.parser")
     tables = soup.select("table")
@@ -312,7 +298,7 @@ def _fetch_full_table(headers: dict) -> list[dict]:
 
 
 def fetch_leaderboard() -> dict:
-    """Fetch arena.ai leaderboard — one request per category + overview."""
+    """Fetch the arena.ai leaderboard: one request per category plus the text sub-category pages."""
     headers = {
         "User-Agent": (
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
@@ -338,9 +324,9 @@ def fetch_leaderboard() -> dict:
             console.print(f"[red]error: {e}[/]")
             categories[slug] = []
 
-    # Cross-category table. arena.ai dropped the overview <table> some time
-    # after 2026-09-08, so build it from the text leaderboard plus one page per
-    # text sub-category, keyed by model name.
+    # Cross-category table. arena.ai dropped the overview <table>, so build it
+    # from the text leaderboard plus one page per text sub-category, keyed by
+    # model name.
     console.print("  Fetching [cyan]text sub-categories[/] (full table)...", end=" ")
     try:
         full = _fetch_full_table(headers)

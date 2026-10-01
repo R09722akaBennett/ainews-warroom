@@ -1,4 +1,4 @@
-"""Database connection and schema initialization."""
+"""Open warroom.db and create its schema."""
 
 from __future__ import annotations
 
@@ -16,31 +16,14 @@ def get_conn() -> sqlite3.Connection:
 
 
 def init_db():
-    """Create tables if they don't exist."""
+    """Create the tables the pipeline uses and add missing columns; safe to run on every start.
+
+    daily_digests, news_topics and legacy_issues are no longer created;
+    databases that already have them keep them, since nothing here drops a
+    table.
+    """
     conn = get_conn()
     conn.executescript("""
-        CREATE TABLE IF NOT EXISTS daily_digests (
-            date TEXT PRIMARY KEY,
-            title TEXT,
-            news_json TEXT,
-            insights TEXT,
-            raw_count INTEGER,
-            tags TEXT,
-            token_usage TEXT,
-            created_at TEXT DEFAULT (datetime('now'))
-        );
-
-        CREATE TABLE IF NOT EXISTS news_topics (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            date TEXT,
-            topic TEXT,
-            headline TEXT,
-            summary TEXT,
-            url TEXT,
-            source TEXT,
-            FOREIGN KEY (date) REFERENCES daily_digests(date)
-        );
-
         CREATE TABLE IF NOT EXISTS periodic_summaries (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             period TEXT NOT NULL,
@@ -54,8 +37,6 @@ def init_db():
             UNIQUE(period, start_date, end_date)
         );
 
-        CREATE INDEX IF NOT EXISTS idx_topics_topic ON news_topics(topic);
-        CREATE INDEX IF NOT EXISTS idx_topics_date ON news_topics(date);
         CREATE INDEX IF NOT EXISTS idx_summaries_period ON periodic_summaries(period);
         CREATE INDEX IF NOT EXISTS idx_summaries_dates ON periodic_summaries(start_date, end_date);
 
@@ -69,17 +50,6 @@ def init_db():
         );
         CREATE INDEX IF NOT EXISTS idx_raw_date ON raw_daily_items(date);
         CREATE INDEX IF NOT EXISTS idx_raw_url ON raw_daily_items(url);
-
-        CREATE TABLE IF NOT EXISTS legacy_issues (
-            date TEXT PRIMARY KEY,
-            title TEXT,
-            description TEXT,
-            companies TEXT,
-            models TEXT,
-            topics TEXT,
-            people TEXT,
-            content TEXT
-        );
     """)
     conn.executescript("""
         CREATE TABLE IF NOT EXISTS competitor_items (
@@ -98,15 +68,12 @@ def init_db():
         CREATE INDEX IF NOT EXISTS idx_competitor_date ON competitor_items(date);
         CREATE INDEX IF NOT EXISTS idx_competitor_company ON competitor_items(company);
         CREATE INDEX IF NOT EXISTS idx_competitor_url ON competitor_items(url);
-
     """)
 
-    # Migrations: add columns if missing (for existing databases)
     for table, column, col_type in [
-        ("daily_digests", "token_usage", "TEXT"),
         ("periodic_summaries", "token_usage", "TEXT"),
         # Item text was only passed to the classifier in memory and never stored,
-        # so later classification saw titles alone (found 2026-10-01).
+        # so later classification saw titles alone.
         ("competitor_items", "content", "TEXT"),
     ]:
         try:

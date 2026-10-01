@@ -92,7 +92,13 @@ def _run_parallel(fn, items):
 
 
 def score(items: list[dict], interests: str) -> dict:
-    """Attach item["jev"] in place; return {status, calls, failures, input_tokens, seconds}."""
+    """Score items with Jev and attach the answers as item["jev"] in place.
+
+    Returns:
+        {status, calls, failures, input_tokens, seconds}; status is "degraded"
+        when more than JEV_MAX_FAILURE_RATE of the calls failed or ran past
+        the deadline, and the failed items have no "jev" key.
+    """
     from typesafe_sdk import TypeSafeClient
 
     start = time.time()
@@ -147,5 +153,7 @@ def same_event(items: list[dict], known: list[dict], per_item: int = 5, field: s
     with TypeSafeClient() as client:
         results, failures = _run_parallel(ask, items)
     for it, res in zip(items, results):
+        # 0.5: Jev's answer is a probability, so "more likely the same event than
+        # not". No recorded reason beyond that; chosen by trial.
         it[field] = res if res and res["prob"] >= 0.5 else None
     return {"calls": len(items), "failures": failures, "seconds": round(time.time() - start, 1)}

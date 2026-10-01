@@ -6,7 +6,7 @@ Usage:
 
 Each scraper keeps the previous JSON when it fails or extracts nothing. The
 exit code is non-zero if any of them did, so cron's alert wrapper notices;
-before 2026-10-01 these failures exited 0 and the data froze for months.
+when these failures exited 0 the data froze for months unnoticed.
 """
 
 import sys

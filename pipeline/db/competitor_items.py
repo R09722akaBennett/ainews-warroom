@@ -1,8 +1,6 @@
-"""Competitor items CRUD operations."""
+"""Store the labs' items (table competitor_items)."""
 
 from __future__ import annotations
-
-from datetime import datetime, timedelta
 
 from db.connection import get_conn
 
@@ -10,9 +8,8 @@ from db.connection import get_conn
 def save_competitor_items(date: str, company: str, items: list[dict]):
     """Add items for this date and company, skipping URLs already stored for them.
 
-    Until 2026-10-01 this replaced the day's rows. X reads only posts newer
-    than the last read, so a second run on the same day would have replaced
-    the morning's posts with nothing.
+    Rows are never replaced: X reads only posts newer than the last read, so
+    replacing the day's rows on a second run would drop the earlier posts.
     """
     conn = get_conn()
     have = {r[0] for r in conn.execute(
@@ -44,23 +41,8 @@ def save_competitor_items(date: str, company: str, items: list[dict]):
     conn.close()
 
 
-def get_competitor_items(start: str, end: str, ai_only: bool = True) -> list[dict]:
-    """Get competitor items in a date range."""
-    conn = get_conn()
-    query = (
-        "SELECT date, company, title, url, source, published_at, category, ai_related, summary "
-        "FROM competitor_items WHERE date >= ? AND date <= ?"
-    )
-    if ai_only:
-        query += " AND ai_related = 1"
-    query += " ORDER BY date DESC, company, id"
-    rows = conn.execute(query, (start, end)).fetchall()
-    conn.close()
-    return [dict(r) for r in rows]
-
-
 def get_competitor_urls(date: str, days: int = 7) -> set[str]:
-    """Get recent competitor item URLs for deduplication."""
+    """Return the item URLs stored in the days before date, for cross-day dedup."""
     conn = get_conn()
     rows = conn.execute(
         "SELECT DISTINCT url FROM competitor_items "

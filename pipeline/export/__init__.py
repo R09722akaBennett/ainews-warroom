@@ -1,1 +1,1 @@
-"""Website exporters: from_wiki (daily digests and periodic reports) and labs."""
+"""Website exporters: wiki digests and reports, labs, reading shelf, running costs and podcasts."""

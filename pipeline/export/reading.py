@@ -31,8 +31,8 @@ SOURCES = {
     "gmail:berkeley_rdi": {"name": "Berkeley RDI", "cadence": "每週三", "lang": "en"},
     "gmail:explainthis": {"name": "ExplainThis", "cadence": "隔週日", "lang": "zh"},
 }
+# No recorded reason for 120 days; chosen by trial.
 SINCE_DAYS = 120
-# ByteByteGo opens most issues with a "(Sponsored)" section; it is not reading material.
 MD_LINK = re.compile(r"\[([^\]]+)\]\([^)]+\)")
 
 SQL = """
@@ -63,7 +63,10 @@ select coalesce(json_agg(row_to_json(t) order by t.published desc), '[]') from (
   where s.source_key in (%s)
     and coalesce(d.published_at, d.created_at) >= now() - interval '%d days'
 ) t
-""".replace("%(not_sponsor)s", "coalesce(sec.title, '') !~* 'sponsor'") % (", ".join(f"'{k}'" for k in SOURCES), SINCE_DAYS)
+"""
+# ByteByteGo opens most issues with a "(Sponsored)" section; it is not reading material.
+NOT_SPONSOR = "coalesce(sec.title, '') !~* 'sponsor'"
+SQL = SQL.replace("%(not_sponsor)s", NOT_SPONSOR) % (", ".join(f"'{k}'" for k in SOURCES), SINCE_DAYS)
 
 
 def _clean_heading(h: str | None) -> str:

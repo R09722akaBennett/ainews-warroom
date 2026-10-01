@@ -1,29 +1,25 @@
-"""Frontier AI labs to track: queries, feeds and display attributes.
+"""Frontier AI labs to track: X accounts and display attributes.
 
-Replaced the old company competitor list on 2026-10-01. Tier 1 labs get their own
-summary in the weekly report; tier 2 labs are collected the same way but only
-appear in the report's overview. region is where the lab is headquartered;
-openness describes its flagship models (open weights, closed, or both).
-Seeded from the organizations on the arena.ai leaderboard.
+Tier 1 labs get their own section in the weekly report; tier 2 labs are
+collected the same way but only appear in its overview. region is where the
+lab is headquartered; openness describes its flagship models (open weights,
+closed, or both). Seeded from the organizations on the arena.ai leaderboard.
 
-The only source is each lab's official X accounts, read by labs/x_source.py;
-Google News was dropped on 2026-10-01. Official blog RSS was
-dropped on 2026-10-01: only 8 of the labs had a feed, and their X accounts link
-every blog post anyway. Founders and leaders post far more often than the labs
-and can be added once the official accounts' daily volume is known.
-Microsoft AI, Safe Superintelligence and Reflection AI were
-dropped from the list on 2026-10-01; the last two mostly matched unrelated news.
+The only source is each lab's official X accounts, read by labs/x_source.py.
+Google News is not used: it brought about 750 media items a day, mostly
+finance and aggregator sites mentioning a lab in passing. Official blog RSS
+is not used either: only 8 of the labs had a feed, and their X accounts link
+every blog post anyway. Founders and leaders post far more often than the
+labs and can be added once the official accounts' daily volume is known.
+Microsoft AI, Safe Superintelligence and Reflection AI are not tracked; the
+last two mostly matched unrelated news.
 """
 
 from __future__ import annotations
 
 
-
-
-
-
 LABS: dict[str, dict] = {
-    # --- Tier 1 ---------------------------------------------------------
+    # Tier 1
     "openai": {"x_accounts": ['OpenAI'],
                "name": "OpenAI", "tier": 1, "region": "us", "openness": "closed"},
     "anthropic": {"x_accounts": ['AnthropicAI'],
@@ -48,7 +44,7 @@ LABS: dict[str, dict] = {
                        "name": "ByteDance Seed", "tier": 1, "region": "china", "openness": "mixed"},
     "mistral": {"x_accounts": ['MistralAI'],
                 "name": "Mistral AI", "tier": 1, "region": "europe", "openness": "open"},
-    # --- Tier 2 ---------------------------------------------------------
+    # Tier 2
     "nvidia": {"x_accounts": ['NVIDIAAIDev'],
                "name": "NVIDIA", "tier": 2, "region": "us", "openness": "open"},
     "ai2": {"x_accounts": ['allen_ai'],
@@ -70,6 +66,3 @@ LABS: dict[str, dict] = {
     "aleph_alpha": {"x_accounts": ['Aleph__Alpha'],
                     "name": "Aleph Alpha", "tier": 2, "region": "europe", "openness": "open"},
 }
-
-CATEGORIES = ["model_release", "product", "research", "open_source", "infra", "partnership",
-              "funding", "talent", "policy", "event", "other"]

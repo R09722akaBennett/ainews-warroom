@@ -32,8 +32,8 @@ def _guests(name: str, ul: Tag) -> list[dict]:
     """Return the guest cards in one guest section's list.
 
     Each "<strong>Label:</strong> <a>" item is a link (X, LinkedIn, a company
-    site); the first item without one is the role. The openrouter post
-    (2026-09-25) nests the next guest's <h2> inside the first guest's list,
+    site); the first item without one is the role. The OpenRouter
+    episode post nests the next guest's <h2> inside the first guest's list,
     so a heading inside the list starts a new card.
     """
     cards, cur = [], {"name": name, "role": "", "links": {}}

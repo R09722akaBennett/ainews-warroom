@@ -1,20 +1,20 @@
 """Export the frontier-lab tracker to src/data/labs.json and summaries.json.
 
-Only the labs' official X posts are listed (the Google News items collected
-before 2026-10-01 stay in warroom.db but are no longer shown).
+Only the labs' official X posts are listed; the Google News items collected
+earlier stay in warroom.db but are not shown.
 
-Writes only lab data. The general `python -m export` rebuilds every JSON
-file from warroom.db, and on bennett-hub that database only holds data from
-2026-10-01 on, so running it there would wipe the site's history.
+Writes only lab data: on bennett-hub warroom.db holds only the lab-tracker
+era, so the other site files must not be rebuilt from it.
 
-labs.json holds the lab list with display attributes (from
-labs.config) and every relevant, classified item. Weekly reports and
-token usage records (periods labs_daily, labs_weekly and labs_classify) are merged into
-summaries.json, replacing earlier copies of those two periods only.
+labs.json holds the lab list with display attributes (from labs.config) and
+every relevant, classified item. Daily briefs, weekly reports and
+classification token records (periods labs_daily, labs_weekly and
+labs_classify) are merged into summaries.json, replacing earlier copies of
+those three periods only.
 
 Usage:
     cd pipeline
-    uv run python -m export.labs
+    uv run --no-sync python -m export.labs
 """
 
 from __future__ import annotations
@@ -77,7 +77,7 @@ def main() -> None:
 
     labs = [{"key": k, "name": v["name"], "tier": v["tier"], "region": v["region"], "openness": v["openness"]}
             for k, v in LABS.items()]
-    # Posts stored before 2026-10-01 keep X's HTML escaping; unescape on the way out.
+    # Posts stored before x_source unescaped text keep X's HTML escaping; unescape on the way out.
     items = _merge_threads([{"date": r["date"], "lab": r["company"], "title": html.unescape(r["title"]),
                              "url": r["url"], "source": r["source"], "publishedAt": r["published_at"],
                              "category": r["category"], "summary": r["summary"],

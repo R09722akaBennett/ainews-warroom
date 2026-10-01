@@ -1,7 +1,4 @@
-"""
-Hacker News source — fetches top stories and filters for AI-related content.
-Uses the official HN Firebase API (free, no auth needed).
-"""
+"""Fetch the AI-related top stories from the official Hacker News Firebase API (no auth)."""
 
 from __future__ import annotations
 
@@ -26,7 +23,7 @@ async def _fetch_item(client: httpx.AsyncClient, item_id: int) -> dict | None:
 
 
 def _is_ai_related(item: dict) -> bool:
-    """Check if a HN story is AI-related based on title keywords."""
+    """Return whether a HN story's title or text contains an AI keyword."""
     title = (item.get("title") or "").lower()
     text = (item.get("text") or "").lower()
     combined = f"{title} {text}"
@@ -36,12 +33,10 @@ def _is_ai_related(item: dict) -> bool:
 async def fetch_hackernews() -> list[NewsItem]:
     """Fetch top AI-related stories from Hacker News."""
     async with httpx.AsyncClient() as client:
-        # Get top story IDs
         resp = await client.get(f"{HN_API}/topstories.json", timeout=10)
         resp.raise_for_status()
         story_ids = resp.json()[:HACKERNEWS_TOP_N]
 
-        # Fetch all stories concurrently
         tasks = [_fetch_item(client, sid) for sid in story_ids]
         stories = await asyncio.gather(*tasks)
 

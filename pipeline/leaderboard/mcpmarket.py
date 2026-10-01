@@ -2,7 +2,7 @@
 
 Reads the schema.org ItemList that both leaderboard pages embed as JSON-LD.
 The earlier version parsed Next.js RSC flight chunks by class name and broke
-silently when the markup changed (mcpmarket.json froze on 2026-05-10). The
+silently when the markup changed (mcpmarket.json froze for months). The
 JSON-LD carries name, description, url and the star count but no category,
 so `category` is left empty and the site hides its filter pills.
 """

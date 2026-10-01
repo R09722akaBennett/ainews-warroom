@@ -1,8 +1,8 @@
 """Fetch alphaxiv.org trending papers (Hot + Likes, top 20 each).
 
 Uses the JSON feed the alphaxiv web app itself calls. The HTML pages sit
-behind a Cloudflare challenge for datacenter IPs (bennett-hub gets 403 since
-at least 2026-10-01), while api.alphaxiv.org does not.
+behind a Cloudflare challenge for datacenter IPs (bennett-hub gets 403),
+while api.alphaxiv.org does not.
 
 Each run is a snapshot that replaces papers.json; nothing accumulates across
 days, so a paper staying on the list for several days is expected and is not

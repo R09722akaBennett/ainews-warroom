@@ -1,28 +1,10 @@
-"""Periodic summary CRUD operations."""
+"""Store and load periodic summaries (daily briefs, weekly reports, token records)."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from enum import Enum
+import json
 
 from db.connection import get_conn
-
-
-class SummaryPeriod(str, Enum):
-    WEEKLY = "weekly"
-    MONTHLY = "monthly"
-    QUARTERLY = "quarterly"
-
-
-@dataclass
-class SummaryRecord:
-    period: str
-    start_date: str
-    end_date: str
-    title: str
-    content: str
-    tags: str | None = None
-    created_at: str = ""
 
 
 def save_summary(
@@ -30,8 +12,7 @@ def save_summary(
     tags: dict | None = None,
     token_usage: dict | None = None,
 ):
-    """Save a periodic summary."""
-    import json
+    """Save a periodic summary, replacing the one with the same period and dates."""
     conn = get_conn()
     tags_json = json.dumps(tags, ensure_ascii=False) if tags else None
     token_json = json.dumps(token_usage) if token_usage else None
@@ -47,49 +28,8 @@ def save_summary(
     conn.close()
 
 
-def get_latest_summary(period: str) -> SummaryRecord | None:
-    """Get the most recent summary for a given period type."""
-    conn = get_conn()
-    row = conn.execute(
-        """
-        SELECT period, start_date, end_date, title, content, tags, created_at
-        FROM periodic_summaries
-        WHERE period = ?
-        ORDER BY end_date DESC LIMIT 1
-        """,
-        (period,),
-    ).fetchone()
-    conn.close()
-    return SummaryRecord(**dict(row)) if row else None
-
-
-def get_latest_summaries() -> dict[str, SummaryRecord | None]:
-    """Get the latest summary for each period type."""
-    return {
-        "weekly": get_latest_summary(SummaryPeriod.WEEKLY),
-        "monthly": get_latest_summary(SummaryPeriod.MONTHLY),
-        "quarterly": get_latest_summary(SummaryPeriod.QUARTERLY),
-    }
-
-
-def get_summaries_by_period(period: str, limit: int = 5) -> list[SummaryRecord]:
-    """Get recent summaries for a given period type."""
-    conn = get_conn()
-    rows = conn.execute(
-        """
-        SELECT period, start_date, end_date, title, content, tags, created_at
-        FROM periodic_summaries
-        WHERE period = ?
-        ORDER BY end_date DESC LIMIT ?
-        """,
-        (period, limit),
-    ).fetchall()
-    conn.close()
-    return [SummaryRecord(**dict(row)) for row in rows]
-
-
 def load_summaries(period: str, start: str, end: str) -> list[dict]:
-    """Load summaries in a date range (for compression)."""
+    """Return the summaries of period that lie within start..end, oldest first."""
     conn = get_conn()
     rows = conn.execute(
         "SELECT start_date, end_date, title, content FROM periodic_summaries "

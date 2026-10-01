@@ -1,7 +1,4 @@
-"""
-Google News source — fetches AI news via Google News RSS search.
-No auth required, uses public RSS feeds.
-"""
+"""Fetch AI news from Google News RSS search (public feeds, no auth)."""
 
 from __future__ import annotations
 
@@ -65,11 +62,10 @@ def fetch_google_news(hours: int = 48) -> list[NewsItem]:
         except Exception as e:
             print(f"[Google News] Error: {e}")
 
-    # Deduplicate by URL
     seen: set[str] = set()
     unique: list[NewsItem] = []
     for item in items:
-        key = item.url.split("?")[0]  # Strip tracking params
+        key = item.url.split("?")[0]
         if key not in seen:
             seen.add(key)
             unique.append(item)

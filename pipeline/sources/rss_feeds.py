@@ -1,7 +1,4 @@
-"""
-RSS source — fetches recent entries from a curated list of AI blogs and newsletters.
-Only returns items published within the last 24 hours.
-"""
+"""Fetch recent entries from the AI blogs and newsletters in config.RSS_FEEDS."""
 
 from __future__ import annotations
 
@@ -16,7 +13,7 @@ from config import RSS_FEEDS
 
 
 def _parse_date(entry: dict) -> datetime | None:
-    """Try to extract a datetime from a feed entry."""
+    """Return the entry's publish or update time in UTC, or None when it has none."""
     for field in ("published", "updated", "created"):
         raw = entry.get(field)
         if raw:
@@ -27,7 +24,6 @@ def _parse_date(entry: dict) -> datetime | None:
                     return datetime.fromisoformat(raw).astimezone(timezone.utc)
                 except Exception:
                     pass
-    # feedparser's parsed struct
     for field in ("published_parsed", "updated_parsed"):
         parsed = entry.get(field)
         if parsed:
@@ -39,14 +35,11 @@ def _parse_date(entry: dict) -> datetime | None:
 
 
 def _extract_content(entry: dict) -> str:
-    """Extract the best available content/summary from a feed entry."""
-    # Try content first
+    """Return the entry's content, else its summary, else its description, cut to 5000 characters."""
     if entry.get("content"):
         return entry["content"][0].get("value", "")[:5000]
-    # Then summary
     if entry.get("summary"):
         return entry["summary"][:5000]
-    # Then description
     if entry.get("description"):
         return entry["description"][:5000]
     return ""
@@ -59,14 +52,13 @@ def fetch_rss_feeds(hours: int = 24) -> list[NewsItem]:
 
     for feed_name, feed_url in RSS_FEEDS.items():
         try:
-            # Use httpx for timeout control, then parse
+            # feedparser's own fetching has no timeout; one hung feed would stall the run.
             resp = httpx.get(feed_url, timeout=15, follow_redirects=True)
             feed = feedparser.parse(resp.text)
 
             for entry in feed.entries:
                 pub_date = _parse_date(entry)
 
-                # Skip old entries
                 if pub_date and pub_date < cutoff:
                     continue
 

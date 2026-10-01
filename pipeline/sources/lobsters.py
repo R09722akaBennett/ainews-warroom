@@ -1,7 +1,4 @@
-"""
-Lobsters source — fetches AI/ML tagged stories from lobste.rs.
-No auth required, uses public JSON API.
-"""
+"""Fetch recent AI/ML-tagged stories from the lobste.rs public JSON API (no auth)."""
 
 from __future__ import annotations
 
@@ -62,7 +59,7 @@ def fetch_lobsters(hours: int = 48) -> list[NewsItem]:
         except Exception as e:
             print(f"[Lobsters] Error fetching tag={tag}: {e}")
 
-    # Deduplicate (same story can have multiple tags)
+    # A story with both tags comes back once per tag.
     seen: set[str] = set()
     unique: list[NewsItem] = []
     for item in items:

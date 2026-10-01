@@ -33,11 +33,13 @@ def _title_key(title: str) -> frozenset:
 
 
 def _similar(a: frozenset, b: frozenset) -> bool:
+    # Jaccard similarity of title words; 0.8 catches the same headline
+    # reworded by an aggregator. No recorded reason for 0.8; chosen by trial.
     return bool(a and b) and len(a & b) / len(a | b) >= 0.8
 
 
 def _knowledge_db_urls(days: int) -> set[str]:
-    """URLs the wiki pipeline already ingested in the last N days (curated feeds)."""
+    """Return the URLs the wiki pipeline ingested in the last days days, or an empty set when postgres is unreachable."""
     sql = (f"select coalesce(json_agg(canonical_url), '[]') from knowledge.documents "
            f"where created_at >= now() - interval '{int(days)} day' and canonical_url is not null")
     try:
@@ -70,7 +72,13 @@ async def _fetch_all():
 
 
 def collect(date: str) -> tuple[list[dict], dict]:
-    """Return (fresh unique candidates, stats) and record them for tomorrow's dedup."""
+    """Fetch every source and keep the fresh items not seen before.
+
+    The kept items are also stored in warroom.db so the next days drop them.
+
+    Returns:
+        The candidates as dicts and the stats {fetched, errors, dropped, kept}.
+    """
     init_db()
     raw, errors = asyncio.run(_fetch_all())
     stats = {"fetched": len(raw), "errors": errors}
