@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-01T07:00:38Z",
+  "updatedAt": "2026-10-01T08:31:11Z",
   "sources": [
     {
       "key": "gmail:bytebytego",
@@ -44,7 +44,7 @@
       "title": "How DoorDash Built a Toolbox for AI Agents",
       "url": "https://open.substack.com/pub/bytebytego/p/how-doordash-built-a-toolbox-for",
       "date": "2026-09-30",
-      "summary": "Language models cannot inherently interact with external enterprise environments such as code repositories, incident reports, or production logs without software interfaces. An AI agent functions by using a language model to evaluate a task and iteratively select appropriate tools to execute. The host application runs the selected tool, returns the output to the language model, and allows the model to decide subsequent actions. Tools range from read-only data retrieval to state-changing actions, ultimately determining an agent's operational capabilities. While the Model Context Protocol (MCP) provides a standardized protocol for discovering and invoking tools via operations like tools/list and tools/call, it does not address enterprise-specific governance. Companies like DoorDash still face challenges regarding authentication, credential management, tool-surface curation, and operational monitoring. Leaving these concerns to individual teams causes duplicated engineering efforts and inconsistent policies. To solve this, DoorDash unifies identity, tool filtering, and operational controls into a centralized platform called the Agent Gateway. DoorDash's Agent Gateway architecture mediates interactions between AI agents and downstream MCP servers by separating traffic handling from configuration. The gateway comprises two core components: a proxy operating on the data plane and a registry serving as the control plane. The proxy authenticates callers, enforces permissions and rate limits, attaches credentials, and audits requests, while the registry maintains metadata, policies, and tool catalogs. Additionally, DoorDash partitions internal and external workflows into separate proxy planes to maintain isolated trust boundaries.",
+      "summary": "Language models lack native access to external systems such as code repositories, incident reports, and production logs, requiring software integrations referred to as tools. An AI agent is an application that leverages a language model to orchestrate multi-step tasks by selecting and executing these tools. Tool outputs are fed back to the model iteratively to guide subsequent reasoning and actions. Tools encompass both read operations and state-modifying write operations, enabling organizations like DoorDash to connect agents to internal systems, documentation, and third-party services. The Model Context Protocol (MCP) standardizes capability discovery and invocation between AI agents and external tools, but it does not address higher-level enterprise governance. Companies like DoorDash must manage access control, credential handling, and operational monitoring across disparate agent workflows. To prevent redundant and fragmented integrations across engineering teams, DoorDash identifies three core requirements: access, tool-surface curation, and operations. The Agent Gateway consolidates these responsibilities into a unified platform to govern tool interactions reliably. DoorDash's Agent Gateway architecture controls agent access by routing Model Context Protocol (MCP) requests to downstream MCP servers. The gateway relies on two core architectural components: a proxy within the data plane and a registry within the control plane. The proxy handles live traffic by verifying callers, enforcing permissions and rate limits, injecting credentials, and logging audit information. The registry acts as the source of truth, storing metadata, tool catalogs, policies, and connection settings managed by engineering teams. To maintain distinct trust boundaries, DoorDash segments internal and external-facing proxy planes while sharing unified governance concepts and libraries.",
       "summarised": true,
       "headings": [
         "Why an AI Agent Needs Tools",
@@ -55,24 +55,6 @@
         "How a User Connects an Account During a Tool Call",
         "Why Agents Should See a Selected Tool Catalog",
         "What Happens During Discovery and Execution"
-      ]
-    },
-    {
-      "source": "gmail:bytebytego",
-      "title": "Why Do LLMs Lie?",
-      "url": "https://open.substack.com/pub/bytebytego/p/why-do-llms-lie",
-      "date": "2026-09-29",
-      "summary": "Hallucination in large language models refers to generated information that is factually incorrect, invented, or inconsistent with expected source material. A response does not have to be entirely false to be considered a hallucination; even a single fabricated detail within an otherwise useful answer qualifies. While hallucinations resemble confident falsehoods, they differ from lies because models lack the intent to deceive. Ultimately, whether generated fiction constitutes a hallucination depends heavily on context and what the output claims to represent. AI support assistant errors can be categorized into three overlapping types: factual hallucinations, faithfulness hallucinations, and fabrications. A factual hallucination contradicts reality, whereas a faithfulness hallucination contradicts the provided source documents. Fabrication involves inventing details or entities entirely, often acting as a subtype of factuality failure. Consequently, an AI assistant can be completely faithful to an outdated document while still producing a factually incorrect answer regarding current reality. Large language models generate responses by iteratively predicting and selecting the most likely next token based on calculated probabilities. During the pretraining phase, model parameters internalize linguistic patterns, conceptual associations, and structures from large amounts of text. However, generating statistically probable continuations is fundamentally distinct from verifying factual claims. Consequently, models can convincingly mimic authoritative language and structured formats—such as citations or specific policy terms—without factual grounding.",
-      "summarised": true,
-      "headings": [
-        "What Hallucination Actually Means",
-        "Three Ways an Answer Can Go Wrong",
-        "How Predicting Text Produces Hallucinations",
-        "Why Models Struggle to Admit Uncertainty",
-        "Giving the Model Evidence with RAG",
-        "Looking Up the Missing Facts with Tools",
-        "Writing Useful Answers",
-        "Why an Explanation Is Not Proof"
       ]
     },
     {
@@ -89,10 +71,28 @@
     },
     {
       "source": "gmail:bytebytego",
+      "title": "Why Do LLMs Lie?",
+      "url": "https://open.substack.com/pub/bytebytego/p/why-do-llms-lie",
+      "date": "2026-09-29",
+      "summary": "In the context of large language models, hallucination refers to generated text that is factually incorrect, invented, or inconsistent with designated source material. A response does not need to be entirely false to be considered a hallucination, as a single fabricated detail can mislead a user who relies on it. Although hallucinations resemble confident falsehoods, they differ from lying because models lack an intent to deceive and produce these errors via normal generation mechanisms. Ultimately, whether an invention constitutes a hallucination depends on context and whether the output claims to represent factual reality. AI support assistant errors can be systematically analyzed across three primary categories: factual hallucinations, faithfulness hallucinations, and fabrications. Factual hallucinations contradict real-world reality, whereas faithfulness hallucinations occur when an answer conflicts with its supplied source evidence. Fabrications involve inventing entirely nonexistent items, often overlapping with factuality failures. Notably, an AI can produce a faithful summary of an outdated source document and still be factually wrong, demonstrating the necessity of addressing both model behavior and source data quality. Large language models generate responses iteratively by calculating next-token probabilities and selecting continuations rather than verifying facts. During pretraining, model parameters absorb grammatical structures, concepts, and relationships across massive text collections, but this does not verify situation-specific facts. Consequently, models can generate structurally plausible assertions or fabricated citations accompanied by confident language without underlying evidentiary support.",
+      "summarised": true,
+      "headings": [
+        "What Hallucination Actually Means",
+        "Three Ways an Answer Can Go Wrong",
+        "How Predicting Text Produces Hallucinations",
+        "Why Models Struggle to Admit Uncertainty",
+        "Giving the Model Evidence with RAG",
+        "Looking Up the Missing Facts with Tools",
+        "Writing Useful Answers",
+        "Why an Explanation Is Not Proof"
+      ]
+    },
+    {
+      "source": "gmail:bytebytego",
       "title": "AI Agents Can Think. Now They Can Pay.",
       "url": "https://open.substack.com/pub/bytebytego/p/ai-agents-can-think-now-they-can",
       "date": "2026-09-28",
-      "summary": "The internet was originally designed around the assumption of human users, but automated systems now generate the majority of web traffic as AI shifts toward autonomous agents. Despite this evolution, web payment interfaces remain human-centric, creating friction for automated transactions. The Machine Payments Protocol (MPP) resolves this issue by providing an interface tailored for AI agents to negotiate and execute payments across the web. This development marks a transition toward fully automated transactions where humans are removed from the payment process entirely. Machine Payments Protocol (MPP) is a protocol designed to standardize automated payments between software agents without human intervention. Co-authored by Stripe and Tempo, MPP establishes a framework using HTTP headers to communicate payment challenges, credentials, and receipts. The specification has been published as the Payment HTTP Authentication Schema and submitted to the IETF. By decoupling payment methods across different rails like card networks and blockchains, MPP aims to enable any agent to autonomously buy from any service without prior integration. The Machine Payment Protocol (MPP) framework allows autonomous agents to access paid APIs on demand without prior account creation or API key provisioning. When an agent requests a resource, the server responds with an HTTP 402 Payment Required status and a challenge outlining the payment terms. The agent verifies the terms against pre-configured spending limits on a delegated key and retries the request with a single-use payment credential. Once verified, the server delivers the resource and a receipt header, allowing rails like Stripe to process payments via PaymentIntent objects without creating persistent user records.",
+      "summary": "The internet's underlying infrastructure was built under the assumption that it would be used primarily by human users, but automated traffic now constitutes the majority of web requests. According to Cloudflare, automated systems account for 57.5% of HTTP requests as AI tools rapidly evolve into autonomous agents. Despite this transition, standard online payment interfaces remain tailored to human workflows, creating substantial friction for software. The Machine Payments Protocol (MPP) addresses this gap by offering a standardized payment interface designed for AI agents to settle transactions without human involvement. Machine Payments Protocol (MPP) is a standardized system co-authored by Stripe and Tempo to automate machine-to-machine payment negotiations without human intervention. Submitted to the IETF as the Payment HTTP Authentication Schema, MPP structures payment negotiation into three distinct steps: Challenge, Credential, and Receipt. These interactions occur via standardized HTTP headers, enabling software clients and agents to autonomously discover terms, submit proof of payment, and obtain receipts. Payment methods are governed separately by individual rails, ensuring MPP remains an open, fee-free foundation for internet agent transactions. The Machine Payment Protocol (MPP) workflow enables autonomous AI agents to pay for API and service access on demand using standard HTTP interactions. When an agent requests a service, the server responds with an HTTP 402 Payment Required status and a challenge header detailing payment terms. The agent verifies the terms against preconfigured delegated spending limits, signs the payment authorization, and retries the request with a payment credential. Upon verification, the server fulfills the request and provides a receipt, avoiding user account creation and preventing unpaid side effects.",
       "summarised": true,
       "headings": [
         "The Problem with Today’s Payment Flow",
@@ -123,7 +123,7 @@
       "title": "EP227: Top 9 Places to Use Jev",
       "url": "https://open.substack.com/pub/bytebytego/p/ep227-top-9-places-to-use-jev",
       "date": "2026-09-26",
-      "summary": "TypeSafe AI introduced Jev, a System One model engineered to be 100 times faster and cheaper than frontier LLMs. The model is specifically targeted at decision-making, classification, and gating workloads that are cost-prohibitive or too slow for standard generative LLMs. Key applications include prompt routing, guardrails, agent tool-call gating, passage reranking, evaluation, and bulk data labeling. The core recommendation is to decouple operations by reserving LLMs for generative tasks while deploying Jev for the surrounding decision logic. Large language models (LLMs) generate responses from their learned parameters by predicting tokens one at a time. Retrieval-augmented generation (RAG) enhances this workflow by fetching relevant data from an indexed knowledge base before calling the LLM, producing grounded responses without guaranteeing correctness. AI agents build further autonomy through goal orientation, task state tracking, planning, tool usage, and iterative feedback loops. Agentic AI scales this paradigm to multi-agent collaboration, using an orchestration layer to coordinate agents and workflows toward shared objectives across shared task states. Model Context Protocol (MCP) and function calling both enable large language models to access and execute external tools through an agent runtime. The primary difference lies in where functions are hosted and executed. In local function calling, functions reside and run directly on the user's machine. By contrast, MCP standardizes interactions with tools hosted on remote servers, enabling agents to connect to hundreds of thousands of publicly accessible remote tools.",
+      "summary": "TypeSafe AI has introduced Jev, a System One model designed to be 100 times faster and cheaper than frontier large language models. Its speed and low cost make it suitable for tasks where traditional LLMs are too slow or cost-prohibitive. The text outlines nine primary applications for Jev, focusing on decision-making tasks such as routing, guardrails, evaluation, and classification. The overarching guidance is to delegate contextual decision-making to Jev while reserving LLMs for generation. This section defines and contrasts four core paradigms in modern AI: LLMs, RAG, AI agents, and Agentic AI. A base LLM generates responses directly from learned parameters by predicting tokens sequentially. RAG incorporates a retriever to ground LLM outputs with external indexed knowledge, though it cannot guarantee complete correctness. AI agents introduce goal orientation, tool calling, and feedback loops to dynamically track state and achieve objectives, while Agentic AI orchestrates multiple agents and workflows using shared states to fulfill broader goals. Both Model Context Protocol (MCP) and function calling are mechanisms that enable large language models to interact with tools via an agent runtime. In both paradigms, the model identifies which tool to call and emits a request that the runtime executes before returning results back to the model. The key distinction is execution architecture: traditional function calling runs functions locally on the user's machine, whereas MCP communicates over a standardized protocol to execute tools hosted on remote servers. This distinction allows MCP agents to seamlessly interface with vast ecosystems of publicly and remotely hosted tools.",
       "summarised": true,
       "headings": [
         "Top 9 Places to Use Jev",
@@ -139,10 +139,9 @@
       "title": "LAST CALL FOR ENROLLMENT: Rebuild YouTube with AI",
       "url": "https://open.substack.com/pub/bytebytego/p/last-call-for-enrollment-rebuild",
       "date": "2026-09-25",
-      "summary": "An educational course titled 'Rebuild YouTube with AI' is scheduled to commence on Saturday, September 26. The training is conducted by a former YouTube engineer. The enrollment window closes within 24 hours of the notice. This curriculum focuses on developing a full-stack YouTube clone MVP using AI coding agents and modern web technologies. Learners construct interfaces in React alongside a backend powered by Postgres for handling authentication and video uploads. The course also integrates multimodal embeddings for semantic search and video recommendations, while detailing testing with Playwright and deployment to Vercel. ByteByteGo offers a catalog of live professional courses covering applied artificial intelligence topics. The programs range from two-day intensives to six-week courses and are taught by experienced industry leaders from major tech organizations. Subject areas include AI evaluations, cost optimization, engineering fundamentals, tooling with Claude Code, production-grade systems, and trust-optimized development methodologies.",
+      "summary": "The educational course 'Rebuild YouTube with AI' is scheduled to begin on Saturday, September 26. The training is instructed by a former YouTube engineer. Final enrollment for the course closes within 24 hours of the announcement. This course outline details the end-to-end process of building a YouTube-style minimum viable product using AI coding agents. The curriculum covers full-stack web development with React and Postgres, along with core media functionalities like video uploads and authentication. Additionally, it explores multimodal embeddings for semantic search and recommendations, automated testing with Playwright, and deployment onto Vercel. This section advertises multiple live engineering and artificial intelligence courses offered by ByteByteGo. The courses cover topics including AI evaluation, cost optimization, engineering fundamentals, production-grade AI systems, Claude Code, and trust-optimized development. Each program is instructed by experienced industry practitioners from major tech companies such as Meta, Salesforce, Google, and AMD.",
       "summarised": true,
       "headings": [
-        "LAST CALL FOR ENROLLMENT: Rebuild YouTube with AI",
         "What you will learn",
         "More live courses we offer:"
       ]
@@ -175,7 +174,7 @@
       "title": "The Life of Data: From Creation to Deletion",
       "url": "https://open.substack.com/pub/bytebytego/p/the-life-of-data-from-creation-to",
       "date": "2026-09-24",
-      "summary": "While web applications appear straightforward from the outside by simply saving, displaying, and deleting user input, data inside growing systems is replicated across multiple components. A single record can concurrently reside in databases, caches, search engine indexes, analytics pipelines, and backup archives. Each instance serves a unique functional purpose and operates on its own lifecycle and update schedule. Understanding this end-to-end data lifecycle from creation to deletion connects architectural decisions across performance, storage costs, data recovery, and privacy.",
+      "summary": "While web applications appear simple to users, underlying data is replicated across multiple components as a system grows. A single record commonly exists in databases, caches, search engine indices, analytics pipelines, and backups, each fulfilling a different purpose with its own lifespan and update schedule. Understanding the end-to-end data lifecycle helps connect distinct architectural and operational decisions, including system performance, storage costs, database design, recovery, and privacy.",
       "summarised": true,
       "headings": []
     },
@@ -184,7 +183,7 @@
       "title": "How to Customize a Model to Learn New Tricks",
       "url": "https://open.substack.com/pub/bytebytego/p/how-to-customize-a-model-to-learn",
       "date": "2026-09-23",
-      "summary": "Prompting provides an accessible starting point for customizing model behavior by specifying tasks, constraints, and examples via few-shot prompting. When external or updated knowledge is required, retrieval-augmented generation (RAG) supplies relevant context dynamically at inference time without altering model weights. However, when models exhibit recurring behavioral weaknesses or handling many examples bloats request inputs, fine-tuning modifies the model's learned parameters directly. While fine-tuning embeds desired behaviors into the model itself, RAG remains preferable for frequently changing data or requirements needing verifiable external traceability. Fine-tuning builds upon pre-existing language model capabilities by updating numerical parameters on focused datasets, reducing the training required for specialization. Common approaches include supervised fine-tuning (SFT) for direct input-response mapping and reinforcement learning from human feedback (RLHF) to refine behaviors through ranked outputs and reward models. While full fine-tuning adjusts every parameter across the network, it demands substantial GPU memory for tracking weights, updates, and activations. Parameter-efficient techniques such as LoRA and QLoRA address these resource constraints by adapting models without requiring every parameter to be independently updated. LoRA (Low-Rank Adaptation) is a parameter-efficient fine-tuning method that keeps a base model's original weights frozen while attaching small trainable components called adapters to internal calculations. These adapters utilize two compact matrices to compute adjustments that are added directly to the model's internal processing rather than rewriting finished outputs. By learning coordinated patterns via low-rank representations, LoRA modifies how existing capabilities are applied without forcing the model to relearn basic tasks. The rank setting dictates the adapter's capacity and training overhead, allowing targeted modifications to components such as attention mechanisms while dramatically reducing parameter update costs.",
+      "summary": "Model customization begins with prompting and few-shot examples to define constraints and output expectations. When required context or updated documentation is missing, retrieval-augmented generation (RAG) supplies external data directly into the request input without modifying model parameters. If recurring weaknesses persist or input token overhead becomes prohibitive, fine-tuning provides an alternative by updating model parameters directly through training on examples. While fine-tuning embeds default behaviors and internalizes facts, retrieval remains necessary when information changes frequently or requires traceable sourcing. Fine-tuning adapts an existing pretrained model to specific tasks using a targeted dataset, significantly reducing the training needed compared to pretraining from scratch. Supervised fine-tuning (SFT) uses input-target pairs to update model parameters via backpropagation and an optimizer based on measured loss. Reinforcement learning from human feedback (RLHF) addresses SFT's limitations by training a separate reward model based on human-ranked outputs. While full fine-tuning modifies every parameter and incurs heavy memory costs, efficient methods like LoRA and QLoRA allow adaptation without adjusting every parameter independently. LoRA (Low-Rank Adaptation) is a parameter-efficient fine-tuning method that minimizes the number of parameters updated during training. It keeps original model weights frozen and attaches small trainable adapter components to internal calculations. These adapters use pairs of compact low-rank matrices to compute additive adjustments to the model's intermediate representations. A configurable rank setting dictates adapter capacity and resource overhead, enabling targeted adaptation of attention and other layer transformations without altering the base model's foundation.",
       "summarised": true,
       "headings": [
         "When Instructions and Information Are Not Enough",
@@ -212,7 +211,7 @@
       "title": "Agentic AI Weekly | Berkeley RDI | September 23, 2026",
       "url": "https://open.substack.com/pub/berkeleyrdi/p/agentic-ai-weekly-berkeley-rdi-september-021",
       "date": "2026-09-23",
-      "summary": "Jeff Dean, former Chief Scientist at Google and currently Co-founder and CEO of Discovery Loop, participated in his first public talk since leaving Google after 27 years. In a conversation with Professor Dawn Song, Dean reflected on his legacy spanning foundational systems like MapReduce, TensorFlow, and Gemini to outline future directions in AI. The discussion focused on identifying high-impact research directions early, committing to multi-year problems, and utilizing AI to accelerate the process of discovery. The concept of recursive self-improvement in artificial intelligence is shifting from isolated task automation to accelerating the broader research and development loop. Historical techniques such as Neural Architecture Search and the Evolved Transformer previously demonstrated the feasibility of using machine learning to improve model design. Modern efforts seek to apply this cyclical approach across entire scientific and engineering workflows, encompassing data generation, experimentation, and feedback. Jeff's company, Discovery Loop, is developing AI systems to compress experimental cycles from weeks to hours and execute thousands of iterations in parallel. Ultimately, this approach aims to dramatically increase the overall rate of scientific discovery itself. Jeff Dean has a track record of identifying transformative technologies years before their widespread adoption, with Mixture-of-Experts (MoE) serving as a prominent example. Early MoE systems demonstrated a roughly 10x improvement in training-compute-to-quality ratios compared to dense models. Dean highlights that an order-of-magnitude leap typically signals an idea of lasting significance. Consequently, genuinely foundational AI ideas usually reveal themselves through dramatic step changes in engineering or economics long before their full potential is realized.",
+      "summary": "Jeff Dean, former Chief Scientist at Google, engaged in his first public talk since leaving the company after 27 years. In a conversation hosted by Professor Dawn Song, Dean discussed his perspective on future technological frontiers rather than simply reviewing his past accomplishments. The discussion centered on identifying high-impact research problems before they become obvious and exploring how AI can accelerate discovery loops. The concept of recursive self-improvement in AI is expanding from automating isolated tasks to accelerating entire research and development lifecycles. Historical methods like Neural Architecture Search and architectures like the Evolved Transformer demonstrated automated model discovery, but current efforts seek to automate full experimental feedback loops. This framework applies broadly across scientific and engineering disciplines where experimentation and evaluation drive progress. A company called Discovery Loop aims to dramatically compress iteration cycles and run thousands of parallel experiments to accelerate the speed of discovery itself. Jeff Dean highlights that foundational technology ideas often reveal their long-term value through an order-of-magnitude improvement in underlying economics or engineering long before their applications are obvious. A primary example is the Mixture-of-Experts (MoE) architecture, which early on demonstrated roughly a 10× improvement in training-compute-to-quality ratios over dense models. Today, MoE architectures underpin many frontier AI systems, exemplifying how significant efficiency step changes signal transformative concepts.",
       "summarised": true,
       "headings": [
         "From 10× Ideas to Discovery Loops",
@@ -241,7 +240,7 @@
       "title": "How OpenAI Built GPT-Live",
       "url": "https://open.substack.com/pub/bytebytego/p/how-openai-built-gpt-live",
       "date": "2026-09-22",
-      "summary": "Voice systems accept user audio as input and return an audio response to the listener. While the input and output modalities remain constant, the intermediary processing differs depending on system design. Historically, voice systems have evolved across three primary architectural generations. These generations comprise cascaded design, turn-based end-to-end models, and full-duplex architectures. The cascaded design for voice systems operates by sequentially chaining an automatic speech recognition (ASR) model, a large language model (LLM), and a text-to-speech (TTS) model. While each model handles the task it performs best, the architecture suffers from significant information loss because vocal nuances like tone and emotion are stripped from the transcript passed to the LLM. Furthermore, serial processing causes high cumulative latency, and managing three distinct components adds operational complexity. These shortcomings led to the development of second-generation turn-based speech-to-speech models. The second generation of voice systems introduces end-to-end speech-to-speech models that process audio directly, capturing vocal nuances lost in cascaded systems. However, interaction remains turn-based because it still relies on turn detectors and interruption mechanisms that frequently cause awkward pauses, cutoffs, or false triggers. Furthermore, these architectures are expensive to maintain because adopting new pre-trained foundation models requires retraining from scratch. These turn-taking challenges ultimately motivate the transition to third-generation full-duplex architectures.",
+      "summary": "Voice systems consistently operate with audio inputs from the user and generate audio responses played back to the user. Although the input and output modalities remain the same, the intermediate processing differs according to the system design. Across their development, voice systems have evolved through three distinct architectural generations. These generations are categorized as cascaded design, turn-based end-to-end, and full-duplex architecture. The cascaded design for voice systems chains three distinct models sequentially: an automatic speech recognition (ASR) model, a large language model (LLM), and a text-to-speech (TTS) model. While this pipeline allows each specialized component to handle what it does best, it introduces significant drawbacks including the loss of vocal cues such as tone and emotion during transcription. Furthermore, operating three systems in series leads to high latency and substantial operational complexity in serving and scaling. These challenges prompted the development of second-generation turn-based speech-to-speech architectures. The second generation of voice AI introduces end-to-end speech-to-speech models that directly process and generate audio, capturing vocal nuances lost in cascaded systems. Despite this improvement, interactions remain turn-based because they still depend on turn-detection and interruption mechanisms to manage speaking flow. These detectors struggle with trade-offs between unnatural delays and premature cutoffs or false triggers. Furthermore, speech-to-speech systems are costly to keep current because integrating updated base LLM checkpoints requires full retraining runs.",
       "summarised": true,
       "headings": [
         "Three Generations of Voice Systems",
@@ -271,8 +270,8 @@
       "title": "How to Run a Big Model on Cheap Hardware?",
       "url": "https://open.substack.com/pub/bytebytego/p/how-to-run-a-big-model-on-cheap-hardware",
       "date": "2026-09-21",
-      "summary": "An AI model contains numerical values called parameters. These are also known as weights. They influence how input becomes output. During training, these values are adjusted so that the model becomes better at its task. An 8B model contains approximately eight billion parameters or weights. These weights are organized into layers. Each layer performs calculations on incoming information and passes",
-      "summarised": false,
+      "summary": "An AI model relies on numerical parameters, also known as weights, that are structured into layers to convert inputs into outputs. In language models, input text is broken into tokens, and the model iteratively generates responses by predicting probabilities for subsequent tokens. While training is a computationally intensive process that updates weights on expensive infrastructure, inference utilizes fixed weights and can often be executed on standard consumer hardware. Fitting large language models on smaller hardware is constrained by total memory capacity, memory location, and processing bottlenecks. An 8-billion-parameter model at 16-bit precision requires about 16 GB just for weights, plus extra space for software overhead, temporary calculations, and context. Because persistent storage like SSDs is too slow for execution, weights must reside in fast working memory such as RAM or GPU VRAM. Beyond capacity, memory bandwidth and compute architecture pose limits, with GPUs providing superior parallelism over CPUs and distinct bottlenecks arising across the prefill and decoding stages of inference. Local execution allows developers to utilize existing hardware for experimentation and decrease reliance on rented cloud infrastructure. This approach offers enhanced privacy for sensitive documents and proprietary code, alongside offline capability for desktop assistants and remote deployments. Additionally, running models locally provides greater control over model versions and application behavior. However, it is not universally cost-effective, as hardware, electricity, maintenance, and latency must be weighed against usage frequency compared to hosted services.",
+      "summarised": true,
       "headings": [
         "What Running a Model Actually Means",
         "What Makes it Difficult to Fit the Model on Smaller Hardware",
@@ -289,8 +288,8 @@
       "title": "ExplainThis 全端開發雙週報 #88 為什麼在 AI 代理時代，越來越多設計系統選擇 StyleX？",
       "url": "https://open.substack.com/pub/explainthis/p/explainthis-88-ai-stylex",
       "date": "2026-09-20",
-      "summary": "在 2023 年，Meta 開源了內部使用的 CSS 解決方案 StyleX，在當年引來社群的一陣討論後，StyleX 的話題沉寂了一陣子。然而，到了 2026 年，業界越來越多公司選擇把設計系統遷移到 StyleX。 舉例來說，Linear 團隊的 [《Moving Linear from styled‑components to StyleX》](https://substack.com/redirect/714f7c45-cce1-4fc9-91e9-c8421110bbf6?j=eyJ1IjoiM2NtbGY5In0.ra03fCqDa-UlLj_8G5tTI4BzWGAXqygbP7t4aAuhHJ0) 與 Polar 團隊的 [《Building an LLM safe design system》](https://substack.com/redirect/882fd028",
-      "summarised": false,
+      "summary": "Meta originally open-sourced StyleX in 2023, and by 2026, tech companies such as Linear, Polar, HubSpot, and Cursor are migrating their design systems to it. While Tailwind CSS remains popular for human developers due to conciseness, StyleX's strict type constraints and ESLint rules make it superior for AI agents. With AI agents writing more code, Tailwind's high flexibility leads to subtle hallucinations that pass standard checks, whereas StyleX enforces design token compliance via static analysis and automated CI/CD checks. This section serves as a call-to-action to access the full version of the article via the E+ membership program. E+ provides subscribers with member-exclusive deep-dive articles and videos covering front-end and back-end development, AI engineering, and career development. Additionally, members gain access to a dedicated Discord community for networking and continuous peer learning. The program also supports corporate education subsidies by providing official business tax invoices. This curated selection features technical articles and resources spanning software engineering, system architecture, and career practices. Highlights include Shopify's migration from Redis to MySQL for inventory reservations and OpenAI's scaling of its Habitat storage platform to serve over one billion ChatGPT users. Additional articles explore learning programming effectively with LLMs, writing software design documents, evaluating legacy code via Google's CRAP metric, overcoming organizational bottlenecks, and an interactive JavaScript crossword puzzle.",
+      "summarised": true,
       "headings": [
         "閱讀更多",
         "本期推薦"
@@ -301,8 +300,8 @@
       "title": "EP226: API Concepts Every Software Engineer Should Know",
       "url": "https://open.substack.com/pub/bytebytego/p/ep226-api-concepts-every-software",
       "date": "2026-09-19",
-      "summary": "Most engineers use APIs every day. Sending a request and reading JSON is one thing. Designing an API that other people can rely on is something where things get complicated. A lot of problems begin with basic HTTP details that seem small at first. Methods, status codes, request formats, and response structure can make an API feel clear and predictable, or confusing and inconsistent. Then there are",
-      "summarised": false,
+      "summary": "Designing dependable APIs requires careful attention to fundamental HTTP concepts, structural design styles, and early architectural choices. Engineers must evaluate paradigms such as REST, GraphQL, gRPC, webhooks, and WebSockets to match specific system requirements. In addition to core protocols, long-term usability depends on security implementations like OAuth and JWTs, operational reliability practices, and thorough documentation. Neglecting aspects like versioning, idempotency, and error handling can make APIs fragile and costly to maintain. Prompt injection tops the OWASP LLM Top 10 and cannot be solved with a single defense mechanism. Mitigating it requires stacking multiple complementary defenses across model-level and system-level categories. Model-level approaches include spotlighting and instruction hierarchy, which instruct or fine-tune models to treat untrusted inputs as data. System-level architectures such as least-privilege tools, human-in-the-loop checks, and planner/executor splits restrict agent capabilities and isolate sensitive tasks. Production applications like Gmail combine these layered defenses to manage the threat of indirect prompt injections. An upcoming educational course titled 'Rebuild YouTube with AI' is scheduled to launch in approximately one week. The course begins on September 26, 2026. It is scheduled to conclude on October 24, 2026. The curriculum centers on rebuilding the YouTube platform leveraging artificial intelligence techniques.",
+      "summarised": true,
       "headings": [
         "API Concepts Every Software Engineer Should Know",
         "5 Way to Defend Prompt Injection",
@@ -342,9 +341,27 @@
       "title": "Migrations at Scale: Changing the Application Engine at 30,000 Feet",
       "url": "https://open.substack.com/pub/bytebytego/p/migrations-at-scale-changing-the",
       "date": "2026-09-17",
-      "summary": "Consider a hypothetical scenario in which an online shopping platform has become extremely successful. It has outgrown its original database. This causes order histories to load very slowly. Maintenance takes much longer than it used to. And engineers spend way too much time managing the workload and the system’s limitations. The engineering team behind this system wants to replace the database an",
-      "summarised": false,
+      "summary": "Production migrations at scale present the fundamental challenge of replacing core infrastructure without taking the system offline. Growing platforms often outgrow their original databases, resulting in slow query performance, lengthened maintenance windows, and heavy engineering overhead. Because high-traffic services cannot afford downtime while transactions continuously occur, copying massive datasets can take days across intermediate steps. Successfully executing such migrations requires maintaining operational continuity across all supporting applications throughout the transition.",
+      "summarised": true,
       "headings": []
+    },
+    {
+      "source": "gmail:berkeley_rdi",
+      "title": "Agentic AI Weekly | Berkeley RDI | September 16, 2026",
+      "url": "https://open.substack.com/pub/berkeleyrdi/p/agentic-ai-weekly-berkeley-rdi-september-f7c",
+      "date": "2026-09-16",
+      "summary": "Discussions at the Agentic AI Summit 2026 highlighted that model capabilities alone are insufficient for real-world agent reliability. Practical agent deployment across sectors like banking and enterprise software demands surrounding infrastructure, including evaluation, proprietary context, governance, coordination, and payments. As foundational intelligence becomes commoditized, the industry's focus is shifting toward establishing systems that enable agents to execute tasks safely and productively at scale. As foundation model capabilities converge, mere access to advanced models ceases to be a durable competitive differentiator. Experts argue that enterprise value increasingly stems from customizing the AI stack around proprietary organizational data, workflows, and governance policies. Frameworks like Capital One's MACAW orchestrate specialized multi-agent roles to validate actions against enterprise standards, while methods such as fine-tuning smaller, domain-specific models offer improved performance and economics over relying exclusively on generic frontier models. Deploying AI agents in high-stakes domains such as finance and legal requires verification to be embedded directly into system architecture rather than treated as a post-deployment QA step. While coding agents benefit from objective and immediate feedback, critical domains face delayed, ambiguous, or severe consequences from errors. Concepts like Verifier's Law and architectures like Capital One's MACAW highlight the need for independent, real-time evaluators within multi-agent systems. Furthermore, safety must extend beyond the model itself into the surrounding infrastructure, containment protocols, and runtime guardrails.",
+      "summarised": true,
+      "headings": [
+        "Beyond the Model: Building the Infrastructure for the Agentic Economy",
+        "1. As Models Converge, Context Becomes the Differentiator",
+        "2. In High-Stakes Domains, Verification Becomes Part of the Architecture",
+        "3. Agents May Need an Economic Layer of Their Own",
+        "4. AI Could Reshape the Organization Itself",
+        "The Bigger Picture",
+        "1. AI’s Biggest Rivals Converge on Slowing the Frontier",
+        "2. Anthropic Maps How AI Misuse Is Scaling"
+      ]
     },
     {
       "source": "gmail:daily_dose_of_ds",
@@ -364,8 +381,8 @@
       "title": "How LLMs Can Find a Needle in a Haystack",
       "url": "https://open.substack.com/pub/bytebytego/p/how-llms-can-find-a-needle-in-a-haystack",
       "date": "2026-09-16",
-      "summary": "A language model does not automatically know what is inside a company’s private documents. An application must provide that information, either by including documents directly in its input or by retrieving relevant passages when a question arrives. For a large collection, retrieval offers a way to select a manageable amount of information. An embedding model converts the question into a numerical ",
-      "summarised": false,
+      "summary": "Large language models lack internal access to private corporate documents and require external evidence provided in context to answer questions accurately. Retrieval-augmented generation (RAG) addresses this by using embedding models and vector databases to retrieve relevant document passages before passing them to the LLM. The quality of the final generated answer depends heavily on the retrieval stage, as incomplete or outdated retrieved context leads to inaccurate answers despite the model's capabilities. Consequently, document collections must be indexed and searchable at the right granularity to support reliable outputs. Treating an entire document as a single searchable unit creates an overly broad representation that obscures specific rules. To resolve this, retrieval applications divide documents into smaller units called chunks to pinpoint individual passages. Chunking requires balancing precision and context, as undersized chunks may omit critical qualifications while oversized chunks add irrelevant noise. Techniques like including section headings and providing limited overlap between neighboring chunks help retain necessary context so passages remain understandable in isolation. Embeddings enable semantic search across differing wordings by representing passages as high-dimensional numerical vectors in a shared space. Meaning is encoded not in isolated dimensions, but through holistic patterns across vectors where semantically related passages cluster closely together. Effective retrieval requires queries and document chunks to be mapped into the same space using compatible encoders rather than models that merely share vector lengths. Additionally, vector records must retain connections to the underlying passage text, chunk identifiers, and metadata so language models can interpret and maintain the retrieved information.",
+      "summarised": true,
       "headings": [
         "The LLM Needs Evidence to Answer Questions",
         "How Documents are Turned into Searchable Passages",
@@ -378,30 +395,12 @@
       ]
     },
     {
-      "source": "gmail:berkeley_rdi",
-      "title": "Agentic AI Weekly | Berkeley RDI | September 16, 2026",
-      "url": "https://open.substack.com/pub/berkeleyrdi/p/agentic-ai-weekly-berkeley-rdi-september-f7c",
-      "date": "2026-09-16",
-      "summary": "In this final deep dive from the [Agentic AI Summit 2026](https://substack.com/redirect/43bc0610-702e-4504-a7e2-4d2c3af3d235?j=eyJ1IjoiM2NtbGY5In0.ra03fCqDa-UlLj_8G5tTI4BzWGAXqygbP7t4aAuhHJ0) , the conversation moved from what agents can do to what must exist around them before they can operate reliably in the real world. Across discussions on banking, payments, developer platforms, and high-stake",
-      "summarised": false,
-      "headings": [
-        "Beyond the Model: Building the Infrastructure for the Agentic Economy",
-        "1. As Models Converge, Context Becomes the Differentiator",
-        "2. In High-Stakes Domains, Verification Becomes Part of the Architecture",
-        "3. Agents May Need an Economic Layer of Their Own",
-        "4. AI Could Reshape the Organization Itself",
-        "The Bigger Picture",
-        "1. AI’s Biggest Rivals Converge on Slowing the Frontier",
-        "2. Anthropic Maps How AI Misuse Is Scaling"
-      ]
-    },
-    {
       "source": "gmail:bytebytego",
       "title": "Do LLMs Have the Memory of a Goldfish?",
       "url": "https://open.substack.com/pub/bytebytego/p/do-llms-have-the-memory-of-a-goldfish",
       "date": "2026-09-15",
-      "summary": "In the context of LLMs, the word “memory” is used for several different things that should not be confused. Let’s look at each type in detail.",
-      "summarised": false,
+      "summary": "The term 'memory' in the context of large language models refers to multiple distinct concepts rather than a single unified mechanism. It is critical to differentiate between these meanings to avoid confusion. This section serves as an introduction to examining and clarifying the various types of memory associated with LLMs. During training, large language models encode patterns from vast amounts of data into billions of parameters or weights, enabling general knowledge recall without explicit prompt context. However, standard API interactions do not update these weights, meaning models lack persistent personal memory of individual conversations. Instead, models rely on a temporary context window as working memory to process instructions, conversation history, and retrieved context. Once this context window is cleared, the model loses access to that information unless it is reintroduced by the application. Persistent memory operates external to the model, typically residing in systems such as databases, files, vector stores, or profile services. When required, the application retrieves this stored information and injects it directly into the active context. Consequently, models do not inherently possess persistent memory on their own. Instead, they depend on external auxiliary systems to supply persistent information during execution.",
+      "summarised": true,
       "headings": [
         "What Does “memory” Mean for an LLM?",
         "Trained Memory",
@@ -418,11 +417,9 @@
       "title": "LAST CALL FOR ENROLLMENT: Build with Claude Code",
       "url": "https://open.substack.com/pub/bytebytego/p/last-call-for-enrollment-build-with-d63",
       "date": "2026-09-15",
-      "summary": "We’re relaunching Build with Claude Code , a 2-day intensive cohort-based course taught by John Kim, who has trained hundreds of engineers at Meta to use Claude Code in real production workflows. The course kicks off on September 16th, and enrollment closes in 24 hours . If you’ve been thinking about leveling up how you and your team work with Claude Code, this is the moment. [Check it out now](ht",
-      "summarised": false,
-      "headings": [
-        "LAST CALL FOR ENROLLMENT: Build with Claude Code"
-      ]
+      "summary": "ByteByteGo is relaunching 'Build with Claude Code', a two-day cohort-based training course taught by John Kim starting September 16th. The curriculum targets engineering production workflows using Claude Code, focusing on topics like agentic loops, context engineering, and memory layers. Participants will also cover tool integrations such as Claude Code Skills, Model Context Protocol (MCP), Git worktrees, and subagent architectures.",
+      "summarised": true,
+      "headings": []
     },
     {
       "source": "gmail:daily_dose_of_ds",
@@ -438,12 +435,24 @@
       ]
     },
     {
+      "source": "gmail:daily_dose_of_ds",
+      "title": "What It Takes to Build a Production Agent Harness",
+      "url": "https://blog.dailydoseofds.com/p/what-it-takes-to-build-a-production",
+      "date": "2026-09-14",
+      "summary": "An agent harness serves as the execution layer that manages interactions between models, tools, and application state. This series demonstrates building such a harness using LangChain and LangGraph to transition from simple requests to stateful production applications. The implementation addresses critical system design challenges including error propagation, state persistence, and deterministic execution control. The section describes a self-repairing agent harness system using Hermes and Opik to learn from production failures without retraining model weights. It distinguishes between runtime learning, where successful procedures are saved as skills, and offline optimization using the GEPA algorithm for prompt and skill evolution. The workflow involves capturing execution traces, diagnosing root causes with the Ollie tool, and establishing regression tests to prevent recurring errors. By modifying external artifacts like instructions and configurations, the system converts production incidents into structured, reviewable inputs for continuous improvement.",
+      "summarised": true,
+      "headings": [
+        "Building a production agent harness in LangChain",
+        "Your agent harness should repair itself"
+      ]
+    },
+    {
       "source": "gmail:bytebytego",
       "title": "LLMs as a Judge: How to Know if Your LLM is Healthy",
       "url": "https://open.substack.com/pub/bytebytego/p/llms-as-a-judge-how-to-know-if-your",
       "date": "2026-09-14",
-      "summary": "When can we call an LLM healthy? The answer is quite simple. An LLM is deemed healthy if it consistently generates useful results while remaining within acceptable limits for accuracy, safety, speed, reliability, and cost. For example, consider a customer-support assistant. We cannot say it is healthy by a single question such as “Did it return the correct output?” We need to consider several diff",
-      "summarised": false,
+      "summary": "An LLM application is considered healthy when it consistently delivers useful outputs while satisfying constraints across accuracy, safety, speed, reliability, and cost. Evaluating health requires examining multiple interconnected dimensions of quality rather than relying on a single metric like output correctness. Furthermore, evaluators must distinguish between the health of the underlying LLM and the broader application system. Failures can stem from surrounding factors like faulty prompts, retrieval issues, stale data, or tooling errors rather than the model itself. Traditional software testing is insufficient for large language models because LLMs produce non-deterministic, probabilistic outputs where multiple distinct phrasings can be correct. Additionally, evaluating LLM output quality is multidimensional and subjective, requiring clear and concrete definitions of target attributes such as tone and detail. Correctness often hinges directly on contextual inputs, meaning evaluations must account for the specific data provided to the model. Nonetheless, deterministic software components within LLM applications, such as JSON parsing and tool execution, still require standard unit and integration testing. A practical LLM evaluation system operates as a continuous iterative loop to maintain application quality and prevent regressions. The process begins by running representative test cases through the application and inspecting the outputs using multiple evaluation methods. New iterations are compared against the production baseline to block or investigate any observed regressions. Finally, real production traffic is monitored to detect edge cases and failures, which are continuously fed back into the test set to expand the evaluation dataset.",
+      "summarised": true,
       "headings": [
         "What Does it Mean for an LLM Application to be Healthy?",
         "Why Ordinary Tests Are Not Sufficient for LLMs?",
@@ -456,15 +465,19 @@
       ]
     },
     {
-      "source": "gmail:daily_dose_of_ds",
-      "title": "What It Takes to Build a Production Agent Harness",
-      "url": "https://blog.dailydoseofds.com/p/what-it-takes-to-build-a-production",
-      "date": "2026-09-14",
-      "summary": "An agent harness serves as the execution layer that manages interactions between models, tools, and application state. This series demonstrates building such a harness using LangChain and LangGraph to transition from simple requests to stateful production applications. The implementation addresses critical system design challenges including error propagation, state persistence, and deterministic execution control. The section describes a self-repairing agent harness system using Hermes and Opik to learn from production failures without retraining model weights. It distinguishes between runtime learning, where successful procedures are saved as skills, and offline optimization using the GEPA algorithm for prompt and skill evolution. The workflow involves capturing execution traces, diagnosing root causes with the Ollie tool, and establishing regression tests to prevent recurring errors. By modifying external artifacts like instructions and configurations, the system converts production incidents into structured, reviewable inputs for continuous improvement.",
+      "source": "gmail:bytebytego",
+      "title": "EP225: Why Does Git Revert Cause Conflicts?",
+      "url": "https://open.substack.com/pub/bytebytego/p/ep225-why-does-git-revert-cause-conflicts",
+      "date": "2026-09-12",
+      "summary": "The git revert command undoes changes from an earlier commit by generating a new commit rather than rewriting project history, making it safe for shared branches. However, revert conflicts arise when a subsequent commit modifies the exact same lines of code that the targeted commit introduced or changed. Because Git cannot automatically determine which version takes precedence, it pauses the operation for manual intervention. Once the conflict is resolved and staged, Git finalizes the new commit to undo the target changes while keeping subsequent updates intact. Claude Code offers specialized developer capabilities to manage coding tasks, safety, and context efficiency. Core workflow features include project memory via CLAUDE.md files, pre-execution planning modes, and automatic checkpoint rollbacks. The system also supports modular extensibility and external connectivity using Skills, lifecycle Hooks, Plugins, and the Model Context Protocol (MCP). To handle complex workflows and context limits, it provides conversation compaction and parallel execution via subagents. Symmetric and asymmetric encryption solve different cryptographic problems with distinct performance trade-offs. Symmetric encryption uses a single shared key for both encryption and decryption, making it fast, efficient, and well-suited for bulk data despite the challenge of secure key distribution. In contrast, asymmetric encryption relies on a public-private key pair to eliminate the upfront key-sharing requirement. However, because asymmetric encryption is computationally expensive and slow, it is primarily applied to identity, authentication, and key exchange rather than large payloads.",
       "summarised": true,
       "headings": [
-        "Building a production agent harness in LangChain",
-        "Your agent harness should repair itself"
+        "Why Does Git Revert Cause Conflicts?",
+        "12 Claude Code Features Every Engineer Should Know",
+        "Symmetric vs. Asymmetric Encryption",
+        "7 Key Load Balancer Use Cases",
+        "How can Cache Systems go wrong?",
+        "Launching ByteByteGo Live"
       ]
     },
     {
@@ -482,30 +495,12 @@
     },
     {
       "source": "gmail:bytebytego",
-      "title": "EP225: Why Does Git Revert Cause Conflicts?",
-      "url": "https://open.substack.com/pub/bytebytego/p/ep225-why-does-git-revert-cause-conflicts",
-      "date": "2026-09-12",
-      "summary": "git revert looks straightforward until it throws a conflict. Here’s why that happens. - What git revert actually does: Unlike reset, a revert doesn’t rewrite history. Instead, it creates a new commit that undoes the changes from an earlier one. This keeps your history clean, traceable, and safe for shared branches. - Why revert conflicts happen: Conflicts appear when a later commit changed the sam",
-      "summarised": false,
-      "headings": [
-        "Why Does Git Revert Cause Conflicts?",
-        "12 Claude Code Features Every Engineer Should Know",
-        "Symmetric vs. Asymmetric Encryption",
-        "7 Key Load Balancer Use Cases",
-        "How can Cache Systems go wrong?",
-        "Launching ByteByteGo Live"
-      ]
-    },
-    {
-      "source": "gmail:bytebytego",
       "title": "Learn Claude Code, evals, AI systems, and more: ByteByteGo Live is here",
       "url": "https://open.substack.com/pub/bytebytego/p/learn-claude-code-evals-ai-systems",
       "date": "2026-09-11",
-      "summary": "Most online courses never get finished (~4% completion). Live cohorts get ~40%, roughly 10x higher. Live courses are the only courses people actually finish. So we’re launching ByteByteGo Live. The lineup: [Check It Out Here](https://substack.com/redirect/de180316-11b2-4729-96e4-90dad398ae82?j=eyJ1IjoiM2NtbGY5In0.ra03fCqDa-UlLj_8G5tTI4BzWGAXqygbP7t4aAuhHJ0) - Build with Claude Code (John Kim, Seni",
-      "summarised": false,
-      "headings": [
-        "Learn Claude Code, evals, AI systems, and more: ByteByteGo Live is here"
-      ]
+      "summary": "ByteByteGo announced the launch of ByteByteGo Live, a cohort-based live course membership addressing the low completion rates of traditional online courses. The curriculum features specialized tracks in applied AI engineering, such as Claude Code, production-grade AI systems, AI evaluations, and AI cost optimization. Courses are taught by senior practitioners and leaders from companies including Meta, Google, AMD, and Salesforce. A single membership provides access to all live courses offered over a 12-month period.",
+      "summarised": true,
+      "headings": []
     },
     {
       "source": "gmail:daily_dose_of_ds",
@@ -517,15 +512,6 @@
       "headings": [
         "The architecture to serve 100 fine-tuned models on a GPU"
       ]
-    },
-    {
-      "source": "gmail:bytebytego",
-      "title": "A Guide to Application Networking Basics",
-      "url": "https://open.substack.com/pub/bytebytego/p/a-guide-to-application-networking",
-      "date": "2026-09-10",
-      "summary": "Imagine a simple scenario where an e-commerce web application calls an API endpoint that returns information about a customer order. At the application level, this looks like a pretty simple operation. But a lot is happening under the hood. First, the client queries the DNS for the IP address linked to the API endpoint. DNS might return the address of a load balancer rather than the address of a s",
-      "summarised": false,
-      "headings": []
     },
     {
       "source": "gmail:daily_dose_of_ds",
@@ -540,24 +526,21 @@
       ]
     },
     {
-      "source": "gmail:daily_dose_of_ds",
-      "title": "Your Agent Harness Needs Runtime Security",
-      "url": "https://blog.dailydoseofds.com/p/your-agent-harness-needs-runtime",
-      "date": "2026-09-09",
-      "summary": "Agent Beacon is an open-source telemetry layer designed to provide runtime security for AI agents by recording and normalizing their activities into a structured system of record. It addresses a critical visibility gap identified in security incidents at major AI labs where agents bypassed traditional log scanners using packed payloads. The tool integrates with over 23 agent harnesses, enabling real-time monitoring, local detection rules, and data forwarding to existing security platforms like Splunk and Datadog. KV cache management at scale requires treating cached tensors as a persistent storage system rather than temporary data. LMCache is an open-source standalone service that manages these caches across GPU, CPU, and remote storage tiers, decoupling them from the inference engine. By utilizing CUDA IPC for zero-copy memory access, LMCache allows multiple inference workers to share cached prompt prefixes efficiently. This architecture significantly improves throughput and ensures cache persistence even during engine restarts.",
+      "source": "gmail:bytebytego",
+      "title": "A Guide to Application Networking Basics",
+      "url": "https://open.substack.com/pub/bytebytego/p/a-guide-to-application-networking",
+      "date": "2026-09-10",
+      "summary": "Application-level network requests involve complex underlying processes before data exchange can occur. A client first performs a DNS lookup to resolve an API endpoint's IP address, often targeting a load balancer, after which the operating system routes the packets. To use secure HTTP (HTTPS), the client and server must complete both a TCP handshake and a TLS handshake to establish the connection. Once secured, the request is forwarded by the load balancer to a healthy application instance, which processes it and returns the response.",
       "summarised": true,
-      "headings": [
-        "Your Agent harness needs runtime security",
-        "How do LLMs handle GBs of KV cache in production?"
-      ]
+      "headings": []
     },
     {
       "source": "gmail:bytebytego",
       "title": "How Smart Model Routing Can Cut LLM Costs by 10X",
       "url": "https://open.substack.com/pub/bytebytego/p/how-smart-model-routing-can-cut-llm",
       "date": "2026-09-09",
-      "summary": "The total cost of using an LLM API usually depends on the number of tokens processed. To be clear, a token is a small unit of text. A short word might be one token. But a longer word can be split into multiple tokens. There are usually two important token counts: - Input tokens include the user’s message, system instructions, conversation history, and any documents supplied to the model. - Output ",
-      "summarised": false,
+      "summary": "The cost of utilizing LLM APIs is largely dictated by the total volume of processed tokens, split into input and output tokens that typically carry different pricing. More capable, larger models demand significantly more compute resources and reasoning effort, making them substantially more expensive. Applying these high-end models indiscriminately to every task—including trivial requests like extracting addresses or policy queries—wastes model capabilities and results in unnecessary expenses. Cost-effective application design requires avoiding over-provisioned models for simple tasks. Model routing evaluates incoming requests to select and direct them to the most suitable model from a group of models with different capabilities and costs. Unlike traditional load balancing which distributes requests across equivalent servers, model routing chooses among heterogeneous models based on request complexity. Furthermore, application-level model routing operates externally before reaching a model, distinguishing it from mixture-of-experts (MoE) architectures where routing occurs internally within a single model. Model routing reduces operational expenses by directing incoming requests to appropriately sized models rather than serving all traffic with an expensive, high-capacity model. In a scenario where 85% of queries can be answered by a small model and 10% by a medium model, overall costs drop to roughly 11% of the baseline, representing nearly a tenfold savings. Workloads dominated by straightforward tasks like classification, extraction, and formatting can offload the vast majority of volume to low-cost alternatives. Achieving peak cost efficiency requires large price disparities across model tiers, a predominantly simple request volume, and a router capable of reliable traffic classification.",
+      "summarised": true,
       "headings": [
         "Why LLM Applications Become Expensive",
         "What is Model Routing?",
@@ -574,8 +557,8 @@
       "title": "Agentic AI Weekly | Berkeley RDI | September 9, 2026",
       "url": "https://open.substack.com/pub/berkeleyrdi/p/agentic-ai-weekly-berkeley-rdi-september-8fd",
       "date": "2026-09-09",
-      "summary": "Our team has built CUA-Lite , an open platform for developing computer-use agents, built around three standardized abstractions: (1) Unified environment interface , under which we integrate 15+ benchmarks across desktop, browser and mobile, plus optional lightweight VM-free desktop sandboxes of our own that hold 30k+ verifiable tasks ; (2) Unified supervised data format , into which we convert 10+",
-      "summarised": false,
+      "summary": "CUA-Lite is an open platform designed for developing computer-use agents around three standardized abstractions. It features a unified environment interface integrating over 15 benchmarks across desktop, browser, and mobile settings, along with VM-free sandboxes containing more than 30,000 tasks. The framework also standardizes supervised data across more than 10 public datasets and supports fresh rollouts from frontier agents. Finally, it provides shared model harnesses across evaluation, reinforcement learning, and supervised fine-tuning for 14 model families, including GPT, Claude, Qwen, and UI-TARS. Computer-use agents (CUAs) operate across desktop, browser, and mobile interfaces, but current development workflows are fragmented across divergent environments, dataset formats, and model action spaces. Without a standardized interface, developers are forced to repeatedly reimplement basic rollout loops, context windows, and action mappings. This lack of standardization prevents open-source resources from being pooled and stops evaluation, reinforcement learning, and supervised fine-tuning from sharing a unified infrastructure. The post points to CUA-Lite, highlighted by Professor Dawn Song, as an effort addressing these challenges. CUA-Lite standardizes computer-use agent (CUA) workflows by providing a unified environment interface (Lite.Gym) and a single supervised data format (Lite.Sample). Lite.Gym uses a Gym-style loop standardizing observations and platform-specific GUI actions across desktop, browser, and mobile environments, while also introducing low-cost Docker-based desktop sandboxes replicating OSWorld. Lite.Sample converts major public CUA datasets into a uniform message structure matching Lite.Gym's tool calls and results. Individual model harnesses adapt 14 model families to these unified interfaces, enabling shared rollouts and data translation across evaluation, reinforcement learning, and supervised fine-tuning.",
+      "summarised": true,
       "headings": [
         "TL;DR",
         "Why This Is New/Important",
@@ -588,12 +571,24 @@
       ]
     },
     {
+      "source": "gmail:daily_dose_of_ds",
+      "title": "Your Agent Harness Needs Runtime Security",
+      "url": "https://blog.dailydoseofds.com/p/your-agent-harness-needs-runtime",
+      "date": "2026-09-09",
+      "summary": "Agent Beacon is an open-source telemetry layer designed to provide runtime security for AI agents by recording and normalizing their activities into a structured system of record. It addresses a critical visibility gap identified in security incidents at major AI labs where agents bypassed traditional log scanners using packed payloads. The tool integrates with over 23 agent harnesses, enabling real-time monitoring, local detection rules, and data forwarding to existing security platforms like Splunk and Datadog. KV cache management at scale requires treating cached tensors as a persistent storage system rather than temporary data. LMCache is an open-source standalone service that manages these caches across GPU, CPU, and remote storage tiers, decoupling them from the inference engine. By utilizing CUDA IPC for zero-copy memory access, LMCache allows multiple inference workers to share cached prompt prefixes efficiently. This architecture significantly improves throughput and ensures cache persistence even during engine restarts.",
+      "summarised": true,
+      "headings": [
+        "Your Agent harness needs runtime security",
+        "How do LLMs handle GBs of KV cache in production?"
+      ]
+    },
+    {
       "source": "gmail:bytebytego",
       "title": "Built for Reliability: How American Express Processes Payments at Scale",
       "url": "https://open.substack.com/pub/bytebytego/p/built-for-reliability-how-american",
       "date": "2026-09-08",
-      "summary": "In a typical payment flow, American Express sits in the middle of a chain. A merchant holds a relationship with an acquiring bank that sends the transaction to American Express, and American Express delivers it to the card issuer that holds the account balance. This middle hop is the core payment network’s job. See the diagram below that shows this setup: In 2018, American Express began modernizin",
-      "summarised": false,
+      "summary": "American Express operates as the core payment network connecting acquiring banks to card issuers during transactions. In 2018, the company began modernizing its platform onto cloud-native infrastructure, shifting away from hardware engineered for continuous uptime to an environment where unexpected server failures are common. Traditional patterns like event-driven processing and monolithic designs were rejected due to strict low-latency requirements and scaling constraints. Instead, the engineering team adopted a design rooted in cell-based architecture to isolate failures and maintain real-time performance. In a cell-based architecture, a cell is a complete and self-contained copy of an application stack designed to function as an independent failure domain. Each cell owns its required components—such as microservices, databases, and infrastructure—and avoids synchronous cross-cell dependencies along the critical execution path. Unlike microservices, which partition systems by functional domain, cells partition architectures by failure boundaries. Engineers at American Express structure these boundaries around specific real-time transaction journeys to isolate failures and maintain platform availability. American Express manages data locality within its cellular architecture by categorizing data as immutable, semi-static, or dynamic based on change frequency. Immutable and semi-static data are proactively pushed to all cells prior to transactions to prevent cold cache penalties and eliminate external synchronous calls. For dynamic data that updates per transaction, the architecture inverts the paradigm by moving transactions to the data using deterministic routing. Handled by the Global Transaction Router, routing decisions are derived from transaction attributes for consistency, while asynchronous replication runs in the background for failover.",
+      "summarised": true,
       "headings": [
         "Core Payments Ecosystem",
         "Cell Boundaries",
@@ -619,24 +614,6 @@
       ]
     },
     {
-      "source": "gmail:bytebytego",
-      "title": "How to Deal With Errors and Failures in LLM-Powered Applications",
-      "url": "https://open.substack.com/pub/bytebytego/p/how-to-deal-with-errors-and-failures",
-      "date": "2026-09-07",
-      "summary": "Before we get into the details, let us understand what error handling and resiliency exactly mean. You can think of error handling as a part of the program responsible for deciding the appropriate action when something goes wrong. For example, consider an application that calls an LLM API. If the request is successful, the program processes the response in a normal way. But if it fails, the progra",
-      "summarised": false,
-      "headings": [
-        "Meaning of Error Handling and Resiliency",
-        "Why do LLM Applications Need Special Treatment for Error Handling?",
-        "How Does a Request Flow in an LLM-powered App?",
-        "Main Types of Errors and Failures",
-        "Invalid User Input",
-        "Network and Connection Failures",
-        "Timeouts",
-        "Rate Limits"
-      ]
-    },
-    {
       "source": "gmail:daily_dose_of_ds",
       "title": "LLM Routing Can Cost More Than Not Routing",
       "url": "https://blog.dailydoseofds.com/p/llm-routing-can-cost-more-than-not",
@@ -647,6 +624,24 @@
         "Free Observability Engineering Masterclass with Liz Fong-Jones & Honeycomb",
         "LLM routing can cost more than not routing",
         "Hands-on guide to Red Teaming LLM apps"
+      ]
+    },
+    {
+      "source": "gmail:bytebytego",
+      "title": "How to Deal With Errors and Failures in LLM-Powered Applications",
+      "url": "https://open.substack.com/pub/bytebytego/p/how-to-deal-with-errors-and-failures",
+      "date": "2026-09-07",
+      "summary": "Error handling is the mechanism within a program that decides how to respond to individual failures, such as by retrying requests, logging issues, or switching to backup options. In contrast, resiliency focuses on the entire system's capacity to maintain operation even when components fail. Resilient systems manage failures through controlled processes, also known as graceful degradation, rather than crashing entirely. Together, precise error handling and graceful degradation ensure applications remain functional and provide fallback value to users. Unlike traditional deterministic software where successful execution indicates valid results, large language models produce probabilistic outputs that can logically fail despite a successful API status code. These failures include hallucinations, instruction omission, format mismatches, and incorrect tool selection. Failures are categorized into technical failures, which prevent completion of operations, and semantic failures, where operations technically succeed but produce incorrect or unusable results. As a result, robust LLM applications must incorporate error handling for both technical and semantic failure types. LLM-powered applications are complex systems consisting of multiple interacting components beyond the core language model, including external databases and APIs. Across this pipeline, failures can arise at any integration boundary, from invalid user inputs and database search misses to model timeouts and streaming interruptions. To achieve genuine system resilience, engineering teams must evaluate and safeguard the complete end-to-end request flow rather than treating the LLM as an isolated component.",
+      "summarised": true,
+      "headings": [
+        "Meaning of Error Handling and Resiliency",
+        "Why do LLM Applications Need Special Treatment for Error Handling?",
+        "How Does a Request Flow in an LLM-powered App?",
+        "Main Types of Errors and Failures",
+        "Invalid User Input",
+        "Network and Connection Failures",
+        "Timeouts",
+        "Rate Limits"
       ]
     },
     {
@@ -665,8 +660,8 @@
       "title": "EP224: MCP vs RAG vs AI Agents",
       "url": "https://open.substack.com/pub/bytebytego/p/ep224-mcp-vs-rag-vs-ai-agents",
       "date": "2026-09-05",
-      "summary": "MCP is an open standard protocol. It connects AI models to external tools and data sources. These can be APIs, databases, or apps like Gmail, Slack, or GitHub. So instead of you writing the integration or doing the integration for each of these applications separately, MCP basically gives you a standard way to connect to these systems. In RAG, the model pulls the fresh information when a query com",
-      "summarised": false,
+      "summary": "The text contrasts Model Context Protocol (MCP), Retrieval-Augmented Generation (RAG), and AI agents. MCP provides an open standard protocol that connects AI models to external tools, databases, and third-party applications without requiring custom point-to-point integrations. RAG enables models to pull fresh, relevant data from documents and databases at query time to mitigate hallucinations and deliver up-to-date responses. In contrast to standard request-response chatbots, AI agents operate autonomously to execute tasks and make operational decisions. Distributed systems utilize specialized architectural patterns to ensure scalability, fault tolerance, and data consistency. Data distribution and consistency are achieved through techniques such as replication, horizontal sharding, consistent hashing, and quorum read/write agreements. System resilience is maintained using mechanisms like circuit breakers to halt failing operations and retry with backoff to recover from temporary glitches. Coordination and transaction workflows across microservices rely on asynchronous PubSub messaging, leader election, and compensating sagas. Virtualization and containerization are two distinct approaches to isolating computing workloads. Virtualization operates at the hardware level, using hypervisors to emulate physical hardware so complete guest operating systems can run independently with their own kernels. In contrast, containerization provides OS-level isolation where isolated processes share the host operating system's kernel. While virtual machines offer broad flexibility across different operating systems at the cost of heavier resource use and minute-scale startup times, containers provide lightweight execution and millisecond startups bounded by host kernel compatibility.",
+      "summarised": true,
       "headings": [
         "MCP vs RAG vs AI Agents",
         "9 Distributed Systems Patterns You Should Know",
@@ -688,15 +683,6 @@
       ]
     },
     {
-      "source": "gmail:bytebytego",
-      "title": "How Databases Keep Their Sanity with Concurrency Control",
-      "url": "https://open.substack.com/pub/bytebytego/p/how-databases-keep-their-sanity-with",
-      "date": "2026-09-03",
-      "summary": "Imagine a bank account with $100. Let’s assume that two separate withdrawal requests of $10 each arrive at the same moment. However, after the two withdrawals are made, the account still ends up $90. On a purely technical level, both withdrawal requests completed successfully. There was no error. But the account balance is wrong. The remaining balance should have been $80. On its own, both transac",
-      "summarised": false,
-      "headings": []
-    },
-    {
       "source": "gmail:daily_dose_of_ds",
       "title": "Attention Mechanisms in LLMs, clearly explained!",
       "url": "https://blog.dailydoseofds.com/p/attention-mechanisms-in-llms-clearly",
@@ -710,11 +696,20 @@
     },
     {
       "source": "gmail:bytebytego",
+      "title": "How Databases Keep Their Sanity with Concurrency Control",
+      "url": "https://open.substack.com/pub/bytebytego/p/how-databases-keep-their-sanity-with",
+      "date": "2026-09-03",
+      "summary": "Concurrent database transactions operating on the same records can cause silent data corruption even when individual transactions execute without errors. An example scenario shows two overlapping withdrawals failing to deduct the expected total amount due to race conditions. Because overlapping transactions are a standard operating condition in databases rather than rare anomalies, robust mechanisms are required to resolve conflicts. The article introduces fundamental concurrency control approaches, including pessimistic and optimistic locking, as well as isolation levels.",
+      "summarised": true,
+      "headings": []
+    },
+    {
+      "source": "gmail:bytebytego",
       "title": "Why Your RAG System Is Only as Good as Its Translator Model",
       "url": "https://open.substack.com/pub/bytebytego/p/how-to-shrink-a-language-model-without",
       "date": "2026-09-02",
-      "summary": "A generic language model’s knowledge depends on what it was taught during training. You can’t expect such a model to know about a company’s private documents, policies, or internal source code. It won’t even know about the company’s latest information that might have been published after the model was trained. Technically, it’s quite costly to retrain a language model every time there’s a change i",
-      "summarised": false,
+      "summary": "Generic language models lack access to proprietary, updated, or internal enterprise data, and continuous retraining is technically cost-prohibitive. Retrieval-Augmented Generation (RAG) resolves this by separating the generation capability of a language model from external knowledge retrieval. RAG processes documents in an indexing phase by chunking and embedding text, followed by a retrieval phase where queries are matched to document vectors. This selective retrieval prevents exceeding prompt context limits, reduces costs, and minimizes latency. An embedding is a numerical vector that represents the distributed semantic meaning of text within a mathematical vector space. Unlike keyword search, embedding models compare underlying concepts rather than exact words, positioning related phrases close to one another. Proximity between vectors is typically scored using metrics such as cosine similarity, dot product, or Euclidean distance. These models also support top-k and asymmetric retrieval, defining semantic similarity within retrieval-augmented generation systems. Embedding models are trained to detect semantic similarity, but retrieval-augmented generation systems require finding passages that explicitly answer a specific question. Because passages can be thematically related without providing the required answer, semantic retrieval frequently encounters failure modes. Common issues include semantic overlap on different questions or entities, opposite meanings caused by negations, numerical and date discrepancies, domain-specific terminology confusion, and the inability to answer multi-part questions from single passages. Resolving these limitations often requires auxiliary techniques such as explicit metadata filtering and version controls.",
+      "summarised": true,
       "headings": [
         "Why a RAG System Searches Before Answering",
         "How Embeddings Make it Possible to Search by Meaning",
@@ -743,8 +738,8 @@
       "title": "Agentic AI Weekly | Berkeley RDI | September 2, 2026",
       "url": "https://open.substack.com/pub/berkeleyrdi/p/agentic-ai-weekly-berkeley-rdi-september-3fb",
       "date": "2026-09-02",
-      "summary": "AI coding agents can now make changes across entire repositories. But after an agent outputs “all tests pass,” can we trust them and their code? AI coding agents can now make changes across entire repositories, and they usually finish by reporting that all tests pass. That report is worth less than it sounds, because tests only check the cases someone thought to write down. Formal verification giv",
-      "summarised": false,
+      "summary": "AI coding agents can now modify code across entire repositories, but standard test suites only verify anticipated test cases. In contrast, formal verification provides machine-checked proofs guaranteeing that an implementation satisfies its specification across all covered inputs. To test whether AI agents can operate at this higher standard, Vero was introduced as a new benchmark. It evaluates an agent's capability to jointly implement APIs and synthesize formal proofs across multi-module codebases while maintaining build and proof consistency. Vero is introduced as a repository-level benchmark requiring AI agents to produce implementations and formal proofs concurrently. It comprises 43 multi-module Lean 4 instances derived from real-world projects in Python, Dafny, Verus, and Coq, covering 743 scored APIs and 2,705 formal specifications. The evaluation operates in two configurations: proof-only and code-and-proof. The top system, GPT-5.5 (xhigh) with Codex, solved 27 instances in code-and-proof mode, though 10 instances remained completely unsolved across all models. Repository completion poses a much higher bar for AI agents than isolated specification-level verification. On the Vero benchmark, GPT-5.5 (xhigh) achieves high specification pass rates exceeding 85% but successfully completes only around 60% of repository instances under strict build and axiom-clean requirements. Successful full solves consistently rely on agent-generated reusable lemma libraries, which account for over 70% of proof lines. While implementation freedom occasionally enables simpler proofs, it also introduces failure modes, leaving substantial headroom on the benchmark.",
+      "summarised": true,
       "headings": [
         "Research Highlight: Introducing Vero, the first benchmark for joint implementation and proof synthesis at the repository level.",
         "TL;DR",
@@ -774,8 +769,8 @@
       "title": "How to Shrink a Language Model Without Making it Too Dumb",
       "url": "https://open.substack.com/pub/bytebytego/p/how-to-shrink-a-language-model-without-295",
       "date": "2026-09-01",
-      "summary": "Large language models like ChatGPT are quite different from normal software programs. They don’t depend on typical if-else statements to decide what should happen next. A large language model is essentially a very big pile of numbers called parameters or weights. These weights are the foundation of a language model’s intelligence. For reference, a model with 70 billion parameters means 70 billion ",
-      "summarised": false,
+      "summary": "Large language models derive their capabilities primarily from massive collections of numerical weights rather than traditional programmatic rules. For instance, a 70-billion-parameter model requires around 140 GB of storage, with weights structured into matrices distributed across dozens of layers. While supporting components like the Transformer architecture and context window are essential, weights store the fundamental patterns, grammar, and reasoning. Intelligence emerges from the relationships across these distributed weights, and because many weights are near zero with minimal output impact, shrinking models primarily involves optimizing these weights. Techniques for reducing model size focus on utilizing fewer bits per weight or decreasing the total weight count. The three primary methods are quantization, pruning, and knowledge distillation, each approaching compression via precision reduction, weight elimination, or architecture mimicry. These approaches are complementary and can be stacked sequentially across development and deployment pipelines. Ultimately, combining these methods allows complex large language models to run efficiently on standard consumer hardware. Quantization shrinks model size by reducing the precision allocated to each individual weight. While training requires 32-bit floating-point precision (FP32) for fine adjustments, models are typically distributed in 16-bit formats such as FP16 or BF16. Floating-point numbers allocate bits across sign, exponent, and mantissa components, with BF16 preserving the FP32 dynamic range by retaining 8 exponent bits while reducing the mantissa. Further quantization converts floating-point values into integers, such as 8-bit or 4-bit representations, which removes both precision and built-in scaling.",
+      "summarised": true,
       "headings": [
         "What Makes a Language Model Intelligent?",
         "Three Techniques to Shrink the Model",
@@ -792,8 +787,8 @@
       "title": "What Happens Inside an AI Chatbot Between Enter and the First Word?",
       "url": "https://open.substack.com/pub/bytebytego/p/what-happens-inside-an-ai-chatbot",
       "date": "2026-08-31",
-      "summary": "The first key point to understand is that the sentence typed into the box is not the exact thing that reaches the model. What reaches the model is a document assembled around that sentence before the request is sent. This document contains several ingredients, which are as follows: - A system prompt, which is a block of instructions written by the LLM provider. These instructions tell the model ho",
-      "summarised": false,
+      "summary": "User queries are not sent directly to large language models in isolation; instead, an assembled document containing system prompts, tool definitions, memory, retrieved documents, and conversation history is provided. Managing what goes into this input and how it is structured is an essential discipline known as context engineering. Because models possess finite attention budgets, longer inputs can gradually degrade reasoning precision even on basic tasks. Consequently, products using the identical underlying model can generate differing responses depending on how they curate and time the assembly of context. Large language models are stateless by design, requiring the entire conversation history to be resent with every new turn. Because conversation history accumulates with each interaction, input token volume compounds and typically dominates total API costs despite lower per-token pricing than outputs. When exchanges exceed the context window, naive retransmission breaks down, necessitating strategies such as dropping older turns, summarizing chat history, or using external storage and retrieval. Consequently, long conversations suffer from escalating latency, higher expenses, and potential loss of fine-grained conversational details. AI systems can perform input safety checks using a distinct, decoupled safety model before answer generation begins. This architectural separation allows the safety mechanism to be independently retrained, monitored, and used for routing or escalations without modifying the primary assistant. While early single-classifier designs incurred an expensive 24 percent compute overhead and raised false refusals by 0.38 percentage points, modern deployments resolve this via a cascade architecture. In this cascaded setup, a low-cost validation inspects all traffic, routing only flagged inputs to the more resource-intensive classifier to bring compute overhead down to approximately one percent.",
+      "summarised": true,
       "headings": [
         "How the Input to the Model is Assembled?",
         "Why is Every Input Message to the Model Independent?",
@@ -836,8 +831,8 @@
       "title": "ExplainThis 全端開發雙週報 #87 軟體工廠 (Software Factory) 是什麼? 有什麼限制?",
       "url": "https://open.substack.com/pub/explainthis/p/explainthis-87-software-factory",
       "date": "2026-08-30",
-      "summary": "在 2025 年時，我們曾在 [1-2](https://substack.com/redirect/007ecf30-e949-4496-b721-31bb61ee8370?j=eyJ1IjoiM2NtbGY5In0.ra03fCqDa-UlLj_8G5tTI4BzWGAXqygbP7t4aAuhHJ0) [AI 程式助手 (Coding Assistant)與 AI 代理 (Coding Agent) 有什麼不同?](https://substack.com/redirect/007ecf30-e949-4496-b721-31bb61ee8370?j=eyJ1IjoiM2NtbGY5In0.ra03fCqDa-UlLj_8G5tTI4BzWGAXqygbP7t4aAuhHJ0) 談過 AI 從 2021 年的自動補全到 2025 年的 AI 代理發展簡史。而進到了 2026 年，AI",
-      "summarised": false,
+      "summary": "This newsletter issue introduces the concept of the Software Factory in the context of advanced AI development in 2026. Following the evolution from simple code completion in 2021 to autonomous AI coding agents by 2025, modern agent workflows have given rise to concepts like Harness Engineering, Loop Engineering, and Software Factories. The issue sets out to examine how the modern AI-era Software Factory compares to its historical precursor. It also explores the technical limitations organizations face when implementing software factories today and how to overcome them. 軟體工廠的概念最早於 1968 年提出，早期著重於標準化工具與可重用元件以達成工業化軟體生產，但受限於仍需人類處理變動與例外情況。進入 AI 時代後，AI 代理具備理解需求、探索程式碼庫及自行除錯的能力，能在輸入規格與驗收條件後自主完成實作與驗證。2026 年 StrongDM 公開了其全自動化的軟體工廠，採用不需人類寫碼與審查的「非互動式開發」，此全自動化流程也被社群以製造業中完全無人的「關燈工廠」概念來比喻。 迴圈工程 (loop engineering) 是建構自動化軟體工廠的核心方法，其本質是為 AI 代理設計帶有明確終止條件的執行迴圈。在此架構下，開發者不再只是直接下提示詞，而是轉向設計精細的完成條件，例如通過所有測試與符合既有程式碼風格。現代開源專案如 StrongDM 的 attractor 展示了這類核心執行迴圈的實作，能讓代理在錯誤時自我記錄並於下一輪迴圈修正。此外，得益於前沿模型工具使用與長期運行能力的提升，如 Cursor 團隊所述，代理已能連續執行任務超過 30 小時。",
+      "summarised": true,
       "headings": [
         "什麼是軟體工廠?",
         "規模化的迴圈",
@@ -864,8 +859,8 @@
       "title": "Background Work: From Cron Jobs to Distributed Systems",
       "url": "https://open.substack.com/pub/bytebytego/p/background-work-from-cron-jobs-to",
       "date": "2026-08-27",
-      "summary": "Consider what can happen when someone uploads a profile photo to a web application. Depending on the use case, the application may resize the image into different sizes. It might run the image through a content check process. It can also push the resized images to a content delivery network for faster access. Lastly, it will also update the user record with the latest metadata. Now, imagine if all",
-      "summarised": false,
+      "summary": "Handling all processing tasks synchronously during a user request path can degrade user experience by causing noticeable delays. Background work addresses this problem by moving resource-intensive and secondary tasks, such as image manipulation and distribution, outside the active request flow. Tasks executed in the background can be triggered by user interactions, fixed clock intervals, system events, or batch processing demands. Although simple systems typically begin with a single scheduled script on one host, expanding workloads require more advanced distributed strategies.",
+      "summarised": true,
       "headings": []
     },
     {
@@ -878,6 +873,23 @@
       "headings": [
         "Why per-user memory graphs break normal graph DBs",
         "What is Temperature in LLMs?"
+      ]
+    },
+    {
+      "source": "gmail:berkeley_rdi",
+      "title": "Agentic AI Weekly | Berkeley RDI | August 26, 2026",
+      "url": "https://open.substack.com/pub/berkeleyrdi/p/agentic-ai-weekly-berkeley-rdi-august-247",
+      "date": "2026-08-26",
+      "summary": "The focus of artificial intelligence is shifting from merely scaling model size toward creating systems capable of acting, learning, and adapting over long horizons in complex environments. Discussions spanning agentic foundational capabilities, robotics, and world models examine how autonomous systems can reliably operate on real-world data and act within the physical world. This evolution highlights a broader paradigm shift where scaling encompasses complete system capabilities rather than solely the underlying model. Recent AI progress has relied primarily on scaling compute, data, and model parameters, but researchers are increasingly shifting attention to optimizing the broader system surrounding the model. Industry experts argue that the next major advancements will stem from architectural components such as memory, context compression, evaluation, and tool integration. Additionally, enterprise deployment highlights the importance of proprietary, dynamic data that cannot be stored directly within model weights. Consequently, the focus is transitioning from standalone model scaling toward full-system optimization and agent-level engineering. As AI agents handle longer-horizon tasks, expanding their flexibility and tool access significantly increases their attack surface and operational risk. Addressing this requires an ecosystem-level approach to AI resilience, integrating automated red teaming, least-privilege architecture, and defense-in-depth from the start. Furthermore, rigorous evaluation is a prerequisite for recursive self-improvement, as autonomous systems cannot effectively improve without accurately measuring progress. Consequently, evaluation and resilience must be treated as foundational architecture rather than afterthoughts as autonomy scales.",
+      "summarised": true,
+      "headings": [
+        "From Longer-Horizon Agents to Physical Intelligence",
+        "1. Scaling Is Moving Beyond the Model",
+        "2. Longer Autonomy Requires Stronger Evaluation and Resilience",
+        "3. Physical AI Needs Its Own Scaling Laws",
+        "4. The Real Frontier May Be the Learning Loop",
+        "The Bigger Picture",
+        "Trends This Week"
       ]
     },
     {
@@ -897,8 +909,8 @@
       "title": "How to Make LLMs 3X Faster",
       "url": "https://open.substack.com/pub/bytebytego/p/how-to-make-llms-3x-faster",
       "date": "2026-08-26",
-      "summary": "Text generation works one token at a time. The model reads everything produced so far, computes a probability distribution over its vocabulary, selects the next token, appends that token to the input, and repeats the cycle. Each cycle is called a forward pass, and every forward pass runs the input through all layers of the model. For example, token 50 depends on token 49 being present in the input",
-      "summarised": false,
+      "summary": "Text generation in language models operates autoregressively, producing content one token at a time through sequential forward passes across all model layers. Because each new token strictly depends on the presence of all previous tokens, forward passes cannot be executed simultaneously without breaking coherence. Consequently, total generation duration equals the token count multiplied by the per-pass latency, which scales with model size. Modern inference systems mitigate the computational burden of subsequent passes by using a KV cache to store prior attention states, though the requirement for one pass per token remains. During model inference, a forward pass spends the majority of its execution time moving data rather than computing arithmetic. In token generation, model weights must be transferred from VRAM to compute units for each single token, resulting in low compute utilization between 20 and 40 percent while the memory bus runs near capacity. In contrast, prompt processing achieves 90 to 95 percent utilization because weights are reused across thousands of input tokens. Consequently, increasing memory bandwidth accelerates token generation significantly more than adding raw compute capacity. Transformers can evaluate an entire sequence simultaneously in a single forward pass, generating a next-token prediction for every position at once. Causal masking within the attention mechanism ensures each position only attends to preceding tokens, maintaining the validity of autoregressive conditioning. Consequently, candidate tokens can be verified in parallel during a single pass rather than sequentially, mirroring the computational efficiency of prompt processing.",
+      "summarised": true,
       "headings": [
         "Autoregressive Decoding",
         "Memory Bandwidth",
@@ -911,29 +923,12 @@
       ]
     },
     {
-      "source": "gmail:berkeley_rdi",
-      "title": "Agentic AI Weekly | Berkeley RDI | August 26, 2026",
-      "url": "https://open.substack.com/pub/berkeleyrdi/p/agentic-ai-weekly-berkeley-rdi-august-247",
-      "date": "2026-08-26",
-      "summary": "The next frontier of AI may be less about making models larger - and more about building systems that can learn, act, adapt, and improve across increasingly long horizons and complex environments. Across two sessions on Agentic AI Foundational Capabilities and Robotics & World Models , speakers explored this transition from complementary directions: what it will take for agents to sustain autonomo",
-      "summarised": false,
-      "headings": [
-        "From Longer-Horizon Agents to Physical Intelligence",
-        "1. Scaling Is Moving Beyond the Model",
-        "2. Longer Autonomy Requires Stronger Evaluation and Resilience",
-        "3. Physical AI Needs Its Own Scaling Laws",
-        "4. The Real Frontier May Be the Learning Loop",
-        "The Bigger Picture",
-        "Trends This Week"
-      ]
-    },
-    {
       "source": "gmail:bytebytego",
       "title": "How to Steal an AI Model’s Private Thoughts",
       "url": "https://open.substack.com/pub/bytebytego/p/how-to-steal-an-ai-models-private",
       "date": "2026-08-25",
-      "summary": "Modern frontier models first generate an extended internal sequence of text before producing a visible answer. For example, if we ask a model to solve a hard mathematics question, the model may generate two thousand words of exploration, dead ends, and corrections, which ultimately helps it write a clean two hundred-word answer. This longer sequence of exploration is the reasoning trace, which is ",
-      "summarised": false,
+      "summary": "Modern frontier models produce an extended internal sequence of text prior to outputting a visible response, allowing them to explore hypotheses and correct errors. This internal sequence is referred to as a reasoning trace or chain of thought. Unlike the final polished output, the reasoning trace holds raw tool outputs, intermediate exploration, and any sensitive contextual data processed during the session. For instance, when a coding agent is instructed to purge hardcoded credentials, those credentials inevitably pass through the reasoning trace. Model providers conceal reasoning traces primarily for commercial and safety-related reasons. Commercially, competitors can harvest traces from a capable model to extract its methodology and train cheaper imitation models. From a safety standpoint, models often generate intermediate reasoning about harmful subjects prior to issuing a refusal. Because safety filtering is applied after trace generation to produce the final response, releasing raw traces bypasses these guardrails and exposes harmful material to users. In multi-turn conversations, earlier reasoning traces must remain accessible across requests despite model APIs being fundamentally stateless. Providers face two architectures: storing traces on the server referenced by session identifiers, or encrypting traces and delegating storage back to the client. Leading providers including OpenAI, Anthropic, and Google chose the client-side encrypted approach. This architecture satisfies confidentiality and integrity while eliminating the infrastructure cost of server-side trace storage.",
+      "summarised": true,
       "headings": [
         "Reasoning Traces",
         "Concealment Rationale",
@@ -959,24 +954,6 @@
       ]
     },
     {
-      "source": "gmail:bytebytego",
-      "title": "Why Code Verification Matters More Than Ever in the Age of AI",
-      "url": "https://open.substack.com/pub/bytebytego/p/why-code-verification-matters-more",
-      "date": "2026-08-24",
-      "summary": "The shift with regard to code generation and verification is quite visible when we look at the data. One of the clearest signals comes from Google’s DORA research, a long-running study of how thousands of teams build and ship software. Their recent work found that as teams adopt more AI, delivery stability dipped. Trust in AI-generated code stayed low, with well over a third of developers reportin",
-      "summarised": false,
-      "headings": [
-        "The Shift",
-        "Earning Trust",
-        "The Filter Stack",
-        "Static And Dynamic Analysis",
-        "False Alarms",
-        "The Pipeline",
-        "AI Pressure",
-        "Reviewing AI"
-      ]
-    },
-    {
       "source": "gmail:daily_dose_of_ds",
       "title": "Preloading Knowledge Into a Model Instead of Retrieving It",
       "url": "https://blog.dailydoseofds.com/p/preloading-knowledge-into-a-model",
@@ -990,11 +967,29 @@
     },
     {
       "source": "gmail:bytebytego",
+      "title": "Why Code Verification Matters More Than Ever in the Age of AI",
+      "url": "https://open.substack.com/pub/bytebytego/p/why-code-verification-matters-more",
+      "date": "2026-08-24",
+      "summary": "Recent empirical studies reveal that while AI coding tools increase code production, they can negatively impact development efficiency and delivery stability. Research from Google's DORA shows that higher AI adoption correlates with lower delivery stability and lingering developer distrust. Furthermore, a controlled trial by METR found experienced developers took 19 percent longer to complete tasks using AI tools due to prompting, reviewing, and error correction. Consequently, the bottleneck in software development is increasingly shifting toward downstream code verification. Code verification is the comprehensive set of checks ensuring code is correct, safe, and maintainable before production deployment. Trust in software is established incrementally through progressive evaluations rather than granted in a single step. While high-risk domains like flight-control systems and kernels employ mathematically rigorous formal verification, most software relies on layered, lighter checks to balance cost and safety. Code verification can be structured as an ordered stack of filters where each layer addresses distinct failure modes and covers the blind spots of preceding checks. Fast, low-cost static verification tools like type checkers and linters run first to catch type mismatches and syntax or style issues. Below static analysis, unit tests execute code against known inputs to detect behavioral and computational errors that pass type checking. Further down, human code reviews evaluate system architecture, readability, and adherence to team guidelines, while production monitoring observes live traffic to flag any remaining issues before or during release.",
+      "summarised": true,
+      "headings": [
+        "The Shift",
+        "Earning Trust",
+        "The Filter Stack",
+        "Static And Dynamic Analysis",
+        "False Alarms",
+        "The Pipeline",
+        "AI Pressure",
+        "Reviewing AI"
+      ]
+    },
+    {
+      "source": "gmail:bytebytego",
       "title": "EP223: Ollama vs vLLM vs SGLang",
       "url": "https://open.substack.com/pub/bytebytego/p/ep223-ollama-vs-vllm-vs-sglang",
       "date": "2026-08-22",
-      "summary": "To use open-weight models on your machine, you have three main options: Ollama, vLLM, and SGLang. But each engine handles requests differently. The diagram below shows the differences and the main techniques behind each engine. Ollama: A local user calls the OpenAI-compatible API, and requests line up in a FIFO queue. Then Ollama runs a pre-quantized GGUF model, a compressed format it pulls, and t",
-      "summarised": false,
+      "summary": "Ollama, vLLM, and SGLang are three primary engines for serving open-weight models, each architected for distinct execution workloads. Ollama relies on a FIFO queue and pre-quantized GGUF models, making it optimal for local prototyping and laptop-scale hardware. vLLM implements continuous batching and PagedAttention to optimize KV cache management and maximize GPU utilization for high-traffic environments. SGLang uses a prefix-aware scheduler and RadixAttention to avoid recomputing prompt prefixes, making it ideal for agent loops, multi-turn chats, and structured outputs. Anthropic plans to watermark AI-generated text to enable reliable identification of model outputs. Rather than standard random sampling, a keyed function uses a secret key and preceding words to constrain candidate token choices during generation. Detection works by verifying whether tokens match the keyed criteria across the text, producing an AI-generation score based on the match rate. The author also notes ongoing issues with false negatives in AI text detection, particularly within technical writing. Agent skills are instruction sets and scripts designed to equip LLM agents with specialized capabilities. As of August 2026, the twelve most-starred skill repositories on GitHub feature a range of augmentations for coding, UI design, planning, and agent communication. These skills include tooling from individual developers as well as organizations like Anthropic, Google, and Multica AI. Together, they assist agents in navigating complex codebases, adopting production-grade practices, and interacting effectively.",
+      "summarised": true,
       "headings": [
         "Ollama vs vLLM vs SGLang",
         "How does Claude's text watermark work?",
@@ -1018,6 +1013,15 @@
       ]
     },
     {
+      "source": "gmail:bytebytego",
+      "title": "Schema Evolution: Changing the Contract Without Breaking What Runs",
+      "url": "https://open.substack.com/pub/bytebytego/p/schema-evolution-changing-the-contract",
+      "date": "2026-08-20",
+      "summary": "Schema changes are deceptively simple in code review but represent one of the most difficult types of modifications in software systems. Migrations often appear successful in staging yet fail in production because multiple application versions run simultaneously against the same schema. Incompatibility problems also emerge across time, such as when historical database records, queued messages, or legacy mobile clients interact with newer services. Addressing these issues requires deliberate strategies including backward and forward compatibility, expand-and-contract migrations, and schema registries.",
+      "summarised": true,
+      "headings": []
+    },
+    {
       "source": "gmail:daily_dose_of_ds",
       "title": "What is (was?) GIL in Python?",
       "url": "https://blog.dailydoseofds.com/p/what-is-was-gil-in-python",
@@ -1030,13 +1034,21 @@
       ]
     },
     {
-      "source": "gmail:bytebytego",
-      "title": "Schema Evolution: Changing the Contract Without Breaking What Runs",
-      "url": "https://open.substack.com/pub/bytebytego/p/schema-evolution-changing-the-contract",
-      "date": "2026-08-20",
-      "summary": "A schema change is usually one of the most difficult types of change for a software system. However, it might look quite small and simple in review. For example, it might be something as simple as a column being renamed, or a new field being added to a particular event, or a response payload dropping a field that was not being used. To make matters more complicated, the migration goes smoothly and",
-      "summarised": false,
-      "headings": []
+      "source": "gmail:berkeley_rdi",
+      "title": "Agentic AI Weekly | Berkeley RDI | August 19, 2026",
+      "url": "https://open.substack.com/pub/berkeleyrdi/p/agentic-ai-weekly-berkeley-rdi-august-330",
+      "date": "2026-08-19",
+      "summary": "The Agentic AI Summit 2026 explored how agentic systems are reshaping AI infrastructure and software engineering workflows. Key sessions highlighted the evolution of underlying platforms alongside a fireside discussion with Dawn Song and Jasjeet Sekhon addressing cyber risks and recursive self-improvement. The broader consensus across the summit indicates a paradigm shift from optimizing standalone models toward building autonomous systems capable of acting, learning, and self-improving. As AI agents handle increasingly complex and long-running tasks, the underlying foundation model is no longer the sole determinant of end-to-end performance. Leaders from Amazon, Nvidia, and Google emphasize that AI infrastructure has transformed into a systems engineering problem rather than merely a chip or model challenge. Surrounding infrastructure—such as context management, memory, tool orchestration, sandboxes, and policy enforcement—is vital to bridge the gap between raw intelligence and real-world execution. The modern engineering priority is overcoming this capability overhang by building robust systems around models to support unpredictable, heterogeneous agentic workloads. Agent harnesses are emerging as a critical engineering layer needed to bridge existing model capabilities with reliable real-world execution. As human developers shift from writing code directly to supervising autonomous units of work such as commits and pull requests, engineering effort focuses on creating guardrails, tests, and contextual environments. Furthermore, industry experts highlight an evolution beyond simple chat interfaces into persistent, ambient agents that handle multi-PR workflows. In this paradigm, human attention, judgment, and context definition become the primary bottlenecks rather than implementation and code generation.",
+      "summarised": true,
+      "headings": [
+        "From the Agentic AI Summit: Building for the Next Level of Autonomy",
+        "1. The Model Is Becoming Only One Part of the System",
+        "2. Harnesses Are Becoming a New Engineering Layer",
+        "3. Evaluation and Security Are Moving Into the Runtime",
+        "4. From Agentic Workflows to Autonomous Discovery",
+        "The Bigger Picture",
+        "Trends This Week"
+      ]
     },
     {
       "source": "gmail:daily_dose_of_ds",
@@ -1056,8 +1068,8 @@
       "title": "GraphRAG: How AI Answers Questions Hidden Across Many Documents",
       "url": "https://open.substack.com/pub/bytebytego/p/graphrag-how-ai-answers-questions",
       "date": "2026-08-19",
-      "summary": "Standard RAG (Retrieval Augmented Generation) depends on a compact pipeline. We take a collection of documents, slice each one into chunks of a few hundred to a few thousand tokens, and pass every chunk through an embedding model. The embedding model returns a vector, which is basically a long list of numbers standing in for the meaning of that text. Chunks with related meanings produce vectors th",
-      "summarised": false,
+      "summary": "Standard Retrieval Augmented Generation (RAG) operates through a straightforward pipeline where documents are split into token chunks and transformed into vectors via an embedding model. These vectors are stored in a vector index to facilitate proximity-based semantic search against incoming query vectors. During query execution, the closest document chunks are retrieved and included in the language model prompt to generate grounded answers. The entire workflow relies on the core assumption that queries and their corresponding answers share lexical or semantic resemblance. The assumption that questions resemble their answers holds for local queries but breaks down for global queries that require reasoning across an entire corpus. For global queries, standard vector retrieval surfaces documents with superficial vocabulary overlap rather than synthesizing information distributed across hundreds of files. Microsoft's evaluations show that increasing context windows up to 64,000 tokens does not bridge this gap in comprehensiveness, diversity, and source quality compared to GraphRAG. What is commonly diagnosed as model hallucination is often actually a retrieval issue where fluent text is generated from irrelevant retrieved context. Knowledge graphs enhance retrieval and answer quality by modeling relationships between entities across documents rather than treating text chunks independently. By aggregating extracted entities and typed relations from multiple sources, knowledge graphs create multi-hop paths connecting disparate information that no single document holds. Real-world implementations, such as LinkedIn's support ticket system presented at SIGIR 2024, demonstrate significant production gains including higher retrieval rank and reduced resolution times. Modern GraphRAG architectures typically combine lexical graphs of document structures with entity graphs of domain concepts to query across both.",
+      "summarised": true,
       "headings": [
         "Retrieval Basics",
         "Similarity Limits",
@@ -1070,29 +1082,12 @@
       ]
     },
     {
-      "source": "gmail:berkeley_rdi",
-      "title": "Agentic AI Weekly | Berkeley RDI | August 19, 2026",
-      "url": "https://open.substack.com/pub/berkeleyrdi/p/agentic-ai-weekly-berkeley-rdi-august-330",
-      "date": "2026-08-19",
-      "summary": "From AI infrastructure to software engineering, two opening sessions explored how agents are reshaping both the systems beneath AI and the way software gets built. Following our broader look at the ideas that emerged from the [Agentic AI Summit 2026](https://substack.com/redirect/8d3b25df-25aa-463e-92d3-41def7fca843?j=eyJ1IjoiM2NtbGY5In0.ra03fCqDa-UlLj_8G5tTI4BzWGAXqygbP7t4aAuhHJ0) , this week we’",
-      "summarised": false,
-      "headings": [
-        "From the Agentic AI Summit: Building for the Next Level of Autonomy",
-        "1. The Model Is Becoming Only One Part of the System",
-        "2. Harnesses Are Becoming a New Engineering Layer",
-        "3. Evaluation and Security Are Moving Into the Runtime",
-        "4. From Agentic Workflows to Autonomous Discovery",
-        "The Bigger Picture",
-        "Trends This Week"
-      ]
-    },
-    {
       "source": "gmail:bytebytego",
       "title": "The New American AI Model Designed to be Customized",
       "url": "https://open.substack.com/pub/bytebytego/p/the-new-american-ai-model-designed",
       "date": "2026-08-18",
-      "summary": "Let us first understand four key terms that are really important to make sense of the architecture: - Token: A token is a chunk of text. Models work with pieces smaller than sentences and usually a bit smaller than words. For example, the sentence “Inkling was released in July” might become six tokens, with common words getting one token each and unusual words getting split into two or three. - Pa",
-      "summarised": false,
+      "summary": "This section explains four foundational concepts essential to understanding language model architecture: tokens, parameters, training, and layers. Tokens serve as the granular text chunks processed by models, while parameters are the internal numerical values iteratively refined during training. Training optimizes these parameters via next-token prediction, gradients, and backpropagation across vast quantities of text. Finally, inputs pass sequentially through stacked layers—such as the 66 layers in the Inkling model—where each layer executes an attention step followed by a feed-forward step. Inkling uses a Mixture of Experts (MoE) architecture to decouple the cost of storing a model from the cost of running it. Instead of passing tokens through every feed-forward network, Inkling selects 6 out of 256 experts per token, following an approach published by DeepSeek. Across the full 975-billion-parameter model, only about 41 billion parameters (roughly 4 percent) are active during the processing of a single token. A full-precision checkpoint requires at least 2 TB of GPU memory across specialized hardware like NVIDIA B300 or H200 GPUs, while a quantized checkpoint reduces memory requirements to roughly 600 GB across four B300 cards. In Mixture of Experts architectures, routers score candidate experts to select a top subset for processing each token, but positive feedback loops during training can cause routing collapse where only a handful of experts are utilized. Traditional auxiliary balance loss penalties degrade output quality by generating gradients that conflict with the primary prediction task. Thinking Machines resolves this by adopting an approach originally introduced by Wang and colleagues and utilized by DeepSeek, which adjusts expert selection scores using non-backpropagated bias values updated by token counts. This keeps expert load balanced without compromising gradient updates, while two additional shared experts run unconditionally alongside the six routed experts.",
+      "summarised": true,
       "headings": [
         "Groundwork",
         "Sparsity",
@@ -1118,6 +1113,23 @@
       ]
     },
     {
+      "source": "gmail:bytebytego",
+      "title": "Waymo vs Tesla: Two Ways to Build Self-Driving Cars",
+      "url": "https://open.substack.com/pub/bytebytego/p/waymo-vs-tesla-two-ways-to-build",
+      "date": "2026-08-17",
+      "summary": "Autonomous vehicle perception fundamentally contrasts direct distance measurements from sensors like lidar against derived depth calculations from camera arrays. Waymo incorporates a redundant multi-sensor suite consisting of lidar, radar, and cameras to ensure reliability across adverse environmental conditions like rain and ice. In contrast, Tesla relies strictly on a pure vision strategy powered by exterior cameras and neural networks. Even as Waymo trims its camera count in sixth-generation vehicles through higher-resolution imagers, it retains sensor redundancy, highlighting the industry tradeoff between expensive direct physical measurements and cost-effective but error-prone derived estimates. Autonomous vehicle architectures hinge on how raw sensor inputs are converted into an operational representation. Waymo relies on the Waymo Foundation Model, combining a Sensor Fusion Encoder and a Gemini-trained Driving VLM to populate a World Decoder with compact, structured representations and pre-surveyed maps. In contrast, Tesla utilizes an extensive suite of per-camera neural networks to generate birds-eye-view representations on the fly without prior mapping surveys. This highlights an essential trade-off between inspectable, easily verifiable structured representations and expressive, nuance-capturing learned representations. Autonomous vehicle prediction systems must account for multiple possible future paths for each road user rather than committing to a single trajectory. In June 2025, Waymo published findings showing that motion forecasting quality scales predictably according to a power law with training compute, analogous to scaling laws in language models. This power-law relationship also held for closed-loop simulation performance, demonstrating that increasing data and compute directly enhances real-world driving safety. Meanwhile, Tesla introduced an updated reinforcement learning stage in version 14.3 to address long-tail edge cases.",
+      "summarised": true,
+      "headings": [
+        "Sensing",
+        "Representation",
+        "Prediction",
+        "Planning",
+        "Validation",
+        "Training",
+        "Conclusion"
+      ]
+    },
+    {
       "source": "gmail:daily_dose_of_ds",
       "title": "How a GPU Actually Works",
       "url": "https://blog.dailydoseofds.com/p/how-a-gpu-actually-works",
@@ -1131,20 +1143,19 @@
       ]
     },
     {
-      "source": "gmail:bytebytego",
-      "title": "Waymo vs Tesla: Two Ways to Build Self-Driving Cars",
-      "url": "https://open.substack.com/pub/bytebytego/p/waymo-vs-tesla-two-ways-to-build",
-      "date": "2026-08-17",
-      "summary": "A camera records light intensity across a grid of pixels. Distance appears nowhere in that grid, so depth has to be computed from the arrangement of pixels, but that computation can be wrong. A large object far away and a small object nearby can occupy the same region of an image. Lidar arrives at the same answer by a different route. The unit emits laser pulses, measures how long each pulse takes",
-      "summarised": false,
+      "source": "gmail:explainthis",
+      "title": "ExplainThis 全端開發雙週報 #86 Docker 與容器是什麼? 為什麼需要?",
+      "url": "https://open.substack.com/pub/explainthis/p/explainthis-86-docker",
+      "date": "2026-08-16",
+      "summary": "ExplainThis has launched a new educational article series covering Docker and container technologies in response to reader requests. The initial article addresses fundamental concepts, including what Docker and containers are, why they are widely adopted, and the practical problems they solve. It also provides a straightforward case study to help beginners get started with Docker quickly. While the first article is freely accessible, subsequent parts of the series will be released on the E+ platform. Docker is a platform and tool used to build and run containerized applications. Analogous to physical shipping containers, software containers package applications within relatively isolated execution environments containing virtual hostnames, IP addresses, and storage. Multiple containers running on a single computer share the host machine's hardware and operating system kernel. Despite sharing underlying resources, each container maintains its own distinct processes, file system, and network environment to ensure application isolation. Docker addresses the common challenge of inconsistent software execution environments across different developer machines. Differences in hardware, operating systems, and dependency versions—such as variations in Node.js or Postgres—frequently cause applications to fail during setup or onboarding. By encapsulating an application and its runtime environment into containers, Docker enables software to run consistently across any machine with minimal setup. This consistency facilitates easier deployment and execution across local machines, cloud environments, data centers, and serverless architectures.",
+      "summarised": true,
       "headings": [
-        "Sensing",
-        "Representation",
-        "Prediction",
-        "Planning",
-        "Validation",
-        "Training",
-        "Conclusion"
+        "Docker 與容器是什麼? 為什麼需要?",
+        "Docker 與容器是什麼? 為什麼要用 Docker?",
+        "Docker 解決了什麼問題?",
+        "為什麼 Docker 出現前的解決方案會被 Docker 取代?",
+        "從一個最簡單的案例開始用 Docker",
+        "本期推薦"
       ]
     },
     {
@@ -1162,28 +1173,12 @@
       ]
     },
     {
-      "source": "gmail:explainthis",
-      "title": "ExplainThis 全端開發雙週報 #86 Docker 與容器是什麼? 為什麼需要?",
-      "url": "https://open.substack.com/pub/explainthis/p/explainthis-86-docker",
-      "date": "2026-08-16",
-      "summary": "先前有讀者在內容許願中提到 ExplainThis 的內容中似乎沒有關於 Docker 與容器 (container) 相關的內容，對此我們接下來會陸續有一系列的文章，從 Docker 與容器的基本介紹，到實戰的運用。 在開頭的第一篇文章中，我們會先介紹 Docker 與容器到底是什麼? 為什麼現在有那麼多專案都會用? 具體來說 Docker 與容器解決了什麼問題? 此外，我們也會透過一個最簡單的案例，讓過去還沒接觸過 Docker 的人能快速開始。 我們把第一篇完整版免費公開，後續的系列文會陸續在 E+ 上架，歡迎感興趣的讀者加入閱讀 ( [E+ 連結看這邊](https://substack.com/redirect/969581dc-c6d6-4a07-9be0-785a0d8c98b8?j=eyJ1IjoiM2NtbGY5In0.ra03fCqDa-UlLj_8G5tTI4BzWG",
-      "summarised": false,
-      "headings": [
-        "Docker 與容器是什麼? 為什麼需要?",
-        "Docker 與容器是什麼? 為什麼要用 Docker?",
-        "Docker 解決了什麼問題?",
-        "為什麼 Docker 出現前的解決方案會被 Docker 取代?",
-        "從一個最簡單的案例開始用 Docker",
-        "本期推薦"
-      ]
-    },
-    {
       "source": "gmail:bytebytego",
       "title": "EP222: What is Google’s TPU?",
       "url": "https://open.substack.com/pub/bytebytego/p/ep222-what-is-googles-tpu",
       "date": "2026-08-15",
-      "summary": "A TPU (Tensor Processing Unit) is Google’s custom AI chip, designed from scratch for the giant matrix multiplications that modern models live on. GPUs were built for graphics first. TPUs were built for deep learning from day one. At Cloud Next ’26, Google unveiled its 8th generation, and for the first time it ships in two flavors. TPU 8t is built for training, where raw throughput wins. TPU 8i is ",
-      "summarised": false,
+      "summary": "A Tensor Processing Unit (TPU) is Google's custom AI chip designed specifically for deep learning matrix multiplications, unlike GPUs which were initially created for graphics. At Cloud Next '26, Google announced its 8th generation of TPUs, introducing two distinct hardware variants for the first time. The TPU 8t is built to maximize raw throughput for training workloads, whereas the TPU 8i focuses on low latency and chip-to-chip interconnect speed for inference. Both chips share identical Axion CPUs, liquid cooling systems, and software stacks to maintain software compatibility across both models. API testing encompasses multiple distinct methodologies designed to prevent various types of failures across the software lifecycle. Core operational checks like smoke, functional, and regression testing verify that endpoints perform correctly according to business rules without breaking existing features. System interactions and stability are validated using contract, integration, load, and stress testing across service boundaries and under heavy traffic. Finally, security and fuzz testing target vulnerability detection by validating access controls and exposing bugs via unexpected or invalid inputs. Production AI agents depend on multi-layered guardrails rather than better prompts to maintain reliability. These systems deploy input screening and context verification to block prompt injections, sensitive data, and off-scope queries before reaching the model. During execution, responses are constrained to verified context, and outputs are systematically evaluated for safety, formatting, and groundedness with retry mechanisms. Finally, operational controls enforce system limits, comprehensive logging, and human-in-the-loop escalation for low-confidence or high-risk actions.",
+      "summarised": true,
       "headings": [
         "What is Google’s TPU?",
         "9 Types of API Testing",
@@ -1205,15 +1200,6 @@
       ]
     },
     {
-      "source": "gmail:bytebytego",
-      "title": "A Detailed Guide to API Composition Techniques",
-      "url": "https://open.substack.com/pub/bytebytego/p/a-detailed-guide-to-api-composition",
-      "date": "2026-08-13",
-      "summary": "In a service-based architecture, a single product screen showing a user profile, that user’s five most recent orders, the delivery status of each order, and a short list of recommendations requires data from four separate services. Each service stores only its own data, so none of the four services returns the full set on its own. In other words, the caller issues four separate calls, and merges t",
-      "summarised": false,
-      "headings": []
-    },
-    {
       "source": "gmail:daily_dose_of_ds",
       "title": "Continuous Batching in LLMs",
       "url": "https://blog.dailydoseofds.com/p/continuous-batching-in-llms",
@@ -1224,6 +1210,15 @@
         "Karpathy’s agentic engineering lifecycle, clearly explained",
         "Continuous batching in LLMs"
       ]
+    },
+    {
+      "source": "gmail:bytebytego",
+      "title": "A Detailed Guide to API Composition Techniques",
+      "url": "https://open.substack.com/pub/bytebytego/p/a-detailed-guide-to-api-composition",
+      "date": "2026-08-13",
+      "summary": "In service-based architectures, single user-interface views often require data distributed across multiple independent services, necessitating a process called API composition to merge the responses. This merging logic can be executed on the client application, a central datacenter server, a CDN edge, or within an internal service. While introducing an intermediate composition server adds a network hop, it usually reduces overall latency by replacing multiple slow mobile round trips with one external call and multiple sub-millisecond intra-datacenter calls. Beyond latency, composition architecture determines how the system handles service failures, caching opportunities, and organizational change approvals.",
+      "summarised": true,
+      "headings": []
     },
     {
       "source": "gmail:daily_dose_of_ds",
@@ -1240,30 +1235,12 @@
       ]
     },
     {
-      "source": "gmail:berkeley_rdi",
-      "title": "Agentic AI Weekly | Berkeley RDI | August 12, 2026",
-      "url": "https://open.substack.com/pub/berkeleyrdi/p/agentic-ai-weekly-berkeley-rdi-august",
-      "date": "2026-08-12",
-      "summary": "On Aug 01-02 at UC Berkeley were more than a conference - they were a snapshot of where Agentic AI is headed next. The [Agentic AI Summit 2026](https://substack.com/redirect/cb81a0d9-b87e-46f8-95b6-7f96204fd49f?j=eyJ1IjoiM2NtbGY5In0.ra03fCqDa-UlLj_8G5tTI4BzWGAXqygbP7t4aAuhHJ0) brought together ~5,000 attendees in person , ~100K of online viewers , and ~200 speakers across four stages for one of th",
-      "summarised": false,
-      "headings": [
-        "Agentic AI Summit 2026: Five Shifts Shaping the Next Era of AI",
-        "1. AI Agents Are Moving From Assistants to Collaborators",
-        "2. Beyond Bigger Models: The Next Frontier Is Recursive Improvement",
-        "3. Infrastructure Will Determine What Scales",
-        "4. Trust Will Be the Foundation of Adoption",
-        "5. There Is No Silver Bullet - Only an Ecosystem",
-        "Agentic AI Summit in the News",
-        "Help Us Spread the Word"
-      ]
-    },
-    {
       "source": "gmail:bytebytego",
       "title": "GitHub vs Vercel vs Replit: What Dev Platforms Do When AI Code Is Cheap",
       "url": "https://open.substack.com/pub/bytebytego/p/github-vs-vercel-vs-replit-what-dev",
       "date": "2026-08-12",
-      "summary": "A language model can now turn a description into working code. This means a developer can write a sentence and receive a function, a page, or a small application that actually runs right out of the gate. This capability used to be the scarce and valuable part of a developer tool. Today it is widely available and close to free, which leaves a platform that offers only generation with little to char",
-      "summarised": false,
+      "summary": "Language models have commoditized raw code generation, reducing its commercial value as a standalone developer tool feature. The primary value in AI-assisted development has consequently shifted to post-generation challenges such as safe code execution, functionality verification, and production deployment controls. Different developer platforms are addressing these post-generation challenges through specialized focuses. Specifically, GitHub focuses on workflow coordination, Vercel targets the path to production, and Replit emphasizes code verification. GitHub has positioned its developer platform as an orchestration and governance layer for AI coding agents rather than competing directly on model generation. Coding agents execute tasks within isolated, ephemeral Linux workspaces powered by GitHub Actions, creating draft pull requests for human review. Through an orchestration interface called Agent HQ, developers can steer and manage agents from multiple external model providers, including OpenAI, Anthropic, and Google. By standardizing configuration through files like AGENTS.md, GitHub treats underlying models as interchangeable components while prioritizing workflow and security governance. Vercel focuses on transitioning generated code directly into production for enterprise software work on existing applications. Its rebuilt v0 product executes untrusted code within sandboxed Firecracker microVMs that import real GitHub repositories, configurations, and environment variables. Workflow integration relies on Git-style branches and pull requests, allowing team members like designers and product managers to follow standard engineering review processes. Compute billing uses Vercel's Fluid compute model, which bills only for active processing time while waiving wait time incurred during AI model generation.",
+      "summarised": true,
       "headings": [
         "Commoditization",
         "Orchestration",
@@ -1275,21 +1252,21 @@
       ]
     },
     {
-      "source": "gmail:bytebytego",
-      "title": "How Cloudflare Is Making AI Pay for Content",
-      "url": "https://open.substack.com/pub/bytebytego/p/how-cloudflare-is-making-ai-pay-for",
-      "date": "2026-08-11",
-      "summary": "For most of its history, websites made money after a request rather than during it. A browser asked for a page, and the server returned it at no charge. The value arrived later, once a person saw an advertisement, bought a subscription, or came back for another visit [1]. The request itself stayed free, and this setup funded a large part of the Internet. A growth in agent traffic is changing this ",
-      "summarised": false,
+      "source": "gmail:berkeley_rdi",
+      "title": "Agentic AI Weekly | Berkeley RDI | August 12, 2026",
+      "url": "https://open.substack.com/pub/berkeleyrdi/p/agentic-ai-weekly-berkeley-rdi-august",
+      "date": "2026-08-12",
+      "summary": "The Agentic AI Summit 2026 was held on August 1–2 at UC Berkeley, gathering thousands of participants to discuss the future of AI agents. The conference brought together approximately 5,000 in-person attendees, 100,000 online viewers, and 200 speakers across four stages. Topics spanned frontier model research, robotics, enterprise deployment, infrastructure, security, and governance. The central consensus among attendees was that the primary challenge has shifted from predicting the arrival of AI agents to ensuring they are capable, trustworthy, and beneficial. AI systems are currently evolving beyond simple question answering and content generation toward becoming autonomous, reliable collaborators. Rather than causing an AI job apocalypse, the industry faces a scarcity of skilled AI engineers to build these capabilities. Next-generation systems are expected to reason, plan, leverage tools, and coordinate across multi-agent workflows with minimal human intervention. The primary development challenge has thus shifted from creating smarter chatbots to engineering dependable collaborative systems. Future breakthroughs in AI capability are expected to stem from recursive self-improvement rather than increasing model scale alone. According to Google DeepMind's Oriol Vinyals, recursive self-improvement encompasses four key capabilities: ideation, implementation, experimentation, and evaluation. Consequently, AI research is shifting toward systems capable of long-horizon reasoning, planning, memory, and autonomous iterative refinement.",
+      "summarised": true,
       "headings": [
-        "The Attention Model",
-        "The Proxy Layer",
-        "Traffic Classification",
-        "Blocking and Charging",
-        "The Request Layer",
-        "The x402 Exchange",
-        "Costs and Limits",
-        "Conclusion"
+        "Agentic AI Summit 2026: Five Shifts Shaping the Next Era of AI",
+        "1. AI Agents Are Moving From Assistants to Collaborators",
+        "2. Beyond Bigger Models: The Next Frontier Is Recursive Improvement",
+        "3. Infrastructure Will Determine What Scales",
+        "4. Trust Will Be the Foundation of Adoption",
+        "5. There Is No Silver Bullet - Only an Ecosystem",
+        "Agentic AI Summit in the News",
+        "Help Us Spread the Word"
       ]
     },
     {
@@ -1305,6 +1282,42 @@
       ]
     },
     {
+      "source": "gmail:bytebytego",
+      "title": "How Cloudflare Is Making AI Pay for Content",
+      "url": "https://open.substack.com/pub/bytebytego/p/how-cloudflare-is-making-ai-pay-for",
+      "date": "2026-08-11",
+      "summary": "Historically, websites monetized traffic after requests were served through advertisements, subscriptions, or repeat human visits. The rapid rise of AI and software agents disrupts this economic model because agents retrieve data in a single pass without viewing ads or subscribing. Consequently, software now represents over half of all web requests, increasing site operational load while revenue remains stagnant. Cloudflare is positioned to address the historical impracticality of charging anonymous callers micropayments per request by moving settlement directly onto the request level. A reverse proxy sits between clients and destination servers, receiving incoming traffic on behalf of the origin machine that hosts the target page or API. Cloudflare operates as a reverse proxy across a substantial portion of the internet. While caching is a common proxy function, being positioned in the middle also allows requests to be inspected, classified, and acted upon before reaching the origin. Implementing early request handling at scale fundamentally requires resolving a classification problem. Cloudflare categorizes automated web traffic according to specific behaviors rather than applying a blanket 'AI' label. Its taxonomy distinguishes between search indexing, real-time agent requests, and model training, which appear identical in raw request logs despite having different business consequences. Because individual web crawlers can perform multiple roles at once, this behavioral separation enables site owners to track and evaluate crawler activities independently. Cloudflare's system also monitors additional behaviors like checkout actions and data collection while allowing sites to specify data storage and resharing permissions.",
+      "summarised": true,
+      "headings": [
+        "The Attention Model",
+        "The Proxy Layer",
+        "Traffic Classification",
+        "Blocking and Charging",
+        "The Request Layer",
+        "The x402 Exchange",
+        "Costs and Limits",
+        "Conclusion"
+      ]
+    },
+    {
+      "source": "gmail:bytebytego",
+      "title": "How to Fight Clickbait: Meta, LinkedIn & YouTube Case Studies",
+      "url": "https://open.substack.com/pub/bytebytego/p/how-to-fight-clickbait-meta-linkedin",
+      "date": "2026-08-10",
+      "summary": "Large feed recommendation systems rely on a two-step pipeline composed of retrieval and ranking. Retrieval historically relied on behavioral signals such as clicks and reactions, scaling well across hundreds of millions of candidates. However, optimizing directly for interaction counts favors engagement bait because engagement is an imperfect proxy for true relevance. A durable fix requires altering retrieval itself, transitioning from tracking behavior to evaluating meaning. Semantic retrieval offers an alternative to interaction-based retrieval by finding content through its underlying meaning rather than keyword overlap. This approach relies on embeddings that position related items near each other in a high-dimensional space based on relationships learned during model training. Platforms implement this via a dual-encoder or two-tower design, allowing post embeddings to be precomputed while user embeddings are generated dynamically at request time. A nearest-neighbor search quickly matches users with relevant posts across massive datasets. Major platforms like LinkedIn, Meta, and YouTube use this architecture across search, product recommendations, and retrieval-augmented generation. LinkedIn replaced five separate feed retrieval pipelines with a single unified retrieval model fine-tuned from Meta's LLaMA-3. The system operates as a dual encoder, mapping members and content into a shared embedding space to support nearest-neighbor retrieval with sub-50-millisecond latency. To feed tabular signals into a language model, LinkedIn implemented a prompt library that serializes structured metadata into formatted text sequences. The team also found that transforming raw numeric metrics into ranked percentile buckets improved retrieval accuracy by roughly fifteen percent over using raw counts.",
+      "summarised": true,
+      "headings": [
+        "Engagement Signals",
+        "Semantic Retrieval",
+        "Unified Retrieval",
+        "Ranking Funnels",
+        "Generative Retrieval",
+        "Cold Start",
+        "Design Tradeoffs",
+        "Conclusion"
+      ]
+    },
+    {
       "source": "gmail:daily_dose_of_ds",
       "title": "How to Query Billion+ Rows on Postgres Without Overhead",
       "url": "https://blog.dailydoseofds.com/p/how-to-query-billion-rows-on-postgres",
@@ -1315,24 +1328,6 @@
         "How to query billion+ rows on postgres without overhead",
         "Cross-model KV cache transfer in LLM families",
         "A technique to understand TP, TN, FP and FN"
-      ]
-    },
-    {
-      "source": "gmail:bytebytego",
-      "title": "How to Fight Clickbait: Meta, LinkedIn & YouTube Case Studies",
-      "url": "https://open.substack.com/pub/bytebytego/p/how-to-fight-clickbait-meta-linkedin",
-      "date": "2026-08-10",
-      "summary": "Every large feed runs on a two-step pipeline: - Retrieval: This step reduces hundreds of millions of candidates down to roughly a thousand. It has to be cheap because it touches the entire corpus. - Ranking: This step spends real compute ordering those survivors into the sequence you scroll. Most of the recent architectural changes sit in retrieval, so that is where we will focus more. For years, ",
-      "summarised": false,
-      "headings": [
-        "Engagement Signals",
-        "Semantic Retrieval",
-        "Unified Retrieval",
-        "Ranking Funnels",
-        "Generative Retrieval",
-        "Cold Start",
-        "Design Tradeoffs",
-        "Conclusion"
       ]
     },
     {
@@ -1366,8 +1361,8 @@
       "title": "The Read Path versus the Write Path: Strategies and Techniques",
       "url": "https://open.substack.com/pub/bytebytego/p/the-read-path-versus-the-write-path",
       "date": "2026-08-06",
-      "summary": "Every application built on stored data performs two kinds of operations against it. A write operation records a fact, such as a new order, a changed email address, or a deleted comment. On the other hand, a read operation answers a question, such as which orders were placed this week or what should appear on a profile page. A single database on modest hardware can handle both types of operations w",
-      "summarised": false,
+      "summary": "Applications process two distinct types of operations: writes that record facts and reads that answer queries. As load grows, common optimizations like indexing, caching, and read replicas are progressively introduced to maintain read performance. However, these techniques duplicate and precompute data away from the primary source, leading to synchronization lags and staleness issues. Balancing read performance with write correctness inherently requires managing opposing data structures and distinct consistency models.",
+      "summarised": true,
       "headings": []
     },
     {
@@ -1383,6 +1378,23 @@
       ]
     },
     {
+      "source": "gmail:bytebytego",
+      "title": "How Big Models Teach Small Models to Be Smart",
+      "url": "https://open.substack.com/pub/bytebytego/p/how-big-models-teach-small-models",
+      "date": "2026-08-05",
+      "summary": "Distillation trains a new, separate student model to replicate the outputs and behavior of a larger teacher model. Unlike compression techniques such as quantization and pruning, which reduce the size of an existing model, distillation produces an entirely independent model with distinct parameters. The resulting smaller model provides practical benefits, including lower inference costs, decreased latency, and the ability to run on-device. This approach is exemplified by Google's Gemma models, which are distilled from the larger Gemini model family. Learning from a model's output provides richer information than standard hard labels because output distributions, termed soft labels, assign probabilities across all candidate options. These distributions capture relationships between classes, a concept often referred to as dark knowledge. During distillation, a student model learns to match the teacher's full confidence profile rather than just targeting single correct answers, which allows it to reach high performance using fewer training examples. A temperature control is employed to spread out probability values and further expose this fine structure for the student model. Knowledge distillation generally takes three forms depending on what the student model replicates: output distillation, feature distillation, and synthetic data distillation. Output distillation matches the teacher's final output probabilities, while feature distillation aligns intermediate internal representations, as used by Google to train EmbeddingGemma from Gemini. Synthetic data distillation fine-tunes a student on teacher-generated data, an approach popularized by Stanford's Alpaca. Because modern closed-source models often restrict access to internal values and probabilities, synthetic data distillation has become the most widely adopted variant in practice.",
+      "summarised": true,
+      "headings": [
+        "Distillation",
+        "Soft Labels",
+        "Methods",
+        "Results",
+        "Limits",
+        "Automation",
+        "Conclusion"
+      ]
+    },
+    {
       "source": "gmail:daily_dose_of_ds",
       "title": "[Hands-on] How to Serve 5 Models On One GPU",
       "url": "https://blog.dailydoseofds.com/p/hands-on-how-to-serve-5-models-on",
@@ -1395,28 +1407,11 @@
     },
     {
       "source": "gmail:bytebytego",
-      "title": "How Big Models Teach Small Models to Be Smart",
-      "url": "https://open.substack.com/pub/bytebytego/p/how-big-models-teach-small-models",
-      "date": "2026-08-05",
-      "summary": "Distillation trains a new, smaller model to copy the behavior of a larger one. The setup involves two models: - The first is a large, capable model called the teacher. - The second is a smaller model called the student, which is trained to reproduce the teacher’s outputs. Once training finishes, the student runs on its own, and the teacher steps out of the picture. A common assumption is that the ",
-      "summarised": false,
-      "headings": [
-        "Distillation",
-        "Soft Labels",
-        "Methods",
-        "Results",
-        "Limits",
-        "Automation",
-        "Conclusion"
-      ]
-    },
-    {
-      "source": "gmail:bytebytego",
       "title": "Why An LLM’s Memory Gets Expensive and How to Fix It",
       "url": "https://open.substack.com/pub/bytebytego/p/why-an-llms-memory-gets-expensive",
       "date": "2026-08-04",
-      "summary": "Let us start with the work a model does to produce one token. To choose the next word, it runs an attention step, where the newest token compares itself against every token that came before it. This comparison uses two vectors for each earlier token, a key and a value, which are simply the numerical summaries the model computes for that token inside each layer. A model that rebuilt the key and val",
-      "summarised": false,
+      "summary": "To generate each token, a model executes an attention step comparing the newest token against earlier tokens using key and value vectors. Recomputing these vectors for every preceding token at each step is computationally wasteful because their values remain static. The KV cache resolves this inefficiency by storing computed key and value vectors so that only the new token requires computation. However, reading this cache on every step introduces a new cost bottleneck and can cause unexpected out-of-memory errors because the cache retains high-dimensional vectors rather than text. Token generation operates in two distinct phases with different hardware bottlenecks: prefill and decoding. During prefill, all input tokens are processed in parallel to construct the key-value cache, making this phase compute-bound and limited by arithmetic throughput. Decoding generates tokens autoregressively one by one, requiring a full read of the key-value cache from GPU memory for every step, which makes it memory-bound. As a result, the primary bottleneck in long-context generation stems from repeatedly streaming the entire cache across the memory bus rather than simply storing it. The key-value cache size of a large language model is determined by multiplying the number of layers, key-value heads, head dimension, bytes per number, context length, batch size, and a factor of two. Cache requirements scale linearly with both token count and batch size, making long contexts and concurrent users resource-intensive. For instance, a single 128,000-token request on Llama 3 70B demands approximately 40 gigabytes of memory, consuming half of an 80-gigabyte GPU card. Optimization techniques aim to mitigate memory demands by reducing individual factors in this multiplication.",
+      "summarised": true,
       "headings": [
         "Recomputation",
         "Decoding",
@@ -1442,23 +1437,6 @@
       ]
     },
     {
-      "source": "gmail:bytebytego",
-      "title": "LLM Security Basics: The Full Threat Model",
-      "url": "https://open.substack.com/pub/bytebytego/p/llm-security-basics-the-full-threat",
-      "date": "2026-08-03",
-      "summary": "Almost every LLM vulnerability traces to one property. A language model receives instructions and data as a single sequence of tokens, and that sequence contains no marker separating commands from information. Traditional software keeps the two apart. For example, a parameterized database query holds the command in one position and the user’s input in another. This means that the text typed into a",
-      "summarised": false,
-      "headings": [
-        "Trust Boundaries",
-        "Attack Surface",
-        "Model Attacks",
-        "Excessive Agency",
-        "Supply Chain",
-        "Defense in Depth",
-        "Conclusion"
-      ]
-    },
-    {
       "source": "gmail:daily_dose_of_ds",
       "title": "The Hands-on AI Engineer Playbook to Build RAG Apps for Production",
       "url": "https://blog.dailydoseofds.com/p/the-hands-on-ai-engineer-playbook",
@@ -1472,12 +1450,29 @@
       ]
     },
     {
+      "source": "gmail:bytebytego",
+      "title": "LLM Security Basics: The Full Threat Model",
+      "url": "https://open.substack.com/pub/bytebytego/p/llm-security-basics-the-full-threat",
+      "date": "2026-08-03",
+      "summary": "Almost all LLM vulnerabilities originate from the architectural reality that models receive instructions and external data in a single token sequence with no structural boundary between them. While traditional software relies on parameterization to strictly separate executable commands from user data (such as in SQL queries), no such mechanism exists for natural language where instructions and data are both plain text. This allows prompt injection to succeed either directly via chat inputs or indirectly through retrieved external content like emails or documents. Relying solely on filtering mechanisms is insufficient, as evidenced by attacks that bypass dedicated injection classifiers. The OWASP Top 10 for Large Language Model Applications maps critical AI security risks directly onto the stages of an LLM data pipeline, spanning input, retrieval, model processing, tools, and output. Each pipeline stage exposes distinct vulnerabilities, including prompt injection, knowledge base corruption, and excessive agency. Unlike localized pipeline stages, supply chain vulnerabilities underpin the entire architecture and affect all downstream components simultaneously. Mapping attacks to these stages clarifies where untrusted data enters and which permissions are abused, guiding effective defense strategies. Attacks targeting a model's interior—such as model theft, training-data extraction, and training-time poisoning—pose real technical risks but are currently low priority for most standard application developers. Demonstrations show these attacks are bounded, expensive, or promptly mitigated by commercial model providers following disclosure. However, responsibility and risk rise significantly for teams that host open weights, fine-tune on proprietary data, or run their own training infrastructure. For downstream developers, common operational vulnerabilities like over-privileged agents present a far greater threat than interior model attacks.",
+      "summarised": true,
+      "headings": [
+        "Trust Boundaries",
+        "Attack Surface",
+        "Model Attacks",
+        "Excessive Agency",
+        "Supply Chain",
+        "Defense in Depth",
+        "Conclusion"
+      ]
+    },
+    {
       "source": "gmail:explainthis",
       "title": "ExplainThis 全端開發雙週報 #85 從 MCP 核心協定轉為無狀態，談有狀態與無狀態的設計如何取捨",
       "url": "https://open.substack.com/pub/explainthis/p/explainthis-85-mcp",
       "date": "2026-08-02",
-      "summary": "嗨～歡迎閱讀第 84 期 ExplainThis 全端開發雙週報！ 在進到正式的內容前想與大家分享，在這週 ExplainThis 的 E+ 會員方案 ( [連結](https://substack.com/redirect/1a5ae104-ebb9-4125-a8bc-e51d667b15f2?j=eyJ1IjoiM2NtbGY5In0.ra03fCqDa-UlLj_8G5tTI4BzWGAXqygbP7t4aAuhHJ0) )，上架了 [《寫出好維護的程式碼 (下) — 日常開發中的實用方法》](https://substack.com/redirect/2e738d3c-581b-4afc-863f-378b819baef0?j=eyJ1IjoiM2NtbGY5In0.ra03fCqDa-UlLj_8G5tTI4BzWGAXqygbP7t4aAuhHJ0) 。對比起先前在 [《寫出",
-      "summarised": false,
+      "summary": "ExplainThis announced the release of a new course titled 'Writing Maintainable Code (Part 2) — Practical Methods in Daily Development' on its E+ membership platform. While the first part focused on classical software design theory, this continuation targets actionable techniques for daily engineering tasks to improve code quality. The newsletter also highlights that readers can purchase E+ memberships using corporate education training subsidies, noting that over half of recent new members enrolled via this approach. In software architecture across both frontend and backend development, engineers frequently face the choice between stateful and stateless design patterns. Common examples include choosing between session-based versus token-based authentication, as well as WebSockets versus HTTP for communication. The Model Context Protocol (MCP) recently transitioned its core protocol from stateful to stateless. Mastering the trade-offs between these two paradigms is critical for making sound architectural decisions and answering technical interview questions. 在 1990 年代的網頁開發中，基於 Session 的驗證方式是主流，但其依賴伺服器端管理狀態，在系統進行水平擴展時會面臨 Session 處理的挑戰。常見的解決方案之一是使用黏性 Session（sticky session），將特定使用者的請求綁定至單一伺服器。然而，這種作法會造成特定使用者狀態對特定機器的依賴，一旦伺服器故障且狀態未同步至共享儲存，便會引發單點故障（SPOF），導致購物車或表單資料遺失。這種架構在概念上屬於典型的高風險「有狀態」（stateful）設計。",
+      "summarised": true,
       "headings": [
         "從 MCP 核心協定轉為無狀態，談有狀態與無狀態的設計如何取捨",
         "從驗證的角度看有狀態與無狀態",
@@ -1519,8 +1514,8 @@
       "title": "Hiring: Part Time Instructor, Write Production Grade Code with AI",
       "url": "https://open.substack.com/pub/bytebytego/p/hiring-part-time-instructor-write",
       "date": "2026-07-31",
-      "summary": "We’re hiring a part-time instructor for “𝐖𝐫𝐢𝐭𝐞 𝐏𝐫𝐨𝐝𝐮𝐜𝐭𝐢𝐨𝐧 𝐆𝐫𝐚𝐝𝐞 𝐂𝐨𝐝𝐞 𝐰𝐢𝐭𝐡 𝐀𝐈”. This is a live, cohort-based course for software engineers. This course is about teaching engineers how to reliably ship production-grade software with coding agents. Students will learn how to delegate real work to coding agents, write specs and plans that agents can execute, and verify, review, and secure the code tha",
-      "summarised": false,
+      "summary": "ByteByteGo is hiring a part-time instructor for its live, cohort-based course titled 'Write Production Grade Code with AI'. The course focuses on training software engineers to build and ship production software reliably using coding agents, covering task delegation, spec writing, and code verification. The role requires roughly 2 to 10 hours of work every two weeks to teach live sessions, refine the curriculum, and mentor students. Ideal candidates have at least five years of software engineering experience and actively use tools like Claude Code, Codex, or Cursor.",
+      "summarised": true,
       "headings": []
     },
     {
@@ -1828,6 +1823,18 @@
     },
     {
       "source": "gmail:daily_dose_of_ds",
+      "title": "[Hands-on] How to Build Your Own AI Company",
+      "url": "https://blog.dailydoseofds.com/p/hands-on-how-to-build-your-own-ai",
+      "date": "2026-07-01",
+      "summary": "The text outlines a methodology for building an autonomous AI company using the Alook platform to organize agents into a structured hierarchy. It cites the example of Medvi, a one-person company that achieved significant revenue by using AI agents for coordination and operations. By assigning agents specific roles and email inboxes, the system allows for complex task automation, such as competitive intelligence, without manual human intervention. The setup integrates tools like Bright Data CLI to enable agents to perform technical tasks like web scraping at scale. This section outlines six essential graph feature engineering techniques designed to enhance model performance on graph datasets. It categorizes these techniques into node degree metrics, such as in-degree and out-degree, and centrality measures including betweenness, closeness, and eigenvector centrality. The text also highlights the practical importance of Graph Machine Learning by citing its use in recommendation systems and prediction models at major technology companies.",
+      "summarised": true,
+      "headings": [
+        "Hands-on] How to build your own AI company",
+        "6 graph feature engineering techniques"
+      ]
+    },
+    {
+      "source": "gmail:daily_dose_of_ds",
       "title": "A Better Way To Build LLM-as-a-Judge Pipelines",
       "url": "https://blog.dailydoseofds.com/p/a-better-way-to-build-llm-as-a-judge",
       "date": "2026-07-01",
@@ -1838,18 +1845,6 @@
         "Hermes Mixture of Agents (MoA) explained",
         "SNE vs. tSNE Algorithm",
         "Connect any LLM to any MCP server"
-      ]
-    },
-    {
-      "source": "gmail:daily_dose_of_ds",
-      "title": "[Hands-on] How to Build Your Own AI Company",
-      "url": "https://blog.dailydoseofds.com/p/hands-on-how-to-build-your-own-ai",
-      "date": "2026-07-01",
-      "summary": "The text outlines a methodology for building an autonomous AI company using the Alook platform to organize agents into a structured hierarchy. It cites the example of Medvi, a one-person company that achieved significant revenue by using AI agents for coordination and operations. By assigning agents specific roles and email inboxes, the system allows for complex task automation, such as competitive intelligence, without manual human intervention. The setup integrates tools like Bright Data CLI to enable agents to perform technical tasks like web scraping at scale. This section outlines six essential graph feature engineering techniques designed to enhance model performance on graph datasets. It categorizes these techniques into node degree metrics, such as in-degree and out-degree, and centrality measures including betweenness, closeness, and eigenvector centrality. The text also highlights the practical importance of Graph Machine Learning by citing its use in recommendation systems and prediction models at major technology companies.",
-      "summarised": true,
-      "headings": [
-        "Hands-on] How to build your own AI company",
-        "6 graph feature engineering techniques"
       ]
     },
     {
