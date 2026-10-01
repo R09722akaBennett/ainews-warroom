@@ -1,7 +1,7 @@
 # AI War Room · bennettlabs.dev
 
-個人的 AI 戰情室網站，部署在 <https://ainews-warroom.vercel.app>。Astro 5 靜態站，
-資料是 bennett-hub 上各排程產生的 JSON，push 到 `main` 後 Vercel 自動部署。
+個人的 AI 戰情室網站，部署在 <https://aiwarroom.bennettlabs.dev>（Cloudflare Workers 靜態網站，push 到 main 自動部署）。Astro 5 靜態站，
+資料是 bennett-hub 上各排程產生的 JSON，push 到 `main` 後 Cloudflare 自動部署。
 
 ## 資料從哪來
 

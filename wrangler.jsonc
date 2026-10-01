@@ -1,0 +1,13 @@
+// Cloudflare Workers static assets: the site is fully static (no server routes),
+// so the Worker only serves the files Astro builds into dist/.
+{
+  "name": "ainews-warroom",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "404-page",
+    // Serve /reports/2026-10-01 without first redirecting to a trailing slash, as Vercel did;
+    // links already sent over WhatsApp use the slashless form.
+    "html_handling": "drop-trailing-slash"
+  }
+}
