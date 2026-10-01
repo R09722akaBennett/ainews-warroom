@@ -86,6 +86,24 @@ def _parse_int(text: str) -> int:
     return int(cleaned) if cleaned else 0
 
 
+def _parse_score_cell(cell) -> tuple[int, str]:
+    """Return (score, ci) from a Score cell, e.g. (1525, "±9").
+
+    arena.ai renames its utility classes between releases (`text-sm` became
+    `body-sm`, which silently zeroed every score), so the cell is read by
+    shape instead: the first span holding a bare integer is the score and the
+    first span starting with "±" is the confidence interval.
+    """
+    score, ci = 0, ""
+    for span in cell.find_all("span"):
+        text = span.get_text(strip=True)
+        if not score and re.fullmatch(r"\d[\d,]*", text):
+            score = _parse_int(text)
+        elif not ci and text.startswith("±"):
+            ci = text
+    return score, ci
+
+
 def _parse_category_page(html: str) -> list[dict]:
     """Return one row per model from a category leaderboard page.
 
@@ -163,13 +181,7 @@ def _parse_category_page(html: str) -> list[dict]:
         score = 0
         ci = ""
         if idx_score is not None:
-            score_cell = cells[idx_score]
-            score_span = score_cell.select_one("span.text-sm")
-            if score_span:
-                score = _parse_int(score_span.get_text(strip=True))
-            ci_span = score_cell.select_one("span.text-tertiary")
-            if ci_span:
-                ci = ci_span.get_text(strip=True)  # e.g. "±6"
+            score, ci = _parse_score_cell(cells[idx_score])
 
         votes = _parse_int(cells[idx_votes].get_text(strip=True)) if idx_votes is not None else 0
 
