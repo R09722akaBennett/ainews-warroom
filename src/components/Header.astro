@@ -20,7 +20,7 @@ function isActive(href: string): boolean {
       </a>
 
       <!-- Desktop nav -->
-      <nav class="hidden lg:flex items-center gap-1">
+      <nav class="hidden xl:flex items-center gap-1">
         <a href="/sources" class:list={["nav-link", { "nav-active": isActive("/sources") }]}>Sources</a>
         <span class="nav-sep">/</span>
         <a href="/reports/" class:list={["nav-link", { "nav-active": isActive("/reports") }]}>Reports</a>
@@ -28,6 +28,8 @@ function isActive(href: string): boolean {
         <a href="/trends" class:list={["nav-link", { "nav-active": isActive("/trends") }]}>Insights</a>
         <span class="nav-sep">/</span>
         <a href="/reading" class:list={["nav-link", { "nav-active": isActive("/reading") }]}>Reading</a>
+        <span class="nav-sep">/</span>
+        <a href="/podcasts" class:list={["nav-link", { "nav-active": isActive("/podcasts") }]}>Podcasts</a>
         <span class="nav-sep">/</span>
         <a href="/leaderboard" class:list={["nav-link", { "nav-active": isActive("/leaderboard") }]}>Leaderboard</a>
         <span class="nav-sep">/</span>
@@ -64,7 +66,7 @@ function isActive(href: string): boolean {
       </nav>
 
       <!-- Mobile: theme toggle + hamburger -->
-      <div class="flex items-center gap-1 lg:hidden">
+      <div class="flex items-center gap-1 xl:hidden">
         <button id="theme-toggle-m" aria-label="Toggle theme" class="theme-btn">
           <svg id="icon-sun-m" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
             <circle cx="12" cy="12" r="5"/>
@@ -96,11 +98,12 @@ function isActive(href: string): boolean {
     </div>
 
     <!-- Mobile dropdown menu -->
-    <nav id="mobile-menu" class="mobile-menu lg:hidden" hidden>
+    <nav id="mobile-menu" class="mobile-menu xl:hidden" hidden>
       <a href="/sources" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/sources") }]}>Sources</a>
       <a href="/reports/" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/reports") }]}>Reports</a>
       <a href="/trends" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/trends") }]}>Insights</a>
       <a href="/reading" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/reading") }]}>Reading</a>
+      <a href="/podcasts" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/podcasts") }]}>Podcasts</a>
       <a href="/leaderboard" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/leaderboard") }]}>Leaderboard</a>
       <a href="/trending" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/trending") }]}>Trending</a>
       <a href="/labs" class:list={["mobile-nav-link", { "mobile-nav-active": isActive("/labs") }]}>Labs</a>

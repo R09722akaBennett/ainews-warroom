@@ -1,0 +1,561 @@
+---
+import Layout from "@layouts/Layout.astro";
+import Container from "@components/Container.astro";
+
+import { isHost, minutes, youtubeAt, type Episode } from "@lib/podcasts";
+
+export function getStaticPaths() {
+  const mods = import.meta.glob<{ default: Episode }>("../../data/podcasts/*.json", { eager: true });
+  return Object.values(mods).map((m) => ({ params: { slug: m.default.slug }, props: { ep: m.default } }));
+}
+
+const { ep } = Astro.props as { ep: Episode };
+const s = ep.summary || {};
+const transcript = (ep.transcript || []).filter((c) => c.turns?.length);
+const hasTranscript = transcript.length > 0;
+const chapters = hasTranscript ? ep.chapters || [] : [];
+const weDiscuss = ep.we_discuss || [];
+const intro = (ep.intro || []).filter((p) => p.trim());
+const topics = s.topics || [];
+const insights = s.insights || [];
+const quotes = s.quotes || [];
+
+// Guest cards: list guests carry role and links, summary guests carry the
+// Chinese intro. Episodes without a transcript only have the summary side.
+const norm = (n: string) => n.trim().toLowerCase();
+const summaryGuests = s.guests || [];
+const usedIntros = new Set<string>();
+function introFor(name: string): string {
+  const n = norm(name);
+  const first = n.split(/\s+/)[0];
+  const hit = summaryGuests.find((g) => norm(g.name) === n) || summaryGuests.find((g) => norm(g.name).split(/\s+/)[0] === first);
+  if (!hit) return "";
+  usedIntros.add(hit.name);
+  return hit.intro;
+}
+type GuestCard = { name: string; role: string; roleUrl: string | null; intro: string; links: [string, string][] };
+const LINK_ORDER = ["X", "LinkedIn"];
+const guestCards: GuestCard[] = (ep.guests || []).map((g) => {
+  // Some show notes write the affiliation as "Org: https://...".
+  const m = (g.role || "").match(/^(.*?):\s*(https?:\/\/\S+)$/);
+  const links = Object.entries(g.links || {}).sort(
+    ([a], [b]) => (LINK_ORDER.indexOf(a) + 1 || 9) - (LINK_ORDER.indexOf(b) + 1 || 9),
+  );
+  return { name: g.name, role: m ? m[1] : g.role || "", roleUrl: m ? m[2] : null, intro: introFor(g.name), links };
+});
+for (const g of summaryGuests) {
+  if (!usedIntros.has(g.name)) guestCards.push({ name: g.name, role: "", roleUrl: null, intro: g.intro, links: [] });
+}
+
+// Chapter titles come from the show notes and transcript headings are
+// written separately, so chapters are matched to the turn playing at
+// their start time rather than by title.
+const turnAnchors: { seconds: number; id: string }[] = [];
+transcript.forEach((c, ci) => c.turns.forEach((t, ti) => turnAnchors.push({ seconds: t.seconds, id: `t-${ci}-${ti}` })));
+function anchorFor(seconds: number): string {
+  let id = turnAnchors[0]?.id || "sec-transcript";
+  for (const a of turnAnchors) {
+    if (a.seconds <= seconds) id = a.id;
+    else break;
+  }
+  return id;
+}
+
+const WE_DISCUSS_VISIBLE = 6;
+// Folding away one or two items costs more than it saves.
+const foldDiscuss = weDiscuss.length > WE_DISCUSS_VISIBLE + 2;
+const nav = [
+  s.one_liner && ["sec-summary", "總結"],
+  guestCards.length && ["sec-guests", "來賓"],
+  weDiscuss.length && ["sec-discuss", "本集討論"],
+  topics.length && ["sec-topics", "話題"],
+  insights.length && ["sec-insights", "啟發"],
+  quotes.length && ["sec-quotes", "金句"],
+  chapters.length && ["sec-chapters", "章節"],
+  hasTranscript && ["sec-transcript", "逐字稿"],
+  !hasTranscript && intro.length && ["sec-notes", "節目筆記"],
+].filter(Boolean) as [string, string][];
+---
+
+<Layout title={ep.title} description={s.one_liner || ep.subtitle || ep.title}>
+  <Container>
+    <div class="ep-wrap">
+      <a href="/podcasts" class="ep-back">← 回到 Podcasts</a>
+
+      {/* (a) Header */}
+      <header class="ep-head">
+        <div class="flex items-center gap-3">
+          {ep.image && <img src={ep.image} alt="" width="48" height="48" class="ep-cover" loading="lazy" />}
+          <div class="flex flex-col gap-1">
+            <span class="ep-chip">{ep.show}</span>
+            <span class="meta">{ep.date} · {minutes(ep.duration)}</span>
+          </div>
+        </div>
+        <h1 class="ep-title">{ep.title}</h1>
+        {ep.subtitle && <p class="ep-subtitle">{ep.subtitle}</p>}
+        <div class="ep-actions">
+          {ep.url && <a href={ep.url} target="_blank" rel="noopener noreferrer" class="ep-btn ep-btn-primary">收聽原節目 ↗</a>}
+          {ep.youtube && <a href={ep.youtube} target="_blank" rel="noopener noreferrer" class="ep-btn">YouTube ↗</a>}
+          <button type="button" class="ep-btn" id="ep-share" data-title={ep.title}>分享</button>
+        </div>
+      </header>
+
+      {nav.length > 1 && (
+        <nav class="ep-nav" aria-label="本頁段落">
+          {nav.map(([id, label]) => <a href={`#${id}`}>{label}</a>)}
+        </nav>
+      )}
+
+      {/* (b) One-liner */}
+      {s.one_liner && (
+        <section id="sec-summary" class="ep-sec">
+          <h2 class="ep-h2">一句話總結</h2>
+          <div class="ep-oneliner">{s.one_liner}</div>
+        </section>
+      )}
+
+      {/* (c) Guests */}
+      {guestCards.length > 0 && (
+        <section id="sec-guests" class="ep-sec">
+          <h2 class="ep-h2">來賓</h2>
+          <div class="ep-grid">
+            {guestCards.map((g) => (
+              <div class="card ep-card">
+                <div>
+                  <div class="ep-guest-name">{g.name}</div>
+                  {g.role && (g.roleUrl ? (
+                    <a href={g.roleUrl} target="_blank" rel="noopener noreferrer" class="ep-guest-role ep-inline-link">{g.role} ↗</a>
+                  ) : (
+                    <div class="ep-guest-role">{g.role}</div>
+                  ))}
+                </div>
+                {g.intro && <p class="ep-body">{g.intro}</p>}
+                {g.links.length > 0 && (
+                  <div class="ep-guest-links">
+                    {g.links.map(([label, href]) => (
+                      <a href={href} target="_blank" rel="noopener noreferrer" class="ep-glink" aria-label={`${g.name} on ${label}`}>
+                        {label === "X" ? (
+                          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.77L17.75 3zm-1.08 16.17h1.7L7.4 4.74H5.58l11.09 14.43z" /></svg>
+                        ) : label === "LinkedIn" ? (
+                          <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4V21H3V9.75zm6.5 0h3.83v1.54h.05c.53-1.01 1.84-2.07 3.79-2.07 4.05 0 4.8 2.67 4.8 6.13V21h-4v-4.96c0-1.18-.02-2.7-1.65-2.7-1.65 0-1.9 1.29-1.9 2.62V21h-4V9.75z" /></svg>
+                        ) : null}
+                        <span>{label === "X" || label === "LinkedIn" ? label : `${label} ↗`}</span>
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* (d) We discuss, with the English show notes folded underneath */}
+      {weDiscuss.length > 0 && (
+        <section id="sec-discuss" class="ep-sec">
+          <h2 class="ep-h2">本集討論</h2>
+          <ul class="ep-bullets">
+            {weDiscuss.slice(0, foldDiscuss ? WE_DISCUSS_VISIBLE : undefined).map((w) => <li>{w}</li>)}
+          </ul>
+          {foldDiscuss && (
+            <details class="ep-more">
+              <summary>再顯示 {weDiscuss.length - WE_DISCUSS_VISIBLE} 項</summary>
+              <ul class="ep-bullets">
+                {weDiscuss.slice(WE_DISCUSS_VISIBLE).map((w) => <li>{w}</li>)}
+              </ul>
+            </details>
+          )}
+        </section>
+      )}
+
+      {hasTranscript && intro.length > 0 && (
+        <details class="ep-more ep-notes-fold">
+          <summary>節目筆記（英文原文，{intro.length} 段）</summary>
+          <div class="ep-notes">{intro.map((p) => <p>{p}</p>)}</div>
+        </details>
+      )}
+
+      {/* (e) Topics */}
+      {topics.length > 0 && (
+        <section id="sec-topics" class="ep-sec">
+          <h2 class="ep-h2">主要討論話題</h2>
+          <div class="ep-grid">
+            {topics.map((t, i) => (
+              <div class="card ep-card">
+                <span class="ep-kicker">TOPIC {String(i + 1).padStart(2, "0")}</span>
+                <h3 class="ep-h3">{t.title}</h3>
+                <p class="ep-body">{t.body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* (f) Insights */}
+      {insights.length > 0 && (
+        <section id="sec-insights" class="ep-sec">
+          <h2 class="ep-h2">對你的啟發</h2>
+          <div class="ep-stack">
+            {insights.map((t) => (
+              <div class="card card-accent-warm ep-card">
+                <h3 class="ep-h3">{t.title}</h3>
+                <p class="ep-body">{t.body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* (g) Quotes */}
+      {quotes.length > 0 && (
+        <section id="sec-quotes" class="ep-sec">
+          <h2 class="ep-h2">金句摘錄</h2>
+          <div class="ep-stack">
+            {quotes.map((q) => (
+              <figure class="ep-quote">
+                <blockquote>
+                  <p class="ep-quote-en" lang="en">{q.en}</p>
+                  <p class="ep-quote-zh">{q.zh}</p>
+                </blockquote>
+                <figcaption>— {q.speaker}</figcaption>
+              </figure>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* (h) Chapters */}
+      {chapters.length > 0 && (
+        <section id="sec-chapters" class="ep-sec">
+          <h2 class="ep-h2">章節</h2>
+          <ol class="ep-chapters">
+            {chapters.map((c) => (
+              <li>
+                {ep.youtube ? (
+                  <a href={youtubeAt(ep.youtube, c.seconds)} target="_blank" rel="noopener noreferrer" class="ep-ts" title="在 YouTube 從這裡開始播放">▶ {c.t}</a>
+                ) : (
+                  <span class="ep-ts">{c.t}</span>
+                )}
+                <a href={`#${anchorFor(c.seconds)}`} class="ep-chapter-title" data-open-target>{c.title}</a>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
+      {/* (i) Transcript */}
+      {hasTranscript ? (
+        <section id="sec-transcript" class="ep-sec">
+          <h2 class="ep-h2">逐字稿</h2>
+          <label class="ep-search">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
+            <input id="tr-q" type="search" placeholder="搜尋逐字稿（英文原文）" autocomplete="off" aria-label="搜尋逐字稿" />
+            <span class="meta" id="tr-count"></span>
+          </label>
+          <div class="ep-transcript" id="tr-root">
+            {transcript.map((c, ci) => (
+              <details class="card tr-chapter" id={`tr-${ci}`} open={ci === 0}>
+                <summary class="tr-summary">
+                  <span class="meta tr-start">{c.turns[0].t}</span>
+                  <span class="tr-title">{c.title}</span>
+                  <svg class="tr-chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
+                </summary>
+                <div class="tr-turns">
+                  {c.turns.map((t, ti) => (
+                    <div class="tr-turn" id={`t-${ci}-${ti}`}>
+                      <div class="tr-turn-head">
+                        <span class:list={["tr-speaker", isHost(t.speaker) ? "tr-host" : "tr-guest"]}>{t.speaker}</span>
+                        {ep.youtube ? (
+                          <a href={youtubeAt(ep.youtube, t.seconds)} target="_blank" rel="noopener noreferrer" class="tr-ts">{t.t}</a>
+                        ) : (
+                          <span class="tr-ts">{t.t}</span>
+                        )}
+                      </div>
+                      <p class="tr-text" lang="en">{t.text}</p>
+                    </div>
+                  ))}
+                </div>
+              </details>
+            ))}
+          </div>
+          <p class="ep-attr">
+            逐字稿與節目內容來自 {ep.show}，版權屬原作者。
+            {ep.url && <a href={ep.url} target="_blank" rel="noopener noreferrer" class="ep-inline-link">閱讀原文 ↗</a>}
+          </p>
+        </section>
+      ) : (
+        <section id="sec-notes" class="ep-sec">
+          <div class="ep-notice">這集原文沒有逐字稿，摘要根據節目筆記整理。</div>
+          {intro.length > 0 && (
+            <>
+              <h2 class="ep-h2">節目筆記</h2>
+              <div class="ep-notes">{intro.map((p) => <p>{p}</p>)}</div>
+            </>
+          )}
+          <p class="ep-attr">
+            節目內容來自 {ep.show}，版權屬原作者。
+            {ep.url && <a href={ep.url} target="_blank" rel="noopener noreferrer" class="ep-inline-link">閱讀原文 ↗</a>}
+          </p>
+        </section>
+      )}
+
+      <a href="/podcasts" class="ep-back">← 回到 Podcasts</a>
+    </div>
+  </Container>
+</Layout>
+
+<!-- Global on purpose: scoped styles stamp an attribute on every transcript
+     element, which added about a fifth to the largest episode page. Every
+     class here is ep-/tr- prefixed. -->
+<style is:global>
+  .ep-wrap { max-width: 48rem; margin: 0 auto; display: flex; flex-direction: column; gap: 2rem; }
+  .ep-back { display: inline-flex; align-items: center; align-self: flex-start; min-height: 40px; font-size: 0.8125rem; color: var(--color-text-muted); text-decoration: none; }
+  .ep-back:hover { color: var(--color-text); }
+  .ep-head { display: flex; flex-direction: column; gap: 0.75rem; margin-top: -1rem; }
+  .ep-cover { width: 48px; height: 48px; border-radius: 0.5rem; border: 1px solid var(--color-border); object-fit: cover; }
+  .ep-chip {
+    align-self: flex-start; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-family: var(--font-mono);
+    font-weight: 600; color: var(--color-accent-cool); border: 1px solid var(--color-border);
+  }
+  .ep-title { font-size: 1.5rem; line-height: 1.3; font-weight: 700; letter-spacing: -0.01em; color: var(--color-text); }
+  @media (min-width: 768px) { .ep-title { font-size: 1.875rem; } }
+  .ep-subtitle { font-size: 0.9375rem; line-height: 1.65; color: var(--color-text-muted); }
+  .ep-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; padding-top: 0.25rem; }
+  .ep-btn {
+    display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 1rem;
+    border-radius: 0.5rem; font-size: 0.875rem; font-weight: 600; text-decoration: none; cursor: pointer;
+    color: var(--color-text); background-color: var(--color-surface-raised); border: 1px solid var(--color-border);
+    transition: background-color 0.15s, opacity 0.15s;
+  }
+  .ep-btn:hover { background-color: var(--color-surface-muted); }
+  .ep-btn-primary { color: var(--color-surface); background-color: var(--color-accent-cool); border-color: var(--color-accent-cool); }
+  .ep-btn-primary:hover { background-color: var(--color-accent-cool); opacity: 0.88; }
+
+  /* Sits under the fixed site header (about 61px tall). */
+  .ep-nav {
+    position: sticky; top: 61px; z-index: 20; display: flex; gap: 0.25rem; overflow-x: auto;
+    margin: -0.5rem -1rem 0; padding: 0.25rem 1rem; scrollbar-width: none;
+    background-color: color-mix(in srgb, var(--color-surface) 92%, transparent);
+    backdrop-filter: blur(8px); border-bottom: 1px solid var(--color-border);
+  }
+  .ep-nav::-webkit-scrollbar { display: none; }
+  .ep-nav a {
+    flex-shrink: 0; display: inline-flex; align-items: center; min-height: 40px; padding: 0 0.625rem;
+    border-radius: 0.375rem; font-size: 0.8125rem; color: var(--color-text-muted); text-decoration: none; white-space: nowrap;
+  }
+  .ep-nav a:hover { color: var(--color-text); background-color: var(--color-surface-muted); }
+  @media (min-width: 640px) { .ep-nav { margin: -0.5rem 0 0; padding: 0.25rem 0; } }
+
+  .ep-sec { display: flex; flex-direction: column; gap: 0.875rem; scroll-margin-top: 56px; }
+  .ep-h2 { font-size: 1.125rem; font-weight: 700; color: var(--color-text); }
+  .ep-h3 { font-size: 0.9375rem; line-height: 1.45; font-weight: 650; color: var(--color-text); }
+  .ep-body { font-size: 0.875rem; line-height: 1.75; color: var(--color-text); opacity: 0.9; }
+  .ep-oneliner {
+    padding: 1rem 1.125rem; border-radius: 0.5rem; font-size: 1rem; line-height: 1.7; font-weight: 600;
+    color: var(--color-text); background-color: var(--color-accent-cool-muted);
+    border: 1px solid color-mix(in srgb, var(--color-accent-cool) 35%, transparent);
+    border-left: 3px solid var(--color-accent-cool);
+  }
+  .ep-grid { display: grid; gap: 0.75rem; grid-template-columns: minmax(0, 1fr); }
+  @media (min-width: 768px) { .ep-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .ep-stack { display: flex; flex-direction: column; gap: 0.75rem; }
+  .ep-card { padding: 1rem 1.125rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .ep-kicker { font-family: var(--font-mono); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.12em; color: var(--color-accent-cool); }
+
+  .ep-guest-name { font-size: 1rem; font-weight: 700; color: var(--color-text); }
+  .ep-guest-role { display: block; font-size: 0.8125rem; color: var(--color-text-muted); }
+  .ep-inline-link { color: var(--color-accent-cool); text-decoration: none; }
+  .ep-inline-link:hover { text-decoration: underline; text-underline-offset: 2px; }
+  a.ep-guest-role { display: inline-flex; align-items: center; min-height: 40px; }
+  .ep-guest-links { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .ep-glink {
+    display: inline-flex; align-items: center; gap: 0.375rem; min-height: 40px; padding: 0 0.75rem;
+    border-radius: 0.375rem; border: 1px solid var(--color-border); font-size: 0.8125rem;
+    color: var(--color-text-muted); text-decoration: none;
+  }
+  .ep-glink:hover { color: var(--color-text); background-color: var(--color-surface-muted); }
+
+  .ep-bullets { list-style: disc; padding-left: 1.25rem; display: flex; flex-direction: column; gap: 0.375rem; }
+  .ep-bullets li { font-size: 0.875rem; line-height: 1.65; color: var(--color-text); }
+  .ep-bullets li::marker { color: var(--color-text-muted); }
+  .ep-more > summary {
+    display: inline-flex; align-items: center; min-height: 40px; cursor: pointer;
+    font-size: 0.8125rem; color: var(--color-accent-cool);
+  }
+  .ep-more[open] > summary { margin-bottom: 0.375rem; }
+  .ep-notes-fold { margin-top: -1rem; }
+  .ep-notes { display: flex; flex-direction: column; gap: 0.75rem; }
+  .ep-notes p { font-size: 0.875rem; line-height: 1.75; color: var(--color-text-muted); }
+  .ep-notice {
+    padding: 0.875rem 1rem; border-radius: 0.5rem; font-size: 0.875rem;
+    color: var(--color-text); background-color: var(--color-surface-muted); border: 1px solid var(--color-border);
+  }
+
+  .ep-quote { margin: 0; padding: 0.25rem 0 0.25rem 1rem; border-left: 3px solid var(--color-accent-warm); }
+  .ep-quote blockquote { margin: 0; display: flex; flex-direction: column; gap: 0.375rem; }
+  .ep-quote-en { font-size: 0.875rem; line-height: 1.7; font-style: italic; color: var(--color-text-muted); }
+  .ep-quote-zh { font-size: 0.9375rem; line-height: 1.7; color: var(--color-text); }
+  .ep-quote figcaption { margin-top: 0.375rem; font-size: 0.75rem; font-family: var(--font-mono); color: var(--color-text-muted); }
+
+  .ep-chapters { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--color-border); }
+  .ep-chapters li { display: flex; align-items: stretch; gap: 0.5rem; border-bottom: 1px solid var(--color-border); }
+  .ep-ts {
+    flex-shrink: 0; display: inline-flex; align-items: center; min-height: 44px; min-width: 6rem;
+    font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-text-muted); text-decoration: none;
+  }
+  a.ep-ts { color: var(--color-accent-cool); }
+  a.ep-ts:hover { text-decoration: underline; }
+  .ep-chapter-title {
+    flex: 1; min-width: 0; display: flex; align-items: center; min-height: 44px; padding: 0.375rem 0;
+    font-size: 0.875rem; line-height: 1.45; color: var(--color-text); text-decoration: none;
+  }
+  .ep-chapter-title:hover { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--color-border); }
+
+  .ep-search {
+    display: flex; align-items: center; gap: 0.5rem; min-height: 44px; padding: 0 0.75rem;
+    border: 1px solid var(--color-border); border-radius: 0.5rem; background-color: var(--color-surface-raised); color: var(--color-text-muted);
+  }
+  .ep-search:focus-within { border-color: var(--color-accent-cool); }
+  .ep-search input { flex: 1; min-width: 0; background: transparent; border: 0; outline: none; font-size: 16px; color: var(--color-text); }
+  .ep-transcript { display: flex; flex-direction: column; gap: 0.5rem; }
+  .tr-chapter { overflow: hidden; }
+  .tr-summary { display: flex; align-items: center; gap: 0.75rem; min-height: 48px; padding: 0.5rem 1rem; cursor: pointer; list-style: none; }
+  .tr-summary::-webkit-details-marker { display: none; }
+  .tr-start { flex-shrink: 0; }
+  .tr-title { flex: 1; min-width: 0; font-size: 0.875rem; font-weight: 600; line-height: 1.4; color: var(--color-text); }
+  .tr-chev { width: 1rem; height: 1rem; flex-shrink: 0; color: var(--color-text-muted); transition: transform 0.2s; }
+  .tr-chapter[open] .tr-chev { transform: rotate(180deg); }
+  .tr-turns { display: flex; flex-direction: column; gap: 1rem; padding: 0.75rem 1rem 1rem; border-top: 1px solid var(--color-border); }
+  .tr-turn { scroll-margin-top: 56px; }
+  .tr-turn[hidden] { display: none; }
+  .tr-turn:target { background-color: color-mix(in srgb, var(--color-accent-warm) 8%, transparent); border-radius: 0.375rem; }
+  .tr-turn-head { display: flex; align-items: center; gap: 0.625rem; }
+  .tr-speaker { font-size: 0.8125rem; font-weight: 700; }
+  .tr-host { color: var(--color-text-muted); }
+  .tr-guest { color: var(--color-accent-cool); }
+  .tr-ts { display: inline-flex; align-items: center; min-height: 40px; padding: 0 0.25rem; font-family: var(--font-mono); font-size: 0.6875rem; color: var(--color-text-muted); text-decoration: none; }
+  a.tr-ts:hover { color: var(--color-accent-cool); text-decoration: underline; }
+  .tr-text { white-space: pre-line; font-size: 0.9375rem; line-height: 1.75; color: var(--color-text); }
+  .tr-text mark { background-color: var(--color-accent-warm-muted); color: var(--color-text); border-radius: 2px; padding: 0 1px; }
+  .ep-attr { font-size: 0.75rem; line-height: 1.6; color: var(--color-text-muted); }
+  .ep-attr a { display: inline-flex; align-items: center; min-height: 40px; margin-left: 0.25rem; }
+</style>
+
+<script>
+  function initShare() {
+    const btn = document.getElementById("ep-share") as HTMLButtonElement | null;
+    if (!btn || btn.dataset.bound) return;
+    btn.dataset.bound = "true";
+    const original = btn.textContent;
+    btn.addEventListener("click", async () => {
+      const url = location.href.split("#")[0];
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: btn.dataset.title || document.title, url });
+          return;
+        } catch (err) {
+          // Closing the share sheet is not a failure worth a fallback.
+          if ((err as DOMException)?.name === "AbortError") return;
+        }
+      }
+      try {
+        await navigator.clipboard.writeText(url);
+        btn.textContent = "已複製連結";
+      } catch {
+        btn.textContent = "無法複製，請手動複製網址";
+      }
+      setTimeout(() => (btn.textContent = original), 2000);
+    });
+  }
+
+  function openTarget(id: string) {
+    const el = document.getElementById(id);
+    const details = el?.closest("details");
+    if (details && !details.open) details.open = true;
+    if (el?.hidden) el.hidden = false;
+    return el;
+  }
+
+  // Chapter links point at turns inside collapsed <details>; open them
+  // before the browser scrolls, or the jump lands on a closed summary.
+  function initChapterLinks() {
+    document.querySelectorAll<HTMLAnchorElement>("a[data-open-target]").forEach((a) => {
+      if (a.dataset.bound) return;
+      a.dataset.bound = "true";
+      a.addEventListener("click", () => openTarget(a.getAttribute("href")!.slice(1)));
+    });
+    if (location.hash.startsWith("#t-")) {
+      const el = openTarget(location.hash.slice(1));
+      requestAnimationFrame(() => el?.scrollIntoView());
+    }
+  }
+
+  function escapeHtml(s: string): string {
+    return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
+  }
+
+  function initTranscriptSearch() {
+    const input = document.getElementById("tr-q") as HTMLInputElement | null;
+    const countEl = document.getElementById("tr-count");
+    if (!input || !countEl || input.dataset.bound) return;
+    const count: HTMLElement = countEl;
+    input.dataset.bound = "true";
+    const chapters = Array.from(document.querySelectorAll<HTMLDetailsElement>("#tr-root .tr-chapter"));
+    const turns = chapters.flatMap((c) =>
+      Array.from(c.querySelectorAll<HTMLElement>(".tr-turn")).map((el) => {
+        const textEl = el.querySelector<HTMLElement>(".tr-text")!;
+        return { el, textEl, chapter: c, text: textEl.textContent || "", lower: (textEl.textContent || "").toLowerCase(), marked: false };
+      }),
+    );
+    let timer: number | undefined;
+
+    function reset() {
+      for (const t of turns) {
+        if (t.marked) { t.textEl.textContent = t.text; t.marked = false; }
+        t.el.hidden = false;
+      }
+      chapters.forEach((c, i) => { c.hidden = false; c.open = i === 0; });
+      count.textContent = "";
+    }
+
+    function run() {
+      const q = input!.value.trim();
+      if (q.length < 2) { reset(); return; }
+      const lq = q.toLowerCase();
+      const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})`, "gi");
+      const hitChapters = new Set<HTMLDetailsElement>();
+      let hits = 0;
+      for (const t of turns) {
+        const ok = t.lower.includes(lq);
+        t.el.hidden = !ok;
+        if (ok) {
+          hits++;
+          hitChapters.add(t.chapter);
+          t.textEl.innerHTML = t.text.split(re).map((part, i) => (i % 2 ? `<mark>${escapeHtml(part)}</mark>` : escapeHtml(part))).join("");
+          t.marked = true;
+        } else if (t.marked) {
+          t.textEl.textContent = t.text;
+          t.marked = false;
+        }
+      }
+      for (const c of chapters) {
+        const hit = hitChapters.has(c);
+        c.hidden = !hit;
+        c.open = hit;
+      }
+      count.textContent = hits ? `${hits} 段` : "沒有符合";
+    }
+
+    input.addEventListener("input", () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(run, 150);
+    });
+  }
+
+  function init() {
+    initShare();
+    initChapterLinks();
+    initTranscriptSearch();
+  }
+  document.addEventListener("astro:page-load", init);
+</script>
