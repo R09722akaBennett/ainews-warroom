@@ -16,7 +16,8 @@ accounts are dropped. X bills the dropped replies too, so the state records
 both the posts billed and the posts kept per UTC day for the cost review.
 
 State lives in pipeline/data/x_state.json (gitignored): user ids, since_ids
-and per-day billed/kept counts for the last 90 days. Deduplication is by time: post ids are
+and per-day counts of posts billed, posts kept and users looked up for the
+last 90 days, which export/costs.py prices. Deduplication is by time: post ids are
 snowflakes that grow with the posting time, so reading past since_id returns
 exactly the posts published after the last read; the labs table dedupes the
 post URLs once more.
@@ -52,7 +53,7 @@ FIELDS = "created_at,note_tweet,entities,conversation_id,in_reply_to_user_id"
 def _load_state() -> dict:
     if STATE.exists():
         return json.loads(STATE.read_text(encoding="utf-8"))
-    return {"users": {}, "since": {}, "billed": {}, "kept": {}}
+    return {"users": {}, "since": {}, "billed": {}, "kept": {}, "lookups": {}}
 
 
 def _save_state(state: dict) -> None:
@@ -66,6 +67,11 @@ def _handles() -> list[tuple[str, str]]:
 
 class _Stop(Exception):
     """X refused further reads for this run (rate limit, credits, auth)."""
+
+
+# Any of these ends the run's reads the same way: the posts already read are
+# returned and saved, and the accounts not read wait for the next run.
+_STOP_ERRORS = (_Stop, httpx.HTTPError)
 
 
 def _get(client: httpx.Client, path: str, params: dict) -> dict:
@@ -82,12 +88,15 @@ def _get(client: httpx.Client, path: str, params: dict) -> dict:
     return r.json()
 
 
-def _resolve(client: httpx.Client, state: dict, handles: list[str]) -> None:
+def _resolve(client: httpx.Client, state: dict, handles: list[str], today: str) -> None:
+    """Cache the user ids of handles not looked up yet, counting the billed lookups under today."""
     todo = [h for h in handles if h.lower() not in state["users"]]
     for i in range(0, len(todo), 100):
         batch = todo[i:i + 100]
         data = _get(client, "/users/by", {"usernames": ",".join(batch)})
         found = {u["username"].lower(): u["id"] for u in data.get("data", [])}
+        # X bills each user it returns; handles it does not find cost nothing.
+        state["lookups"][today] = state["lookups"].get(today, 0) + len(found)
         for h in batch:
             # Unknown handles are cached as None so they are not paid for again.
             state["users"][h.lower()] = found.get(h.lower())
@@ -120,14 +129,17 @@ def _item(handle: str, post: dict) -> dict:
     }
 
 
-def _read_account(client: httpx.Client, uid: str, since: str | None, start: str) -> list[dict]:
-    """Return every post of one account newer than since (or since start), oldest first."""
+def _read_account(client: httpx.Client, uid: str, since: str | None, start: str, posts: list[dict]) -> None:
+    """Append every post of one account newer than since (or since start) to posts.
+
+    Posts are appended page by page as X returns them, so when a later page
+    fails the caller still sees, and bills, the pages already returned.
+    """
     params = {"max_results": PAGE_SIZE, "exclude": "retweets", "tweet.fields": FIELDS}
     if since:
         params["since_id"] = since
     else:
         params["start_time"] = start
-    posts: list[dict] = []
     while True:
         data = _get(client, f"/users/{uid}/tweets", params)
         posts.extend(data.get("data", []))
@@ -135,7 +147,6 @@ def _read_account(client: httpx.Client, uid: str, since: str | None, start: str)
         if not token:
             break
         params["pagination_token"] = token
-    return sorted(posts, key=lambda p: int(p["id"]))
 
 
 def _threads(uid: str, posts: list[dict]) -> list[dict]:
@@ -160,7 +171,14 @@ def _threads(uid: str, posts: list[dict]) -> list[dict]:
 
 
 def fetch_x_items(client: httpx.Client | None = None) -> dict[str, list[dict]]:
-    """Return {lab_key: [items]} of new posts; {} when X is not configured or refuses."""
+    """Read the labs' new posts.
+
+    Returns:
+        {lab_key: [items]} of the accounts read in full this run; {} when X is
+        not configured. When X refuses or fails part-way (4xx refusal, 5xx,
+        timeout), reading stops and the accounts already read are returned;
+        the failed account keeps its since_id and is read again next run.
+    """
     token = os.environ.get("X_BEARER_TOKEN")
     if not token and client is None:
         console.print("    [dim]X: X_BEARER_TOKEN not set, skipping[/]")
@@ -170,7 +188,7 @@ def fetch_x_items(client: httpx.Client | None = None) -> dict[str, list[dict]]:
     now = datetime.now(timezone.utc)
     today = now.strftime("%Y-%m-%d")
     oldest = (now - timedelta(days=HISTORY_DAYS)).strftime("%Y-%m-%d")
-    for k in ("billed", "kept"):
+    for k in ("billed", "kept", "lookups"):
         state[k] = {d: n for d, n in state.get(k, {}).items() if d >= oldest}
     billed, kept = state["billed"].get(today, 0), state["kept"].get(today, 0)
     out: dict[str, list[dict]] = {}
@@ -178,7 +196,7 @@ def fetch_x_items(client: httpx.Client | None = None) -> dict[str, list[dict]]:
     client = client or httpx.Client(headers={"Authorization": f"Bearer {token}"}, timeout=20)
     try:
         pairs = _handles()
-        _resolve(client, state, [h for _, h in pairs])
+        _resolve(client, state, [h for _, h in pairs], today)
         start = (now - timedelta(hours=FIRST_READ_HOURS)).strftime("%Y-%m-%dT%H:%M:%SZ")
         for key, handle in pairs:
             uid = state["users"].get(handle.lower())
@@ -187,8 +205,12 @@ def fetch_x_items(client: httpx.Client | None = None) -> dict[str, list[dict]]:
             if billed >= cap:
                 console.print(f"    [yellow]X: daily cap {cap} reached, the remaining accounts wait for the next run[/]")
                 break
-            posts = _read_account(client, uid, state["since"].get(uid), start)
-            billed += len(posts)
+            posts: list[dict] = []
+            try:
+                _read_account(client, uid, state["since"].get(uid), start, posts)
+            finally:
+                billed += len(posts)
+            posts.sort(key=lambda p: int(p["id"]))
             if posts:
                 # Only after the account was read to the end, so a refused page
                 # leaves since_id where it was and the next run reads it again.
@@ -196,13 +218,16 @@ def fetch_x_items(client: httpx.Client | None = None) -> dict[str, list[dict]]:
                 items = [_item(handle, p) for p in _threads(uid, posts)]
                 kept += len(items)
                 out.setdefault(key, []).extend(items)
-    except _Stop as e:
-        console.print(f"    [red]X: stopped for this run ({e})[/]")
+    except _STOP_ERRORS as e:
+        # The status alone: the request URL repeats every query parameter.
+        detail = e.response.status_code if isinstance(e, httpx.HTTPStatusError) else e
+        console.print(f"    [red]X: stopped for this run ({type(e).__name__}: {detail})[/]")
     finally:
         state["billed"][today], state["kept"][today] = billed, kept
         _save_state(state)
         if own:
             client.close()
     console.print(f"    X: {sum(len(v) for v in out.values())} posts this run; today {billed} billed "
-                  f"(${billed * PRICE_PER_POST:.2f}), {kept} kept, cap {cap}")
+                  f"(${billed * PRICE_PER_POST:.2f}), {kept} kept, {state['lookups'].get(today, 0)} user lookups, "
+                  f"cap {cap}")
     return out
