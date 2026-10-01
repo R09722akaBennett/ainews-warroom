@@ -28,9 +28,11 @@ console = Console()
 
 API = "https://api.x.com/2"
 STATE = Path(__file__).resolve().parents[1] / "data" / "x_state.json"
-FIRST_READ_HOURS = 36
-# The endpoint accepts 5..100, so the last call of a day can pass the cap by up to 4 posts.
-PER_ACCOUNT_MAX = 10
+FIRST_READ_HOURS = 24  # first read of an account: today only; later reads start from since_id
+# One call returns up to 100 posts, so a busy launch day is read in full;
+# X_DAILY_POST_CAP still bounds the total. The endpoint's minimum of 5 means
+# the last call of a day can pass the cap by up to 4 posts.
+PER_ACCOUNT_MAX = 100
 
 
 def _load_state() -> dict:

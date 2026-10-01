@@ -70,7 +70,7 @@ LABS: dict[str, dict] = {
     "ai2": {"x_accounts": ['allen_ai'],
             "name": "Ai2", "tier": 2, "region": "us", "openness": "open",
             "google_queries": _q("Allen Institute for AI", "Ai2 OLMo")},
-    "minimax": {"x_accounts": ['MiniMax__AI'],
+    "minimax": {"x_accounts": ['MiniMax_AI'],
                 "name": "MiniMax", "tier": 2, "region": "china", "openness": "open",
                 "google_queries": _q("MiniMax")},
     "tencent_hunyuan": {"x_accounts": ['TencentHunyuan'],
