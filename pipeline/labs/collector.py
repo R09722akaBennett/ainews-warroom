@@ -1,4 +1,4 @@
-"""Competitor news collector — Google News + RSS per company."""
+"""Lab news collector: Google News and official X posts per lab."""
 
 from __future__ import annotations
 
@@ -10,6 +10,7 @@ import httpx
 from rich.console import Console
 
 from labs.config import LABS
+from labs.x_source import fetch_x_items
 
 console = Console()
 
@@ -65,56 +66,6 @@ def _fetch_google_news(query: str, cutoff: datetime) -> list[dict]:
     return items
 
 
-def _fetch_rss(name: str, url: str, cutoff: datetime) -> list[dict]:
-    """Fetch from a single RSS feed."""
-    items: list[dict] = []
-    try:
-        resp = httpx.get(url, timeout=15, follow_redirects=True)
-        feed = feedparser.parse(resp.text)
-
-        for entry in feed.entries:
-            pub_date = None
-            for field in ("published", "updated", "created"):
-                pub_date = _parse_date(entry.get(field))
-                if pub_date:
-                    break
-            if not pub_date:
-                for field in ("published_parsed", "updated_parsed"):
-                    parsed = entry.get(field)
-                    if parsed:
-                        try:
-                            pub_date = datetime(*parsed[:6], tzinfo=timezone.utc)
-                        except Exception:
-                            pass
-                        if pub_date:
-                            break
-
-            if pub_date and pub_date < cutoff:
-                continue
-
-            title = entry.get("title", "")
-            link = entry.get("link", "")
-            if not title or not link:
-                continue
-
-            content = ""
-            if entry.get("content"):
-                content = entry["content"][0].get("value", "")[:500]
-            elif entry.get("summary"):
-                content = entry["summary"][:500]
-
-            items.append({
-                "title": title.strip(),
-                "url": link,
-                "source": name,
-                "published_at": pub_date.isoformat() if pub_date else None,
-                "content": content,
-            })
-    except Exception as e:
-        console.print(f"    [red]RSS ({name}) error: {e}[/]")
-
-    return items
-
 
 def fetch_company_news(company_key: str, hours: int = 72) -> list[dict]:
     """Fetch news for a single company from all configured sources."""
@@ -130,10 +81,6 @@ def fetch_company_news(company_key: str, hours: int = 72) -> list[dict]:
         items = _fetch_google_news(query, cutoff)
         all_items.extend(items)
 
-    # RSS feeds
-    for name, url in config.get("rss_feeds", {}).items():
-        items = _fetch_rss(name, url, cutoff)
-        all_items.extend(items)
 
     # Deduplicate by URL
     seen: set[str] = set()
@@ -171,5 +118,8 @@ def collect_all_competitors() -> dict[str, list[dict]]:
         items = fetch_company_news(key)
         result[key] = items
         console.print(f"[green]{len(items)} items[/]")
+
+    for key, posts in fetch_x_items().items():
+        result.setdefault(key, []).extend(posts)
 
     return result
