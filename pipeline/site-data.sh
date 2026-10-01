@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # 每日更新網站資料並 push：wiki 日報 → reports.json、實驗室動態 → labs.json、電子報深讀 → reading.json，加上 arena.ai 排行、alphaxiv 論文、MCP Market，
-# Vercel 會在 main 被 push 時自動部署。由 bennett-hub cron 經 alert-wrap.sh 執行。
+# Vercel 會在 main 被 push 時自動部署。平常由 16:30 的 wiki daily-news.sh 在快報寫完後呼叫，
+# cron 17:30 再跑一次當備援。
 #
 # 用法：site-data.sh [--push]
 #   沒有 --push 只更新 JSON 並顯示差異(dry-run，不 commit 也不 push)。

@@ -7,10 +7,10 @@
 
 | 時間 | 排程 | 產出 |
 |---|---|---|
-| 14:30 | `~/wiki/tools/daily-news.sh` | 每日快報（WhatsApp、wiki、Notion 與資料庫） |
-| 14:40 | `pipeline/labs.sh` | 前沿實驗室新聞與分類，週一加 Labs 週報 |
-| 15:15 | `pipeline/candidates.sh` | Jev 篩過的候選新聞（觀察期，只寫本機紀錄） |
-| 15:30 | `pipeline/site-data.sh --push` | 匯出網站 JSON、更新排行榜，commit 並 push |
+| 16:00 | `pipeline/labs.sh` | 前沿實驗室新聞與分類，週一加 Labs 週報 |
+| 16:30 | `~/wiki/tools/daily-news.sh` | 每日快報 → 呼叫 site-data.sh 更新網站 → 網站上線後發 WhatsApp 摘要 |
+| 16:50 | `pipeline/candidates.sh` | Jev 篩過的候選新聞（觀察期，只寫本機紀錄） |
+| 17:30 | `pipeline/site-data.sh --push` | 備援：快報沒跑時補更新網站資料 |
 | 週一 09:00 | `~/wiki/tools/weekly-digest.sh` | 週報 |
 | 每月 1 號 09:20 | `~/wiki/tools/weekly-digest.sh periodic` | 產業月報，季初加季報 |
 
