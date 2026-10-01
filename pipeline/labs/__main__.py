@@ -71,7 +71,7 @@ def run_classify(date: str):
 
     conn = get_conn()
     rows = conn.execute(
-        "SELECT id, date, company, title, url, source, published_at, category, summary "
+        "SELECT id, date, company, title, url, source, published_at, category, summary, content "
         "FROM competitor_items WHERE date >= ? AND date <= ? AND category = 'pending' "
         "ORDER BY company, date",
         (start, date),

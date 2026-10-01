@@ -16,8 +16,8 @@ def save_competitor_items(date: str, company: str, items: list[dict]):
     )
     conn.executemany(
         "INSERT INTO competitor_items "
-        "(date, company, title, url, source, published_at, category, ai_related, summary) "
-        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        "(date, company, title, url, source, published_at, category, ai_related, summary, content) "
+        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
         [
             (
                 date,
@@ -29,6 +29,7 @@ def save_competitor_items(date: str, company: str, items: list[dict]):
                 it.get("category", "other"),
                 1 if it.get("ai_related", True) else 0,
                 it.get("summary", ""),
+                it.get("content", ""),
             )
             for it in items
         ],

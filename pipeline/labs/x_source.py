@@ -9,7 +9,13 @@ $0.75) stops reading for the rest of the day. Accounts are read in LABS order,
 tier 1 first, so the cap cuts tier 2 before tier 1.
 
 State lives in pipeline/data/x_state.json (gitignored): user ids, since_ids
-and the posts billed per UTC day.
+and the posts billed per UTC day. Deduplication is by time: post ids are
+snowflakes that grow with the posting time, so reading past since_id returns
+exactly the posts published after the last read; the labs table dedupes the
+post URLs once more.
+
+Posts are kept in full: long posts come from note_tweet, and t.co links are
+replaced by their expanded URLs.
 """
 
 from __future__ import annotations
@@ -81,15 +87,25 @@ def _resolve(client: httpx.Client, state: dict, handles: list[str]) -> None:
                 console.print(f"    [yellow]X: @{h} not found, check labs/config.py[/]")
 
 
+def _full_text(post: dict) -> str:
+    """Return the post's complete text with t.co links expanded."""
+    long = post.get("note_tweet") or {}
+    text = long.get("text") or post.get("text", "")
+    for u in ((long.get("entities") or {}).get("urls") or []) + ((post.get("entities") or {}).get("urls") or []):
+        if u.get("url") and u.get("expanded_url"):
+            text = text.replace(u["url"], u["expanded_url"])
+    return text.strip()
+
+
 def _item(handle: str, post: dict) -> dict:
-    text = (post.get("note_tweet") or {}).get("text") or post.get("text", "")
-    first = text.strip().split("\n", 1)[0]
+    text = _full_text(post)
+    first = text.split("\n", 1)[0]
     return {
         "title": first if len(first) <= 140 else first[:137] + "...",
         "url": f"https://x.com/{handle}/status/{post['id']}",
         "source": f"X @{handle}",
         "published_at": post.get("created_at"),
-        "content": text[:500],
+        "content": text,
     }
 
 
@@ -119,7 +135,7 @@ def fetch_x_items(client: httpx.Client | None = None) -> dict[str, list[dict]]:
                 console.print(f"    [yellow]X: daily cap {cap} reached, skipping the remaining accounts[/]")
                 break
             params = {"max_results": max(5, min(PER_ACCOUNT_MAX, cap - billed)),
-                      "exclude": "replies,retweets", "tweet.fields": "created_at,note_tweet"}
+                      "exclude": "replies,retweets", "tweet.fields": "created_at,note_tweet,entities"}
             if state["since"].get(uid):
                 params["since_id"] = state["since"][uid]
             else:

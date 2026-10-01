@@ -105,6 +105,9 @@ def init_db():
     for table, column, col_type in [
         ("daily_digests", "token_usage", "TEXT"),
         ("periodic_summaries", "token_usage", "TEXT"),
+        # Item text was only passed to the classifier in memory and never stored,
+        # so later classification saw titles alone (found 2026-10-01).
+        ("competitor_items", "content", "TEXT"),
     ]:
         try:
             conn.execute(f"ALTER TABLE {table} ADD COLUMN {column} {col_type}")

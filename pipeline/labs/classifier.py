@@ -108,7 +108,9 @@ def _classify_chunk(
         idx = index_offset + i
         line = f"[{idx}] {item['title']}"
         if item.get("content"):
-            line += f"\n    {item['content'][:300]}"
+            # X posts are the lab's own words and short; give them more room than news snippets.
+            limit = 600 if (item.get("source") or "").startswith("X @") else 300
+            line += f"\n    {item['content'][:limit]}"
         lines.append(line)
     articles_text = "\n\n".join(lines)
 
