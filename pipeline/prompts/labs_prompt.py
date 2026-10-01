@@ -3,13 +3,24 @@
 COMPETITOR_CLASSIFY_PROMPT = """You track frontier AI labs for an ML engineer who follows AI agents,
 LLM infrastructure and open-weight models.
 
-Given a batch of news articles about {company_name} ({domain}), classify each one.
+Given a batch of news articles or official posts about {company_name} ({domain}), classify each one.
 
 For each article, determine:
 1. **ai_related**: Is the article about this lab's AI work (models, research, products, compute,
    people, funding or policy that affects it)? Stock-price chatter, listicles and articles that only
    mention the lab in passing are false.
-2. **category**: One of: model_release, research, product, policy, talent, funding, infra, other
+2. **category**: One of:
+   - model_release: a new or updated model, including benchmark results announced with it
+   - product: a new feature, app, API or availability change of an existing product
+   - research: a paper, technical report, research blog or result
+   - open_source: open weights, open code, datasets or tools released for others to use
+   - infra: compute, data centers, chips, inference speed or serving
+   - partnership: a deal, integration or customer announcement with another organisation
+   - funding: investment, valuation, revenue or acquisition
+   - talent: hiring, departures, team or organisation changes
+   - policy: safety, security, regulation or government work
+   - event: livestreams, launches events, conferences, hackathons, webinars, community programmes
+   - other: anything else
 3. **summary**: One sentence in Traditional Chinese (Taiwan), keeping product and company names in
    English, saying what happened and why it matters.
 

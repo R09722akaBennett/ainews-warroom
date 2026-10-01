@@ -71,4 +71,5 @@ LABS: dict[str, dict] = {
                     "name": "Aleph Alpha", "tier": 2, "region": "europe", "openness": "open"},
 }
 
-CATEGORIES = ["model_release", "research", "product", "policy", "talent", "funding", "infra", "other"]
+CATEGORIES = ["model_release", "product", "research", "open_source", "infra", "partnership",
+              "funding", "talent", "policy", "event", "other"]

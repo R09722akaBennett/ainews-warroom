@@ -61,15 +61,15 @@ def run_collect(date: str):
     return total
 
 
-def run_classify(date: str):
-    """Weekly: classify pending items with LLM."""
+def run_classify(date: str, since: str | None = None):
+    """Classify pending items from the past 7 days, or from since when given."""
     from labs.classifier import classify_batch
 
     console.print(f"\n[bold]Competitor Tracker — Classify ({date})[/]\n")
 
     # Get all pending items from the past 7 days
     from datetime import timedelta
-    start = (datetime.strptime(date, "%Y-%m-%d") - timedelta(days=7)).strftime("%Y-%m-%d")
+    start = since or (datetime.strptime(date, "%Y-%m-%d") - timedelta(days=7)).strftime("%Y-%m-%d")
 
     from db.competitor_items import get_competitor_items as _get_items
     from db.connection import get_conn
@@ -136,12 +136,17 @@ def main():
     parser = argparse.ArgumentParser(description="Frontier lab tracker")
     parser.add_argument("--classify", action="store_true", help="Run LLM classification (weekly)")
     parser.add_argument("--date", type=str, default=None, help="Override date (YYYY-MM-DD)")
+    parser.add_argument("--classify-since", metavar="DATE",
+                        help="只重新分類這天以來 category 為 pending 的項目，不收集也不寫簡報")
     args = parser.parse_args()
 
     load_dotenv()
     init_db()
 
     today = args.date or datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    if args.classify_since:
+        run_classify(today, since=args.classify_since)
+        return
 
     run_collect(today)
     run_classify(today)
