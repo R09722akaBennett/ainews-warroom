@@ -30,7 +30,9 @@ def save_competitor_items(date: str, company: str, items: list[dict]):
                 it.get("url", ""),
                 it.get("source", ""),
                 it.get("published_at"),
-                it.get("category", "other"),
+                # Unclassified items must be "pending": run_classify picks only those, and the
+                # September 2026 X backfill, saved as "other", was never classified (494 of 509).
+                it.get("category", "pending"),
                 1 if it.get("ai_related", True) else 0,
                 it.get("summary", ""),
                 it.get("content", ""),
