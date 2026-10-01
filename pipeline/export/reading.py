@@ -4,7 +4,10 @@ The shelf holds ByteByteGo, Daily Dose of DS, ExplainThis and Berkeley RDI's
 Agentic AI Weekly as ingested into knowledge DB from Gmail. Berkeley RDI also
 feeds the weekly digest; it is listed here because readers come back to it.
 Each item carries its section titles and up to three section summaries, or
-the opening of the text while LLM extraction has not run yet.
+the opening of the text while LLM extraction has not run yet. Items link to
+the original post (canonical_url; Daily Dose URLs are resolved from its blog
+by title). Notion pages are not linked: they are private to the workspace
+owner and the site is for reading the originals.
 
 Usage:
     cd pipeline
