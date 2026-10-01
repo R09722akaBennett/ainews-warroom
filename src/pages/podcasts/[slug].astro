@@ -83,7 +83,8 @@ const nav = [
       <a href="/podcasts" class="ep-back">← 回到 Podcasts</a>
 
       {/* (a) Header */}
-      <header class="ep-head">
+      {/* Not <header>: global.css makes every header element fixed at the top. */}
+      <div class="ep-head">
         <div class="flex items-center gap-3">
           {ep.image && <img src={ep.image} alt="" width="48" height="48" class="ep-cover" loading="lazy" />}
           <div class="flex flex-col gap-1">
@@ -98,7 +99,7 @@ const nav = [
           {ep.youtube && <a href={ep.youtube} target="_blank" rel="noopener noreferrer" class="ep-btn">YouTube ↗</a>}
           <button type="button" class="ep-btn" id="ep-share" data-title={ep.title}>分享</button>
         </div>
-      </header>
+      </div>
 
       {nav.length > 1 && (
         <nav class="ep-nav" aria-label="本頁段落">

@@ -34,7 +34,8 @@ const sections = item.sections || [];
     <div class="rd-wrap">
       <a href="/reading" class="rd-back">← 回到 Reading</a>
 
-      <header class="rd-head">
+      {/* Not <header>: global.css makes every header element fixed at the top. */}
+      <div class="rd-head">
         <div class="flex flex-wrap items-center gap-2">
           <span class="reading-chip">{sourceName}</span>
           <span class="meta">{item.date}</span>
@@ -44,7 +45,7 @@ const sections = item.sections || [];
         {item.url && (
           <a href={item.url} target="_blank" rel="noopener noreferrer" class="rd-btn">閱讀原文 ↗</a>
         )}
-      </header>
+      </div>
 
       {sections.length > 1 && (
         <details class="rd-toc card" id="rd-toc">
