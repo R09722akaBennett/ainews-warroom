@@ -3,8 +3,11 @@ import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
 
 import { SITE_SINCE } from "@consts";
+import { buildToday } from "@lib/podcasts";
 import reportsData from "../data/reports.json";
 import summariesData from "../data/summaries.json";
+import costsData from "../data/costs.json";
+import podcastsData from "../data/podcasts.json";
 
 const reports = (reportsData as any[]).filter((r) => r.date >= SITE_SINCE);
 const summaries = (summariesData as any[]).filter((s) => (s.startDate || "") >= SITE_SINCE);
@@ -146,6 +149,21 @@ for (const s of summaries) {
   });
 }
 
+// Podcast summaries, dated by the episode they summarise
+for (const ep of ((podcastsData as any).episodes || []) as any[]) {
+  const tu = ep.tokenUsage;
+  if (!tu || !ep.date || ep.date < SITE_SINCE) continue;
+  tokenEntries.push({
+    label: ep.title,
+    date: ep.date,
+    type: "podcast",
+    input: tu.input,
+    output: tu.output,
+    total: tu.total,
+    cost: (tu.input * PRICE_INPUT + tu.output * PRICE_OUTPUT) / 1_000_000,
+  });
+}
+
 tokenEntries.sort((a, b) => b.date.localeCompare(a.date));
 
 const totalInput = tokenEntries.reduce((s, e) => s + e.input, 0);
@@ -164,6 +182,7 @@ const tokenTypeLabels: Record<string, [string, string]> = {
   raw_quarterly: ["Quarterly", "Industry Quarterly"],
   labs_classify: ["Labs Classify", "Labs Classify"],
   labs_weekly: ["Labs Weekly", "Labs Weekly"],
+  podcast: ["Podcast", "Podcast summaries"],
 };
 // Only offer filters for types that have entries in the shown range.
 const tokenTypeButtons = Object.keys(tokenTypeLabels)
@@ -182,6 +201,62 @@ for (const e of tokenEntries) {
   tokenByTypeDate[e.type][e.date].input += e.input;
   tokenByTypeDate[e.type][e.date].output += e.output;
 }
+
+// === Running costs ===
+type CostDay = { date: string; x_posts_billed: number; x_usd: number; jev_calls: number; jev_input_tokens: number; jev_usd: number };
+type OneOff = { date: string; item: string; label: string; usd: number; note: string };
+const costs = costsData as unknown as {
+  updatedAt: string;
+  prices: { x_post: number; x_user_lookup: number; jev_per_mtok_input: number };
+  subscriptions: { name: string; usd_per_year: number }[];
+  oneOff: OneOff[];
+  days: CostDay[];
+};
+const costDays = (costs.days || []).filter((d) => d.date >= SITE_SINCE);
+const oneOffs = (costs.oneOff || []).filter((o) => o.date >= SITE_SINCE).sort((a, b) => b.date.localeCompare(a.date));
+const subscriptions = costs.subscriptions || [];
+const subsPerMonth = subscriptions.reduce((t, x) => t + x.usd_per_year / 12, 0);
+
+const geminiByDate: Record<string, number> = {};
+for (const e of tokenEntries) geminiByDate[e.date] = (geminiByDate[e.date] || 0) + e.cost;
+
+const costMonths = [...new Set([
+  ...costDays.map((d) => d.date.slice(0, 7)),
+  ...oneOffs.map((o) => o.date.slice(0, 7)),
+  ...tokenEntries.map((e) => e.date.slice(0, 7)),
+])].filter((m) => m >= SITE_SINCE.slice(0, 7)).sort().reverse();
+
+type MonthCost = {
+  month: string;
+  gemini: number;
+  x: number;
+  xOneOff: number;
+  jev: number;
+  other: number;
+  subs: number;
+  total: number;
+  rows: { date: string; gemini: number; x: number; jev: number; posts: number; calls: number }[];
+};
+const monthCosts: MonthCost[] = costMonths.map((month) => {
+  const inMonth = (d: string) => d.startsWith(month);
+  const days = costDays.filter((d) => inMonth(d.date));
+  const offs = oneOffs.filter((o) => inMonth(o.date));
+  const dates = [...new Set([...days.map((d) => d.date), ...Object.keys(geminiByDate).filter(inMonth)])].sort().reverse();
+  const rows = dates.map((date) => {
+    const d = days.find((x) => x.date === date);
+    return { date, gemini: geminiByDate[date] || 0, x: d?.x_usd || 0, jev: d?.jev_usd || 0, posts: d?.x_posts_billed || 0, calls: d?.jev_calls || 0 };
+  });
+  const gemini = rows.reduce((t, r) => t + r.gemini, 0);
+  const xOneOff = offs.filter((o) => o.item === "X").reduce((t, o) => t + o.usd, 0);
+  const x = rows.reduce((t, r) => t + r.x, 0) + xOneOff;
+  const jev = rows.reduce((t, r) => t + r.jev, 0) + offs.filter((o) => o.item === "Jev").reduce((t, o) => t + o.usd, 0);
+  const other = offs.filter((o) => o.item !== "X" && o.item !== "Jev").reduce((t, o) => t + o.usd, 0);
+  return { month, gemini, x, xOneOff, jev, other, subs: subsPerMonth, total: gemini + x + jev + other + subsPerMonth, rows };
+});
+const thisMonth = buildToday().slice(0, 7);
+const monthLabel = (m: string) => (m === thisMonth ? "本月" : `${Number(m.slice(5))} 月`);
+const subsSource = subscriptions.map((x) => `$${x.usd_per_year}/年`).join(" + ");
+const usd = (n: number) => (n >= 1 ? `$${n.toFixed(2)}` : `$${n.toFixed(4)}`);
 
 // Also keep aggregate for "all" view
 const tokenChartData = {
@@ -286,6 +361,115 @@ const tokenChartData = {
             </table>
           </div>
         </details>
+      </section>
+
+      <!-- Running costs -->
+      <section class="space-y-4" id="running-costs">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div>
+            <h2 class="text-lg font-semibold" style="color: var(--color-text);">營運成本</h2>
+            <p class="text-xs mt-0.5" style="color: var(--color-text-muted);">
+              Gemini、X API、Jev 與訂閱的實際花費，從 {SITE_SINCE} 起算，以月為單位。
+            </p>
+          </div>
+          {monthCosts.length > 1 && (
+            <div class="flex gap-1.5 flex-wrap" id="cost-month-tabs">
+              {monthCosts.map((m, i) => (
+                <button data-cmonth={m.month} class:list={["tag-filter cost-tab", { "tag-filter-active": i === 0 }]}>{m.month}</button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {monthCosts.length === 0 ? (
+          <div class="card p-6 text-sm" style="color: var(--color-text-muted);">還沒有成本資料。</div>
+        ) : monthCosts.map((m, i) => (
+          <div class="space-y-4" data-cmonth-panel={m.month} hidden={i !== 0}>
+            <div class="grid gap-3 grid-cols-2 md:grid-cols-5">
+              <div class="card p-4 col-span-2 md:col-span-1 cost-card-total">
+                <div class="meta mb-1">{monthLabel(m.month)}合計</div>
+                <div class="text-xl font-mono font-bold" style="color: var(--color-text);">{usd(m.total)}</div>
+                <div class="cost-sub">{m.month}</div>
+              </div>
+              <div class="card p-4">
+                <div class="meta mb-1">Gemini</div>
+                <div class="text-lg font-mono font-bold" style="color: var(--color-quarterly);">{usd(m.gemini)}</div>
+                <div class="cost-sub">依上方 token 估算</div>
+              </div>
+              <div class="card p-4">
+                <div class="meta mb-1">X API</div>
+                <div class="text-lg font-mono font-bold" style="color: var(--color-text);">{usd(m.x)}</div>
+                <div class="cost-sub">{m.xOneOff > 0 ? `含一次性 ${usd(m.xOneOff)}` : "每日計費"}</div>
+              </div>
+              <div class="card p-4">
+                <div class="meta mb-1">Jev</div>
+                <div class="text-lg font-mono font-bold" style="color: var(--color-text);">{usd(m.jev)}</div>
+                <div class="cost-sub">{m.rows.reduce((t, r) => t + r.calls, 0).toLocaleString()} 次呼叫</div>
+              </div>
+              <div class="card p-4">
+                <div class="meta mb-1">訂閱分攤</div>
+                <div class="text-lg font-mono font-bold" style="color: var(--color-text);">{usd(m.subs)}</div>
+                <div class="cost-sub">{subsSource || "無"}</div>
+              </div>
+            </div>
+
+            <details class="group" open>
+              <summary class="flex cursor-pointer items-center gap-3 py-2 text-sm font-semibold" style="color: var(--color-text); min-height: 40px;">
+                <svg class="size-3.5 shrink-0 transition-transform duration-200 group-open:rotate-90" viewBox="0 0 16 16" style="color: var(--color-text-muted);">
+                  <path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                </svg>
+                每日明細（{m.rows.length} 天，不含一次性與訂閱）
+              </summary>
+              <div class="overflow-x-auto mt-2 cost-table-wrap">
+                <table class="source-table cost-table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th style="text-align: right;">Gemini</th>
+                      <th style="text-align: right;">X</th>
+                      <th style="text-align: right;">Jev</th>
+                      <th style="text-align: right;">小計</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {m.rows.map((r) => (
+                      <tr>
+                        <td class="font-mono">{r.date.slice(5)}</td>
+                        <td class="cost-num">{usd(r.gemini)}</td>
+                        <td class="cost-num" title={`${r.posts} 則計費貼文`}>{r.x ? usd(r.x) : "—"}</td>
+                        <td class="cost-num" title={`${r.calls} 次呼叫`}>{r.jev ? usd(r.jev) : "—"}</td>
+                        <td class="cost-num" style="color: var(--color-text); font-weight: 600;">{usd(r.gemini + r.x + r.jev)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </details>
+          </div>
+        ))}
+
+        {oneOffs.length > 0 && (
+          <div class="space-y-2">
+            <h3 class="text-sm font-semibold" style="color: var(--color-text);">一次性支出</h3>
+            <ul class="card divide-y" style="list-style: none; margin: 0; padding: 0;">
+              {oneOffs.map((o) => (
+                <li class="cost-oneoff">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="meta">{o.date}</span>
+                    <span class="tag tag-model">{o.item}</span>
+                    <span class="text-sm" style="color: var(--color-text);">{o.label}</span>
+                    <span class="ml-auto font-mono text-sm font-semibold" style="color: var(--color-text);">{usd(o.usd)}</span>
+                  </div>
+                  {o.note && <p class="text-xs mt-1" style="color: var(--color-text-muted);">{o.note}</p>}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <p class="text-xs leading-relaxed" style="color: var(--color-text-muted);">
+          X：每則貼文 ${costs.prices?.x_post ?? 0.005}、帳號查詢 ${costs.prices?.x_user_lookup ?? 0.01}；Jev：每百萬 input token ${costs.prices?.jev_per_mtok_input ?? 0.042}（output 免費，<a href="https://docs.typesafe.ai/models" target="_blank" rel="noopener noreferrer" style="color: var(--color-accent-cool);">docs.typesafe.ai/models</a>）；Gemini 依頁面上方的估算。訂閱以年費除以 12 分攤到每月。資料更新於 {costs.updatedAt?.slice(0, 10)}。
+        </p>
       </section>
 
       <!-- Tag Trend Timeline -->
@@ -485,6 +669,13 @@ const tokenChartData = {
     padding: 0.4rem 0.75rem;
     border-bottom: 1px solid var(--color-border);
   }
+  .cost-sub { margin-top: 0.25rem; font-size: 0.6875rem; color: var(--color-text-muted); }
+  .cost-card-total { border-color: color-mix(in srgb, var(--color-accent-cool) 45%, var(--color-border)); }
+  .cost-table-wrap { max-height: 22rem; overflow-y: auto; }
+  .cost-table th, .cost-table td { padding-left: 0.5rem; padding-right: 0.5rem; }
+  .cost-num { text-align: right; font-family: var(--font-mono); font-size: 0.75rem; color: var(--color-text-muted); white-space: nowrap; }
+  .cost-oneoff { padding: 0.75rem 1rem; }
+  .cost-tab { min-height: 40px; }
   .source-table tbody tr:hover {
     background-color: var(--color-surface-muted);
   }
@@ -504,6 +695,23 @@ const tokenChartData = {
     transition: width 0.3s;
   }
 </style>
+
+<script>
+  function initCostTabs() {
+    const tabs = document.querySelectorAll<HTMLButtonElement>("#cost-month-tabs [data-cmonth]");
+    tabs.forEach((btn) => {
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = "true";
+      btn.addEventListener("click", () => {
+        tabs.forEach((b) => b.classList.toggle("tag-filter-active", b === btn));
+        document.querySelectorAll<HTMLElement>("[data-cmonth-panel]").forEach((p) => {
+          p.hidden = p.dataset.cmonthPanel !== btn.dataset.cmonth;
+        });
+      });
+    });
+  }
+  document.addEventListener("astro:page-load", initCostTabs);
+</script>
 
 <script define:vars={{ chartData, tokenChartData, tokenEntries, PRICE_INPUT, PRICE_OUTPUT, sqData }}>
   window.__analyticsData = { chartData, tokenChartData, tokenEntries, PRICE_INPUT, PRICE_OUTPUT, sqData };
