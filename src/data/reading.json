@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-02T10:01:02Z",
+  "updatedAt": "2026-10-02T13:30:05Z",
   "sources": [
     {
       "key": "gmail:bytebytego",
@@ -37,24 +37,41 @@
         {
           "title": "Google Advent of Agents Season 3 is here!",
           "category": "AGENTS",
-          "summary": "",
-          "takeaways": []
+          "summary": "Google Cloud has launched Advent of Agents Season 3, a 31-day instructional series focused on building secure and governed AI agents for production. Each daily tutorial released throughout October addresses practical security and customer questions with runnable code. Key operational topics covered include agent identity, sandboxing, guardrails, evaluations, MCP security, and fleet management.",
+          "takeaways": [
+            "Advent of Agents Season 3 is a free 31-day series organized by Google Cloud.",
+            "A hands-on tutorial with runnable code is released each day across October.",
+            "The series focuses on production-level AI agent security, governance, and fleet management.",
+            "Specific topics covered include agent identity, guardrails, sandboxing, observability, evaluations, MCP security, and cost controls."
+          ]
         },
         {
           "title": "Building a production agent harness with LangGraph and Jev",
           "category": "AGENT ENGINEERING",
-          "summary": "",
-          "takeaways": []
+          "summary": "Parts 3 and 4 of the Agent Engineering course demonstrate how to build a production agent harness and verification loop using LangChain Middleware, LangGraph, and Jev. Jev functions as a System One model that provides calibrated probabilities for typed decisions instead of generating free-form text. These probabilities are used across the agent workflow for model routing, request classification, tool-risk assessment, and evidence verification. The system combines deterministic logic, Jev's bounded probabilistic judgments, and independent LLM verification to improve control and efficiency without relying entirely on general-purpose LLMs.",
+          "takeaways": [
+            "Jev is a System One model designed to return calibrated probabilities for typed decisions rather than generating open-ended text.",
+            "Part 3 focuses on agent harness controls such as PII redaction, retries, hard call limits, permission enforcement, and human approval for write actions.",
+            "Part 4 places the agent in an explicit LangGraph loop with structured planning, stuck detection, replanning, and execution budgets.",
+            "A three-layer verification system employs deterministic checks for clear failures, Jev for high-confidence accept/reject decisions, and an independent LLM for the uncertain range.",
+            "Jev probabilities act as an additional signal within a larger control system rather than replacing deterministic checks, permissions, or human approvals."
+          ]
         },
         {
           "title": "The LLM scheduling loop, clearly explained:",
           "category": "LLMOps",
-          "summary": "",
-          "takeaways": []
+          "summary": "When an inference request reaches an LLM serving engine, a scheduler manages its lifecycle across iterations rather than passing it directly to the GPU. The scheduler evaluates token limits and remaining KV-cache space before building each execution batch, prioritizing decode tasks before admitting new work. Incoming requests first undergo a prefill phase to compute key-value tensors, after which they transition to autoregressive token generation in the decode phase. Through continuous batching, modern serving engines combine prefill and decode work dynamically, replacing finished requests with waiting ones after every step.",
+          "takeaways": [
+            "The LLM scheduler manages inference requests one iteration at a time based on processing token limits and remaining KV-cache space.",
+            "Prefill processes prompt tokens in parallel to construct KV tensors and may chunk long prompts to avoid blocking active generations.",
+            "The decode stage generates tokens autoregressively, typically producing one token per active request per model step.",
+            "Continuous batching enables serving engines to mix prefill and decode operations in the same GPU batch and adjust batch composition after every step.",
+            "Completed requests immediately release their KV-cache blocks, allowing the scheduler to admit new requests from the queue."
+          ]
         }
       ],
-      "summary": "Advent of Agents Season 3 is a free, 31-day Google Cloud series on building secure and governed AI agents for production. One hands-on tutorial will be released each day throughout October, covering agent identity, guardrails, sandboxing, observability, evaluations, MCP security, cost controls, and fleet management. Check it out here: https://adventofagents.com . Each tutorial starts with a questi",
-      "summarised": false,
+      "summary": "Google Cloud has launched Advent of Agents Season 3, a 31-day instructional series focused on building secure and governed AI agents for production. Each daily tutorial released throughout October addresses practical security and customer questions with runnable code. Key operational topics covered include agent identity, sandboxing, guardrails, evaluations, MCP security, and fleet management. Parts 3 and 4 of the Agent Engineering course demonstrate how to build a production agent harness and verification loop using LangChain Middleware, LangGraph, and Jev. Jev functions as a System One model that provides calibrated probabilities for typed decisions instead of generating free-form text. These probabilities are used across the agent workflow for model routing, request classification, tool-risk assessment, and evidence verification. The system combines deterministic logic, Jev's bounded probabilistic judgments, and independent LLM verification to improve control and efficiency without relying entirely on general-purpose LLMs. When an inference request reaches an LLM serving engine, a scheduler manages its lifecycle across iterations rather than passing it directly to the GPU. The scheduler evaluates token limits and remaining KV-cache space before building each execution batch, prioritizing decode tasks before admitting new work. Incoming requests first undergo a prefill phase to compute key-value tensors, after which they transition to autoregressive token generation in the decode phase. Through continuous batching, modern serving engines combine prefill and decode work dynamically, replacing finished requests with waiting ones after every step.",
+      "summarised": true,
       "headings": [
         "Google Advent of Agents Season 3 is here!",
         "Building a production agent harness with LangGraph and Jev",
