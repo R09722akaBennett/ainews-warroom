@@ -1,7 +1,7 @@
 """Export the reading shelf (newsletters that explain rather than report) to src/data/reading.json.
 
-The shelf holds ByteByteGo, Daily Dose of DS, ExplainThis and Berkeley RDI's
-Agentic AI Weekly as ingested into knowledge DB from Gmail. Berkeley RDI also
+The shelf holds the newsletters ingest_newsletters.py and
+ingest_daily_dose.py on bennett-hub send to knowledge DB from Gmail. Berkeley RDI also
 feeds the weekly digest; it is listed here because readers come back to it.
 Each item carries its section titles and up to three section summaries, or
 the opening of the text while LLM extraction has not run yet. Items link to
@@ -30,6 +30,13 @@ SOURCES = {
     "gmail:daily_dose_of_ds": {"name": "Daily Dose of DS", "cadence": "每週 1 到 2 封", "lang": "en"},
     "gmail:berkeley_rdi": {"name": "Berkeley RDI", "cadence": "每週三", "lang": "en"},
     "gmail:explainthis": {"name": "ExplainThis", "cadence": "隔週日", "lang": "zh"},
+    # Latent Space essays only: AINews issues feed the daily digest and the
+    # podcast episodes have their own page, so ingest_newsletters.py keeps
+    # the mails whose post is a Substack "newsletter".
+    "gmail:latent_space": {"name": "Latent Space", "cadence": "不定期，每週 0 到 2 篇", "lang": "en"},
+    "gmail:the_batch": {"name": "The Batch", "cadence": "每週三", "lang": "en"},
+    "gmail:aihao": {"name": "愛好 AI Engineer 電子報", "cadence": "不定期", "lang": "zh"},
+    "gmail:datatalks": {"name": "DataTalks.Club Weekly", "cadence": "每週", "lang": "en"},
 }
 # No recorded reason for 120 days; chosen by trial.
 SINCE_DAYS = 120
