@@ -44,6 +44,7 @@ import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+from bs4 import BeautifulSoup
 from google import genai
 
 from podcasts.parse import parse_episode
@@ -181,9 +182,16 @@ def _usable(ep: dict) -> bool:
 
 
 def _mail_html(msg: email.message.Message) -> str:
+    """Return the post body of a Substack mail: the "body markup" div, or the whole HTML without one.
+
+    The mail follows the post with a referral box and the footer; without
+    the cut they are appended to the last transcript turn.
+    """
     for part in msg.walk():
         if part.get_content_type() == "text/html":
-            return part.get_payload(decode=True).decode(part.get_content_charset() or "utf-8", "replace")
+            html = part.get_payload(decode=True).decode(part.get_content_charset() or "utf-8", "replace")
+            body = BeautifulSoup(html, "html.parser").select_one("div.body.markup")
+            return str(body) if body else html
     return ""
 
 
@@ -192,7 +200,9 @@ def episode_from_mail(post: dict) -> dict | None:
 
     The mailbox is opened read-only, so nothing is marked as read. The mail is
     matched by title because the sender also mails AINews issues, receipts and
-    verification codes. Returns None when the IMAP credentials are missing.
+    verification codes. The mail carries the transcript, notes and timestamps
+    of the web post but not its YouTube embed, so "youtube" stays None.
+    Returns None when the IMAP credentials are missing.
     """
     user, password = os.getenv("GMAIL_IMAP_USER"), os.getenv("GMAIL_IMAP_PASSWORD")
     if not user or not password:

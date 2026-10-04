@@ -85,8 +85,11 @@ def _mail(subject: str, html: str) -> bytes:
 
 TRANSCRIPT_HTML = ('<p>Show notes.</p><h1>Transcript</h1><h2>Opening</h2>'
                    '<p><strong>Alex [00:00:05]:</strong> Hello from the mail.</p>')
+# Substack mails wrap the post in div.body.markup and follow it with a referral box.
+MAIL_HTML = (f'<div class="post"><div class="body markup">{TRANSCRIPT_HTML}</div></div>'
+             '<div class="post-cta"><h4>Invite your friends</h4><p>© 2026 Latent.Space</p></div>')
 MAILS = [_mail("[AINews] not much happened today", "<p>issue</p>"),
-         _mail("Episode one", TRANSCRIPT_HTML)]
+         _mail("Episode one", MAIL_HTML)]
 
 
 class FakeImap:
@@ -140,7 +143,8 @@ class PodcastMailFallbackTest(unittest.TestCase):
             ep = pod.collect(POST)
         self.assertEqual(ep["fetchedFrom"], "mail")
         self.assertEqual([t["text"] for c in ep["transcript"] for t in c["turns"]], ["Hello from the mail."],
-                         "the transcript comes from the mail whose subject matches the post title")
+                         "the transcript comes from the mail whose subject matches the post title, "
+                         "without the referral box after the post")
         self.assertIn("SUBSTACK_SID expired?", out.getvalue(), "the log says why the mail was used")
         imap = FakeImap.instances[0]
         self.assertEqual(imap.selected, ('"[Gmail]/All Mail"', True), "the mailbox is opened read-only")
