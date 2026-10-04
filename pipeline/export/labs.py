@@ -26,6 +26,7 @@ from pathlib import Path
 
 from labs.config import LABS
 from db.connection import get_conn, init_db
+from export.translate import Translator
 
 DATA = Path(__file__).resolve().parents[2] / "src" / "data"
 PERIODS = ("labs_daily", "labs_weekly", "labs_classify")
@@ -83,6 +84,10 @@ def main() -> None:
                              "category": r["category"], "summary": r["summary"],
                              "content": html.unescape(r["content"] or "")}
                             for r in rows if r["company"] in LABS])
+    translator = Translator()
+    for item, summary in zip(items, translator.many([i["summary"] for i in items], "en")):
+        if summary:
+            item["en"] = {"summary": summary}
     (DATA / "labs.json").write_text(json.dumps({
         "updatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "labs": labs, "items": items}, ensure_ascii=False, indent=2), encoding="utf-8")
@@ -98,9 +103,16 @@ def main() -> None:
         if r["token_usage"]:
             entry["tokenUsage"] = json.loads(r["token_usage"])
         fresh.append(entry)
+    briefs = [s for s in fresh if s["period"] != "labs_classify" and s["content"]]
+    titles = translator.many([s["title"] for s in briefs], "en")
+    contents = translator.many([s["content"] for s in briefs], "en")
+    for s, title, content in zip(briefs, titles, contents):
+        if title and content:
+            s["en"] = {"title": title, "content": content}
     path.write_text(json.dumps(kept + fresh, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"labs: {len(items)} items across {len({i['lab'] for i in items})} labs; "
           f"{sum(s['period'] == 'labs_weekly' for s in fresh)} weekly reports merged into summaries.json")
+    translator.report("labs")
 
 
 if __name__ == "__main__":

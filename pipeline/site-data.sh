@@ -9,6 +9,13 @@ set -euo pipefail
 
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
 export PATH="$HOME/.local/bin:$PATH"
+# The exporters translate new text with Gemini; without the key they export
+# the native language only (local dry runs).
+if [ -f "$HOME/infra/.env" ]; then
+  set -a
+  . "$HOME/infra/.env"
+  set +a
+fi
 PUSH=0
 [ "${1:-}" = "--push" ] && PUSH=1
 FILES=(src/data/reports.json src/data/labs.json src/data/summaries.json src/data/leaderboard.json src/data/papers.json src/data/mcpmarket.json src/data/reading.json src/data/costs.json src/data/podcasts.json src/data/podcasts)

@@ -104,3 +104,47 @@ class SiteDataDiffTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ExportTranslationTest(unittest.TestCase):
+    """The exporters add the other language only when every text came back."""
+
+    def _translator(self, answers):
+        from export import translate
+        from helpers import ScriptedGemini, response
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        fake = ScriptedGemini([response(json.dumps(a)) for a in answers])
+        return translate.Translator(cache=Path(tmp.name) / "t.db", enabled=True, client=fake)
+
+    def test_reports_get_an_english_title_and_content(self):
+        entries = [{"title": "AI 昨日重點", "content": "# 標題\n內容 (ref-1)"}]
+        n = from_wiki.add_english(entries, self._translator([["AI highlights"], ["# Title\nBody (ref-1)"]]))
+        self.assertEqual((n, entries[0]["en"]), (1, {"title": "AI highlights", "content": "# Title\nBody (ref-1)"}))
+
+    def test_a_disabled_translator_leaves_reports_without_english(self):
+        from export import translate
+        entries = [{"title": "AI 昨日重點", "content": "內容"}]
+        self.assertEqual(from_wiki.add_english(entries, translate.Translator(enabled=False)), 0)
+        self.assertNotIn("en", entries[0])
+
+    def test_podcast_summary_is_translated_field_by_field_and_quotes_are_kept(self):
+        from export import podcasts
+        summary = {"one_liner": "一句話", "topics": [{"title": "主題", "body": "內容"}],
+                   "insights": [{"title": "洞見", "body": "說明"}], "quotes": [{"speaker": "A", "en": "Hi", "zh": "嗨"}],
+                   "guests": [{"name": "Alex", "intro": "介紹"}]}
+        en = podcasts.english_summary(summary, self._translator([["One line", "Topic", "Body", "Insight", "Why", "Intro"]]))
+        self.assertEqual(en["one_liner"], "One line")
+        self.assertEqual(en["topics"], [{"title": "Topic", "body": "Body"}])
+        self.assertEqual(en["guests"], [{"name": "Alex", "intro": "Intro"}])
+        self.assertEqual(en["quotes"], summary["quotes"], "quotes are already bilingual")
+
+    def test_reading_items_get_chinese_sections_but_keep_english_titles(self):
+        from export import reading
+        items = [{"title": "How SSH Works", "summary": "SSH summary", "headings": ["Keys"],
+                  "sections": [{"title": "Keys", "summary": "Key exchange", "takeaways": ["Use ed25519"]}]}]
+        n = reading.add_chinese(items, self._translator([["SSH 摘要", "金鑰", "金鑰", "金鑰交換", "用 ed25519"]]))
+        self.assertEqual(n, 1)
+        self.assertEqual(items[0]["title"], "How SSH Works")
+        self.assertEqual(items[0]["zh"], {"summary": "SSH 摘要", "headings": ["金鑰"],
+                                          "sections": [{"title": "金鑰", "summary": "金鑰交換", "takeaways": ["用 ed25519"]}]})

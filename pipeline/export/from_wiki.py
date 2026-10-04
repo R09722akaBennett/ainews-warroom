@@ -35,6 +35,8 @@ import sys
 from collections import Counter
 from pathlib import Path
 
+from export.translate import Translator
+
 DATA = Path(__file__).resolve().parents[2] / "src" / "data" / "reports.json"
 SUMMARIES = DATA.with_name("summaries.json")
 PERIODS = {"weekly": "raw_weekly", "monthly": "raw_monthly", "quarterly": "raw_quarterly"}
@@ -48,6 +50,9 @@ TAGS_PER_KIND = 8
 # Entities below this salience are passing mentions, which would flood the
 # tags. No recorded reason for 0.6; chosen by trial.
 MIN_SALIENCE = 0.6
+# Digests from the wiki era get an English copy under "en"; the company-era
+# archive before it stays Chinese only.
+TRANSLATE_SINCE = "2026-09-01"
 
 
 def _frontmatter(text: str) -> tuple[dict, str]:
@@ -288,8 +293,8 @@ def build_summaries(wiki: Path) -> list[dict]:
     return out
 
 
-def merge_summaries(wiki: Path) -> tuple[int, int]:
-    """Rewrite summaries.json with fresh wiki entries.
+def merge_summaries(wiki: Path, translator: Translator | None = None) -> tuple[int, int]:
+    """Rewrite summaries.json with fresh wiki entries, each with an English copy when available.
 
     Returns:
         The number of wiki entries written and the number of retired
@@ -297,33 +302,61 @@ def merge_summaries(wiki: Path) -> tuple[int, int]:
     """
     existing = json.loads(SUMMARIES.read_text(encoding="utf-8")) if SUMMARIES.exists() else []
     kept = [s for s in existing if s.get("origin") != "wiki" and s.get("period") not in RETIRED_PERIODS]
+    previous_en = {(s["period"], s["startDate"]): s["en"] for s in existing if s.get("en")}
     fresh = build_summaries(wiki)
+    for s in fresh:
+        if (s["period"], s["startDate"]) in previous_en:
+            s["en"] = previous_en[(s["period"], s["startDate"])]
+    add_english(fresh, translator or Translator(enabled=False))
     dropped = sum(1 for s in existing if s.get("period") in RETIRED_PERIODS)
     merged = sorted(kept + fresh, key=lambda s: (s.get("endDate") or "", s.get("period")), reverse=True)
     SUMMARIES.write_text(json.dumps(merged, ensure_ascii=False, indent=2), encoding="utf-8")
     return len(fresh), dropped
 
 
+def add_english(entries: list[dict], translator: Translator) -> int:
+    """Put an English title and content under entry["en"]; return how many entries got one.
+
+    Entries whose translation is unavailable (translator disabled or a failed
+    call) keep whatever "en" they already carried, so a bad run never erases
+    an earlier good one.
+    """
+    titles = translator.many([e["title"] for e in entries], "en")
+    contents = translator.many([e["content"] for e in entries], "en")
+    done = 0
+    for e, title, content in zip(entries, titles, contents):
+        if title and content:
+            e["en"] = {"title": title, "content": content}
+            done += 1
+    return done
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="把 wiki 日報合併進 src/data/reports.json")
     parser.add_argument("--wiki", default=os.path.expanduser("~/wiki"), help="wiki repo 路徑")
     args = parser.parse_args()
+    translator = Translator()
 
     existing = json.loads(DATA.read_text(encoding="utf-8")) if DATA.exists() else []
+    previous_en = {r["date"]: r["en"] for r in existing if r.get("en")}
     fresh = build_reports(Path(args.wiki))
     wiki_dates = {r["date"] for r in fresh}
     kept = [_retire_company(r) for r in existing if r.get("origin") != "wiki" and r["date"] not in wiki_dates]
     tags = _tags_by_date([r["date"] for r in fresh])
     for r in fresh:
         r["tags"] = tags.get(r["date"], {k: [] for k in TAG_TYPES})
+        if r["date"] in previous_en:
+            r["en"] = previous_en[r["date"]]
+    translated = add_english([r for r in fresh if r["date"] >= TRANSLATE_SINCE], translator)
     merged = sorted(kept + fresh, key=lambda r: r["date"], reverse=True)
     DATA.write_text(json.dumps(merged, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"from_wiki: {len(fresh)} wiki reports merged, {len(kept)} kept, "
           f"{sum(1 for r in fresh if r['newsItems'])} with sources, "
-          f"{sum(1 for r in fresh if any(r['tags'].values()))} with tags")
-    n_summaries, n_dropped = merge_summaries(Path(args.wiki))
+          f"{sum(1 for r in fresh if any(r['tags'].values()))} with tags, {translated} in English")
+    n_summaries, n_dropped = merge_summaries(Path(args.wiki), translator)
     print(f"from_wiki: {n_summaries} wiki periodic reports merged into summaries.json, "
           f"{n_dropped} retired entries dropped")
+    translator.report("from_wiki")
 
 
 if __name__ == "__main__":

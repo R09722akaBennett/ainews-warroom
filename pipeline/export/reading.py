@@ -24,6 +24,8 @@ import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
+from export.translate import Translator
+
 DATA = Path(__file__).resolve().parents[2] / "src" / "data" / "reading.json"
 SOURCES = {
     "gmail:bytebytego": {"name": "ByteByteGo", "cadence": "每週約 5 封", "lang": "en"},
@@ -86,6 +88,32 @@ def _slug(title: str, doc_id: str) -> str:
     return f"{words}-{doc_id[:8]}" if words else doc_id[:8]
 
 
+def add_chinese(items: list[dict], translator: Translator) -> int:
+    """Put Chinese summary, headings and sections under item["zh"]; return how many items got them.
+
+    Titles stay in English: the newsletters are known by their English
+    titles and the Chinese page shows them as the source wrote them.
+    """
+    texts: list[str] = []
+    for it in items:
+        texts.append(it["summary"])
+        texts += it["headings"]
+        for s in it["sections"]:
+            texts += [s["title"] or "", s["summary"], *s["takeaways"]]
+    out = iter(translator.many(texts, "zh"))
+    done = 0
+    for it in items:
+        zh = {"summary": next(out), "headings": [next(out) for _ in it["headings"]], "sections": []}
+        for s in it["sections"]:
+            zh["sections"].append({"title": next(out) or None, "summary": next(out),
+                                   "takeaways": [next(out) for _ in s["takeaways"]]})
+        texts_zh = [zh["summary"], *zh["headings"]] + [x for s in zh["sections"] for x in (s["summary"], *s["takeaways"])]
+        if all(x is not None for x in texts_zh):
+            it["zh"] = zh
+            done += 1
+    return done
+
+
 def main() -> None:
     out = subprocess.run(
         ["docker", "exec", "-i", "postgres", "psql", "-U", "postgres", "-d", "kdan", "-At", "-v", "ON_ERROR_STOP=1"],
@@ -103,12 +131,15 @@ def main() -> None:
                       "url": r.get("url"), "date": r["published"], "sections": sections,
                       "summary": r.get("summary") or r.get("opening") or "",
                       "summarised": bool(r.get("summary")), "headings": headings[:8]})
+    translator = Translator()
+    translated = add_chinese(items, translator)
     DATA.write_text(json.dumps({
         "updatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "sources": [{"key": k, **v} for k, v in SOURCES.items()],
         "items": items}, ensure_ascii=False, indent=2), encoding="utf-8")
     counts = {SOURCES[k]["name"]: sum(i["source"] == k for i in items) for k in SOURCES}
-    print(f"reading: {len(items)} items {counts}")
+    print(f"reading: {len(items)} items {counts}, {translated} in Chinese")
+    translator.report("reading")
 
 
 if __name__ == "__main__":
