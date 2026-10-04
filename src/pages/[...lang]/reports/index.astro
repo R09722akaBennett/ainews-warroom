@@ -1,7 +1,13 @@
 ---
 import List from "./_List.astro";
 import { firstPage } from "../_lib/paging";
+import { LANG_PARAMS, langOf } from "@i18n";
 import { PER_PAGE, reports } from "./_data";
+
+export function getStaticPaths() {
+  return LANG_PARAMS.map((params) => ({ params }));
+}
+const lang = langOf(Astro.params);
 ---
 
-<List page={firstPage(reports, PER_PAGE)} />
+<List page={firstPage(reports, PER_PAGE)} lang={lang} />

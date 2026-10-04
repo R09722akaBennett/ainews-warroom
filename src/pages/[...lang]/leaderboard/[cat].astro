@@ -1,12 +1,14 @@
 ---
 import Board from "./_Board.astro";
 import leaderboard from "@data/leaderboard.json";
+import { langOf, withLangs } from "@i18n";
 
 export function getStaticPaths() {
-  return ["orgs", ...Object.keys((leaderboard as any).categories)].map((cat) => ({ params: { cat } }));
+  return withLangs(["orgs", ...Object.keys((leaderboard as any).categories)].map((cat) => ({ params: { cat } })));
 }
 
 const { cat } = Astro.params;
+const lang = langOf(Astro.params);
 ---
 
-<Board active={cat!} />
+<Board active={cat!} lang={lang} />

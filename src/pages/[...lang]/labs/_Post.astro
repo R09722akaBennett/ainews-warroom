@@ -1,26 +1,31 @@
 ---
 import { catColor, catLabel, labByKey, labHref, labName, type Post } from "./_data";
+import { pick, type Lang } from "@i18n";
+import { labsUI } from "@i18n/ui/labs";
 
-type Props = { post: Post; linkLab?: boolean };
-const { post: p, linkLab = true } = Astro.props;
+type Props = { post: Post; linkLab?: boolean; lang: Lang };
+const { post: raw, linkLab = true, lang } = Astro.props;
+const ui = labsUI[lang];
+// Summaries are written in Chinese; without an "en" copy the Chinese one shows.
+const p = pick(raw, lang, "zh").data;
 const lab = labByKey.get(p.lab);
 ---
 
 <article class="card lab-post" id={p.id} data-lab={p.lab} data-cat={p.category} data-region={lab?.region} data-open={lab?.openness}>
   <div class="lab-post-top">
     {linkLab ? (
-      <a class="lab-badge-link" href={labHref(p.lab)} title={`${labName(p.lab)} 的所有貼文`}><span class="lab-badge-lab">{labName(p.lab)}</span></a>
+      <a class="lab-badge-link" href={labHref(lang, p.lab)} title={ui.labAllPostsTitle(labName(p.lab))}><span class="lab-badge-lab">{labName(p.lab)}</span></a>
     ) : (
       <span class="lab-badge-lab">{labName(p.lab)}</span>
     )}
     <time class="meta" datetime={p.publishedAt}>{p.time}</time>
-    <span class="lab-tag" style={`--tag: ${catColor(p.category)};`}>{catLabel(p.category)}</span>
-    <a href={p.url} target="_blank" rel="noopener" class="lab-x" title={p.source} aria-label={`在 X 開啟 ${p.source} 的貼文`}>X ↗</a>
+    <span class="lab-tag" style={`--tag: ${catColor(p.category)};`}>{catLabel(lang, p.category)}</span>
+    <a href={p.url} target="_blank" rel="noopener" class="lab-x" title={p.source} aria-label={ui.openOnX(p.source)}>X ↗</a>
   </div>
   <p class="lab-summary">{p.summary || p.title}</p>
   {p.content && (
     <details class="lab-orig">
-      <summary>原文</summary>
+      <summary>{ui.original}</summary>
       <p class="lab-orig-text">{p.content}</p>
     </details>
   )}

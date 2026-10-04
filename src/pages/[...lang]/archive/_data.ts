@@ -1,6 +1,6 @@
 import { SITE_SINCE } from "@consts";
-import legacyData from "../../data/legacy.json";
-import reportsData from "../../data/reports.json";
+import legacyData from "../../../data/legacy.json";
+import reportsData from "../../../data/reports.json";
 
 export type Entry = { kind: "report" | "digest"; date: string; item: any };
 

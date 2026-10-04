@@ -5,21 +5,21 @@ import leaderboard from "@data/leaderboard.json";
 
 import Pagination from "@components/Pagination.astro";
 import { ROWS_PER_PAGE } from "./_data";
+import { href, type Lang } from "@i18n";
+import { leaderboardUI } from "@i18n/ui/leaderboard";
 
-type Props = { active: string; page?: number };
-const { active, page = 1 } = Astro.props;
-const tabHref = (key: string) => (key === "overview" ? "/leaderboard" : `/leaderboard/${key}`);
+type Props = { active: string; page?: number; lang: Lang };
+const { active, page = 1, lang } = Astro.props;
+const ui = leaderboardUI[lang];
+const tabHref = (key: string) => href(lang, key === "overview" ? "/leaderboard" : `/leaderboard/${key}`);
 
 const { updatedAt, categoryLabels: sourceLabels, categories, full } = leaderboard as any;
 // The scraped labels are English; unknown categories fall back to them.
-const zhLabels: Record<string, string> = {
-  text: "文字", code: "程式", vision: "視覺", document: "文件", "text-to-image": "文生圖",
-  "image-edit": "圖片編輯", search: "搜尋", "text-to-video": "文生影片", "image-to-video": "圖生影片",
-};
+const dictLabels = ui.categories;
 const categoryLabels: Record<string, string> = Object.fromEntries(
-  Object.keys(sourceLabels).map((k) => [k, zhLabels[k] || sourceLabels[k]]),
+  Object.keys(sourceLabels).map((k) => [k, dictLabels[k] || sourceLabels[k]]),
 );
-const activeLabel = [active === "overview" ? "" : active === "orgs" ? "實驗室排名" : categoryLabels[active], page > 1 ? `第 ${page} 頁` : ""].filter(Boolean).join(" ");
+const activeLabel = [active === "overview" ? "" : active === "orgs" ? ui.orgsTab : categoryLabels[active], page > 1 ? ui.pageN(page) : ""].filter(Boolean).join(" ");
 // sv-SE formats as "YYYY-MM-DD HH:MM", independent of the build machine's zone.
 const updatedDate = new Date(updatedAt).toLocaleString("sv-SE", { timeZone: "Asia/Taipei" }).slice(0, 16);
 
@@ -50,16 +50,7 @@ function hasPricing(key: string): boolean {
   return models.some((m: any) => m.price);
 }
 
-const fullColumns = [
-  { key: "overall", label: "總排名" },
-  { key: "expert", label: "專家" },
-  { key: "hard_prompts", label: "困難題" },
-  { key: "coding", label: "程式" },
-  { key: "math", label: "數學" },
-  { key: "creative_writing", label: "創意寫作" },
-  { key: "instruction_following", label: "指令遵循" },
-  { key: "longer_query", label: "長查詢" },
-];
+const fullColumns = ["overall", "expert", "hard_prompts", "coding", "math", "creative_writing", "instruction_following", "longer_query"].map((key) => ({ key, label: ui.fullColumns[key] }));
 
 // Labs are ranked by F1-style points for their models' overall rank, so one
 // lab with many mid-table models cannot outrank a lab holding the top spots.
@@ -123,29 +114,29 @@ for (const entry of orgRankings) {
 }
 ---
 
-<Layout title={activeLabel ? `Leaderboard · ${activeLabel}` : "Leaderboard"} description="arena.ai 的 AI 模型排名與依 F1 計分的實驗室排名。">
+<Layout title={activeLabel ? ui.titleWith(activeLabel) : ui.title} description={ui.description} lang={lang}>
   <Container>
     <div class="space-y-8">
       <div>
         <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">
-          Leaderboard
+          {ui.title}
         </h1>
         <p class="mt-1 text-sm" style="color: var(--color-text-muted);">
-          <a href="https://arena.ai/leaderboard" target="_blank" rel="noopener" class="link-cool">arena.ai</a> 的模型排名，更新於 {updatedDate}（台北時間）。
+          <a href="https://arena.ai/leaderboard" target="_blank" rel="noopener" class="link-cool">arena.ai</a>{ui.introAfterLink(updatedDate)}
         </p>
       </div>
 
       <div>
-        <nav class="cat-tabs" id="cat-tabs" aria-label="排行榜分類">
+        <nav class="cat-tabs" id="cat-tabs" aria-label={ui.tabsLabel}>
           <div class="tab-row tab-row-primary">
             <a href={tabHref("overview")} class:list={["tab-pill lb-tab", { "tab-pill-active": active === "overview" }]} aria-current={active === "overview" ? "page" : undefined}>
               <span class="cat-icon">{categoryIcons["overview"]}</span>
-              <span>總覽</span>
+              <span>{ui.overview}</span>
               <span class="tab-pill-count">{full.length}</span>
             </a>
             <a href={tabHref("orgs")} class:list={["tab-pill lb-tab", { "tab-pill-active": active === "orgs" }]} aria-current={active === "orgs" ? "page" : undefined}>
               <span class="cat-icon">{"\u{1F3E2}"}</span>
-              <span>實驗室排名</span>
+              <span>{ui.orgsTab}</span>
               <span class="tab-pill-count">{orgRankings.length}</span>
             </a>
           </div>
@@ -164,13 +155,13 @@ for (const entry of orgRankings) {
         <div data-cat="overview" class="cat-content">
           <div class="mb-4">
             <p class="text-sm mb-3" style="color: var(--color-text-muted);">
-              共 {full.length} 個模型。數字是各子項的名次，越小越好；點表頭可以排序。
+              {ui.overviewIntro(full.length)}
             </p>
             <input
               type="text"
               data-search="overview"
-              placeholder="搜尋模型或機構"
-              aria-label="搜尋模型或機構"
+              placeholder={ui.searchModelOrg}
+              aria-label={ui.searchModelOrg}
               class="search-input"
             />
           </div>
@@ -179,7 +170,7 @@ for (const entry of orgRankings) {
             <table class="lb-table searchable-table" data-search-target="overview">
               <thead>
                 <tr>
-                  <th class="sticky-col">模型</th>
+                  <th class="sticky-col">{ui.model}</th>
                   {fullColumns.map(col => (
                     <th class="text-center cursor-pointer sort-header" data-sort={col.key}>
                       <span class="sort-label">{col.label}</span>
@@ -219,13 +210,13 @@ for (const entry of orgRankings) {
         <div data-cat="orgs" class="cat-content">
           <div class="mb-4">
             <p class="text-sm mb-3" style="color: var(--color-text-muted);">
-              共 {orgRankings.length} 個機構。採 F1 計分，總排名前 10 的模型依序得 25、18、15、12、10、8、6、4、2、1 分。
+              {ui.orgsIntro(orgRankings.length)}
             </p>
             <input
               type="text"
               data-search="orgs"
-              placeholder="搜尋機構"
-              aria-label="搜尋機構"
+              placeholder={ui.searchOrg}
+              aria-label={ui.searchOrg}
               class="search-input"
             />
           </div>
@@ -238,21 +229,21 @@ for (const entry of orgRankings) {
                 <div class="podium-model">{entry.org}</div>
                 <div class="podium-score">
                   <span class="podium-score-value">{entry.points}</span>
-                  <span class="podium-ci">分</span>
+                  <span class="podium-ci">{ui.points}</span>
                 </div>
                 <div class="podium-meta">
-                  <span>{entry.top10Count} 款進前 10</span>
+                  <span>{ui.top10Models(entry.top10Count)}</span>
                   <span>&middot;</span>
-                  <span>共 {entry.modelCount} 款</span>
+                  <span>{ui.totalModels(entry.modelCount)}</span>
                 </div>
                 <div style="margin-top: 0.625rem; font-size: 0.75rem; color: var(--color-text-muted);">
-                  得分模型
+                  {ui.scoringModels}
                 </div>
                 <div style="margin-top: 0.25rem;">
                   {entry.topModels.filter((m: any) => m.points > 0).map((m: any) => (
                     <div style="font-size: 0.75rem; display: flex; justify-content: space-between; gap: 0.5rem;">
                       <span style="color: var(--color-text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">#{m.rank} {m.model}</span>
-                      <span style="color: var(--color-text-muted); flex-shrink: 0;">{m.points} 分</span>
+                      <span style="color: var(--color-text-muted); flex-shrink: 0;">{m.points} {ui.points}</span>
                     </div>
                   ))}
                 </div>
@@ -266,10 +257,10 @@ for (const entry of orgRankings) {
               <thead>
                 <tr>
                   <th class="w-12">#</th>
-                  <th>機構</th>
-                  <th class="text-center">積分</th>
-                  <th class="text-center">前 10 名</th>
-                  <th>最佳模型</th>
+                  <th>{ui.org}</th>
+                  <th class="text-center">{ui.score}</th>
+                  <th class="text-center">{ui.top10}</th>
+                  <th>{ui.bestModel}</th>
                   {fullColumns.map(col => (
                     <th class="text-center">{col.label}</th>
                   ))}
@@ -332,7 +323,7 @@ for (const entry of orgRankings) {
                       {m.ci && <span class="podium-ci">{m.ci}</span>}
                     </div>
                     <div class="podium-meta">
-                      <span>{m.votes.toLocaleString()} 票</span>
+                      <span>{ui.votes(m.votes.toLocaleString())}</span>
                       {m.context && <span>&middot; {m.context} context</span>}
                     </div>
                     {m.price && <div class="podium-price">{m.price}</div>}
@@ -344,13 +335,13 @@ for (const entry of orgRankings) {
               {/* Search */}
               <div class="mb-4">
                 <p class="text-sm mb-3" style="color: var(--color-text-muted);">
-                  {models.length} 個模型{lastPage > 1 && `，表格分 ${lastPage} 頁，這頁是第 ${(page - 1) * ROWS_PER_PAGE + 4} 到 ${(page - 1) * ROWS_PER_PAGE + 3 + rows.length} 名`}。
+                  {ui.modelsCount(models.length)}{lastPage > 1 && ui.tablePaging(lastPage, (page - 1) * ROWS_PER_PAGE + 4, (page - 1) * ROWS_PER_PAGE + 3 + rows.length)}{ui.sentenceEnd}
                 </p>
                 <input
                   type="text"
                   data-search={key}
-                  placeholder={lastPage > 1 ? "搜尋本頁的模型或機構" : "搜尋模型或機構"}
-                  aria-label={lastPage > 1 ? "搜尋本頁的模型或機構" : "搜尋模型或機構"}
+                  placeholder={lastPage > 1 ? ui.searchModelOrgPage : ui.searchModelOrg}
+                  aria-label={lastPage > 1 ? ui.searchModelOrgPage : ui.searchModelOrg}
                   class="search-input"
                 />
               </div>
@@ -361,12 +352,12 @@ for (const entry of orgRankings) {
                   <thead>
                     <tr>
                       <th class="col-rank">#</th>
-                      <th class="col-model">模型</th>
-                      <th class="col-elo has-tip"><span class="tip-trigger">ELO<span class="tip-text">Arena 的 ELO 分數，越高代表在真人盲測對戰中越強。</span></span></th>
-                      <th class="col-num has-tip"><span class="tip-trigger">票數<span class="tip-text">計算這個分數用到的真人投票總數。</span></span></th>
-                      {showPrice && <th class="col-num has-tip"><span class="tip-trigger">價格 $/M<span class="tip-text">每百萬 token 的 API 價格（輸入 / 輸出）。</span></span></th>}
-                      {showPrice && <th class="col-num has-tip"><span class="tip-trigger">Context<span class="tip-text">最大 context window 長度。</span></span></th>}
-                      <th class="col-spread has-tip"><span class="tip-trigger">名次區間<span class="tip-text">名次的不確定程度，越小代表名次越穩定。</span></span></th>
+                      <th class="col-model">{ui.model}</th>
+                      <th class="col-elo has-tip"><span class="tip-trigger">ELO<span class="tip-text">{ui.eloTip}</span></span></th>
+                      <th class="col-num has-tip"><span class="tip-trigger">{ui.votesHead}<span class="tip-text">{ui.votesTip}</span></span></th>
+                      {showPrice && <th class="col-num has-tip"><span class="tip-trigger">{ui.priceHead}<span class="tip-text">{ui.priceTip}</span></span></th>}
+                      {showPrice && <th class="col-num has-tip"><span class="tip-trigger">Context<span class="tip-text">{ui.contextTip}</span></span></th>}
+                      <th class="col-spread has-tip"><span class="tip-trigger">{ui.spreadHead}<span class="tip-text">{ui.spreadTip}</span></span></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -393,7 +384,7 @@ for (const entry of orgRankings) {
                   </tbody>
                 </table>
               </div>
-              <Pagination currentPage={page} lastPage={lastPage} base={`/leaderboard/${key}`} label={`${categoryLabels[key]}排行分頁`} />
+              <Pagination currentPage={page} lastPage={lastPage} base={href(lang, `/leaderboard/${key}`)} label={ui.categoryPaginationLabel(categoryLabels[key])} lang={lang} />
             </div>
           );
         })}

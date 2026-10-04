@@ -1,9 +1,17 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
-import labsData from "../data/labs.json";
+import labsData from "../../data/labs.json";
 import { SITE_SINCE } from "@consts";
-import { opennessLabels, regionLabels } from "./labs/_data";
+import { LANG_PARAMS, href, langOf } from "@i18n";
+import { aboutUI } from "@i18n/ui/about";
+
+export function getStaticPaths() {
+  return LANG_PARAMS.map((params) => ({ params }));
+}
+const lang = langOf(Astro.params);
+const ui = aboutUI[lang];
+const c = ui.cats;
 
 // Keep in step with the pipelines on bennett-hub: ~/wiki/tools/daily_news.py
 // (daily digest), knowledge-api hf_daily (papers), pipeline/candidates/config.py
@@ -13,28 +21,28 @@ const labs = (labsData as any).labs || [];
 
 const sources = [
   {
-    category: "每日快報",
-    note: "每天 18:00 開始整理，AINews 當天還沒出刊時最多等到 21:00，再把這四份電子報加上最多 15 則候選新聞寫成快報。全文在 Reports，引用的新聞列在 Sources，WhatsApp 群組會收到摘要與連結。",
+    category: c.daily.category,
+    note: c.daily.note,
     icon: "M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z",
     items: [
-      { name: "AINews（Latent Space）", desc: "含付費全文", url: "https://www.latent.space" },
+      { name: "AINews（Latent Space）", desc: c.daily.ainewsDesc, url: "https://www.latent.space" },
       { name: "TLDR AI", url: "https://tldr.tech/ai" },
       { name: "TechCrunch AI", url: "https://techcrunch.com/category/artificial-intelligence" },
       { name: "Import AI", url: "https://importai.substack.com" },
     ]
   },
   {
-    category: "論文",
-    note: "Hugging Face 每日論文依研究方向評分，高分的論文會列進快報的建議深讀；Trending 的論文榜來自 alphaXiv。",
+    category: c.papers.category,
+    note: c.papers.note,
     icon: "M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z",
     items: [
       { name: "Hugging Face Daily Papers", url: "https://huggingface.co/papers" },
-      { name: "alphaXiv", desc: "熱門與最受喜愛，近 7 天", url: "https://www.alphaxiv.org" },
+      { name: "alphaXiv", desc: c.papers.alphaxivDesc, url: "https://www.alphaxiv.org" },
     ]
   },
   {
-    category: "候選新聞",
-    note: "更廣的來源每天 17:35 先用 Jev 篩掉重複與舊聞，最多 15 則併進當天的快報。",
+    category: c.candidates.category,
+    note: c.candidates.note,
     icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-4 0h4",
     items: [
       { name: "OpenAI Blog" }, { name: "Anthropic News" }, { name: "Anthropic Research" },
@@ -53,33 +61,33 @@ const sources = [
     ]
   },
   {
-    category: "前沿實驗室",
-    note: "只收各前沿實驗室官方 X 帳號的貼文，每天 17:30 整理成 Labs 的每日快報，每週一另外產生 Labs 週報。",
+    category: c.labs.category,
+    note: c.labs.note,
     icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z",
-    items: labs.map((lab: any) => ({ name: lab.name, desc: `第 ${lab.tier} 級 · ${regionLabels[lab.region] || lab.region} · ${opennessLabels[lab.openness] || lab.openness}` })),
+    items: labs.map((lab: any) => ({ name: lab.name, desc: ui.labDesc(lab.tier, ui.region[lab.region] || lab.region, ui.openness[lab.openness] || lab.openness) })),
   },
   {
-    category: "深讀",
-    note: "這四份電子報每天早上由 knowledge-api 整理成分段重點，Reading 列出最近 120 天；Berkeley RDI 也是週報的素材。",
+    category: c.reading.category,
+    note: c.reading.note,
     icon: "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253",
     items: [
-      { name: "ByteByteGo", desc: "每週約 5 封", url: "https://blog.bytebytego.com" },
-      { name: "Daily Dose of DS", desc: "每週 1 到 2 封", url: "https://www.dailydoseofds.com" },
-      { name: "Berkeley RDI", desc: "Agentic AI Weekly，每週三", url: "https://berkeleyrdi.substack.com" },
-      { name: "ExplainThis", desc: "全端開發雙週報", url: "https://explainthis.substack.com" },
+      { name: "ByteByteGo", desc: c.reading.bytebytego, url: "https://blog.bytebytego.com" },
+      { name: "Daily Dose of DS", desc: c.reading.dailydose, url: "https://www.dailydoseofds.com" },
+      { name: "Berkeley RDI", desc: c.reading.berkeley, url: "https://berkeleyrdi.substack.com" },
+      { name: "ExplainThis", desc: c.reading.explainthis, url: "https://explainthis.substack.com" },
     ]
   },
   {
-    category: "Podcast",
-    note: "每天 17:40 檢查新集數，整理中文重點與逐字稿，放在 Podcasts。",
+    category: c.podcast.category,
+    note: c.podcast.note,
     icon: "M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3zM19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8",
     items: [
       { name: "Latent Space", url: "https://www.latent.space/podcast" },
     ]
   },
   {
-    category: "排行榜",
-    note: "每天跟著網站資料一起更新。",
+    category: c.leaderboard.category,
+    note: c.leaderboard.note,
     icon: "M13 7h8m0 0v8m0-8l-8 8-4-4-6 6",
     items: [
       { name: "arena.ai", url: "https://arena.ai/leaderboard" },
@@ -91,45 +99,38 @@ const sources = [
 const totalSources = sources.reduce((sum, cat) => sum + cat.items.length, 0);
 const totalCategories = sources.length;
 
-const schedule = [
-  ["17:30", "Labs：實驗室官方 X 貼文與每日快報"],
-  ["17:35", "候選新聞：Jev 篩選更廣的來源"],
-  ["17:40", "Podcasts：新集數的重點與逐字稿"],
-  ["18:00", "每日快報：最多等 AINews 到 21:00，寫完後更新網站並發 WhatsApp 摘要"],
-  ["21:30", "備援：快報當天沒跑完時，照樣更新網站的其他資料"],
-];
+const schedule = ui.schedule;
 ---
 
-<Layout title="About" description="AI War Room 的資料來源、每日更新時間與營運成本說明。">
+<Layout title={ui.title} description={ui.description} lang={lang}>
   <Container>
     <div class="mx-auto max-w-4xl space-y-10">
 
       <div class="space-y-2">
         <h1 class="text-2xl font-semibold tracking-tight lg:text-3xl" style="color: var(--color-text);">
-          About
+          {ui.title}
         </h1>
         <p class="text-sm" style="color: var(--color-text-muted);">
-          個人整理的 AI 戰情室，共
-          <strong style="color: var(--color-text);">{totalCategories} 類、{totalSources} 個來源</strong>。
-          本站顯示 {SITE_SINCE} 起的資料，更早的每日報告在 <a href="/archive" class="about-link">Archive</a>。
+          {ui.intro1}
+          <strong style="color: var(--color-text);">{ui.introCount(totalCategories, totalSources)}</strong>{ui.introSince(SITE_SINCE)}<a href={href(lang, "/archive")} class="about-link">Archive</a>{ui.introEnd}
         </p>
       </div>
 
       <section class="space-y-3">
-        <h2 class="section-title">每日更新時間（台北時間）</h2>
+        <h2 class="section-title">{ui.scheduleHeading}</h2>
         <ol class="card about-schedule">
           {schedule.map(([time, what]) => (
             <li><span class="about-time">{time}</span><span>{what}</span></li>
           ))}
         </ol>
         <p class="text-xs leading-relaxed" style="color: var(--color-text-muted);">
-          網站是放在 Cloudflare Workers 上的靜態頁面，每次更新資料後重新部署。
-          <a href="/analytics" class="about-link">Analytics</a> 公開 Gemini 的 token 估算成本，以及 X API（貼文與帳號查詢）、Jev 與訂閱的實際花費。
+          {ui.hostingBefore}
+          <a href={href(lang, "/analytics")} class="about-link">Analytics</a>{ui.hostingAfter}
         </p>
       </section>
 
       <section class="space-y-8">
-        <h2 class="section-title">所有來源</h2>
+        <h2 class="section-title">{ui.allSources}</h2>
 
         <div class="grid gap-6 md:grid-cols-2">
           {sources.map((group) => (
@@ -144,7 +145,7 @@ const schedule = [
                 </div>
                 <div>
                   <h3 class="text-sm font-semibold" style="color: var(--color-text);">{group.category}</h3>
-                  <span class="text-[10px] font-mono" style="color: var(--color-text-muted);">{group.items.length} 個來源</span>
+                  <span class="text-[10px] font-mono" style="color: var(--color-text-muted);">{ui.sourceCount(group.items.length)}</span>
                 </div>
               </div>
               <p class="text-xs leading-relaxed" style="color: var(--color-text-muted);">{group.note}</p>
@@ -169,8 +170,8 @@ const schedule = [
       </section>
 
       <div class="text-center text-xs leading-relaxed" style="color: var(--color-text-muted);">
-        由 <a href="https://bennettlabs.dev" target="_blank" rel="noopener noreferrer"
-              class="about-credit no-underline hover:underline" style="color: var(--color-accent-warm-text);">bennettlabs.dev</a> 製作。
+        {ui.credit[0]}<a href="https://bennettlabs.dev" target="_blank" rel="noopener noreferrer"
+              class="about-credit no-underline hover:underline" style="color: var(--color-accent-warm-text);">bennettlabs.dev</a>{ui.credit[1]}
       </div>
 
     </div>

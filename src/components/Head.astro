@@ -9,16 +9,26 @@ import "@fontsource/geist-sans/700.css";
 import "@fontsource/geist-mono/400.css";
 import "@fontsource/geist-mono/500.css";
 
+import { href, stripLang, type Lang } from "@i18n";
+
 interface Props {
   title: string;
   description: string;
+  lang?: Lang;
 }
 
 // Cloudflare serves pages without a trailing slash (html_handling:
 // drop-trailing-slash), so canonical and og:url must match that form.
 const canonicalPath = Astro.url.pathname.replace(/\/+$/, "") || "/";
 const canonicalURL = new URL(canonicalPath, Astro.site);
-const { title, description } = Astro.props;
+const { title, description, lang = "zh" } = Astro.props;
+// The same page exists in both languages; search engines get both addresses.
+const basePath = stripLang(canonicalPath);
+const alternates = [
+  { hreflang: "zh-Hant-TW", href: new URL(href("zh", basePath), Astro.site) },
+  { hreflang: "en", href: new URL(href("en", basePath), Astro.site) },
+  { hreflang: "x-default", href: new URL(href("zh", basePath), Astro.site) },
+];
 ---
 
 <meta charset="utf-8" />
@@ -29,6 +39,7 @@ const { title, description } = Astro.props;
 <meta name="generator" content={Astro.generator} />
 
 <link rel="canonical" href={canonicalURL} />
+{alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
 
 <title>{title}</title>
 <meta name="title" content={title} />
@@ -39,6 +50,7 @@ const { title, description } = Astro.props;
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:site_name" content="AI War Room · bennettlabs.dev" />
+<meta property="og:locale" content={lang === "en" ? "en_US" : "zh_TW"} />
 
 <meta property="twitter:card" content="summary" />
 <meta property="twitter:title" content={title} />
@@ -154,7 +166,7 @@ const { title, description } = Astro.props;
       const copyButton = document.createElement("button");
       copyButton.innerText = copyButtonLabel;
       copyButton.classList = "copy-code";
-      copyButton.setAttribute("aria-label", "複製程式碼");
+      copyButton.setAttribute("aria-label", document.documentElement.lang === "en" ? "Copy code" : "複製程式碼");
 
       codeBlock.setAttribute("tabindex", "0");
       codeBlock.appendChild(copyButton);

@@ -4,13 +4,21 @@ import Container from "@components/Container.astro";
 import ExternalIcon from "@components/ExternalIcon.astro";
 import papersData from "@data/papers.json";
 import mcpData from "@data/mcpmarket.json";
+import { LANG_PARAMS, langOf } from "@i18n";
+import { trendingUI } from "@i18n/ui/trending";
+
+export function getStaticPaths() {
+  return LANG_PARAMS.map((params) => ({ params }));
+}
+const lang = langOf(Astro.params);
+const ui = trendingUI[lang];
 
 const papers = papersData as any;
 const mcp = mcpData as any;
 const mcpServers: any[] = mcp.servers || [];
 const mcpSkills: any[] = mcp.skills || [];
 const monthDay = (d: string) =>
-  new Date(d).toLocaleDateString("zh-TW", { timeZone: "Asia/Taipei", month: "numeric", day: "numeric" });
+  new Date(d).toLocaleDateString(ui.dateLocale, { timeZone: "Asia/Taipei", month: "numeric", day: "numeric" });
 const mcpUpdated = mcp.updatedAt ? monthDay(mcp.updatedAt) : "";
 // "computer-science" is on nearly every paper, so it would not filter anything.
 const paperCats: string[] = [];
@@ -56,17 +64,17 @@ try {
 }
 ---
 
-<Layout title="Trending" description="GitHub 熱門 repo、Product Hunt 新產品、alphaXiv 熱門論文與 MCP Market 排行。">
+<Layout title={ui.title} description={ui.description} lang={lang}>
   <Container>
     <div class="space-y-8">
       <div>
-        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Trending</h1>
+        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">{ui.title}</h1>
         <p class="mt-1 text-sm" style="color: var(--color-text-muted);">
-          GitHub 熱門 repo、Product Hunt 新產品、alphaXiv 熱門論文與 MCP Market 排行。
+          {ui.intro}
         </p>
       </div>
 
-      <div class="top-tabs" id="top-tabs">
+      <div class="top-tabs" id="top-tabs" data-ui={JSON.stringify({ allLanguages: ui.allLanguages, all: ui.all, noRepos: ui.noRepos, fetchedAt: ui.fetchedAt("{t}"), dateLocale: ui.dateLocale })}>
         <button type="button" data-top="repos" class="tab-pill tab-pill-active">
           <span class="tab-pill-icon">{"\u{1F4BB}"}</span>
           GitHub Repos
@@ -78,7 +86,7 @@ try {
         </button>
         <button type="button" data-top="papers" class="tab-pill">
           <span class="tab-pill-icon">{"\u{1F4D1}"}</span>
-          論文
+          {ui.tabPapers}
         </button>
         <button type="button" data-top="mcpservers" class="tab-pill">
           <span class="tab-pill-icon">{"\u{1F50C}"}</span>
@@ -97,7 +105,7 @@ try {
 
         <div id="repos-container" class="mt-4">
           <div class="flex items-center justify-center py-12">
-            <span class="text-sm" style="color: var(--color-text-muted);">正在抓取 GitHub 熱門 repo…</span>
+            <span class="text-sm" style="color: var(--color-text-muted);">{ui.loadingRepos}</span>
           </div>
         </div>
 
@@ -109,10 +117,10 @@ try {
       <div data-section="products" class="section-content hidden">
         {products.length === 0 ? (
           <div class="text-center py-12">
-            <p class="text-sm" style="color: var(--color-text-muted);">這次更新沒有抓到 Product Hunt 的產品。</p>
+            <p class="text-sm" style="color: var(--color-text-muted);">{ui.noProducts}</p>
             <a href="https://www.producthunt.com" target="_blank" rel="noopener noreferrer"
                class="trend-more mt-2 text-xs no-underline" style="color: var(--color-accent-warm-text);">
-              前往 Product Hunt →
+              {ui.gotoPH}
             </a>
           </div>
         ) : (
@@ -143,7 +151,7 @@ try {
             <div class="text-center pt-6 pb-2">
               <a href="https://www.producthunt.com" target="_blank" rel="noopener noreferrer"
                  class="trend-more text-xs no-underline hover:underline" style="color: var(--color-accent-warm-text);">
-                到 Product Hunt 看更多 →
+                {ui.morePH}
               </a>
             </div>
           </div>
@@ -152,11 +160,11 @@ try {
 
       <div data-section="papers" class="section-content hidden">
         <div class="flex gap-1 mb-3" style="border-bottom: 1px solid var(--color-border);">
-          <button type="button" data-paper-tab="hot" class="tab-btn tab-active">熱門</button>
-          <button type="button" data-paper-tab="likes" class="tab-btn">最受喜愛</button>
+          <button type="button" data-paper-tab="hot" class="tab-btn tab-active">{ui.paperHot}</button>
+          <button type="button" data-paper-tab="likes" class="tab-btn">{ui.paperLikes}</button>
         </div>
         <p class="text-xs mb-3" style="color: var(--color-text-muted);">
-          <a href="https://www.alphaxiv.org" target="_blank" rel="noopener" style="color: var(--color-accent-cool-text); text-decoration: underline;">alphaXiv</a> 前 20 名{papersUpdated && `，更新於 ${papersUpdated}`}。
+          <a href="https://www.alphaxiv.org" target="_blank" rel="noopener" style="color: var(--color-accent-cool-text); text-decoration: underline;">alphaXiv</a> {ui.alphaxivTop}{papersUpdated && ui.updatedAt(papersUpdated)}{ui.period}
         </p>
         <div class="flex gap-1.5 flex-wrap mb-4" id="paper-filters"></div>
 
@@ -179,8 +187,8 @@ try {
                     <span class="text-xs" style="color: var(--color-text-muted);">{p.authors.slice(0, 3).join(", ")}{p.authors.length > 3 ? " et al." : ""}</span>
                   )}
                   {p.date && <span class="meta">{p.date}</span>}
-                  <span class="paper-stat">{p.votes.toLocaleString()} 票</span>
-                  <span class="paper-stat">{p.visits.toLocaleString()} 次瀏覽</span>
+                  <span class="paper-stat">{ui.votes(p.votes.toLocaleString())}</span>
+                  <span class="paper-stat">{ui.visits(p.visits.toLocaleString())}</span>
                   {p.ghStars > 0 && <span class="paper-stat">☆ {p.ghStars.toLocaleString()}</span>}
                   {p.categories?.length > 0 && p.categories.map((c: string) => (
                     <span class="paper-cat">{c}</span>
@@ -210,8 +218,8 @@ try {
                     <span class="text-xs" style="color: var(--color-text-muted);">{p.authors.slice(0, 3).join(", ")}{p.authors.length > 3 ? " et al." : ""}</span>
                   )}
                   {p.date && <span class="meta">{p.date}</span>}
-                  <span class="paper-stat">{p.votes.toLocaleString()} 票</span>
-                  <span class="paper-stat">{p.visits.toLocaleString()} 次瀏覽</span>
+                  <span class="paper-stat">{ui.votes(p.votes.toLocaleString())}</span>
+                  <span class="paper-stat">{ui.visits(p.visits.toLocaleString())}</span>
                   {p.ghStars > 0 && <span class="paper-stat">☆ {p.ghStars.toLocaleString()}</span>}
                   {p.categories?.length > 0 && p.categories.map((c: string) => (
                     <span class="paper-cat">{c}</span>
@@ -225,7 +233,7 @@ try {
 
       <div data-section="mcpservers" class="section-content hidden">
         <p class="text-xs mb-3" style="color: var(--color-text-muted);">
-          <a href="https://mcpmarket.com/leaderboards" target="_blank" rel="noopener" style="color: var(--color-accent-cool-text); text-decoration: underline;">MCP Market</a> 前 50 名，依 GitHub star 數排序{mcpUpdated && `，更新於 ${mcpUpdated}`}。
+          <a href="https://mcpmarket.com/leaderboards" target="_blank" rel="noopener" style="color: var(--color-accent-cool-text); text-decoration: underline;">MCP Market</a> {ui.mcpTop}{mcpUpdated && ui.updatedAt(mcpUpdated)}{ui.period}
         </p>
         <div class="flex gap-1.5 flex-wrap mb-4" id="mcp-server-filters"></div>
         <div class="space-y-0.5">
@@ -253,7 +261,7 @@ try {
 
       <div data-section="skills" class="section-content hidden">
         <p class="text-xs mb-3" style="color: var(--color-text-muted);">
-          <a href="https://mcpmarket.com/tools/skills/leaderboard" target="_blank" rel="noopener" style="color: var(--color-accent-cool-text); text-decoration: underline;">MCP Market</a> 前 50 名，依 GitHub star 數排序{mcpUpdated && `，更新於 ${mcpUpdated}`}。
+          <a href="https://mcpmarket.com/tools/skills/leaderboard" target="_blank" rel="noopener" style="color: var(--color-accent-cool-text); text-decoration: underline;">MCP Market</a> {ui.mcpTop}{mcpUpdated && ui.updatedAt(mcpUpdated)}{ui.period}
         </p>
         <div class="flex gap-1.5 flex-wrap mb-4" id="mcp-skill-filters"></div>
         <div class="space-y-0.5">
@@ -557,8 +565,19 @@ try {
   }
 
   // Fetched in the browser so the list is live rather than as old as the last build.
+  // The page passes its language strings through data-ui because this script
+  // is bundled once for both languages.
+  function readUI() {
+    const el = document.getElementById("top-tabs");
+    try {
+      return JSON.parse(el?.dataset.ui || "{}") as Record<string, string>;
+    } catch {
+      return {} as Record<string, string>;
+    }
+  }
+
   const FEEDS = [
-    { key: "all", label: "全部語言", url: "https://mshibanami.github.io/GitHubTrendingRSS/daily/all.xml" },
+    { key: "all", label: "", url: "https://mshibanami.github.io/GitHubTrendingRSS/daily/all.xml" },
     { key: "python", label: "Python", url: "https://mshibanami.github.io/GitHubTrendingRSS/daily/python.xml" },
     { key: "typescript", label: "TypeScript", url: "https://mshibanami.github.io/GitHubTrendingRSS/daily/typescript.xml" },
     { key: "rust", label: "Rust", url: "https://mshibanami.github.io/GitHubTrendingRSS/daily/rust.xml" },
@@ -621,7 +640,7 @@ try {
       const p = document.createElement("p");
       p.className = "text-sm";
       p.style.color = "var(--color-text-muted)";
-      p.textContent = "目前沒有抓到熱門 repo。";
+      p.textContent = readUI().noRepos;
       return [p];
     }
     return repos.map((repo, i) => {
@@ -668,7 +687,9 @@ try {
     if (!tabsEl || !containerEl || !timeEl) return;
 
     const results: FeedResult[] = [];
-    const fetches = FEEDS.map(async (feed) => {
+    const allLabel = readUI().allLanguages;
+    const fetches = FEEDS.map(async (f) => {
+      const feed = f.key === "all" ? { ...f, label: allLabel } : f;
       try {
         const resp = await fetch(feed.url);
         const xml = await resp.text();
@@ -718,7 +739,8 @@ try {
     });
 
     const now = new Date();
-    timeEl.textContent = `即時抓取於 ${now.toLocaleString("zh-TW", { hour12: false })}`;
+    const ui = readUI();
+    timeEl.textContent = ui.fetchedAt.replace("{t}", now.toLocaleString(ui.dateLocale, { hour12: false }));
   }
 
   function switchTopTab(key: string) {
@@ -769,7 +791,7 @@ try {
 
       const sorted = Object.entries(catCount).sort((a, b) => b[1] - a[1]);
       filtersEl.replaceChildren(
-        filterButton("mcpFilter", "all", "全部", "mcp-filter mcp-filter-active"),
+        filterButton("mcpFilter", "all", readUI().all, "mcp-filter mcp-filter-active"),
         ...sorted.map(([cat]) => filterButton("mcpFilter", cat, cat, "mcp-filter")),
       );
 
@@ -810,7 +832,7 @@ try {
 
       const sorted = Object.entries(catCount).sort((a, b) => b[1] - a[1]);
       filtersEl.replaceChildren(
-        filterButton("catFilter", "all", "全部", "paper-filter paper-filter-active"),
+        filterButton("catFilter", "all", readUI().all, "paper-filter paper-filter-active"),
         ...sorted.map(([cat]) => filterButton("catFilter", cat, cat, "paper-filter")),
       );
 

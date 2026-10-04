@@ -4,21 +4,24 @@ import Container from "@components/Container.astro";
 import Pagination from "@components/Pagination.astro";
 
 import { SITE_SINCE } from "@consts";
+import { href, type Lang } from "@i18n";
+import { sourcesUI } from "@i18n/ui/sources";
 import type { PageSlice } from "../_lib/paging";
 import { byDate, dates, totalItems } from "./_data";
 
-type Props = { page: PageSlice<string> };
-const { page } = Astro.props;
+type Props = { page: PageSlice<string>; lang: Lang };
+const { page, lang } = Astro.props;
+const ui = sourcesUI[lang];
 const range = page.data.length ? `${page.data[page.data.length - 1]} ~ ${page.data[0]}` : "";
 ---
 
-<Layout title={page.currentPage === 1 ? "Sources" : `Sources 第 ${page.currentPage} 頁`} description="每日快報引用的新聞，依日期與來源分組。">
+<Layout title={page.currentPage === 1 ? ui.title : ui.pageTitle(page.currentPage)} description={ui.description} lang={lang}>
   <Container>
     <div class="space-y-8">
       <div>
-        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Sources</h1>
+        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">{ui.title}</h1>
         <p class="mt-1 text-sm leading-relaxed" style="color: var(--color-text-muted);">
-          每日快報引用的新聞，依日期與<a href="/about" style="color: var(--color-accent-cool-text); font-weight: 600; text-decoration: underline; text-underline-offset: 2px;">來源</a>分組。{SITE_SINCE} 起共 {dates.length} 天、{totalItems} 則{page.lastPage > 1 && range && `，這頁是 ${range}`}。
+          {ui.introBefore}<a href={href(lang, "/about")} style="color: var(--color-accent-cool-text); font-weight: 600; text-decoration: underline; text-underline-offset: 2px;">{ui.introLink}</a>{ui.introAfter}{ui.stats(SITE_SINCE, dates.length, totalItems)}{page.lastPage > 1 && range && ui.range(range)}{ui.end}
         </p>
       </div>
 
@@ -33,11 +36,11 @@ const range = page.data.length ? `${page.data[page.data.length - 1]} ~ ${page.da
                     <path d="M6 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                   </svg>
                   <span class="text-base font-semibold" style="color: var(--color-text);">{date}</span>
-                  <span class="meta">{total} 則 · {groups.length} 個來源</span>
+                  <span class="meta">{ui.dayCount(total, groups.length)}</span>
                 </div>
                 {/* A link inside <summary> navigates without toggling the details, so it needs no click handler. */}
-                <a href={`/reports/${date}`} class="report-link">
-                  看快報 →
+                <a href={href(lang, `/reports/${date}`)} class="report-link">
+                  {ui.viewReport}
                 </a>
               </summary>
 
@@ -72,12 +75,12 @@ const range = page.data.length ? `${page.data[page.data.length - 1]} ~ ${page.da
         );
       })}
 
-      <Pagination currentPage={page.currentPage} lastPage={page.lastPage} base="/sources" label="Sources 分頁" />
+      <Pagination currentPage={page.currentPage} lastPage={page.lastPage} base={href(lang, "/sources")} label={ui.paginationLabel} lang={lang} />
 
       {dates.length === 0 && (
         <div class="text-center py-12">
           <p class="text-sm" style="color: var(--color-text-muted);">
-            還沒有收錄任何新聞，第一份每日快報產生後會出現在這裡。
+            {ui.empty}
           </p>
         </div>
       )}

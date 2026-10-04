@@ -5,10 +5,13 @@ import Pagination from "@components/Pagination.astro";
 import Post from "./_Post.astro";
 import "./_labs.css";
 import type { PageSlice } from "../_lib/paging";
-import { activeLabs, dayHref, dayLabel, labByKey, labCounts, labHref, labName, opennessLabels, regionLabels, type Post as PostT } from "./_data";
+import { href, type Lang } from "@i18n";
+import { labsUI } from "@i18n/ui/labs";
+import { activeLabs, dayHref, dayLabel, labByKey, labCounts, labHref, labName, type Post as PostT } from "./_data";
 
-type Props = { labKey: string; page: PageSlice<PostT> };
-const { labKey, page } = Astro.props;
+type Props = { labKey: string; page: PageSlice<PostT>; lang: Lang };
+const { labKey, page, lang } = Astro.props;
+const ui = labsUI[lang];
 const lab = labByKey.get(labKey);
 const name = labName(labKey);
 
@@ -18,23 +21,23 @@ for (const p of page.data) {
   if (last && last.day === p.day) last.posts.push(p);
   else groups.push({ day: p.day, posts: [p] });
 }
-const facts = [lab && regionLabels[lab.region], lab && opennessLabels[lab.openness]].filter(Boolean).join("、");
+const facts = [lab && ui.regions[lab.region], lab && ui.openness[lab.openness]].filter(Boolean).join(ui.factsJoin);
 ---
 
-<Layout title={page.currentPage === 1 ? `${name} · Labs` : `${name} · Labs 第 ${page.currentPage} 頁`} description={`${name} 官方 X 貼文的中文摘要`}>
+<Layout title={page.currentPage === 1 ? ui.labTitle(name) : ui.labPageTitle(name, page.currentPage)} description={ui.labDescription(name)} lang={lang}>
   <Container>
     <div class="lab-wrap">
       <div>
         <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">{name}</h1>
         <p class="lab-intro">
-          {facts && `${facts}，`}共 {page.total} 則貼文{page.lastPage > 1 && `，這頁是第 ${page.start + 1} 到 ${page.end + 1} 則`}。
-          <a class="lab-link" href="/labs">回到每日貼文</a>
+          {ui.labIntro(facts, page.total)}{page.lastPage > 1 && ui.labIntroRange(page.start + 1, page.end + 1)}{ui.sentenceEnd}
+          <a class="lab-link" href={href(lang, "/labs")}>{ui.backToDaily}</a>
         </p>
       </div>
 
-      <nav class="lab-scroll" aria-label="其他實驗室">
+      <nav class="lab-scroll" aria-label={ui.otherLabs}>
         {activeLabs.map((k) => (
-          <a class="lab-chip" href={labHref(k)} aria-current={k === labKey ? "page" : undefined}>{labName(k)} <span class="lab-count">{labCounts.get(k)}</span></a>
+          <a class="lab-chip" href={labHref(lang, k)} aria-current={k === labKey ? "page" : undefined}>{labName(k)} <span class="lab-count">{labCounts.get(k)}</span></a>
         ))}
       </nav>
 
@@ -42,17 +45,17 @@ const facts = [lab && regionLabels[lab.region], lab && opennessLabels[lab.openne
         {groups.map((g) => (
           <section class="lab-group">
             <div class="lab-day">
-              <a class="lab-day-label" href={dayHref(g.day)} title={`${g.day} 的每日快報與所有貼文`}>{dayLabel(g.day)}</a>
-              <span class="meta">{g.posts.length} 則</span>
+              <a class="lab-day-label" href={dayHref(lang, g.day)} title={ui.dayTitle(g.day)}>{dayLabel(lang, g.day)}</a>
+              <span class="meta">{ui.count(g.posts.length)}</span>
             </div>
             <div class="lab-posts">
-              {g.posts.map((p) => <Post post={p} linkLab={false} />)}
+              {g.posts.map((p) => <Post post={p} linkLab={false} lang={lang} />)}
             </div>
           </section>
         ))}
       </div>
 
-      <Pagination currentPage={page.currentPage} lastPage={page.lastPage} base={labHref(labKey)} label={`${name} 貼文分頁`} />
+      <Pagination currentPage={page.currentPage} lastPage={page.lastPage} base={labHref(lang, labKey)} label={ui.labPagination(name)} lang={lang} />
     </div>
   </Container>
 </Layout>

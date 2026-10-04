@@ -1,19 +1,28 @@
 ---
 import Board from "./leaderboard/_Board.astro";
 import leaderboard from "@data/leaderboard.json";
+import { LANG_PARAMS, langOf } from "@i18n";
 
+export function getStaticPaths() {
+  return LANG_PARAMS.map((params) => ({ params }));
+}
+
+const lang = langOf(Astro.params);
 const keys = ["orgs", ...Object.keys((leaderboard as any).categories)];
 ---
 
-<Board active="overview" />
+<Board active="overview" lang={lang} />
 
 {/* Tabs used to be #hash anchors on this page, so old shared links are sent
     to the category page; any other hash is ignored. The router re-runs inline
-    scripts on every visit, so the IIFE keeps its consts out of global scope. */}
+    scripts on every visit, so the IIFE keeps its consts out of global scope.
+    The /en prefix is kept so English visitors stay in English. */}
 <script is:inline data-keys={JSON.stringify(keys)}>
   (function () {
     const keys = JSON.parse(document.currentScript?.dataset.keys || "[]");
     const key = decodeURIComponent(location.hash.slice(1));
-    if (location.pathname === "/leaderboard" && keys.includes(key)) location.replace(`/leaderboard/${key}`);
+    const path = location.pathname.replace(/\/+$/, "");
+    const prefix = path === "/en/leaderboard" ? "/en" : "";
+    if ((path === "/leaderboard" || path === "/en/leaderboard") && keys.includes(key)) location.replace(`${prefix}/leaderboard/${key}`);
   })();
 </script>

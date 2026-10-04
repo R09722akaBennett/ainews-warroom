@@ -1,5 +1,5 @@
 import { SITE_SINCE } from "@consts";
-import reportsData from "../../data/reports.json";
+import reportsData from "../../../data/reports.json";
 
 type SourceItem = { url: string; title: string; source: string };
 type SourceGroup = { name: string; items: SourceItem[] };

@@ -1,7 +1,13 @@
 ---
 import WeeklyList from "./_Weekly.astro";
 import { firstPage } from "../_lib/paging";
+import { LANG_PARAMS, langOf } from "@i18n";
 import { weeklyReports } from "./_data";
+
+export function getStaticPaths() {
+  return LANG_PARAMS.map((params) => ({ params }));
+}
+const lang = langOf(Astro.params);
 ---
 
-<WeeklyList page={firstPage(weeklyReports, 10)} />
+<WeeklyList page={firstPage(weeklyReports, 10)} lang={lang} />

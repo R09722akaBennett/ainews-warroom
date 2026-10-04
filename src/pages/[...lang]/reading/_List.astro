@@ -4,60 +4,65 @@ import Container from "@components/Container.astro";
 import Pagination from "@components/Pagination.astro";
 
 import type { PageSlice } from "../_lib/paging";
+import { href, pick, type Lang } from "@i18n";
+import { cadenceOf, readingUI } from "@i18n/ui/reading";
 import { items, nameOf, sourceHref, sources, type Item } from "./_data";
 
-type Props = { page: PageSlice<Item>; source?: string };
-const { page, source } = Astro.props;
-const base = source ? sourceHref(source) : "/reading";
+type Props = { page: PageSlice<Item>; source?: string; lang: Lang };
+const { page, source, lang } = Astro.props;
+const ui = readingUI[lang];
+const base = source ? sourceHref(lang, source) : href(lang, "/reading");
 const sourceName = source ? nameOf.get(source) : undefined;
 
 // Chips carry the section titles, so a chip that matches a section deep-links
 // to it; anything else falls back to the top of the detail page.
 function chipHref(item: Item, heading: string): string {
   const idx = (item.sections || []).findIndex((s) => s.title === heading);
-  return idx >= 0 ? `/reading/${item.id}#s-${idx}` : `/reading/${item.id}`;
+  return idx >= 0 ? href(lang, `/reading/${item.id}#s-${idx}`) : href(lang, `/reading/${item.id}`);
 }
 
 function truncate(text: string, n: number): string {
   if (!text || text.length <= n) return text || "";
   return text.slice(0, n).trimEnd() + "…";
 }
-const pageTitle = [sourceName ? `Reading · ${sourceName}` : "Reading", page.currentPage > 1 ? `第 ${page.currentPage} 頁` : ""].filter(Boolean).join(" ");
+const pageTitle = [sourceName ? `${ui.title} · ${sourceName}` : ui.title, page.currentPage > 1 ? ui.pageTitle(page.currentPage) : ""].filter(Boolean).join(" ");
 ---
 
-<Layout title={pageTitle} description="ByteByteGo、Daily Dose of DS、Berkeley RDI 與 ExplainThis 四份電子報的分段重點整理。">
+<Layout title={pageTitle} description={ui.description} lang={lang}>
   <Container>
     <div class="space-y-8">
       <div>
-        <div class="section-title mb-2">Reading</div>
-        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">深讀</h1>
+        <div class="section-title mb-2">{ui.title}</div>
+        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">{ui.heading}</h1>
         <p class="mt-1 text-sm leading-relaxed" style="color: var(--color-text-muted);">
-          {sources.map((s) => s.name).join("、")} 這 {sources.length} 份電子報的分段重點，最近 120 天共 {items.length} 篇{sourceName && `，其中 ${sourceName} ${page.total} 篇`}。
+          {ui.intro(sources.map((s) => s.name), sources.length, 120, items.length)}{sourceName && ui.introSource(sourceName, page.total)}{ui.introEnd}
         </p>
       </div>
 
-      <nav class="flex flex-wrap gap-1.5" id="reading-tabs" aria-label="依來源">
-        <a href="/reading" class:list={["tab-pill reading-tab", { "tab-pill-active": !source }]} aria-current={!source ? "page" : undefined}>
-          <span>全部</span><span class="tab-pill-count">{items.length}</span>
+      <nav class="flex flex-wrap gap-1.5" id="reading-tabs" aria-label={ui.tabsLabel}>
+        <a href={href(lang, "/reading")} class:list={["tab-pill reading-tab", { "tab-pill-active": !source }]} aria-current={!source ? "page" : undefined}>
+          <span>{ui.all}</span><span class="tab-pill-count">{items.length}</span>
         </a>
         {sources.map((s) => (
-          <a href={sourceHref(s.key)} class:list={["tab-pill reading-tab", { "tab-pill-active": s.key === source }]} aria-current={s.key === source ? "page" : undefined} title={s.cadence}>
+          <a href={sourceHref(lang, s.key)} class:list={["tab-pill reading-tab", { "tab-pill-active": s.key === source }]} aria-current={s.key === source ? "page" : undefined} title={cadenceOf(lang, s.key, s.cadence)}>
             <span>{s.name}</span><span class="tab-pill-count">{items.filter((i) => i.source === s.key).length}</span>
           </a>
         ))}
       </nav>
 
       <div class="space-y-3" id="reading-list">
-        {page.data.map((item) => (
+        {page.data.map((raw) => {
+          const item = pick(raw, lang, "en").data;
+          return (
           <article class="card reading-item p-5 space-y-2" data-source={item.source}>
             <div class="flex items-center gap-2">
               <span class="reading-chip">{nameOf.get(item.source)}</span>
               <span class="meta">{item.date}</span>
               {item.url && (
-                <a href={item.url} target="_blank" rel="noopener noreferrer" class="reading-link text-xs ml-auto">原文 ↗</a>
+                <a href={item.url} target="_blank" rel="noopener noreferrer" class="reading-link text-xs ml-auto">{ui.original}</a>
               )}
             </div>
-            <a href={`/reading/${item.id}`} class="reading-title">{item.title}</a>
+            <a href={href(lang, `/reading/${item.id}`)} class="reading-title">{item.title}</a>
             {item.summary && (
               <p class="text-sm leading-relaxed" style="color: var(--color-text-muted);">{truncate(item.summary, 360)}</p>
             )}
@@ -69,10 +74,11 @@ const pageTitle = [sourceName ? `Reading · ${sourceName}` : "Reading", page.cur
               </div>
             )}
           </article>
-        ))}
+          );
+        })}
       </div>
 
-      <Pagination currentPage={page.currentPage} lastPage={page.lastPage} base={base} label="Reading 分頁" />
+      <Pagination currentPage={page.currentPage} lastPage={page.lastPage} base={base} label={ui.paginationLabel} lang={lang} />
     </div>
   </Container>
 </Layout>

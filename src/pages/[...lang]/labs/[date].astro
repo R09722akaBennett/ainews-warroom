@@ -1,12 +1,14 @@
 ---
 import Day from "./_Day.astro";
+import { langOf, withLangs } from "@i18n";
 import { days } from "./_data";
 
 export function getStaticPaths() {
-  return days.map((date) => ({ params: { date } }));
+  return withLangs(days.map((date) => ({ params: { date } })));
 }
 
 const { date } = Astro.params;
+const lang = langOf(Astro.params);
 ---
 
-<Day day={date!} />
+<Day day={date!} lang={lang} />

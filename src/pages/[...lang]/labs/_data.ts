@@ -1,12 +1,14 @@
 import { renderMarkdown } from "@lib/markdown";
 import { SITE_SINCE } from "@consts";
-import labsData from "../../data/labs.json";
-import summariesData from "../../data/summaries.json";
+import { href, type Lang } from "@i18n";
+import { labsUI } from "@i18n/ui/labs";
+import labsData from "../../../data/labs.json";
+import summariesData from "../../../data/summaries.json";
 
 export type Lab = { key: string; name: string; tier: number; region: string; openness: string };
-type RawItem = { date: string; lab: string; title: string; url: string; source: string; publishedAt: string; category: string; summary: string; content: string; aliases?: string[] };
+type RawItem = { date: string; lab: string; title: string; url: string; source: string; publishedAt: string; category: string; summary: string; content: string; aliases?: string[]; en?: { summary?: string } };
 export type Post = RawItem & { day: string; time: string; id: string };
-export type Summary = { period: string; startDate: string; endDate: string; title: string; content: string; tags?: any; tokenUsage?: { input?: number; output?: number } };
+export type Summary = { period: string; startDate: string; endDate: string; title: string; content: string; tags?: any; tokenUsage?: { input?: number; output?: number }; en?: { title?: string; content?: string } };
 
 export const labsMeta = (labsData as any).labs as Lab[];
 export const updatedAt = (labsData as any).updatedAt as string | undefined;
@@ -19,14 +21,14 @@ export function taipei(iso: string): Date {
   return new Date(new Date(iso).getTime() + 8 * 3600 * 1000);
 }
 export const pad = (n: number) => String(n).padStart(2, "0");
-const weekdays = ["週日", "週一", "週二", "週三", "週四", "週五", "週六"];
-export function dayLabel(ymd: string): string {
+export function dayLabel(lang: Lang, ymd: string): string {
+  const ui = labsUI[lang];
   const d = new Date(`${ymd}T00:00:00Z`);
-  return `${pad(d.getUTCMonth() + 1)}/${pad(d.getUTCDate())} ${weekdays[d.getUTCDay()]}`;
+  return ui.dayLabel(`${pad(d.getUTCMonth() + 1)}/${pad(d.getUTCDate())}`, ui.weekdays[d.getUTCDay()]);
 }
 export const shortDate = (ymd: string) => ymd.slice(5).replace("-", "/");
-export const tokens = (u?: { input?: number; output?: number }) =>
-  u ? `輸入 ${u.input?.toLocaleString() ?? "–"} · 輸出 ${u.output?.toLocaleString() ?? "–"} tokens` : "";
+export const tokens = (lang: Lang, u?: { input?: number; output?: number }) =>
+  u ? labsUI[lang].tokens(u.input?.toLocaleString() ?? "–", u.output?.toLocaleString() ?? "–") : "";
 export const updatedLabel = updatedAt
   ? (() => {
       const t = taipei(updatedAt);
@@ -63,19 +65,8 @@ for (const p of posts) {
 /** Every day with posts or a brief, newest first. */
 export const days = [...new Set([...postsByDay.keys(), ...briefByDay.keys()])].sort().reverse();
 
-export const categoryLabels: Record<string, string> = {
-  model_release: "模型發布",
-  product: "產品更新",
-  research: "研究",
-  open_source: "開源",
-  infra: "基礎設施",
-  partnership: "合作",
-  funding: "資金",
-  talent: "人事",
-  policy: "安全與政策",
-  event: "活動",
-  other: "其他",
-};
+// Slugs in display order; the labels live in the dictionary.
+const categoryLabels = labsUI.zh.categories;
 // The tag prints its label in this color, so these are the text-safe tokens.
 const categoryColors: Record<string, string> = {
   model_release: "var(--color-quarterly-text)",
@@ -90,10 +81,8 @@ const categoryColors: Record<string, string> = {
   event: "var(--color-monthly-text)",
   other: "var(--color-text-muted-on-muted)",
 };
-export const catLabel = (c: string) => categoryLabels[c] || c.replace(/_/g, " ");
+export const catLabel = (lang: Lang, c: string) => labsUI[lang].categories[c] || c.replace(/_/g, " ");
 export const catColor = (c: string) => categoryColors[c] || "var(--color-text-muted-on-muted)";
-export const regionLabels: Record<string, string> = { us: "美國", china: "中國", europe: "歐洲", other: "其他" };
-export const opennessLabels: Record<string, string> = { open: "開放權重", closed: "閉源", mixed: "混合" };
 
 export function countBy<T>(list: T[], key: (i: T) => string | undefined): Map<string, number> {
   const m = new Map<string, number>();
@@ -115,8 +104,8 @@ export function sortCats(counts: Map<string, number>): string[] {
 export const labCounts = countBy(posts, (p) => p.lab);
 /** Labs with at least one post, which are the ones that get a page. */
 export const activeLabs = sortLabs([...labCounts.keys()], labCounts);
-export const labHref = (key: string) => `/labs/lab/${encodeURIComponent(key)}`;
-export const dayHref = (day: string) => `/labs/${day}`;
+export const labHref = (lang: Lang, key: string) => href(lang, `/labs/lab/${encodeURIComponent(key)}`);
+export const dayHref = (lang: Lang, day: string) => href(lang, `/labs/${day}`);
 
 /** Swap point for the shared markdown renderer. */
 export function render(md: string): string {
@@ -131,15 +120,16 @@ const postByUrl = new Map<string, Post>(posts.flatMap((p) => [p.url, ...(p.alias
  * A post on `currentDay` becomes an in-page anchor that the page script
  * highlights; a post on another day links to that day's page; anything else
  * stays an external link in a new tab. Pass no day for pages without cards.
+ * Links keep the language of the page they are rendered on.
  */
-export function renderBrief(md: string, currentDay?: string): string {
+export function renderBrief(lang: Lang, md: string, currentDay?: string): string {
   return render(md).replace(/<a href="([^"]+)"([^>]*)>([\s\S]*?)<\/a>/g, (whole, url: string, _rest: string, text: string) => {
     const post = postByUrl.get(url.replace(/&amp;/g, "&"));
     if (post && post.day === currentDay) {
       return `<a href="#${post.id}" class="lab-ref" data-target="${post.id}">${text}</a>`;
     }
     if (post) {
-      return `<a href="${dayHref(post.day)}#${post.id}" class="lab-ref">${text}</a>`;
+      return `<a href="${dayHref(lang, post.day)}#${post.id}" class="lab-ref">${text}</a>`;
     }
     return whole.replace("<a ", '<a target="_blank" rel="noopener" ');
   });

@@ -2,11 +2,13 @@
 import type { GetStaticPaths } from "astro";
 import List from "../_List.astro";
 import { laterPages } from "../../_lib/paging";
+import { langOf, withLangs } from "@i18n";
 import { PER_PAGE, episodes } from "../_data";
 
-export const getStaticPaths = (({ paginate }) => laterPages(paginate, episodes, PER_PAGE)) satisfies GetStaticPaths;
+export const getStaticPaths = (({ paginate }) => withLangs(laterPages(paginate, episodes, PER_PAGE))) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
+const lang = langOf(Astro.params);
 ---
 
-<List page={page} />
+<List page={page} lang={lang} />

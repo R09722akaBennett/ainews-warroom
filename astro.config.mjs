@@ -9,7 +9,12 @@ export default defineConfig({
   // and internal links use the same URLs Cloudflare serves without a redirect.
   trailingSlash: "never",
 
-  integrations: [sitemap(), pagefind()],
+  // Every page is built in Chinese at "/" and in English at "/en/"; the
+  // sitemap lists both with hreflang alternates.
+  integrations: [
+    sitemap({ i18n: { defaultLocale: "zh", locales: { zh: "zh-Hant-TW", en: "en" } } }),
+    pagefind(),
+  ],
 
   vite: {
     plugins: [tailwindcss()],

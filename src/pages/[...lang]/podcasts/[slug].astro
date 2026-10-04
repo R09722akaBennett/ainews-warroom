@@ -2,15 +2,22 @@
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
 
+import { href, langOf, pick, t, withLangs } from "@i18n";
+import { podcastsUI } from "@i18n/ui/podcasts";
 import { isHost, minutes, youtubeAt, type Episode } from "@lib/podcasts";
 
 export function getStaticPaths() {
-  const mods = import.meta.glob<{ default: Episode }>("../../data/podcasts/*.json", { eager: true });
-  return Object.values(mods).map((m) => ({ params: { slug: m.default.slug }, props: { ep: m.default } }));
+  const mods = import.meta.glob<{ default: Episode }>("../../../data/podcasts/*.json", { eager: true });
+  return withLangs(Object.values(mods).map((m) => ({ params: { slug: m.default.slug }, props: { ep: m.default } })));
 }
 
-const { ep } = Astro.props as { ep: Episode };
+const lang = langOf(Astro.params);
+const ui = podcastsUI[lang];
+// Summaries are written in Chinese; the English page reads the "en" copy and
+// says so when an episode has none.
+const { data: ep, translated } = pick(Astro.props.ep as Episode, lang, "zh");
 const s = ep.summary || {};
+const showUntranslated = !translated && Object.keys(s).length > 0;
 const transcript = (ep.transcript || []).filter((c) => c.turns?.length);
 const hasTranscript = transcript.length > 0;
 const chapters = hasTranscript ? ep.chapters || [] : [];
@@ -65,22 +72,22 @@ const WE_DISCUSS_VISIBLE = 6;
 // Folding away one or two items costs more than it saves.
 const foldDiscuss = weDiscuss.length > WE_DISCUSS_VISIBLE + 2;
 const nav = [
-  s.one_liner && ["sec-summary", "總結"],
-  guestCards.length && ["sec-guests", "來賓"],
-  weDiscuss.length && ["sec-discuss", "本集討論"],
-  topics.length && ["sec-topics", "話題"],
-  insights.length && ["sec-insights", "啟發"],
-  quotes.length && ["sec-quotes", "金句"],
-  chapters.length && ["sec-chapters", "章節"],
-  hasTranscript && ["sec-transcript", "逐字稿"],
-  !hasTranscript && intro.length && ["sec-notes", "節目筆記"],
+  s.one_liner && ["sec-summary", ui.nav.summary],
+  guestCards.length && ["sec-guests", ui.nav.guests],
+  weDiscuss.length && ["sec-discuss", ui.nav.discuss],
+  topics.length && ["sec-topics", ui.nav.topics],
+  insights.length && ["sec-insights", ui.nav.insights],
+  quotes.length && ["sec-quotes", ui.nav.quotes],
+  chapters.length && ["sec-chapters", ui.nav.chapters],
+  hasTranscript && ["sec-transcript", ui.nav.transcript],
+  !hasTranscript && intro.length && ["sec-notes", ui.nav.notes],
 ].filter(Boolean) as [string, string][];
 ---
 
-<Layout title={ep.title} description={s.one_liner || ep.subtitle || ep.title}>
+<Layout title={ep.title} description={s.one_liner || ep.subtitle || ep.title} lang={lang}>
   <Container>
     <div class="ep-wrap">
-      <a href="/podcasts" class="ep-back">← 回到 Podcasts</a>
+      <a href={href(lang, "/podcasts")} class="ep-back">{ui.back}</a>
 
       {/* Not <header>: global.css makes every header element fixed at the top. */}
       <div class="ep-head">
@@ -88,34 +95,35 @@ const nav = [
           {ep.image && <img src={ep.image} alt="" width="48" height="48" class="ep-cover" loading="lazy" />}
           <div class="flex flex-col gap-1">
             <span class="ep-chip">{ep.show}</span>
-            <span class="meta">{ep.date} · {minutes(ep.duration)}</span>
+            <span class="meta">{ep.date} · {minutes(ep.duration, lang)}</span>
           </div>
         </div>
         <h1 class="ep-title">{ep.title}</h1>
         {ep.subtitle && <p class="ep-subtitle">{ep.subtitle}</p>}
         <div class="ep-actions">
-          {ep.url && <a href={ep.url} target="_blank" rel="noopener noreferrer" class="ep-btn ep-btn-primary">收聽原節目 ↗</a>}
+          {ep.url && <a href={ep.url} target="_blank" rel="noopener noreferrer" class="ep-btn ep-btn-primary">{ui.listen}</a>}
           {ep.youtube && <a href={ep.youtube} target="_blank" rel="noopener noreferrer" class="ep-btn">YouTube ↗</a>}
-          <button type="button" class="ep-btn" id="ep-share" data-title={ep.title}>分享</button>
+          <button type="button" class="ep-btn" id="ep-share" data-title={ep.title} data-copied={ui.copied} data-failed={ui.copyFailed}>{ui.share}</button>
         </div>
       </div>
 
       {nav.length > 1 && (
-        <nav class="ep-nav" aria-label="本頁段落">
+        <nav class="ep-nav" aria-label={ui.sectionsLabel}>
           {nav.map(([id, label]) => <a href={`#${id}`}>{label}</a>)}
         </nav>
       )}
 
       {s.one_liner && (
         <section id="sec-summary" class="ep-sec">
-          <h2 class="ep-h2">一句話總結</h2>
+          <h2 class="ep-h2">{ui.oneLiner}</h2>
+          {showUntranslated && <p class="meta">{t(lang).notTranslated}</p>}
           <div class="ep-oneliner">{s.one_liner}</div>
         </section>
       )}
 
       {guestCards.length > 0 && (
         <section id="sec-guests" class="ep-sec">
-          <h2 class="ep-h2">來賓</h2>
+          <h2 class="ep-h2">{ui.guests}</h2>
           <div class="ep-grid">
             {guestCards.map((g) => (
               <div class="card ep-card">
@@ -130,8 +138,8 @@ const nav = [
                 {g.intro && <p class="ep-body">{g.intro}</p>}
                 {g.links.length > 0 && (
                   <div class="ep-guest-links">
-                    {g.links.map(([label, href]) => (
-                      <a href={href} target="_blank" rel="noopener noreferrer" class="ep-glink" aria-label={`${g.name} 的 ${label}`}>
+                    {g.links.map(([label, url]) => (
+                      <a href={url} target="_blank" rel="noopener noreferrer" class="ep-glink" aria-label={ui.guestLink(g.name, label)}>
                         {label === "X" ? (
                           <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" aria-hidden="true"><path d="M17.75 3h3.07l-6.7 7.66L22 21h-6.17l-4.83-6.32L5.47 21H2.4l7.17-8.2L2 3h6.33l4.37 5.77L17.75 3zm-1.08 16.17h1.7L7.4 4.74H5.58l11.09 14.43z" /></svg>
                         ) : label === "LinkedIn" ? (
@@ -151,13 +159,13 @@ const nav = [
       {/* The English show notes stay folded under the Chinese list. */}
       {weDiscuss.length > 0 && (
         <section id="sec-discuss" class="ep-sec">
-          <h2 class="ep-h2">本集討論</h2>
+          <h2 class="ep-h2">{ui.discuss}</h2>
           <ul class="ep-bullets">
             {weDiscuss.slice(0, foldDiscuss ? WE_DISCUSS_VISIBLE : undefined).map((w) => <li>{w}</li>)}
           </ul>
           {foldDiscuss && (
             <details class="ep-more">
-              <summary>再顯示 {weDiscuss.length - WE_DISCUSS_VISIBLE} 項</summary>
+              <summary>{ui.showMore(weDiscuss.length - WE_DISCUSS_VISIBLE)}</summary>
               <ul class="ep-bullets">
                 {weDiscuss.slice(WE_DISCUSS_VISIBLE).map((w) => <li>{w}</li>)}
               </ul>
@@ -168,18 +176,18 @@ const nav = [
 
       {hasTranscript && intro.length > 0 && (
         <details class="ep-more ep-notes-fold">
-          <summary>節目筆記（英文原文，{intro.length} 段）</summary>
+          <summary>{ui.notesFold(intro.length)}</summary>
           <div class="ep-notes">{intro.map((p) => <p>{p}</p>)}</div>
         </details>
       )}
 
       {topics.length > 0 && (
         <section id="sec-topics" class="ep-sec">
-          <h2 class="ep-h2">主要討論話題</h2>
+          <h2 class="ep-h2">{ui.topics}</h2>
           <div class="ep-grid">
             {topics.map((t, i) => (
               <div class="card ep-card">
-                <span class="ep-kicker">話題 {String(i + 1).padStart(2, "0")}</span>
+                <span class="ep-kicker">{ui.topicN(String(i + 1).padStart(2, "0"))}</span>
                 <h3 class="ep-h3">{t.title}</h3>
                 <p class="ep-body">{t.body}</p>
               </div>
@@ -190,7 +198,7 @@ const nav = [
 
       {insights.length > 0 && (
         <section id="sec-insights" class="ep-sec">
-          <h2 class="ep-h2">對你的啟發</h2>
+          <h2 class="ep-h2">{ui.insights}</h2>
           <div class="ep-stack">
             {insights.map((t) => (
               <div class="card card-accent-warm ep-card">
@@ -204,13 +212,13 @@ const nav = [
 
       {quotes.length > 0 && (
         <section id="sec-quotes" class="ep-sec">
-          <h2 class="ep-h2">金句摘錄</h2>
+          <h2 class="ep-h2">{ui.quotes}</h2>
           <div class="ep-stack">
             {quotes.map((q) => (
               <figure class="ep-quote">
                 <blockquote>
                   <p class="ep-quote-en" lang="en">{q.en}</p>
-                  <p class="ep-quote-zh">{q.zh}</p>
+                  {lang === "zh" && <p class="ep-quote-zh">{q.zh}</p>}
                 </blockquote>
                 <figcaption>— {q.speaker}</figcaption>
               </figure>
@@ -221,12 +229,12 @@ const nav = [
 
       {chapters.length > 0 && (
         <section id="sec-chapters" class="ep-sec">
-          <h2 class="ep-h2">章節</h2>
+          <h2 class="ep-h2">{ui.chapters}</h2>
           <ol class="ep-chapters">
             {chapters.map((c) => (
               <li>
                 {ep.youtube ? (
-                  <a href={youtubeAt(ep.youtube, c.seconds)} target="_blank" rel="noopener noreferrer" class="ep-ts" title="在 YouTube 從這裡開始播放">▶ {c.t}</a>
+                  <a href={youtubeAt(ep.youtube, c.seconds)} target="_blank" rel="noopener noreferrer" class="ep-ts" title={ui.playFromHere}>▶ {c.t}</a>
                 ) : (
                   <span class="ep-ts">{c.t}</span>
                 )}
@@ -239,11 +247,11 @@ const nav = [
 
       {hasTranscript ? (
         <section id="sec-transcript" class="ep-sec">
-          <h2 class="ep-h2">逐字稿</h2>
+          <h2 class="ep-h2">{ui.transcript}</h2>
           <label class="ep-search">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
-            <input id="tr-q" type="search" placeholder="搜尋逐字稿（英文原文）" autocomplete="off" aria-label="搜尋逐字稿" />
-            <span class="meta" id="tr-count"></span>
+            <input id="tr-q" type="search" placeholder={ui.transcriptSearch} autocomplete="off" aria-label={ui.transcriptSearchLabel} />
+            <span class="meta" id="tr-count" data-hits={ui.hits(0).replace("0", "{n}")} data-nohits={ui.noHits}></span>
           </label>
           <div class="ep-transcript" id="tr-root">
             {transcript.map((c, ci) => (
@@ -272,27 +280,27 @@ const nav = [
             ))}
           </div>
           <p class="ep-attr">
-            逐字稿與節目內容來自 {ep.show}，版權屬原作者。
-            {ep.url && <a href={ep.url} target="_blank" rel="noopener noreferrer" class="ep-inline-link">閱讀原文 ↗</a>}
+            {ui.transcriptAttr(ep.show)}
+            {ep.url && <a href={ep.url} target="_blank" rel="noopener noreferrer" class="ep-inline-link">{ui.readOriginal}</a>}
           </p>
         </section>
       ) : (
         <section id="sec-notes" class="ep-sec">
-          <div class="ep-notice">這集原文沒有逐字稿，摘要根據節目筆記整理。</div>
+          <div class="ep-notice">{ui.noTranscript}</div>
           {intro.length > 0 && (
             <>
-              <h2 class="ep-h2">節目筆記</h2>
+              <h2 class="ep-h2">{ui.notes}</h2>
               <div class="ep-notes">{intro.map((p) => <p>{p}</p>)}</div>
             </>
           )}
           <p class="ep-attr">
-            節目內容來自 {ep.show}，版權屬原作者。
-            {ep.url && <a href={ep.url} target="_blank" rel="noopener noreferrer" class="ep-inline-link">閱讀原文 ↗</a>}
+            {ui.notesAttr(ep.show)}
+            {ep.url && <a href={ep.url} target="_blank" rel="noopener noreferrer" class="ep-inline-link">{ui.readOriginal}</a>}
           </p>
         </section>
       )}
 
-      <a href="/podcasts" class="ep-back">← 回到 Podcasts</a>
+      <a href={href(lang, "/podcasts")} class="ep-back">{ui.back}</a>
     </div>
   </Container>
 </Layout>
@@ -453,9 +461,9 @@ const nav = [
       }
       try {
         await navigator.clipboard.writeText(url);
-        btn.textContent = "已複製連結";
+        btn.textContent = btn.dataset.copied || "";
       } catch {
-        btn.textContent = "無法複製，請手動複製網址";
+        btn.textContent = btn.dataset.failed || "";
       }
       setTimeout(() => (btn.textContent = original), 2000);
     });
@@ -536,7 +544,7 @@ const nav = [
         c.hidden = !hit;
         c.open = hit;
       }
-      count.textContent = hits ? `${hits} 段` : "沒有符合";
+      count.textContent = hits ? (count.dataset.hits || "").replace("{n}", String(hits)) : count.dataset.nohits || "";
     }
 
     input.addEventListener("input", () => {

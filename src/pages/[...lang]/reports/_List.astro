@@ -4,10 +4,13 @@ import Container from "@components/Container.astro";
 import Pagination from "@components/Pagination.astro";
 
 import { SITE_SINCE } from "@consts";
+import { href, pick, type Lang } from "@i18n";
+import { reportsUI } from "@i18n/ui/reports";
 import type { PageSlice } from "../_lib/paging";
 
-type Props = { page: PageSlice<any> };
-const { page } = Astro.props;
+type Props = { page: PageSlice<any>; lang: Lang };
+const { page, lang } = Astro.props;
+const ui = reportsUI[lang];
 
 type Grouped = Record<string, Record<string, any[]>>;
 
@@ -24,18 +27,18 @@ const years = Object.keys(grouped).sort().reverse();
 
 ---
 
-<Layout title={page.currentPage === 1 ? "Reports" : `Reports 第 ${page.currentPage} 頁`} description="AI War Room 每日快報列表，依月份分組並可搜尋公司、模型與話題。">
+<Layout title={page.currentPage === 1 ? ui.title : ui.pageTitle(page.currentPage)} description={ui.description} lang={lang}>
   <Container>
     <div class="space-y-10">
       <div>
-        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Reports</h1>
-        <p class="mt-1 text-sm" style="color: var(--color-text-muted);">{SITE_SINCE} 起共 {page.total} 份每日快報{page.lastPage > 1 && `，這頁是第 ${page.start + 1} 到 ${page.end + 1} 份`}，更早的在 <a href="/archive" class="list-link">Archive</a>。</p>
+        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">{ui.title}</h1>
+        <p class="mt-1 text-sm" style="color: var(--color-text-muted);">{ui.intro(SITE_SINCE, page.total)}{page.lastPage > 1 && ui.introRange(page.start + 1, page.end + 1)}{ui.introArchive}<a href={href(lang, "/archive")} class="list-link">{ui.archive}</a>{lang === "en" ? "." : "。"}</p>
         <div class="mt-4">
           <input
             type="text"
             id="report-search"
-            placeholder="搜尋本頁的標題、公司、模型或話題"
-            aria-label="搜尋本頁的報告"
+            placeholder={ui.searchPlaceholder}
+            aria-label={ui.searchLabel}
             class="report-search-input"
           />
         </div>
@@ -50,12 +53,13 @@ const years = Object.keys(grouped).sort().reverse();
             return (
               <div class="space-y-2 report-month">
                 <div class="flex items-center gap-3">
-                  <span class="section-title">{Number(mm)} 月</span>
+                  <span class="section-title">{ui.month(Number(mm))}</span>
                   <div class="h-px flex-1" style="background-color: var(--color-border);"></div>
                   <span class="meta">{reports.length}</span>
                 </div>
                 <div class="space-y-1.5">
-                  {reports.map((report: any) => {
+                  {reports.map((raw: any) => {
+                    const report = pick(raw, lang, "zh").data;
                     const searchText = [
                       report.title,
                       report.date,
@@ -64,13 +68,13 @@ const years = Object.keys(grouped).sort().reverse();
                       ...(report.tags?.topics || []),
                     ].join(" ").toLowerCase();
                     return (
-                    <a href={`/reports/${report.date}`}
+                    <a href={href(lang, `/reports/${report.date}`)}
                        class="card report-card block px-5 py-3 no-underline space-y-1.5"
                        data-search-text={searchText}>
                       <div class="flex items-center gap-5">
                         <span class="meta min-w-[5.5rem]">{report.date}</span>
                         <span class="flex-1 text-sm font-medium" style="color: var(--color-text);">{report.title}</span>
-                        <span class="meta hidden sm:inline">{report.rawCount} 則</span>
+                        <span class="meta hidden sm:inline">{ui.items(report.rawCount)}</span>
                       </div>
                       {report.tags && (Object.keys(report.tags).length > 0) && (() => {
                         const companies = report.tags.companies || [];
@@ -106,9 +110,9 @@ const years = Object.keys(grouped).sort().reverse();
         </section>
       ))}
 
-      <p class="text-sm" id="report-empty" style="color: var(--color-text-muted);" hidden>這一頁沒有符合的報告，其他頁的報告不在搜尋範圍內。</p>
+      <p class="text-sm" id="report-empty" style="color: var(--color-text-muted);" hidden>{ui.empty}</p>
 
-      <Pagination currentPage={page.currentPage} lastPage={page.lastPage} base="/reports" label="Reports 分頁" />
+      <Pagination currentPage={page.currentPage} lastPage={page.lastPage} base={href(lang, "/reports")} label={ui.paginationLabel} lang={lang} />
     </div>
   </Container>
 </Layout>

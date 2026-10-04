@@ -1,14 +1,21 @@
 ---
 import Search from "astro-pagefind/components/Search";
+import { t, type Lang } from "@i18n";
+
+type Props = { lang?: Lang };
+const { lang = "zh" } = Astro.props;
+const ui = t(lang).search;
 ---
 
+{/* Persisted per language: Pagefind keeps one index per <html lang>, and the
+    overlay must be rebuilt on a language switch to search the right one. */}
 <aside data-pagefind-ignore>
   <div
-    transition:persist
+    transition:persist={`search-${lang}`}
     id="backdrop"
     role="dialog"
     aria-modal="true"
-    aria-label="搜尋"
+    aria-label={ui.label}
     class="invisible fixed left-0 top-0 z-50 flex h-screen w-full justify-center bg-black/50 p-6 backdrop-blur-xs"
   >
     <div
@@ -25,7 +32,9 @@ import Search from "astro-pagefind/components/Search";
         }}
       />
       <div class="mr-2 pb-1 pt-4 text-right text-xs dark:prose-invert">
-        按 <span class="prose text-xs dark:prose-invert"><kbd>Esc</kbd></span> 或點擊外側即可關閉。
+        {lang === "en"
+          ? <>Press <span class="prose text-xs dark:prose-invert"><kbd>Esc</kbd></span> or click outside to close.</>
+          : <>按 <span class="prose text-xs dark:prose-invert"><kbd>Esc</kbd></span> 或點擊外側即可關閉。</>}
       </div>
     </div>
   </div>
@@ -35,13 +44,19 @@ import Search from "astro-pagefind/components/Search";
     are both transition:persist, so the listeners bound here outlive page
     swaps without being added again. */}
 <script>
-  const backdrop = document.getElementById("backdrop");
+  // Looked up on every use: the overlay is persisted per language, so a
+  // language switch swaps in a new element and a reference taken at load
+  // would point at the old one.
+  function backdropEl(): HTMLElement | null {
+    return document.getElementById("backdrop");
+  }
 
   function isOpen(): boolean {
-    return !!backdrop && backdrop.classList.contains("visible");
+    return !!backdropEl()?.classList.contains("visible");
   }
 
   function openPagefind() {
+    const backdrop = backdropEl();
     if (!backdrop) return;
     backdrop.classList.remove("invisible");
     backdrop.classList.add("visible");
@@ -52,6 +67,7 @@ import Search from "astro-pagefind/components/Search";
   }
 
   function closePagefind() {
+    const backdrop = backdropEl();
     if (!backdrop) return;
     const input = document.querySelector<HTMLInputElement>("#search input");
     if (input) {
@@ -93,8 +109,9 @@ import Search from "astro-pagefind/components/Search";
     }
   });
 
-  backdrop?.addEventListener("click", (event) => {
-    if (!(event.target as Element).closest("#pagefind-container")) {
+  document.addEventListener("click", (event) => {
+    const target = event.target as Element;
+    if (target.closest("#backdrop") && !target.closest("#pagefind-container")) {
       closePagefind();
     }
   });
@@ -105,8 +122,11 @@ import Search from "astro-pagefind/components/Search";
   // Cloudflare (html_handling: drop-trailing-slash) answers with a redirect.
   // uiOptions is serialized to a data attribute, so a processResult callback
   // cannot be passed; rewrite the rendered links instead.
-  const searchRoot = document.getElementById("search");
-  if (searchRoot) {
+  let observed: Element | null = null;
+  function observeResults() {
+    const searchRoot = document.getElementById("search");
+    if (!searchRoot || searchRoot === observed) return;
+    observed = searchRoot;
     new MutationObserver(() => {
       searchRoot.querySelectorAll<HTMLAnchorElement>("a[href^=\"/\"]").forEach((a) => {
         const href = a.getAttribute("href") || "";
@@ -115,6 +135,9 @@ import Search from "astro-pagefind/components/Search";
       });
     }).observe(searchRoot, { childList: true, subtree: true });
   }
+  observeResults();
+  // A language switch brings a new overlay; observe the new result list too.
+  document.addEventListener("astro:page-load", observeResults);
 </script>
 
 <style is:global>

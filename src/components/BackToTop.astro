@@ -1,3 +1,9 @@
+---
+import { t, type Lang } from "@i18n";
+type Props = { lang?: Lang };
+const { lang = "zh" } = Astro.props;
+---
+
 <button
   type="button"
   id="back-to-top"
@@ -20,5 +26,5 @@
       class="translate-x-1 transition-transform duration-300 ease-in-out group-hover:translate-x-0 group-focus-visible:translate-x-0"
     ></polyline>
   </svg>
-  <div class="text-sm">回到頂端</div>
+  <div class="text-sm">{t(lang).backToTop}</div>
 </button>

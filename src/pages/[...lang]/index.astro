@@ -1,13 +1,21 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
-import { SITE, HOME, SITE_SINCE } from "@consts";
+import { SITE, SITE_SINCE } from "@consts";
+import { LANG_PARAMS, href, langOf, pick, t } from "@i18n";
+import { homeUI } from "@i18n/ui/home";
 
-import reportsData from "../data/reports.json";
-import summariesData from "../data/summaries.json";
-import leaderboardData from "../data/leaderboard.json";
-import papersData from "../data/papers.json";
-import mcpData from "../data/mcpmarket.json";
+export function getStaticPaths() {
+  return LANG_PARAMS.map((params) => ({ params }));
+}
+const lang = langOf(Astro.params);
+const ui = homeUI[lang];
+
+import reportsData from "../../data/reports.json";
+import summariesData from "../../data/summaries.json";
+import leaderboardData from "../../data/leaderboard.json";
+import papersData from "../../data/papers.json";
+import mcpData from "../../data/mcpmarket.json";
 
 const topPapers = ((papersData as any).hot || []).slice(0, 3);
 const mcp = mcpData as any;
@@ -15,16 +23,21 @@ const topServers = (mcp.servers || []).slice(0, 3);
 const topSkills = (mcp.skills || []).slice(0, 3);
 
 const reports = reportsData.filter((r: any) => r.date >= SITE_SINCE);
-const latestReport = reports[0];
-const recentReports = reports.slice(1, 11);
+const latestEntry = reports[0] ? pick(reports[0] as any, lang, "zh") : null;
+const latestReport = latestEntry?.data as any;
+const recentReports = reports.slice(1, 11).map((x: any) => pick(x, lang, "zh").data);
 
 // Summaries without origin "wiki" came from the retired pipeline.
 const summaries = (summariesData as any[])
   .filter((s) => s.origin === "wiki")
   .sort((a, b) => (b.startDate || "").localeCompare(a.startDate || ""));
-const industryWeekly = summaries.find((s) => s.period === "raw_weekly");
-const industryMonthly = summaries.find((s) => s.period === "raw_monthly");
-const industryQuarterly = summaries.find((s) => s.period === "raw_quarterly");
+const industryOf = (period: string) => {
+  const found = summaries.find((s) => s.period === period);
+  return found ? pick(found, lang, "zh").data : undefined;
+};
+const industryWeekly = industryOf("raw_weekly");
+const industryMonthly = industryOf("raw_monthly");
+const industryQuarterly = industryOf("raw_quarterly");
 
 function truncate(text: string, n: number): string {
   if (!text || text.length <= n) return text || "";
@@ -59,7 +72,7 @@ const topLabs = Array.from(labMap.values())
   .sort((a, b) => b.points - a.points)
   .slice(0, 3);
 
-const lbUpdated = new Date(lb.updatedAt).toLocaleDateString("zh-TW", {
+const lbUpdated = new Date(lb.updatedAt).toLocaleDateString(ui.dateLocale, {
   timeZone: "Asia/Taipei", month: "numeric", day: "numeric",
 });
 
@@ -117,7 +130,7 @@ try {
 }
 ---
 
-<Layout title={HOME.TITLE} description={HOME.DESCRIPTION}>
+<Layout title={SITE.TITLE} description={ui.description} lang={lang}>
   <Container>
     <div class="space-y-14">
 
@@ -126,23 +139,24 @@ try {
           {SITE.TITLE}
         </h1>
         <p class="text-center text-sm" style="color: var(--color-text-muted);">
-          每日 AI 快報、前沿實驗室動態與產業趨勢{latestReport && `，最新一期是 ${latestReport.date}`}。
+          {ui.tagline}{latestReport && ui.latestIssue(latestReport.date)}{ui.period}
         </p>
       </div>
 
       {latestReport && (
         <section class="space-y-4">
-          <h2 class="section-title">最新快報</h2>
-          <a href={`/reports/${latestReport.date}`} class="card card-accent-warm block p-6 no-underline">
+          <h2 class="section-title">{ui.latestHeading}</h2>
+          <a href={href(lang, `/reports/${latestReport.date}`)} class="card card-accent-warm block p-6 no-underline">
             <div class="flex items-start justify-between gap-4">
               <div class="flex-1 space-y-3">
                 <div class="flex items-center gap-3">
-                  <span class="period-label period-warroom">快報</span>
+                  <span class="period-label period-warroom">{ui.badge}</span>
                   <span class="meta">{latestReport.date}</span>
                 </div>
                 <h2 class="text-xl font-semibold tracking-tight" style="color: var(--color-text);">
                   {latestReport.title}
                 </h2>
+                {lang === "en" && !latestEntry?.translated && <p class="meta">{t(lang).notTranslated}</p>}
                 <p class="text-sm leading-relaxed line-clamp-3" style="color: var(--color-text-muted);">
                   {latestReport.content
                     ?.split("\n")
@@ -156,8 +170,8 @@ try {
                     .slice(0, 300)}
                 </p>
                 <div class="flex items-center gap-4 pt-1">
-                  <span class="meta">收錄 {latestReport.rawCount} 則來源</span>
-                  <span class="text-xs font-medium" style="color: var(--color-accent-warm-text);">閱讀快報 →</span>
+                  <span class="meta">{ui.sourcesIncluded(latestReport.rawCount)}</span>
+                  <span class="text-xs font-medium" style="color: var(--color-accent-warm-text);">{ui.readReport}</span>
                 </div>
               </div>
             </div>
@@ -167,14 +181,14 @@ try {
 
       <section class="space-y-4">
         <div class="flex items-center justify-between">
-          <h2 class="section-title">排行與熱門</h2>
-          <span class="meta">排行更新於 {lbUpdated}</span>
+          <h2 class="section-title">{ui.rankingsHeading}</h2>
+          <span class="meta">{ui.rankingUpdated(lbUpdated)}</span>
         </div>
         <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-          <a href="/leaderboard#overview" class="card block p-5 no-underline snapshot-card" style="border-left: 3px solid var(--color-accent-cool);">
+          <a href={href(lang, "/leaderboard#overview")} class="card block p-5 no-underline snapshot-card" style="border-left: 3px solid var(--color-accent-cool);">
             <div class="snapshot-header">
-              <span class="snapshot-label" style="color: var(--color-accent-cool-text);">模型排名</span>
-              <span class="snapshot-link">排行榜 →</span>
+              <span class="snapshot-label" style="color: var(--color-accent-cool-text);">{ui.modelRank}</span>
+              <span class="snapshot-link">{ui.leaderboardLink}</span>
             </div>
             <div class="space-y-2.5">
               {topModels.map((m: any, i: number) => (
@@ -189,10 +203,10 @@ try {
             </div>
           </a>
 
-          <a href="/leaderboard#orgs" class="card block p-5 no-underline snapshot-card" style="border-left: 3px solid var(--color-accent-warm);">
+          <a href={href(lang, "/leaderboard#orgs")} class="card block p-5 no-underline snapshot-card" style="border-left: 3px solid var(--color-accent-warm);">
             <div class="snapshot-header">
-              <span class="snapshot-label" style="color: var(--color-accent-warm-text);">實驗室排名</span>
-              <span class="snapshot-link">排行榜 →</span>
+              <span class="snapshot-label" style="color: var(--color-accent-warm-text);">{ui.labRank}</span>
+              <span class="snapshot-link">{ui.leaderboardLink}</span>
             </div>
             <div class="space-y-2.5">
               {topLabs.map((lab, i: number) => (
@@ -200,17 +214,17 @@ try {
                   <span class="snapshot-medal">{lbMedal(i + 1)}</span>
                   <div class="flex-1 min-w-0">
                     <div class="snapshot-name">{lab.org}</div>
-                    <div class="snapshot-sub">{lab.points} 分</div>
+                    <div class="snapshot-sub">{ui.points(lab.points)}</div>
                   </div>
                 </div>
               ))}
             </div>
           </a>
 
-          <a href="/trending#mcpservers" class="card card-accent-cool block p-5 no-underline snapshot-card">
+          <a href={href(lang, "/trending#mcpservers")} class="card card-accent-cool block p-5 no-underline snapshot-card">
             <div class="snapshot-header">
               <span class="snapshot-label" style="color: var(--color-accent-cool-text);">MCP Servers</span>
-              <span class="snapshot-link">全部 →</span>
+              <span class="snapshot-link">{ui.allLink}</span>
             </div>
             <div class="space-y-2.5">
               {topServers.length > 0 ? topServers.map((s: any, i: number) => (
@@ -222,15 +236,15 @@ try {
                   </div>
                 </div>
               )) : (
-                <div class="snapshot-sub">下次更新後顯示</div>
+                <div class="snapshot-sub">{ui.emptyCard}</div>
               )}
             </div>
           </a>
 
-          <a href="/trending#skills" class="card card-accent-cool block p-5 no-underline snapshot-card">
+          <a href={href(lang, "/trending#skills")} class="card card-accent-cool block p-5 no-underline snapshot-card">
             <div class="snapshot-header">
               <span class="snapshot-label" style="color: var(--color-accent-cool-text);">Agent Skills</span>
-              <span class="snapshot-link">全部 →</span>
+              <span class="snapshot-link">{ui.allLink}</span>
             </div>
             <div class="space-y-2.5">
               {topSkills.length > 0 ? topSkills.map((s: any, i: number) => (
@@ -242,17 +256,17 @@ try {
                   </div>
                 </div>
               )) : (
-                <div class="snapshot-sub">下次更新後顯示</div>
+                <div class="snapshot-sub">{ui.emptyCard}</div>
               )}
             </div>
           </a>
         </div>
 
         <div class="grid gap-4 grid-cols-1 sm:grid-cols-3">
-          <a href="/trending#repos" class="card card-accent-purple block p-5 no-underline snapshot-card">
+          <a href={href(lang, "/trending#repos")} class="card card-accent-purple block p-5 no-underline snapshot-card">
             <div class="snapshot-header">
-              <span class="snapshot-label" style="color: var(--color-accent-purple-text);">熱門 Repo</span>
-              <span class="snapshot-link">全部 →</span>
+              <span class="snapshot-label" style="color: var(--color-accent-purple-text);">{ui.hotRepos}</span>
+              <span class="snapshot-link">{ui.allLink}</span>
             </div>
             <div class="space-y-2.5">
               {trendingRepos.length > 0 ? trendingRepos.map((repo, i: number) => (
@@ -264,15 +278,15 @@ try {
                   </div>
                 </div>
               )) : (
-                <div class="snapshot-sub">下次更新後顯示</div>
+                <div class="snapshot-sub">{ui.emptyCard}</div>
               )}
             </div>
           </a>
 
-          <a href="/trending#products" class="card card-accent-orange block p-5 no-underline snapshot-card">
+          <a href={href(lang, "/trending#products")} class="card card-accent-orange block p-5 no-underline snapshot-card">
             <div class="snapshot-header">
               <span class="snapshot-label" style="color: var(--color-accent-orange-text);">Product Hunt</span>
-              <span class="snapshot-link">全部 →</span>
+              <span class="snapshot-link">{ui.allLink}</span>
             </div>
             <div class="space-y-2.5">
               {topProducts.length > 0 ? topProducts.map((p, i: number) => (
@@ -284,15 +298,15 @@ try {
                   </div>
                 </div>
               )) : (
-                <div class="snapshot-sub">下次更新後顯示</div>
+                <div class="snapshot-sub">{ui.emptyCard}</div>
               )}
             </div>
           </a>
 
-          <a href="/trending#papers" class="card card-accent-cool block p-5 no-underline snapshot-card">
+          <a href={href(lang, "/trending#papers")} class="card card-accent-cool block p-5 no-underline snapshot-card">
             <div class="snapshot-header">
-              <span class="snapshot-label" style="color: var(--color-accent-cool-text);">熱門論文</span>
-              <span class="snapshot-link">全部 →</span>
+              <span class="snapshot-label" style="color: var(--color-accent-cool-text);">{ui.hotPapers}</span>
+              <span class="snapshot-link">{ui.allLink}</span>
             </div>
             <div class="space-y-2.5">
               {topPapers.length > 0 ? topPapers.map((p: any, i: number) => (
@@ -300,11 +314,11 @@ try {
                   <span class="snapshot-medal">{lbMedal(i + 1)}</span>
                   <div class="flex-1 min-w-0">
                     <div class="snapshot-name">{truncate(p.title, 45)}</div>
-                    <div class="snapshot-sub">{p.votes} 票 · {p.visits?.toLocaleString()} 次瀏覽</div>
+                    <div class="snapshot-sub">{ui.paperStats(p.votes, p.visits?.toLocaleString())}</div>
                   </div>
                 </div>
               )) : (
-                <div class="snapshot-sub">下次更新後顯示</div>
+                <div class="snapshot-sub">{ui.emptyCard}</div>
               )}
             </div>
           </a>
@@ -313,15 +327,15 @@ try {
 
       <section class="space-y-4">
         <div class="flex items-center justify-between">
-          <h2 class="section-title">產業趨勢</h2>
-          <a href="/trends" class="index-more">全部趨勢 →</a>
+          <h2 class="section-title">{ui.trendsHeading}</h2>
+          <a href={href(lang, "/trends")} class="index-more">{ui.allTrends}</a>
         </div>
         <div>
           <div class="grid gap-4 md:grid-cols-3">
             {industryWeekly && (
-              <a href="/trends#industry" class="card card-accent-cool block p-5 no-underline space-y-2.5">
+              <a href={href(lang, "/trends#industry")} class="card card-accent-cool block p-5 no-underline space-y-2.5">
                 <div class="flex items-center justify-between">
-                  <span class="period-label period-weekly">週報</span>
+                  <span class="period-label period-weekly">{ui.weekly}</span>
                   <span class="meta">{industryWeekly.startDate?.slice(5)}</span>
                 </div>
                 <p class="text-sm font-medium leading-snug" style="color: var(--color-text);">
@@ -330,9 +344,9 @@ try {
               </a>
             )}
             {industryMonthly && (
-              <a href="/trends#industry" class="card card-accent-cool block p-5 no-underline space-y-2.5">
+              <a href={href(lang, "/trends#industry")} class="card card-accent-cool block p-5 no-underline space-y-2.5">
                 <div class="flex items-center justify-between">
-                  <span class="period-label period-monthly">月報</span>
+                  <span class="period-label period-monthly">{ui.monthly}</span>
                   <span class="meta">{industryMonthly.startDate?.slice(0,7)}</span>
                 </div>
                 <p class="text-sm font-medium leading-snug" style="color: var(--color-text);">
@@ -341,9 +355,9 @@ try {
               </a>
             )}
             {industryQuarterly && (
-              <a href="/trends#industry" class="card card-accent-cool block p-5 no-underline space-y-2.5">
+              <a href={href(lang, "/trends#industry")} class="card card-accent-cool block p-5 no-underline space-y-2.5">
                 <div class="flex items-center justify-between">
-                  <span class="period-label period-quarterly">季報</span>
+                  <span class="period-label period-quarterly">{ui.quarterly}</span>
                   <span class="meta">{industryQuarterly.startDate?.slice(0,7)}</span>
                 </div>
                 <p class="text-sm font-medium leading-snug" style="color: var(--color-text);">
@@ -357,16 +371,16 @@ try {
 
       <section class="space-y-4">
         <div class="flex items-center justify-between">
-          <h2 class="section-title">近期快報</h2>
-          <a href="/reports" class="index-more">全部快報 →</a>
+          <h2 class="section-title">{ui.recentHeading}</h2>
+          <a href={href(lang, "/reports")} class="index-more">{ui.allReports}</a>
         </div>
         <div class="space-y-2">
           {recentReports.map((report: any) => (
-            <a href={`/reports/${report.date}`}
+            <a href={href(lang, `/reports/${report.date}`)}
                class="card flex items-center gap-5 px-5 py-3.5 no-underline">
               <span class="meta min-w-[5.5rem]">{report.date}</span>
               <span class="flex-1 text-sm font-medium" style="color: var(--color-text);">{report.title}</span>
-              <span class="meta hidden sm:inline">{report.rawCount} 則</span>
+              <span class="meta hidden sm:inline">{ui.itemCount(report.rawCount)}</span>
             </a>
           ))}
         </div>

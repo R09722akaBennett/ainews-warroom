@@ -4,7 +4,15 @@ import Container from "@components/Container.astro";
 import { renderMarkdown } from "@lib/markdown";
 
 import { SITE_SINCE } from "@consts";
-import allSummaries from "../data/summaries.json";
+import allSummaries from "../../data/summaries.json";
+import { LANG_PARAMS, langOf, pick, t } from "@i18n";
+import { trendsUI } from "@i18n/ui/trends";
+
+export function getStaticPaths() {
+  return LANG_PARAMS.map((params) => ({ params }));
+}
+const lang = langOf(Astro.params);
+const ui = trendsUI[lang];
 
 // Summaries without origin "wiki" came from the retired pipeline. A period is
 // shown when it ends on or after SITE_SINCE, so a week or quarter that spans
@@ -19,20 +27,20 @@ const industry = {
 
 type PeriodKey = "weekly" | "monthly" | "quarterly";
 const periodMeta: Record<PeriodKey, { label: string; badge: string; accent: string }> = {
-  weekly: { label: "週報", badge: "週", accent: "weekly" },
-  monthly: { label: "月報", badge: "月", accent: "monthly" },
-  quarterly: { label: "季報", badge: "季", accent: "quarterly" },
+  weekly: { ...ui.weekly, accent: "weekly" },
+  monthly: { ...ui.monthly, accent: "monthly" },
+  quarterly: { ...ui.quarterly, accent: "quarterly" },
 };
 const periods: PeriodKey[] = ["weekly", "monthly", "quarterly"];
 const total = periods.reduce((t, p) => t + industry[p].length, 0);
 ---
 
-<Layout title="Insights" description="每週、每月與每季的 AI 產業趨勢整理。">
+<Layout title={ui.title} description={ui.description} lang={lang}>
   <Container>
     <div class="space-y-8">
       <div>
-        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Insights</h1>
-        <p class="mt-1 text-sm" style="color: var(--color-text-muted);">每週、每月與每季的 AI 產業趨勢整理，共 {total} 份。</p>
+        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">{ui.title}</h1>
+        <p class="mt-1 text-sm" style="color: var(--color-text-muted);">{ui.intro(total)}</p>
       </div>
 
       <div>
@@ -47,23 +55,27 @@ const total = periods.reduce((t, p) => t + industry[p].length, 0);
 
         {periods.map((p, i) => (
           <div data-period-content={p} class:list={["period-content space-y-3", { hidden: i !== 0 }]} data-track="industry">
-            {industry[p].length > 0 ? industry[p].map((s: any) => (
+            {industry[p].length > 0 ? industry[p].map((raw: any) => {
+              const { data: s, translated } = pick(raw, lang, "zh");
+              return (
               <details class={`card card-accent-${periodMeta[p].accent} group`}>
                 <summary class="flex cursor-pointer flex-wrap items-center gap-x-4 gap-y-1 px-5 py-4">
                   <span class={`period-label period-${periodMeta[p].accent}`}>{periodMeta[p].badge}</span>
                   <span class="meta">{s.startDate} ~ {s.endDate}</span>
                   <span class="min-w-0 flex-1 basis-60 text-sm font-medium" style="color: var(--color-text);">{s.title}</span>
-                  {s.tokenUsage && <span class="meta hidden sm:inline">輸入 {s.tokenUsage.input?.toLocaleString()} · 輸出 {s.tokenUsage.output?.toLocaleString()} tokens</span>}
+                  {s.tokenUsage && <span class="meta hidden sm:inline">{ui.tokens(s.tokenUsage.input?.toLocaleString(), s.tokenUsage.output?.toLocaleString())}</span>}
                   <svg class="size-4 shrink-0 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 16 16" fill="currentColor" style="color: var(--color-text-muted);">
                     <path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
                   </svg>
                 </summary>
                 <div class="px-5 pb-5 pt-2" style="border-top: 1px solid var(--color-border);">
+                  {lang === "en" && !translated && <p class="meta">{t(lang).notTranslated}</p>}
                   <article set:html={renderMarkdown(s.content)} />
                 </div>
               </details>
-            )) : (
-              <p class="text-sm" style="color: var(--color-text-muted);">還沒有{periodMeta[p].label}，第一份產生後會出現在這裡。</p>
+              );
+            }) : (
+              <p class="text-sm" style="color: var(--color-text-muted);">{ui.empty(periodMeta[p].label)}</p>
             )}
           </div>
         ))}

@@ -2,11 +2,13 @@
 import type { GetStaticPaths } from "astro";
 import Weekly from "../../_Weekly.astro";
 import { laterPages } from "../../../_lib/paging";
+import { langOf, withLangs } from "@i18n";
 import { weeklyReports } from "../../_data";
 
-export const getStaticPaths = (({ paginate }) => laterPages(paginate, weeklyReports, 10)) satisfies GetStaticPaths;
+export const getStaticPaths = (({ paginate }) => withLangs(laterPages(paginate, weeklyReports, 10))) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
+const lang = langOf(Astro.params);
 ---
 
-<Weekly page={page} />
+<Weekly page={page} lang={lang} />

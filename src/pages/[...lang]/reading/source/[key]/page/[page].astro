@@ -2,12 +2,14 @@
 import type { GetStaticPaths } from "astro";
 import List from "../../../_List.astro";
 import { laterPages } from "../../../../_lib/paging";
+import { langOf, withLangs } from "@i18n";
 import { PER_PAGE, itemsOf, sourceSlug, sources } from "../../../_data";
 
 export const getStaticPaths = (({ paginate }) =>
-  sources.flatMap((s) => laterPages(paginate, itemsOf(s.key), PER_PAGE, { key: sourceSlug(s.key) }, { source: s.key }))) satisfies GetStaticPaths;
+  withLangs(sources.flatMap((s) => laterPages(paginate, itemsOf(s.key), PER_PAGE, { key: sourceSlug(s.key) }, { source: s.key })))) satisfies GetStaticPaths;
 
 const { page, source } = Astro.props;
+const lang = langOf(Astro.params);
 ---
 
-<List page={page} source={source as string} />
+<List page={page} source={source as string} lang={lang} />

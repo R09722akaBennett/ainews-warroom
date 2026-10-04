@@ -1,18 +1,27 @@
 ---
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
+import { href, t, type Lang } from "@i18n";
+
+// One 404 page serves every missing address, so it speaks both languages;
+// Chinese first because the site's default language is Chinese.
+const blocks: Lang[] = ["zh", "en"];
 ---
 
-<Layout title="找不到頁面" description="這個網址沒有對應的頁面">
+<Layout title={t("zh").notFound.title} description={t("zh").notFound.description}>
   <Container>
-    <div class="flex flex-col gap-4 py-16">
+    <div class="flex flex-col gap-10 py-16">
       <p class="meta">404</p>
-      <h1 class="text-2xl font-semibold" style="color: var(--color-text);">找不到這個頁面</h1>
-      <p style="color: var(--color-text-muted);">網址可能打錯了，或頁面已經移到別的地方。</p>
-      <div class="flex flex-wrap gap-3">
-        <a href="/" class="reading-link" style="min-height: 40px; display: inline-flex; align-items: center;">回到首頁</a>
-        <a href="/reports" class="reading-link" style="min-height: 40px; display: inline-flex; align-items: center;">每日快報</a>
-      </div>
+      {blocks.map((lang) => (
+        <div class="flex flex-col gap-4" lang={lang === "en" ? "en" : "zh-Hant-TW"}>
+          <h1 class="text-2xl font-semibold" style="color: var(--color-text);">{t(lang).notFound.heading}</h1>
+          <p style="color: var(--color-text-muted);">{t(lang).notFound.body}</p>
+          <div class="flex flex-wrap gap-3">
+            <a href={href(lang, "/")} class="reading-link" style="min-height: 40px; display: inline-flex; align-items: center;">{t(lang).notFound.home}</a>
+            <a href={href(lang, "/reports")} class="reading-link" style="min-height: 40px; display: inline-flex; align-items: center;">{t(lang).notFound.reports}</a>
+          </div>
+        </div>
+      ))}
     </div>
   </Container>
 </Layout>

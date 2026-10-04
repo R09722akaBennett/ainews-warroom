@@ -56,8 +56,22 @@ first and say which flag you are about to use.
 - Shell wrapper header comments are in Chinese.
 - Commits that touch `src/data` are made by `site-data.sh` with its fixed
   Chinese subject; do not hand-edit those files.
-- UI language: English navigation and page names, Traditional Chinese in-page
-  copy.
+- The site is bilingual. Every page lives under `src/pages/[...lang]/` and
+  is built twice: Traditional Chinese at `/` (rest param undefined) and
+  English at `/en/`. Pages get `lang` from `langOf(Astro.params)`, build
+  internal links with `href(lang, path)` and keep UI copy in
+  `src/i18n/ui/<area>.ts` (`{ zh, en: typeof zh }`); navigation and page
+  names stay English in both languages.
+- Site data is native in one language and carries the other under a key:
+  digests, briefs and podcast summaries are Chinese with `en`, reading
+  items are English with `zh`. `pick(item, lang, native)` merges the one a
+  page needs. The exporters fill those keys through
+  `pipeline/export/translate.py` (Gemini, cached in
+  `pipeline/data/translations.db` on bennett-hub); without a Gemini key they
+  export the native language only.
+- The knowledge DB (knowledge-api, Notion, wiki library) is English only;
+  the owner reads it to practise English. Chinese newsletters are
+  summarised in English at extraction.
 - No `<header>` elements inside pages; `global.css` applies the site-header
   styling to every `header`.
 - Internal links never end with `/`.

@@ -1,7 +1,9 @@
 ---
-import { pageHref } from "../pages/_lib/paging";
+import { pageHref } from "../pages/[...lang]/_lib/paging";
+import { t, type Lang } from "@i18n";
 
 type Props = {
+  lang?: Lang;
   currentPage: number;
   lastPage: number;
   /** List root; page 1 is this path and page N is `<base>/page/N`. */
@@ -12,7 +14,9 @@ type Props = {
   label?: string;
 };
 
-const { currentPage, lastPage, base = "", href, url = {}, label = "分頁" } = Astro.props;
+const { currentPage, lastPage, base = "", href, url = {}, lang = "zh" } = Astro.props;
+const ui = t(lang).pagination;
+const label = Astro.props.label ?? ui.label;
 const link = href ?? ((n: number) => pageHref(base, n));
 const prev = url.prev ?? (currentPage > 1 ? link(currentPage - 1) : undefined);
 const next = url.next ?? (currentPage < lastPage ? link(currentPage + 1) : undefined);
@@ -34,9 +38,9 @@ if (lastPage <= 9) {
 {lastPage > 1 && (
   <nav class="pg" aria-label={label}>
     <div class="pg-main">
-      {prev ? <a class="pg-btn" href={prev} rel="prev">上一頁</a> : <span class="pg-btn pg-off" aria-hidden="true">上一頁</span>}
-      <span class="pg-status">第 {currentPage} 頁，共 {lastPage} 頁</span>
-      {next ? <a class="pg-btn" href={next} rel="next">下一頁</a> : <span class="pg-btn pg-off" aria-hidden="true">下一頁</span>}
+      {prev ? <a class="pg-btn" href={prev} rel="prev">{ui.prev}</a> : <span class="pg-btn pg-off" aria-hidden="true">{ui.prev}</span>}
+      <span class="pg-status">{ui.status(currentPage, lastPage)}</span>
+      {next ? <a class="pg-btn" href={next} rel="next">{ui.next}</a> : <span class="pg-btn pg-off" aria-hidden="true">{ui.next}</span>}
     </div>
     <ol class="pg-nums">
       {numbers.map((n) =>
@@ -47,7 +51,7 @@ if (lastPage <= 9) {
             {n === currentPage ? (
               <span class="pg-num pg-current" aria-current="page">{n}</span>
             ) : (
-              <a class="pg-num" href={link(n)} aria-label={`第 ${n} 頁`}>{n}</a>
+              <a class="pg-num" href={link(n)} aria-label={ui.page(n)}>{n}</a>
             )}
           </li>
         ),

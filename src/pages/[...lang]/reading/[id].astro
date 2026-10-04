@@ -2,7 +2,9 @@
 import Layout from "@layouts/Layout.astro";
 import Container from "@components/Container.astro";
 
-import readingData from "../../data/reading.json";
+import readingData from "../../../data/reading.json";
+import { href, langOf, pick, withLangs } from "@i18n";
+import { readingUI } from "@i18n/ui/reading";
 
 type Section = { title: string; category: string | null; summary: string; takeaways: string[] };
 type Item = {
@@ -14,25 +16,31 @@ type Item = {
   summary: string;
   headings: string[];
   sections?: Section[];
+  zh?: { summary?: string; headings?: string[]; sections?: { title: string; summary: string; takeaways: string[] }[] };
 };
 
 export function getStaticPaths() {
   const data = readingData as unknown as { sources: { key: string; name: string }[]; items: Item[] };
   const nameOf = new Map(data.sources.map((s) => [s.key, s.name]));
-  return data.items.map((item) => ({
+  return withLangs(data.items.map((item) => ({
     params: { id: item.id },
     props: { item, sourceName: nameOf.get(item.source) || item.source },
-  }));
+  })));
 }
 
-const { item, sourceName } = Astro.props as { item: Item; sourceName: string };
-const sections = item.sections || [];
+const lang = langOf(Astro.params);
+const ui = readingUI[lang];
+const { item: raw, sourceName } = Astro.props as { item: Item; sourceName: string };
+// Articles are English-native; the Chinese copy replaces sections wholesale,
+// so the category tags are carried over from the English sections by index.
+const item = pick(raw, lang, "en").data;
+const sections: Section[] = (item.sections || []).map((s, i) => ({ ...s, category: s.category ?? raw.sections?.[i]?.category ?? null }));
 ---
 
-<Layout title={item.title} description={item.summary?.slice(0, 160) || `${sourceName} · ${item.date}`}>
+<Layout title={item.title} description={item.summary?.slice(0, 160) || `${sourceName} · ${item.date}`} lang={lang}>
   <Container>
     <div class="rd-wrap">
-      <a href="/reading" class="rd-back">← 回到 Reading</a>
+      <a href={href(lang, "/reading")} class="rd-back">{ui.back}</a>
 
       {/* Not <header>: global.css makes every header element fixed at the top. */}
       <div class="rd-head">
@@ -43,15 +51,15 @@ const sections = item.sections || [];
         <h1 class="rd-title">{item.title}</h1>
         {item.summary && <p class="rd-lede">{item.summary}</p>}
         {item.url && (
-          <a href={item.url} target="_blank" rel="noopener noreferrer" class="rd-btn">閱讀原文 ↗</a>
+          <a href={item.url} target="_blank" rel="noopener noreferrer" class="rd-btn">{ui.readOriginal}</a>
         )}
       </div>
 
       {sections.length > 1 && (
         <details class="rd-toc card" id="rd-toc">
           <summary class="rd-toc-summary">
-            <span class="section-title">目錄</span>
-            <span class="meta">{sections.length} 段</span>
+            <span class="section-title">{ui.toc}</span>
+            <span class="meta">{ui.sectionCount(sections.length)}</span>
             <svg class="rd-chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 6l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" /></svg>
           </summary>
           <ol class="rd-toc-list">
@@ -64,7 +72,7 @@ const sections = item.sections || [];
 
       {sections.length === 0 ? (
         <div class="card p-5 text-sm" style="color: var(--color-text-muted);">
-          這篇還沒有分段整理，請直接閱讀原文。
+          {ui.noSections}
         </div>
       ) : (
         <div class="rd-sections">
@@ -89,8 +97,8 @@ const sections = item.sections || [];
       )}
 
       <div class="rd-foot">
-        <a href="/reading" class="rd-back">← 回到 Reading</a>
-        {item.url && <a href={item.url} target="_blank" rel="noopener noreferrer" class="rd-back" style="color: var(--color-accent-cool-text);">閱讀原文 ↗</a>}
+        <a href={href(lang, "/reading")} class="rd-back">{ui.back}</a>
+        {item.url && <a href={item.url} target="_blank" rel="noopener noreferrer" class="rd-back" style="color: var(--color-accent-cool-text);">{ui.readOriginal}</a>}
       </div>
     </div>
   </Container>

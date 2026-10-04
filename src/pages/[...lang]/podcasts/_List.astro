@@ -5,11 +5,16 @@ import Container from "@components/Container.astro";
 import Pagination from "@components/Pagination.astro";
 
 import type { PageSlice } from "../_lib/paging";
+import { href, pick, type Lang } from "@i18n";
+import { podcastsUI } from "@i18n/ui/podcasts";
 import { buildToday, minutes, recencyLabel, type EpisodeSummary } from "@lib/podcasts";
 
-type Props = { page: PageSlice<EpisodeSummary> };
-const { page } = Astro.props;
-const episodes = page.data;
+type Props = { page: PageSlice<EpisodeSummary>; lang: Lang };
+const { page, lang } = Astro.props;
+const ui = podcastsUI[lang];
+// Episodes are Chinese-native; the English page reads the "en" copy when a
+// translation exists and falls back to the Chinese text otherwise.
+const episodes = page.data.map((e) => pick(e, lang, "zh").data);
 const today = buildToday();
 
 function searchText(e: EpisodeSummary): string {
@@ -19,37 +24,37 @@ function searchText(e: EpisodeSummary): string {
 }
 ---
 
-<Layout title={page.currentPage === 1 ? "Podcasts" : `Podcasts 第 ${page.currentPage} 頁`} description="AI 工程 podcast 的中文重點整理與逐字稿，目前收 Latent Space。">
+<Layout title={page.currentPage === 1 ? ui.title : ui.pageTitle(page.currentPage)} description={ui.description} lang={lang}>
   <Container>
     <div class="pc-wrap">
       <div>
-        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">Podcasts</h1>
+        <h1 class="text-2xl font-semibold tracking-tight" style="color: var(--color-text);">{ui.title}</h1>
         <p class="mt-1 text-sm leading-relaxed" style="color: var(--color-text-muted);">
-          AI 工程 podcast 的中文重點整理與逐字稿，目前收 Latent Space。
+          {ui.description}
         </p>
       </div>
 
       {episodes.length === 0 ? (
         <div class="card p-8 text-center text-sm" style="color: var(--color-text-muted);">
-          還沒有整理好的集數，第一批整理完成後會出現在這裡。
+          {ui.empty}
         </div>
       ) : (
         <>
           <div class="pc-toolbar">
             <label class="pc-search">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
-              <input id="pc-q" type="search" placeholder="搜尋本頁的標題、來賓或話題" autocomplete="off" aria-label="搜尋本頁的集數" />
+              <input id="pc-q" type="search" placeholder={ui.searchPlaceholder} autocomplete="off" aria-label={ui.searchLabel} />
             </label>
-            <span class="meta" id="pc-count" data-total={page.total} data-shown={episodes.length}>共 {page.total} 集{page.lastPage > 1 && `，這頁 ${episodes.length} 集`}</span>
+            <span class="meta" id="pc-count" data-total={page.total} data-shown={episodes.length} data-filtered={ui.countFiltered("{total}", "{shown}")}>{ui.count(page.total, episodes.length, page.lastPage > 1)}</span>
           </div>
 
           <ul class="pc-list" id="pc-list">
             {episodes.map((e) => {
-              const label = recencyLabel(e.date, today);
+              const label = recencyLabel(e.date, today, lang);
               const [, mm, dd] = e.date.split("-");
               return (
                 <li data-q={searchText(e)}>
-                  <a href={`/podcasts/${e.slug}`} class="card pc-row">
+                  <a href={href(lang, `/podcasts/${e.slug}`)} class="card pc-row">
                     <div class:list={["pc-badge", { "pc-badge-recent": label }]}>
                       <span class="pc-badge-day">{mm}/{dd}</span>
                       <span class="pc-badge-label">{label || e.date.slice(0, 4)}</span>
@@ -58,12 +63,12 @@ function searchText(e: EpisodeSummary): string {
                       <div class="pc-meta">
                         <span class="pc-show">{e.show}</span>
                         <span>·</span>
-                        <span>{minutes(e.duration)}</span>
+                        <span>{minutes(e.duration, lang)}</span>
                       </div>
                       <h2 class="pc-title">{e.title}</h2>
                       {e.one_liner && <p class="pc-oneliner">{e.one_liner}</p>}
                       {e.guests?.length > 0 && (
-                        <p class="pc-guests">{e.guests.map((g) => g.name).join("、")}</p>
+                        <p class="pc-guests">{ui.names(e.guests.map((g) => g.name))}</p>
                       )}
                     </div>
                   </a>
@@ -71,8 +76,8 @@ function searchText(e: EpisodeSummary): string {
               );
             })}
           </ul>
-          <p id="pc-empty" class="text-sm" style="color: var(--color-text-muted);" hidden>這一頁沒有符合的集數，其他頁的集數不在搜尋範圍內。</p>
-          <Pagination currentPage={page.currentPage} lastPage={page.lastPage} base="/podcasts" label="Podcasts 分頁" />
+          <p id="pc-empty" class="text-sm" style="color: var(--color-text-muted);" hidden>{ui.noMatch}</p>
+          <Pagination currentPage={page.currentPage} lastPage={page.lastPage} base={href(lang, "/podcasts")} label={ui.paginationLabel} lang={lang} />
         </>
       )}
     </div>
@@ -138,7 +143,7 @@ function searchText(e: EpisodeSummary): string {
         row.hidden = !ok;
         if (ok) shown++;
       }
-      count.textContent = terms.length ? `共 ${total} 集，這頁符合 ${shown} 集` : initial;
+      count.textContent = terms.length ? (count.dataset.filtered || "").replace("{total}", String(total)).replace("{shown}", String(shown)) : initial;
       if (empty) empty.hidden = shown > 0;
     });
   }

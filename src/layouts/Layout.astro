@@ -4,29 +4,33 @@ import Header from "@components/Header.astro";
 import Footer from "@components/Footer.astro";
 import Pagefind from "@components/PageFind.astro";
 import { SITE } from "@consts";
+import { htmlLang, type Lang } from "@i18n";
 
 type Props = {
   title: string;
   description: string;
+  /** Page language; every page under src/pages/[...lang]/ passes langOf(Astro.params). */
+  lang?: Lang;
 };
 
-const { title, description } = Astro.props;
+const { title, description, lang = "zh" } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="zh-Hant-TW">
+<html lang={htmlLang(lang)}>
   <head>
     <Head
       title={title === SITE.TITLE ? title : `${title} | ${SITE.TITLE}`}
       description={description}
+      lang={lang}
     />
   </head>
   <body>
-    <Header />
+    <Header lang={lang} />
     <main>
       <slot />
     </main>
-    <Footer />
-    <Pagefind />
+    <Footer lang={lang} />
+    <Pagefind lang={lang} />
   </body>
 </html>

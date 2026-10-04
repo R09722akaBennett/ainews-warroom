@@ -1,4 +1,4 @@
-import podcastsData from "../../data/podcasts.json";
+import podcastsData from "../../../data/podcasts.json";
 import type { EpisodeSummary } from "@lib/podcasts";
 
 export const PER_PAGE = 20;

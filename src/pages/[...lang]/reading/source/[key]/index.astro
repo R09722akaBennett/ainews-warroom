@@ -1,13 +1,15 @@
 ---
 import List from "../../_List.astro";
 import { firstPage } from "../../../_lib/paging";
+import { langOf, withLangs } from "@i18n";
 import { PER_PAGE, itemsOf, sourceSlug, sources } from "../../_data";
 
 export function getStaticPaths() {
-  return sources.map((s) => ({ params: { key: sourceSlug(s.key) }, props: { source: s.key } }));
+  return withLangs(sources.map((s) => ({ params: { key: sourceSlug(s.key) }, props: { source: s.key } })));
 }
 
 const { source } = Astro.props;
+const lang = langOf(Astro.params);
 ---
 
-<List page={firstPage(itemsOf(source), PER_PAGE)} source={source} />
+<List page={firstPage(itemsOf(source), PER_PAGE)} source={source} lang={lang} />

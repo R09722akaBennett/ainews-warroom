@@ -1,5 +1,5 @@
 import { SITE_SINCE } from "@consts";
-import allReports from "../../data/reports.json";
+import allReports from "../../../data/reports.json";
 
 export const PER_PAGE = 30;
 export const reports = (allReports as any[])
