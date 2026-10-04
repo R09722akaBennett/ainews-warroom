@@ -8,6 +8,9 @@ the parsed episode kept in the raw payload), and write a structured Chinese
 summary with Gemini. Each episode is cached as data/podcasts/<slug>.json, so
 an episode is fetched and summarised once; --force redoes one slug.
 
+Substack also mails every post in full to the subscriber, so when the
+cookie has expired or the API answer has no transcript, the post is read
+from that mail instead (Gmail IMAP, read-only; the mail is matched by title).
 Some posts (the 🔬 science series) publish show notes
 but no transcript; those are summarised from the notes and exported with an
 empty transcript and no quotes. Quotes the model returns are kept only when
@@ -28,12 +31,17 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import email
+import email.header
+import email.message
+import imaplib
 import json
 import os
 import re
 import sys
+import urllib.error
 import urllib.request
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from google import genai
@@ -51,6 +59,7 @@ GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.8-flash")
 UA_SITE = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Safari/537.36"
 UA_API = "curl/8.5.0"
 TRANSCRIPT_CHARS = 400_000  # a 141-minute episode is about 160k characters
+MAIL_SENDER = "swyx@substack.com"  # AINews issues and receipts come from the same address
 MAX_SUMMARY_ATTEMPTS = 3
 _client = None
 
@@ -167,15 +176,79 @@ def ingest(ep: dict) -> str:
         return f"failed: {type(e).__name__}"
 
 
+def _usable(ep: dict) -> bool:
+    return bool(ep["transcript"]) or len(" ".join(ep["intro"]).split()) >= 300
+
+
+def _mail_html(msg: email.message.Message) -> str:
+    for part in msg.walk():
+        if part.get_content_type() == "text/html":
+            return part.get_payload(decode=True).decode(part.get_content_charset() or "utf-8", "replace")
+    return ""
+
+
+def episode_from_mail(post: dict) -> dict | None:
+    """Return the post parsed from its subscriber mail, or None when no such mail is found.
+
+    The mailbox is opened read-only, so nothing is marked as read. The mail is
+    matched by title because the sender also mails AINews issues, receipts and
+    verification codes. Returns None when the IMAP credentials are missing.
+    """
+    user, password = os.getenv("GMAIL_IMAP_USER"), os.getenv("GMAIL_IMAP_PASSWORD")
+    if not user or not password:
+        return None
+    since = (datetime.fromisoformat(post["post_date"][:10]) - timedelta(days=1)).strftime("%d-%b-%Y")
+    want = _norm(post["title"])
+    imap = imaplib.IMAP4_SSL("imap.gmail.com")
+    try:
+        imap.login(user, password)
+        imap.select('"[Gmail]/All Mail"', readonly=True)
+        _, data = imap.search(None, f'(FROM "{MAIL_SENDER}" SINCE {since})')
+        for num in data[0].split():
+            _, raw = imap.fetch(num, "(BODY.PEEK[])")
+            msg = email.message_from_bytes(raw[0][1])
+            subject = str(email.header.make_header(email.header.decode_header(msg.get("Subject", ""))))
+            if _norm(subject) == want:
+                return parse_episode(_mail_html(msg))
+    finally:
+        imap.logout()
+    return None
+
+
 def collect(post: dict) -> dict:
-    """Fetch and parse one post in full; raise ValueError when it has neither transcript nor notes."""
-    sid = os.environ["SUBSTACK_SID"]
-    full = _get_json(f"https://substack.com/api/v1/posts/by-id/{post['id']}", UA_API, sid)
-    full = full.get("post") or full
-    ep = parse_episode(full.get("body_html") or "")
-    if not ep["transcript"] and len(" ".join(ep["intro"]).split()) < 300:
-        raise ValueError("neither a transcript nor show notes found (paywalled or a new post layout)")
+    """Fetch and parse one post in full; raise ValueError when it has neither transcript nor notes.
+
+    The web post comes through Substack's API with the subscriber cookie. When
+    the cookie is missing or rejected, or the answer carries no transcript,
+    the subscriber mail of the same post is read instead, so an expired cookie
+    does not stop collection. "fetchedFrom" records which one was used.
+    """
+    sid = os.getenv("SUBSTACK_SID")
+    ep, source, problem = None, "api", None
+    if not sid:
+        problem = "SUBSTACK_SID not set"
+    else:
+        try:
+            full = _get_json(f"https://substack.com/api/v1/posts/by-id/{post['id']}", UA_API, sid)
+            full = full.get("post") or full
+            ep = parse_episode(full.get("body_html") or "")
+            if not _usable(ep):
+                problem = "neither a transcript nor show notes in the API post"
+        except urllib.error.HTTPError as e:
+            if e.code not in (401, 403):
+                raise
+            problem = f"API answered {e.code} (SUBSTACK_SID expired?)"
+    if problem:
+        from_mail = episode_from_mail(post)
+        if from_mail and _usable(from_mail):
+            print(f"podcasts: {post['slug']}: {problem}; using the subscriber mail")
+            ep, source = from_mail, "mail"
+        elif ep is None:
+            raise ValueError(f"{problem}; no subscriber mail for this post either")
+        else:
+            raise ValueError(f"{problem} (paywalled or a new post layout); no usable subscriber mail either")
     ep.update({
+        "fetchedFrom": source,
         "slug": post["slug"], "title": post["title"], "subtitle": post.get("subtitle") or "",
         "date": post["post_date"][:10], "url": post.get("canonical_url") or f"{SITE}/p/{post['slug']}",
         "duration": int(post.get("podcast_duration") or 0), "show": "Latent Space",
@@ -219,7 +292,8 @@ def main() -> int:
             _failed_path(p["slug"]).unlink(missing_ok=True)
             turns = sum(len(c["turns"]) for c in ep["transcript"])
             print(f"podcasts: {p['slug']} ok ({len(ep['transcript'])} chapters, {turns} turns, "
-                  f"{len(ep['summary'].get('quotes', []))} quotes, knowledge {ep['knowledge']})")
+                  f"{len(ep['summary'].get('quotes', []))} quotes, knowledge {ep['knowledge']}, "
+                  f"from {ep['fetchedFrom']})")
         except Exception as e:  # noqa: BLE001
             failed += 1
             print(f"podcasts: {p['slug']} failed ({type(e).__name__}: {str(e)[:160]})")

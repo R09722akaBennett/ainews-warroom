@@ -30,8 +30,9 @@ first and say which flag you are about to use.
 - `pipeline/labs.sh` reads the paid X API, calls Gemini and writes to
   knowledge-api.
 - `pipeline/candidates.sh` calls Jev (TypeSafe, paid) and Gemini.
-- `pipeline/podcasts.sh` fetches episodes with the owner's Substack cookie,
-  calls Gemini and writes to knowledge-api.
+- `pipeline/podcasts.sh` fetches episodes with the owner's Substack cookie
+  (falling back to the subscriber mail over read-only Gmail IMAP), calls
+  Gemini and writes to knowledge-api.
 - `pipeline/site-data.sh --push` commits the data files and pushes `main`.
 - `labs.sh`, `candidates.sh` and `podcasts.sh` are dry runs without `--live`;
   `site-data.sh` is a dry run without `--push`.
