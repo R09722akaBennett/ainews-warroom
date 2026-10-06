@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-06T10:06:35Z",
+  "updatedAt": "2026-10-06T13:30:24Z",
   "sources": [
     {
       "key": "gmail:bytebytego",
@@ -61,21 +61,33 @@
         {
           "title": "Fine-tune Meta AI's Muse Glimmer 100% locally",
           "category": "HANDS-ON",
-          "summary": "",
-          "takeaways": []
+          "summary": "Meta Superintelligence Labs released Muse Glimmer, an Apache 2.0-licensed 30B vision model distilled from Muse Spark and optimized for agentic workloads. The model pairs a 29.6B language decoder with a 1.8B ViT-G/14 vision encoder and drastically reduces KV cache overhead via sliding-window attention and grouped query attention. Fine-tuning using Unsloth's 4-bit LoRA allows users to adapt the model locally on single consumer GPUs for tasks like mathematical OCR from images to LaTeX. Following Muse Glimmer's proprietary ATEM chat format and managing its internal reasoning channels are critical for achieving high accuracy and strict formatting contracts.",
+          "takeaways": [
+            "Muse Glimmer is a 30B vision model distilled from Muse Spark, licensed under Apache 2.0 without commercial or user restrictions.",
+            "The model architecture combines a ~29.6B parameter decoder with a 1.8B ViT-G/14 encoder and achieves ~60x KV cache memory reduction via sliding-window layers and sharing 2 KV heads across 32 query heads.",
+            "Muse Glimmer uses a specialized ATEM chat format featuring a private internal reasoning channel with adjustable 'reasoning strength' before outputting to the user channel.",
+            "Unsloth's Dynamic 4-bit quantization and LoRA allow fine-tuning the 30B model on consumer GPUs by training only ~131M parameters (0.44% of total weights) across language and vision components.",
+            "For mathematical OCR on the unsloth/LaTeX_OCR dataset, fine-tuning aligns the model to strict output formatting requirements (such as spacing and omitting display-math wrappers) while suppressing unnecessary reasoning latency."
+          ]
         }
       ],
-      "summary": "Muse Glimmer is a 30B vision model, distilled from Meta’s frontier model Muse Spark and then trained further on agent-heavy data. A dense 30B model fits on a single GPU, so you can run it on your own server or an air-gapped box, and your data never leaves that machine. It’s also a break from Meta’s recent open releases: • It’s the first open model from Meta Superintelligence Labs and Meta’s first ",
-      "summarised": false,
+      "summary": "Meta Superintelligence Labs released Muse Glimmer, an Apache 2.0-licensed 30B vision model distilled from Muse Spark and optimized for agentic workloads. The model pairs a 29.6B language decoder with a 1.8B ViT-G/14 vision encoder and drastically reduces KV cache overhead via sliding-window attention and grouped query attention. Fine-tuning using Unsloth's 4-bit LoRA allows users to adapt the model locally on single consumer GPUs for tasks like mathematical OCR from images to LaTeX. Following Muse Glimmer's proprietary ATEM chat format and managing its internal reasoning channels are critical for achieving high accuracy and strict formatting contracts.",
+      "summarised": true,
       "headings": [],
       "zh": {
-        "summary": "Muse Glimmer 是一個 30B vision model，從 Meta 的 frontier model Muse Spark 蒸餾而來，並在大量 agent-heavy data 上進一步訓練。Dense 30B model 可以放進單張 GPU，因此你可以在自己的 server 或 air-gapped box 上運行，資料完全不會離開該機器。這也打破了 Meta 最近的開源發布風格：• 這是 Meta Superintelligence Labs 的第一個開源模型，也是 Meta 的第一個 ",
+        "summary": "Meta Superintelligence Labs 發布了 Muse Glimmer，這是一款採用 Apache 2.0 授權的 30B vision model，從 Muse Spark 蒸餾而來，並針對 agentic workloads 進行最佳化。該模型搭配了 29.6B language decoder 與 1.8B ViT-G/14 vision encoder，透過 sliding-window attention 與 grouped query attention 大幅降低 KV cache overhead。使用 Unsloth 的 4-bit LoRA 進行 fine-tuning，可讓使用者在單張消費級 GPU 上於本地適配該模型，用於影像轉 LaTeX 的 mathematical OCR 等任務。遵循 Muse Glimmer 專屬的 ATEM chat format 並管理其內部 reasoning channels，對於達到高精確度與嚴格的 formatting contracts 至關重要。",
         "headings": [],
         "sections": [
           {
             "title": "100% 在地端 Fine-tune Meta AI 的 Muse Glimmer",
-            "summary": "",
-            "takeaways": []
+            "summary": "Meta Superintelligence Labs 發布了 Muse Glimmer，這是一款採用 Apache 2.0 授權的 30B vision model，從 Muse Spark 蒸餾而來，並針對 agentic workloads 進行最佳化。該模型搭配了 29.6B language decoder 與 1.8B ViT-G/14 vision encoder，透過 sliding-window attention 與 grouped query attention 大幅降低 KV cache overhead。使用 Unsloth 的 4-bit LoRA 進行 fine-tuning，可讓使用者在單張消費級 GPU 上於本地適配該模型，用於影像轉 LaTeX 的 mathematical OCR 等任務。遵循 Muse Glimmer 專屬的 ATEM chat format 並管理其內部 reasoning channels，對於達到高精確度與嚴格的 formatting contracts 至關重要。",
+            "takeaways": [
+              "Muse Glimmer 是一款從 Muse Spark 蒸餾而來的 30B vision model，以 Apache 2.0 授權釋出，無商業或使用者限制。",
+              "該模型架構結合了約 29.6B 參數的 decoder 與 1.8B 的 ViT-G/14 encoder，並透過 sliding-window layers 以及在 32 個 query heads 間共享 2 個 KV heads，實現約 60 倍的 KV cache 記憶體縮減。",
+              "Muse Glimmer 使用專屬的 ATEM chat format，具備私有的內部 reasoning channel，在輸出至 user channel 之前可調整「reasoning strength」。",
+              "Unsloth 的 Dynamic 4-bit quantization 與 LoRA 允許在消費級 GPU 上對 30B 模型進行 fine-tuning，僅需訓練橫跨 language 與 vision 組件的約 131M 參數（佔總權重的 0.44%）。",
+              "針對 unsloth/LaTeX_OCR 資料集上的 mathematical OCR，fine-tuning 能使模型對齊嚴格的輸出格式要求（例如空格以及省略 display-math wrappers），同時抑制不必要的 reasoning latency。"
+            ]
           }
         ]
       }
@@ -212,12 +224,12 @@
         "headings": [
           "模型可取得哪些資訊",
           "LLM 是否存在盲點",
-          "為什麼 LLM 會對 Prompt 的開頭與結尾給予更多 Attention",
+          "為什麼 LLM 會給予 Prompt 開頭與結尾更多 Attention",
           "為什麼更大的 Context Window 無法解決這個問題",
-          "緩解 Bias 的策略",
+          "緩解此 Bias 的策略",
           "Prompt 最佳化",
-          "Pruning 不必要的 Context",
-          "透過 RAG 進行 Retrieval"
+          "修剪不必要的 Context",
+          "使用 RAG 進行檢索"
         ],
         "sections": [
           {
@@ -469,13 +481,13 @@
       "zh": {
         "summary": "本節介紹 DataTalks.Club Weekly 第 297 期，重點介紹 AI engineering 與教育領域的最新內容與里程碑。精選材料包括 Actian 提供的 agent memory 資源中心，以及 Astronomer 關於使用 Airflow 進行 AI 編排的指南。本期內容還涵蓋 AI Dev Tools Zoomcamp 的 Project 1、Machine Learning Zoomcamp 的 Module 3、AI 平台系列的第二部分，以及三部全新錄音。Agent memory 帶來了無法單靠擴展 context window 來解決的架構挑戰。Actian 發布了一個資源中心，詳細介紹如何不用依賴雲端、在 edge 硬體上構建 persistent memory 與離線 retrieval-augmented generation (RAG) 系統。該資源中心包含適用於 CrewAI、mem0、LangChain 和 OpenClaw 等框架的可行實作。所有提供的範例均使用 Actian VectorAI DB 在本地運行，無需 OpenAI 或 Qdrant 等外部依賴。Module 5 標誌著教學模組的結束，本週的重點轉向專案開發。Project 1 的提交截止日期為 2026 年 10 月 27 日 00:00 CET（10 月 26 日 23:00 UTC）。此外，Homework 4 的延長提交窗口將持續開放至 2026 年 10 月 6 日 01:00 CEST（10 月 5 日 23:00 UTC）。",
         "headings": [
-          "免費資源中心：為 AI Agents 打造 Persistent Memory",
+          "免費資源庫：為 AI Agent 構建 Persistent Memory",
           "Project 1",
           "Module 3：用於 Classification 的 Machine Learning",
-          "Data Engineer 的 Airflow AI Orchestration 指南",
-          "DataTalks.Club 滿 6 歲了，我們的 Slack 成員突破 100,000 人",
-          "即將舉辦的活動",
-          "Workshop 錄影：為 Agent Long-Term Memory 建置 LLM Wiki",
+          "A Data Engineer’s Guide to AI Orchestration with Airflow",
+          "DataTalks.Club 滿 6 週年，我們的 Slack 成員突破 100,000 人",
+          "近期活動",
+          "Workshop 錄影：為 Agent Long-Term Memory 打造 LLM Wiki",
           "Podcast 錄音：打造 AI Platform，Part 1"
         ],
         "sections": [
