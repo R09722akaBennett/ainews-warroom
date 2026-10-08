@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-08T10:07:16Z",
+  "updatedAt": "2026-10-08T13:30:30Z",
   "sources": [
     {
       "key": "gmail:bytebytego",
@@ -263,10 +263,10 @@
           "為何 Netflix 想要新方法",
           "為何語言模型能有所助益",
           "GenRec 的兩個訓練階段",
-          "Phase 1：打造具備 Netflix 認知能力的 Foundation",
-          "Phase 2：訓練 Model 進行 Ranking",
-          "使用者行為如何協助建立 Training Examples",
-          "Context Engineering：挑選讓 Model 讀取的內容"
+          "Phase 1：打造具備 Netflix 領域認知的 foundation",
+          "Phase 2：訓練模型進行 Ranking",
+          "使用者行為如何協助建立訓練範例",
+          "Context Engineering：選擇模型能讀取哪些內容"
         ],
         "sections": [
           {
@@ -548,11 +548,11 @@
         "headings": [
           "Kubernetes 共同創辦人 Craig McLuckie 與 Joe Beda 致力於將 agent harnesses 完全帶入雲端。",
           "Mecatl：專為雲端打造的 harness",
-          "將 agent loop 與執行分離",
-          "將 AI agents 與 frontier labs 解耦",
+          "將 agent loop 與執行解耦",
+          "將 AI agent 與 frontier lab 解耦",
           "Stacklok 的 LLM gateway",
           "企業骨幹（The enterprise spine）",
-          "AI 的 cloud-native 時代？"
+          "AI 的 cloud native 時代？"
         ],
         "sections": [
           {
@@ -644,30 +644,47 @@
         {
           "title": "Surya OCR: SOTA model for document intelligence",
           "category": "OPEN-SOURCE",
-          "summary": "",
-          "takeaways": []
+          "summary": "Datalab has released Surya OCR, a 650-million-parameter model designed for document intelligence and optical character recognition. The model achieves an 83.3% score on the olmocr benchmark, ranking as the top model under 3 billion parameters. It provides multi-lingual support across 91 languages and can execute on CPU, GPU, and MPS hardware, reaching processing speeds of 5 pages per second on an RTX 5090. In addition to text recognition, Surya OCR extracts layout structure, processes handwriting and mathematical equations, and extracts and captions embedded images and diagrams.",
+          "takeaways": [
+            "Surya OCR has 650M parameters and was released by Datalab.",
+            "It scores 83.3% on the olmocr benchmark, ranking highest among models with fewer than 3 billion parameters.",
+            "The model supports 91 languages and functions across CPU, GPU, and MPS backends.",
+            "It achieves an inference speed of 5 pages per second on an RTX 5090.",
+            "Capabilities include full document layout analysis, image/diagram extraction and captioning, as well as support for handwriting, math, forms, and tables."
+          ]
         },
         {
           "title": "Chunked Prefill, clearly explained",
           "category": "LLMs",
-          "summary": "",
-          "takeaways": []
+          "summary": "Every LLM inference request is divided into a compute-heavy prefill phase and a memory-bandwidth-bound decode phase. Without chunked prefill, large incoming prompts monopolize GPU execution and interrupt ongoing token decoding for other users. Chunked prefill solves this head-of-line blocking by dividing long prompts into smaller token segments that are interleaved with active decode steps. While this technique prevents streaming stalls, configuring chunk size requires balancing inter-token latency against time to first token.",
+          "takeaways": [
+            "LLM execution consists of a compute-intensive prefill phase and a memory-bandwidth-bound decode phase.",
+            "Unchunked prefill for large prompts causes head-of-line blocking that pauses active token streams for other concurrent requests.",
+            "Chunked prefill splits long prompts into smaller token ranges to interleave prompt processing with active decoding.",
+            "Smaller chunk sizes minimize inter-token latency spikes, whereas larger chunk sizes optimize time to first token.",
+            "Chunks that are too small create performance overhead by repeatedly reading previously generated KV cache states.",
+            "In vLLM V1, the tradeoff between chunk sizes is primarily controlled by the --max-num-batched-tokens parameter."
+          ]
         },
         {
           "title": "The easiest way to find out which models you can run on your computer",
           "category": "LLMS",
-          "summary": "",
-          "takeaways": []
+          "summary": "llm-checker is a command-line tool designed to help users determine which large language models can run on their specific computer hardware. The setup involves installing the package via npm, scanning local hardware configurations, and generating tailored model recommendations by task category. This provides a streamlined three-step workflow for assessing local machine capacity for running AI models.",
+          "takeaways": [
+            "llm-checker can be installed globally using npm via the command 'npm install -g llm-checker'.",
+            "Hardware capabilities are analyzed using the 'llm-checker hw-detect' command.",
+            "Model recommendations can be queried based on specific use cases, such as coding, using 'llm-checker recommend --category coding'."
+          ]
         }
       ],
-      "summary": "Datalab has just released Surya OCR, a state-of-the-art OCR model that scores 83.3% on the olmocr benchmark (top under 3B). • 650M params • supports 91 languages • 5 pages/s on RTX 5090 • runs on CPU, GPU, MPS • 83.3% olmocr bench score (top under 3B) • Full layout information • Extracts + captions images and diagrams • Strong handwriting, math, form, and table support Find the GitHub repo here → ",
-      "summarised": false,
+      "summary": "Datalab has released Surya OCR, a 650-million-parameter model designed for document intelligence and optical character recognition. The model achieves an 83.3% score on the olmocr benchmark, ranking as the top model under 3 billion parameters. It provides multi-lingual support across 91 languages and can execute on CPU, GPU, and MPS hardware, reaching processing speeds of 5 pages per second on an RTX 5090. In addition to text recognition, Surya OCR extracts layout structure, processes handwriting and mathematical equations, and extracts and captions embedded images and diagrams. Every LLM inference request is divided into a compute-heavy prefill phase and a memory-bandwidth-bound decode phase. Without chunked prefill, large incoming prompts monopolize GPU execution and interrupt ongoing token decoding for other users. Chunked prefill solves this head-of-line blocking by dividing long prompts into smaller token segments that are interleaved with active decode steps. While this technique prevents streaming stalls, configuring chunk size requires balancing inter-token latency against time to first token. llm-checker is a command-line tool designed to help users determine which large language models can run on their specific computer hardware. The setup involves installing the package via npm, scanning local hardware configurations, and generating tailored model recommendations by task category. This provides a streamlined three-step workflow for assessing local machine capacity for running AI models.",
+      "summarised": true,
       "headings": [
         "Surya OCR: SOTA model for document intelligence",
         "The easiest way to find out which models you can run on your computer"
       ],
       "zh": {
-        "summary": "Datalab 剛發布了 Surya OCR，這是一款 SOTA 的 OCR 模型，在 olmocr benchmark 上取得 83.3% 的成績（3B 以下第一）。 • 650M params • 支援 91 種語言 • 在 RTX 5090 上達到 5 pages/s • 支援在 CPU、GPU、MPS 上執行 • 83.3% olmocr bench 分數（3B 以下頂尖） • 完整的 layout 資訊 • 擷取圖片與圖表並加上 caption • 強大的 handwriting、數學公式、表單與表格支援 GitHub repo 請點此 → ",
+        "summary": "Datalab 推出了 Surya OCR，這是一個擁有 650-million-parameter 的模型，專為 document intelligence 與光學字元辨識（optical character recognition）所設計。該模型在 olmocr benchmark 上取得 83.3% 的分數，在 3 billion 參數以下模型中名列第一。它提供橫跨 91 種語言的 multi-lingual 支援，並可在 CPU、GPU 和 MPS 硬體上執行，在 RTX 5090 上處理速度可達每秒 5 頁。除了文字辨識外，Surya OCR 還能擷取 layout 結構、處理手寫字與數學公式，並擷取內嵌圖像與圖表並產生 caption。每個 LLM inference 請求都分為 compute-heavy 的 prefill phase 與受 memory-bandwidth-bound 限制的 decode phase。若沒有 chunked prefill，大量湧入的長 prompt 會獨佔 GPU 執行資源，並中斷其他使用者正在進行的 token decoding。Chunked prefill 透過將長 prompt 切分成較小的 token 片段，並與進行中的 decode 步驟交錯執行，從而解決了 head-of-line blocking 問題。雖然此技術可防止 streaming 停頓，但配置 chunk size 需要在 inter-token latency 與 time to first token 之間取得平衡。llm-checker 是一個命令列工具，旨在協助使用者判斷哪些大型語言模型可以在其特定的電腦硬體上運行。其設置流程包括透過 npm 安裝套件、掃描本地硬體配置，並依任務類別產生客製化的模型推薦。這為評估本地機器運行 AI 模型的能力提供了一個流暢的三步驟工作流程。",
         "headings": [
           "Surya OCR：用於 document intelligence 的 SOTA 模型",
           "找出你的電腦能運行哪些模型最簡單的方法"
@@ -675,18 +692,35 @@
         "sections": [
           {
             "title": "Surya OCR：用於 document intelligence 的 SOTA 模型",
-            "summary": "",
-            "takeaways": []
+            "summary": "Datalab 推出了 Surya OCR，這是一個擁有 650-million-parameter 的模型，專為 document intelligence 與光學字元辨識所設計。該模型在 olmocr benchmark 上取得 83.3% 的分數，在 3 billion 參數以下模型中名列第一。它提供橫跨 91 種語言的 multi-lingual 支援，並可在 CPU、GPU 和 MPS 硬體上執行，在 RTX 5090 上處理速度可達每秒 5 頁。除了文字辨識外，Surya OCR 還能擷取 layout 結構、處理手寫字與數學公式，並擷取內嵌圖像與圖表並產生 caption。",
+            "takeaways": [
+              "Surya OCR 擁有 650M 參數，由 Datalab 發布。",
+              "它在 olmocr benchmark 上獲得 83.3% 的分數，在低於 3 billion 參數的模型中排名最高。",
+              "該模型支援 91 種語言，並可在 CPU、GPU 及 MPS backends 上運作。",
+              "它在 RTX 5090 上的 inference 速度可達每秒 5 頁。",
+              "其功能包含完整的文件 layout 分析、圖像／圖表擷取與 captioning，並支援手寫字、數學公式、表單與表格。"
+            ]
           },
           {
             "title": "Chunked Prefill 深入淺出解析",
-            "summary": "",
-            "takeaways": []
+            "summary": "每個 LLM inference 請求都分為 compute-heavy 的 prefill phase 與受 memory-bandwidth-bound 限制的 decode phase。若沒有 chunked prefill，大量湧入的長 prompt 會獨佔 GPU 執行資源，並中斷其他使用者正在進行的 token decoding。Chunked prefill 透過將長 prompt 切分成較小的 token 片段，並與進行中的 decode 步驟交錯執行，從而解決了 head-of-line blocking 問題。雖然此技術可防止 streaming 停頓，但配置 chunk size 需要在 inter-token latency 與 time to first token 之間取得平衡。",
+            "takeaways": [
+              "LLM 的執行由 compute-intensive 的 prefill phase 與 memory-bandwidth-bound 的 decode phase 組成。",
+              "對長 prompt 採用 unchunked prefill 會導致 head-of-line blocking，使其他同時發生的請求之 active token stream 暫停。",
+              "Chunked prefill 將長 prompt 切分為較小的 token 範圍，讓 prompt 處理能與 active decoding 交錯進行。",
+              "較小的 chunk size 能最大程度減少 inter-token latency 的突波，而較大的 chunk size 則能最佳化 time to first token。",
+              "過小的 chunk 會因為重複讀取先前生成的 KV cache 狀態而產生效能 overhead。",
+              "在 vLLM V1 中，chunk size 之間的權衡主要由 --max-num-batched-tokens 參數控制。"
+            ]
           },
           {
             "title": "找出你的電腦能運行哪些模型最簡單的方法",
-            "summary": "",
-            "takeaways": []
+            "summary": "llm-checker 是一個命令列工具，旨在協助使用者判斷哪些大型語言模型可以在其特定的電腦硬體上運行。其設置流程包括透過 npm 安裝套件、掃描本地硬體配置，並依任務類別產生客製化的模型推薦。這為評估本地機器運行 AI 模型的能力提供了一個流暢的三步驟工作流程。",
+            "takeaways": [
+              "llm-checker 可以透過 npm 使用指令 'npm install -g llm-checker' 進行全域安裝。",
+              "硬體能力可使用 'llm-checker hw-detect' 指令進行分析。",
+              "可以使用 'llm-checker recommend --category coding' 根據特定使用情境（例如 coding）查詢模型推薦。"
+            ]
           }
         ]
       }
@@ -781,12 +815,12 @@
       "zh": {
         "summary": "Measuring Agents in Production（MAP）是一項持續進行的多機構縱向研究（longitudinal study），旨在探討真實世界中的 AI agents 如何被部署與維運。在其第一年的研究中，該計畫調查了 86 個 production 使用案例，發現從業人員刻意限制 agent 的自主性（autonomy），並高度仰賴 prompting 和 human evaluation，而非 model fine-tuning。研究結果顯示，透過 systems engineering 而非 model 能力來解決的可靠性問題（reliability），是 production 環境中最主要的核心技術瓶頸。這項在 ICML 2026 獲得認可的倡議，目前正在進行第二年度的調查，以追蹤整個產業不斷演進的部署實務。Berkeley RDI 與 NEA 預計於 2026 年 10 月 14 日在 Menlo Park 共同舉辦一場採邀請制的 AI Security Meetup。這場聚會將匯集研究人員、從業人員與產業領袖，共同探討將 agentic AI 部署至 production 時所伴隨的風險、機會與挑戰。活動議程包括 panel discussion、networking 以及接待會，席位嚴格限制僅限 80 位通過審核的與會者。根據 Bloomberg Intelligence 的報導，美國與中國頂尖人工智慧模型之間的性能差距已縮小至歷史新低的 3% benchmark 分數差。這一差距的縮小緊隨 9 月發布的 DeepSeek V4.1 Flash 而來，該模型在 LiveBench 上獲得 81.1 分，而 Anthropic 則為 83.4 分。Bloomberg 將這些進展歸功於中國日益增長的技術實力以及針對本土硬體的最佳化，並對美國晶片出口禁令的長期影響提出質疑。然而，中國的 AI 開發者仍持續面臨激烈的價格戰競爭、商業化困境以及日益升級的監管壓力。",
         "headings": [
-          "Research Highlight：一項追蹤 production AI agents 究竟如何建構與維運的縱向研究（longitudinal study）——以及這對 open research 意味著什麼",
+          "研究亮點：一項追蹤 production AI agents 實際建置與運作方式的長期縱向研究——以及這對 open research 意味著什麼",
           "參加 Berkeley RDI 與 NEA 於 2026 年 10 月 14 日在 Menlo Park 舉辦的專屬 AI Security Meetup",
           "1. 在 DeepSeek 取得進展後，美國在 AI 領域對中國的領先優勢縮小",
-          "2. AI 規模達 30 兆美元的基礎建設面臨營收考驗",
-          "3. Decision Models 正崛起成為 Agent Stack 的新層級",
-          "4. Agent Swarms 正走向持續性 Cyber Defense 4. 當 AI 超越人類 Baseline 時，Benchmarks 接下來該評測什麼？"
+          "2. AI 高達 30 兆美元的基礎建設面臨營收考驗",
+          "3. Decision Models 正在崛起為 Agent Stack 的全新層級",
+          "4. Agent Swarms 正進入持續性網路防禦 4. 當 AI 超越人類基準時，Benchmarks 下一步該衡量什麼？"
         ],
         "sections": [
           {
