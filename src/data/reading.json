@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-09T10:04:35Z",
+  "updatedAt": "2026-10-09T13:30:51Z",
   "sources": [
     {
       "key": "gmail:bytebytego",
@@ -61,30 +61,49 @@
         {
           "title": "Build voice agents that hear the details",
           "category": "SPEECH AI",
-          "summary": "",
-          "takeaways": []
+          "summary": "Speechmatics has launched Linden, a speech-to-text model designed specifically for voice agents. It is engineered to minimize errors caused by challenging audio conditions such as background noise, strong accents, non-native speech, and alphanumeric strings. The system provides real-time transcription across over 55 languages with roughly 250 ms latency after a ForceEndOfUtterance signal. It also integrates natively with developer platforms like LiveKit, Pipecat, and Jambonz.",
+          "takeaways": [
+            "Speechmatics Linden is an STT model tailored for voice agents to handle accents, noise, and complex alphanumeric strings.",
+            "It supports real-time transcription in over 55 languages and delivers final transcripts in about 250 ms after a ForceEndOfUtterance signal.",
+            "The model allows custom dictionaries for names, product terms, and industry-specific vocabulary.",
+            "Native integrations are available for LiveKit, Pipecat, Jambonz, and the Speechmatics API.",
+            "Linden 1 pricing starts at $0.30 per hour, scaling down to $0.16 per hour with volume discounts."
+          ]
         },
         {
           "title": "RAG vs. Jev + RAG, clearly explained!",
           "category": "JEV",
-          "summary": "",
-          "takeaways": []
+          "summary": "Standard RAG architectures use vector search and rerankers to supply context to an LLM, but relative ranking does not guarantee answerability or evidence sufficiency. Integrating Jev into RAG keeps retrieval intact while replacing conventional reranking with probabilistic gating against typed questions. Jev evaluates candidates, filters out unhelpful passages using thresholds, and determines overall answerability before context reaches the LLM. If evidence is insufficient, Jev allows applications to bypass generation entirely and declare the information absent.",
+          "takeaways": [
+            "Conventional rerankers evaluate relative passage ordering rather than verifying whether passages actually provide sufficient evidence to answer a query.",
+            "Jev evaluates retrieved passages against typed questions to output probabilities reflecting helpfulness.",
+            "A threshold is applied to Jev probabilities to filter weak candidates out of the context window before LLM inference.",
+            "Jev can evaluate overall answerability, allowing the system to skip LLM generation when the context lacks sufficient evidence.",
+            "Jev works alongside existing embedding models and vector databases without replacing retrieval stages.",
+            "Jev can be combined with LangGraph in agent loops to implement routing, guardrails, planning, and verification."
+          ]
         },
         {
           "title": "5 vector DB indexing strategies",
           "category": "LLMs",
-          "summary": "",
-          "takeaways": []
+          "summary": "Vector database indexing strategies reduce the linear computational cost of naive nearest-neighbor search across large collections of vectors. Five primary approaches include Flat indexing for exact retrieval, Inverted File Index (IVF) for cluster-based filtering, Hierarchical Navigable Small World (HNSW) for graph traversal, IVF-PQ for clustering combined with product quantization, and ScaNN for partition-based quantized search with re-scoring. Selecting an appropriate index requires balancing trade-offs between recall accuracy, latency, throughput, and memory consumption.",
+          "takeaways": [
+            "A Flat index conducts an exact nearest-neighbor search, providing complete accuracy but scaling linearly with dataset size.",
+            "IVF partitions the vector space into clusters and uses a probe parameter to tune the trade-off between recall and latency.",
+            "HNSW constructs a multilayer graph allowing fast queries and high recall at the cost of higher memory consumption.",
+            "IVF-PQ pairs clustering with product quantization to compress vectors, significantly cutting memory and query overhead at the expense of some recall.",
+            "ScaNN partitions data, scores compressed candidates, and recalculates exact distances for top candidates, optimizing throughput on large datasets."
+          ]
         }
       ],
-      "summary": "Speechmatics Linden is a speech-to-text model built specifically for voice agents. It focuses on the inputs that tend to cause expensive mistakes: strong accents, background noise, non-native speech, names, and alphanumeric strings such as booking references. • Real-time transcription across 55+ languages • Final transcripts in roughly 250 ms after a ForceEndOfUtterance signal • Custom dictionarie",
-      "summarised": false,
+      "summary": "Speechmatics has launched Linden, a speech-to-text model designed specifically for voice agents. It is engineered to minimize errors caused by challenging audio conditions such as background noise, strong accents, non-native speech, and alphanumeric strings. The system provides real-time transcription across over 55 languages with roughly 250 ms latency after a ForceEndOfUtterance signal. It also integrates natively with developer platforms like LiveKit, Pipecat, and Jambonz. Standard RAG architectures use vector search and rerankers to supply context to an LLM, but relative ranking does not guarantee answerability or evidence sufficiency. Integrating Jev into RAG keeps retrieval intact while replacing conventional reranking with probabilistic gating against typed questions. Jev evaluates candidates, filters out unhelpful passages using thresholds, and determines overall answerability before context reaches the LLM. If evidence is insufficient, Jev allows applications to bypass generation entirely and declare the information absent. Vector database indexing strategies reduce the linear computational cost of naive nearest-neighbor search across large collections of vectors. Five primary approaches include Flat indexing for exact retrieval, Inverted File Index (IVF) for cluster-based filtering, Hierarchical Navigable Small World (HNSW) for graph traversal, IVF-PQ for clustering combined with product quantization, and ScaNN for partition-based quantized search with re-scoring. Selecting an appropriate index requires balancing trade-offs between recall accuracy, latency, throughput, and memory consumption.",
+      "summarised": true,
       "headings": [
         "Build voice agents that hear the details",
         "5 vector DB indexing strategies"
       ],
       "zh": {
-        "summary": "Speechmatics Linden 是一款專為 voice agents 打造的 speech-to-text 模型。它專注於往往會導致嚴重代價錯誤的輸入內容：濃重口音、背景雜音、非母語語音、姓名，以及像訂位代號這類的英數組合字串。• 支援 55+ 種語言的即時轉錄 • 收到 ForceEndOfUtterance 訊號後約 250 ms 即可產出最終逐字稿 • Custom dictionarie",
+        "summary": "Speechmatics 推出了專為 voice agents 設計的 speech-to-text 模型 Linden。其設計旨在最大程度減少惡劣音訊環境所造成的錯誤，例如背景噪音、強烈口音、非母語語音以及英數混合字串。該系統提供超過 55 種語言的即時轉錄，在 ForceEndOfUtterance 信號後僅約 250 ms 延遲。它還原生整合了 LiveKit、Pipecat 和 Jambonz 等開發者平台。標準 RAG 架構使用 vector search 和 rerankers 來為 LLM 提供 context，但相對排序並不能保證 answerability 或 evidence sufficiency。將 Jev 整合到 RAG 中可在保留 retrieval 的同時，以針對 typed questions 的 probabilistic gating 取代傳統 reranking。Jev 會評估候選項目、利用門檻值過濾無用的 passages，並在 context 傳遞給 LLM 之前判定整體的 answerability。若證據不足，Jev 允許應用程式完全跳過 generation 並宣告缺乏相關資訊。Vector database 的 indexing 策略降低了在大型向量集合上進行 naive nearest-neighbor search 的線性計算成本。五種主要方法包括用於 exact retrieval 的 Flat indexing、用於 cluster-based filtering 的 Inverted File Index (IVF)、用於 graph traversal 的 Hierarchical Navigable Small World (HNSW)、結合 clustering 與 product quantization 的 IVF-PQ，以及用於 partition-based quantized search 搭配 re-scoring 的 ScaNN。選擇合適的 index 需要在 recall accuracy、latency、throughput 與 memory consumption 之間取得平衡。",
         "headings": [
           "打造能聽清細節的 voice agents",
           "5 種 vector DB indexing 策略"
@@ -92,18 +111,37 @@
         "sections": [
           {
             "title": "打造能聽清細節的 voice agents",
-            "summary": "",
-            "takeaways": []
+            "summary": "Speechmatics 推出了專為 voice agents 設計的 speech-to-text 模型 Linden。其設計旨在最大程度減少惡劣音訊環境所造成的錯誤，例如背景噪音、強烈口音、非母語語音以及英數混合字串。該系統提供超過 55 種語言的即時轉錄，在 ForceEndOfUtterance 信號後僅約 250 ms 延遲。它還原生整合了 LiveKit、Pipecat 和 Jambonz 等開發者平台。",
+            "takeaways": [
+              "Speechmatics Linden 是一款專為 voice agents 量身打造的 STT 模型，用於處理口音、噪音以及複雜的英數混合字串。",
+              "它支援超過 55 種語言的即時轉錄，並在 ForceEndOfUtterance 信號後約 250 ms 內輸出最終的 transcripts。",
+              "該模型允許針對人名、產品術語及特定行業詞彙自訂字典。",
+              "提供對 LiveKit、Pipecat、Jambonz 以及 Speechmatics API 的原生整合。",
+              "Linden 1 定價自每小時 $0.30 起，隨著用量折扣可降至每小時 $0.16。"
+            ]
           },
           {
             "title": "RAG vs. Jev + RAG 清楚解析！",
-            "summary": "",
-            "takeaways": []
+            "summary": "標準 RAG 架構使用 vector search 和 rerankers 為 LLM 提供 context，但相對排序無法保證 answerability 或 evidence sufficiency。將 Jev 整合到 RAG 中可在保留 retrieval 的同時，以針對 typed questions 的 probabilistic gating 取代傳統 reranking。Jev 會評估候選項目、利用門檻值過濾無用的 passages，並在 context 送達 LLM 之前判定整體的 answerability。若證據不足，Jev 允許應用程式完全跳過 generation 並宣告缺乏相關資訊。",
+            "takeaways": [
+              "傳統 rerankers 評估的是 passages 的相對排序，而非驗證這些 passages 是否真的提供了足夠的證據來回答 query。",
+              "Jev 會針對 typed questions 評估檢索出的 passages，以輸出反映其 helpfulness 的機率值。",
+              "在進行 LLM inference 之前，會對 Jev 機率值套用門檻值，將關聯度較弱的候選項過濾出 context window 之外。",
+              "Jev 可以評估整體的 answerability，讓系統在 context 缺乏足夠證據時跳過 LLM generation。",
+              "Jev 能與現有的 embedding models 及 vector databases 協同運作，無需替換 retrieval 階段。",
+              "Jev 可以與 agent loops 中的 LangGraph 結合，以實作 routing、guardrails、planning 與 verification。"
+            ]
           },
           {
             "title": "5 種 vector DB indexing 策略",
-            "summary": "",
-            "takeaways": []
+            "summary": "Vector database 的 indexing 策略降低了在大型向量集合上進行 naive nearest-neighbor search 的線性計算成本。五種主要方法包括用於 exact retrieval 的 Flat indexing、用於 cluster-based filtering 的 Inverted File Index (IVF)、用於 graph traversal 的 Hierarchical Navigable Small World (HNSW)、結合 clustering 與 product quantization 的 IVF-PQ，以及用於 partition-based quantized search 搭配 re-scoring 的 ScaNN。選擇合適的 index 需要在 recall accuracy、latency、throughput 與 memory consumption 之間取得平衡。",
+            "takeaways": [
+              "Flat index 執行精確的 nearest-neighbor search，能提供完全的準確度，但運算成本會隨資料集大小呈線性增長。",
+              "IVF 將向量空間劃分為多個 clusters，並使用 probe 參數來微調 recall 與 latency 之間的權衡取捨。",
+              "HNSW 構建多層圖結構，以較高的 memory consumption 為代價實現快速查詢與高 recall。",
+              "IVF-PQ 將 clustering 與 product quantization 結合以壓縮向量，雖會犧牲部分 recall，但能大幅降低 memory 與 query overhead。",
+              "ScaNN 劃分資料、對壓縮後的候選項進行評分，並重新計算前幾名候選項的精確距離，從而優化大型資料集上的 throughput。"
+            ]
           }
         ]
       }
@@ -118,25 +156,37 @@
         {
           "title": "Karpathy’s trick for faster local LLMs finally has proper tooling",
           "category": "LOCAL AI",
-          "summary": "",
-          "takeaways": []
+          "summary": "Uzu is an open-source local LLM inference engine designed for batch-size-one workloads on Apple Silicon hardware. Instead of being limited by memory bandwidth to roughly 29 tokens per second on a base M5 chip, Uzu achieves 92 to 117 tokens per second with a 4-bit Qwen3.5 9B model. It accomplishes this through a co-designed pipeline incorporating int8 quantization with Random Hadamard Transforms, DFlash-Weaver speculative tree drafting, and rollback-free verification for stateful Gated DeltaNet layers.",
+          "takeaways": [
+            "At batch size one, local LLM generation speed is fundamentally bounded by memory bandwidth; on a base M5 (153 GB/s bandwidth), a 5.2 GB 4-bit 9B model has a theoretical ceiling of ~29 tokens/second for single-token decoding.",
+            "Uzu pairs 4-bit weight quantization and on-the-fly int8 activation quantization with a block-diagonal Random Hadamard Transform to mitigate outlier errors matching the Apple GPU 32-thread SIMD width.",
+            "Speculative drafting in Uzu uses DFlash and Weaver to generate coherent candidate token trees with 16-to-32-token budgets, leveraging idle arithmetic capacity on the M5's Neural Accelerators.",
+            "To handle recurrent Gated DeltaNet layers in Qwen3.5 without performance-degrading state restorations, Uzu uses rollback-free tree verification via recurrence-free Metal kernels.",
+            "In benchmarks on an M5 MacBook Pro, Uzu generated 92–117 tokens/s (accepting ~7.5–8.4 tokens per forward pass), outperforming llama.cpp (22 tokens/s) and MLX (25 tokens/s)."
+          ]
         }
       ],
-      "summary": "On-device inference often runs at batch size one. One application decodes one active sequence on one device. This is quite different from a busy hosted service where requests from many users reach the same accelerator pool. The runtime can schedule several sequences in one batch. A single model pass then advances multiple requests. This improves total throughput. An on-device application usually h",
-      "summarised": false,
+      "summary": "Uzu is an open-source local LLM inference engine designed for batch-size-one workloads on Apple Silicon hardware. Instead of being limited by memory bandwidth to roughly 29 tokens per second on a base M5 chip, Uzu achieves 92 to 117 tokens per second with a 4-bit Qwen3.5 9B model. It accomplishes this through a co-designed pipeline incorporating int8 quantization with Random Hadamard Transforms, DFlash-Weaver speculative tree drafting, and rollback-free verification for stateful Gated DeltaNet layers.",
+      "summarised": true,
       "headings": [
         "Karpathy’s trick for faster local LLMs finally has proper tooling"
       ],
       "zh": {
-        "summary": "On-device inference 通常以 batch size 1 執行。在單一裝置上，一個應用程式解碼一個 active sequence。這與繁忙的 hosted service 大不相同，後者來自眾多使用者的請求會彙整到同一個 accelerator pool。Runtime 可以在一個 batch 中排程多個 sequence，單次 model pass 就能同時推進多個請求，從而提升整體 throughput。而 on-device 應用程式通常 h",
+        "summary": "Uzu 是一款開源的 local LLM inference engine，專為 Apple Silicon 硬體上的 batch-size-one 工作負載所設計。在基礎 M5 晶片上，它擺脫了 memory bandwidth 將速度限制在每秒約 29 tokens 的瓶頸，使用 4-bit Qwen3.5 9B 模型實現了每秒 92 到 117 tokens。它透過協同設計的 pipeline 達成此目標，該 pipeline 整合了結合 Random Hadamard Transforms 的 int8 quantization、DFlash-Weaver speculative tree drafting，以及針對 stateful Gated DeltaNet 層的 rollback-free verification。",
         "headings": [
           "Karpathy 讓 local LLMs 更快速的技巧，終於有了合適的 tooling"
         ],
         "sections": [
           {
             "title": "Karpathy 讓 local LLMs 更快速的技巧，終於有了合適的 tooling",
-            "summary": "",
-            "takeaways": []
+            "summary": "Uzu 是一款開源的 local LLM inference engine，專為 Apple Silicon 硬體上的 batch-size-one 工作負載所設計。在基礎 M5 晶片上，它擺脫了 memory bandwidth 將速度限制在每秒約 29 tokens 的瓶頸，使用 4-bit Qwen3.5 9B 模型實現了每秒 92 到 117 tokens。它透過協同設計的 pipeline 達成此目標，該 pipeline 整合了結合 Random Hadamard Transforms 的 int8 quantization、DFlash-Weaver speculative tree drafting，以及針對 stateful Gated DeltaNet 層的 rollback-free verification。",
+            "takeaways": [
+              "在 batch size 為 1 的情況下，local LLM 的 generation 速度基本上受限於 memory bandwidth；在基礎 M5（153 GB/s 頻寬）上，5.2 GB 的 4-bit 9B 模型在 single-token decoding 下的理論上限約為 ~29 tokens/second。",
+              "Uzu 將 4-bit weight quantization 與 on-the-fly int8 activation quantization 相結合，並採用 block-diagonal Random Hadamard Transform 來減輕 outlier 誤差，精確匹配 Apple GPU 的 32-thread SIMD 寬度。",
+              "Uzu 中的 speculative drafting 使用 DFlash 與 Weaver 生成具有 16 到 32 個 token budget 的連貫候選 token trees，充分利用 M5 Neural Accelerators 上的閒置運算能力。",
+              "為了在 Qwen3.5 中處理 recurrent Gated DeltaNet layers，且不造成效能下降的 state restorations，Uzu 透過 recurrence-free Metal kernels 採用了 rollback-free tree verification。",
+              "在 M5 MacBook Pro 上的 benchmark 中，Uzu 能生成 92–117 tokens/s（每次 forward pass 接受約 7.5–8.4 個 tokens），表現優於 llama.cpp（22 tokens/s）與 MLX（25 tokens/s）。"
+            ]
           }
         ]
       }
@@ -193,7 +243,7 @@
         "summary": "本節概括回顧了過去一個月為 ByteByteGo 訂閱者發布的文章。涵蓋主題包括資料從建立到刪除的生命週期，以及處理大規模 system migration。其他文章則探討了 application networking 基礎、database concurrency control 機制，以及 background job processing 朝向 distributed systems 的演進。歡迎讀者升級為付費訂閱以存取完整內容。每個軟體系統都需要邊界來區隔內部元素與外部組件。設計良好的 software boundary 會將應用程式的職責、business rules 與實作細節封裝成具備高內聚力的單元。系統的外部部分只能透過定義明確的路徑與被封裝的組件互動。培養劃分職責與建立正確依賴關係的直覺，是開發者不可或缺的架構技能。本節為 ByteByteGo 在 Substack 平台上發布的 newsletter 管理頁尾文字。它提供了 ByteByteGo 位於加州舊金山的版權年份與登記實體地址。此外，它還為讀者提供了取消訂閱的連結，以及在 Substack 應用程式中閱讀該文章的提示。",
         "headings": [
           "最新文章",
-          "在 Substack app 中免費繼續閱讀此文章"
+          "在 Substack app 中免費繼續閱讀本文"
         ],
         "sections": [
           {
