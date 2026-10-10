@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-10T10:05:25Z",
+  "updatedAt": "2026-10-10T13:30:27Z",
   "sources": [
     {
       "key": "gmail:bytebytego",
@@ -159,7 +159,7 @@
           "Sol 幾乎逼近 Astra",
           "Argon：專為知識工作打造的低幻覺（Low-Hallucination）模型",
           "透過 Data Points 掌握更多 AI 新知！",
-          "為任務挑選合適的工具",
+          "為合適的任務挑選合適的工具",
           "與 Andrew Ng 一同工作"
         ],
         "sections": [
@@ -252,36 +252,60 @@
         {
           "title": "6 context types for agent memory",
           "category": "OPEN-SOURCE",
-          "summary": "",
-          "takeaways": []
+          "summary": "Agent memory systems must provide different forms of context depending on user queries, ranging from current facts to recurring patterns across interactions. Rather than maintaining separate memory stores, an effective system stores history once within a single temporal memory graph and reads it through six distinct context types: facts, entities, episodes, thread summaries, observations, and user summaries. Evaluating agent memory requires assessing whether the correct structural form of context is returned rather than simply measuring text retrieval similarity. Graphiti is an open-source temporal graph framework that implements this approach by assembling multiple context types into a unified fixed-budget block.",
+          "takeaways": [
+            "Agent memory requires six context types: facts, entities, episodes, thread summaries, observations, and user summaries.",
+            "Instead of creating multiple distinct memory stores, history should be stored once in a single temporal memory graph and read in multiple ways.",
+            "Temporal tracking allows older facts to be closed with validity dates rather than deleted when truths change.",
+            "Memory evaluation must prioritize returning the correct context format for the query rather than just retrieving semantically related text.",
+            "Graphiti is an open-source temporal graph framework that tracks evolving facts and compiles different context types into a fixed-budget block."
+          ]
         },
         {
           "title": "Train your own Jev-style decision model locally!",
           "category": "JEV",
-          "summary": "",
-          "takeaways": []
+          "summary": "A Jev-style decision model was successfully trained locally using Qwen3.5 0.8B as the base model. Through LoRA fine-tuning, the model improved its accuracy from 37% to 65% in only 60 steps, requiring about 10 minutes of training on 4GB of VRAM. A step-by-step video tutorial demonstrates the workflow utilizing Unsloth Studio and programmatic methods. Additionally, Jev-style decision components are demonstrated within end-to-end agentic loops using LangGraph in an Agent Engineering course.",
+          "takeaways": [
+            "Qwen3.5 0.8B served as the base model for local training of a Jev-style decision model.",
+            "Training improved model accuracy from 37% to 65% in 60 steps (10 minutes).",
+            "The fine-tuning process requires only 4GB of VRAM.",
+            "The workflow utilizes LoRA and can be configured through Unsloth Studio or directly via code.",
+            "Jev decision models can be incorporated into agent loops with LangGraph for routing, guardrails, and approval controls."
+          ]
         }
       ],
-      "summary": "An agent may need the current truth, exact original wording, the outcome of a session, or a pattern across several conversations. Those requests require different forms of context. A useful memory system stores history once and reads it in six ways. • Facts answer what changed and when. Each claim carries validity dates, so an older truth can be closed without being deleted. • Entities answer “tel",
-      "summarised": false,
+      "summary": "Agent memory systems must provide different forms of context depending on user queries, ranging from current facts to recurring patterns across interactions. Rather than maintaining separate memory stores, an effective system stores history once within a single temporal memory graph and reads it through six distinct context types: facts, entities, episodes, thread summaries, observations, and user summaries. Evaluating agent memory requires assessing whether the correct structural form of context is returned rather than simply measuring text retrieval similarity. Graphiti is an open-source temporal graph framework that implements this approach by assembling multiple context types into a unified fixed-budget block. A Jev-style decision model was successfully trained locally using Qwen3.5 0.8B as the base model. Through LoRA fine-tuning, the model improved its accuracy from 37% to 65% in only 60 steps, requiring about 10 minutes of training on 4GB of VRAM. A step-by-step video tutorial demonstrates the workflow utilizing Unsloth Studio and programmatic methods. Additionally, Jev-style decision components are demonstrated within end-to-end agentic loops using LangGraph in an Agent Engineering course.",
+      "summarised": true,
       "headings": [
         "6 context types for agent memory"
       ],
       "zh": {
-        "summary": "Agent 可能會需要當前的真實情況（current truth）、確切的原始措辭、某個 session 的結果，或是跨多個對話的 pattern。這些需求需要不同形式的 context。一個實用的 memory 系統只需儲存一次歷史紀錄，並能以六種方式來讀取：• Facts 回答了改變了什麼以及何時改變。每個 claim 都帶有有效日期，因此較舊的真實情況可以被標記為結束而無需刪除。• Entities 回答 “tel",
+        "summary": "Agent memory 系統必須根據使用者的 query 提供不同形式的 context，範圍涵蓋從當前的 facts 到跨互動重複出現的 pattern。與其維護多個獨立的 memory store，一個高效率的系統會將 history 一次性儲存在單一 temporal memory graph 中，並透過六種不同的 context 類型進行讀取：facts、entities、episodes、thread summaries、observations 與 user summaries。評估 agent memory 需要評量是否回傳了正確結構形式的 context，而非僅僅衡量文字檢索的相似度（text retrieval similarity）。Graphiti 是一個開源的 temporal graph 框架，透過將多種 context 類型組合成一個統一的 fixed-budget block 來實作這種方法。以 Qwen3.5 0.8B 為 base model，成功在本地端訓練出一個 Jev-style decision model。透過 LoRA fine-tuning，該模型僅花費 60 steps、在 4GB VRAM 上訓練約 10 分鐘，便將 accuracy 從 37% 提升至 65%。逐步的影片教學展示了使用 Unsloth Studio 及程式化方式的工作流程。此外，在 Agent Engineering 課程中，也展示了如何在 end-to-end agentic loop 中使用 LangGraph 結合 Jev-style 決策元件。",
         "headings": [
           "Agent memory 的 6 種 context 類型"
         ],
         "sections": [
           {
             "title": "Agent memory 的 6 種 context 類型",
-            "summary": "",
-            "takeaways": []
+            "summary": "Agent memory 系統必須根據使用者的 query 提供不同形式的 context，範圍涵蓋從當前的 facts 到跨互動重複出現的 pattern。與其維護多個獨立的 memory store，一個高效率的系統會將 history 一次性儲存在單一 temporal memory graph 中，並透過六種不同的 context 類型進行讀取：facts、entities、episodes、thread summaries、observations 與 user summaries。評估 agent memory 需要評量是否回傳了正確結構形式的 context，而非僅僅衡量文字檢索的相似度（text retrieval similarity）。Graphiti 是一個開源的 temporal graph 框架，透過將多種 context 類型組合成一個統一的 fixed-budget block 來實作這種方法。",
+            "takeaways": [
+              "Agent memory 需要六種 context 類型：facts、entities、episodes、thread summaries、observations 與 user summaries。",
+              "與其建立多個獨立的 memory store，不如將 history 一次性儲存在單一 temporal memory graph 中，並以多種方式進行讀取。",
+              "Temporal tracking 允許在事實變更時，以有效期限（validity dates）關閉舊有的 facts，而不是直接將其刪除。",
+              "Memory evaluation 必須優先考量是否針對 query 回傳正確的 context 格式，而非僅僅檢索語意相關的文字。",
+              "Graphiti 是一個開源的 temporal graph 框架，能夠追蹤不斷演變的 facts，並將不同的 context 類型編譯成一個 fixed-budget block。"
+            ]
           },
           {
             "title": "在本地端訓練你自己的 Jev-style decision model！",
-            "summary": "",
-            "takeaways": []
+            "summary": "以 Qwen3.5 0.8B 為 base model，成功在本地端訓練出一個 Jev-style decision model。透過 LoRA fine-tuning，該模型僅花費 60 steps、在 4GB VRAM 上訓練約 10 分鐘，便將 accuracy 從 37% 提升至 65%。逐步的影片教學展示了使用 Unsloth Studio 及程式化方式的工作流程。此外，在 Agent Engineering 課程中，也展示了如何在 end-to-end agentic loop 中使用 LangGraph 結合 Jev-style 決策元件。",
+            "takeaways": [
+              "Qwen3.5 0.8B 作為 base model，用於在本地端訓練 Jev-style decision model。",
+              "訓練在 60 steps（10 分鐘）內將模型 accuracy 從 37% 提升至 65%。",
+              "Fine-tuning 流程僅需 4GB VRAM。",
+              "該工作流程採用 LoRA，並可透過 Unsloth Studio 或直接藉由程式碼進行設定。",
+              "Jev decision models 可以與 LangGraph 一起整合至 agent loop 中，用於 routing、guardrails 以及 approval controls。"
+            ]
           }
         ]
       }
