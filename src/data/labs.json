@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-11T13:30:05Z",
+  "updatedAt": "2026-10-12T12:52:27Z",
   "labs": [
     {
       "key": "openai",
@@ -157,6 +157,21 @@
     }
   ],
   "items": [
+    {
+      "date": "2026-10-12",
+      "lab": "sakana",
+      "title": "Introducing Multi-Agent Self-Supervision (MASS): Recursive self-improvement through collective intelligence",
+      "url": "https://x.com/SakanaAILabs/status/2109385006603006435",
+      "source": "X @SakanaAILabs",
+      "publishedAt": "2026-10-11T20:45:50.000Z",
+      "category": "research",
+      "summary": "Sakana AI 發表 Multi-Agent Self-Supervision（MASS）研究，透過多代理系統的群體智慧實現遞迴自我改進，以解決開放式研究任務中缺乏外部監督的問題。",
+      "content": "Introducing Multi-Agent Self-Supervision (MASS): Recursive self-improvement through collective intelligence\n\nBlog: https://pub.sakana.ai/mass/\n\nAs AI systems tackle increasingly open-ended research problems, human experts may struggle to assess results and guide further progress. The model itself may be the best available optimizer and evaluator. The challenge is obtaining useful self-supervision within that homogeneous loop, where a model risks reinforcing its own blind spots rather than correcting them.\n\nWe ask whether a model can learn from the collective intelligence of its own team.\n\nWe introduce Multi-Agent Self-Supervision (MASS). One shared model solves tasks through a team of virtual subagents, searches for better multi-agent workflows, then uses its own judgments to select the best ones.\n\nTraining on the best team’s executions provides self-supervision by distilling the team’s collective experience into the shared model.\n\nWe ran two cycles using a 27B open-weights model on synthetic open-ended research tasks. After the second cycle, score per output token reached 1.2-1.6x the base model's level across four research benchmarks.\n\nThree key results:\n\nFirst, MASS enables role generalization within an RSI loop: training only on task-solving data from the optimizee naturally improves the capabilities of both the optimizer and the evaluator.\n\nSecond, multi-agent trajectories are more efficient training data than single-agent trajectories for RSI.\n\nThird, optimizer capacity, rather than evaluator capacity, can be the bottleneck in the speed of improvement.\n\nWe believe the community needs to investigate homogeneous RSI carefully to support AI safety. When a model is also its own evaluator, shared blind spots could allow mistakes to be accepted as progress and reinforced through training. For AI to improve beyond human expertise safely, we need to understand these failures and preserve effective ways to detect them and intervene.\n\nPaper: https://arxiv.org/abs/2610.12176\nCode: https://github.com/SakanaAI/mass\n\nThis work was a collaboration with researchers at UC Berkeley.\n\nRecursive Self-Improvement through Multi-Agent Self-Supervision\n\nhttps://arxiv.org/abs/2610.12176\n\nIn collaboration with UC Berkeley (Somayeh Sojoudi, Matei Zaharia, and Donghyun Lee). https://x.com/SakanaAILabs/status/2109547739034108168/photo/1",
+      "aliases": [],
+      "en": {
+        "summary": "Sakana AI presents research on Multi-Agent Self-Supervision (MASS), leveraging the collective intelligence of multi-agent systems to achieve recursive self-improvement and address the lack of external supervision in open-ended research tasks."
+      }
+    },
     {
       "date": "2026-10-10",
       "lab": "minimax",
