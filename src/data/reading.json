@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-16T10:03:59Z",
+  "updatedAt": "2026-10-16T13:30:23Z",
   "sources": [
     {
       "key": "gmail:bytebytego",
@@ -61,30 +61,49 @@
         {
           "title": "After MCP, A2A, & AG-UI, there’s another agent protocol:",
           "category": "AGENTS",
-          "summary": "",
-          "takeaways": []
+          "summary": "Unified Harness Protocol (UHP) introduces a standardized interface designed to run agent tasks across diverse agent harnesses. HarnessRouter acts as an open-source server implementation of UHP, managing communication between product backends and configured harnesses. The system relies on three core components: Gateway, Runner, and built-in tools like MCP servers and browsers. This setup enables interchangeable agent infrastructure, allowing users to swap harnesses like Codex and Claude Code or compare their outputs without rewriting product code.",
+          "takeaways": [
+            "Unified Harness Protocol (UHP) provides a standardized interface for running agent tasks across disparate agent harnesses.",
+            "HarnessRouter is the open-source server implementation of the UHP specification.",
+            "The architecture consists of three core components: Gateway, Runner, and Built-in tools.",
+            "HarnessRouter decouples the product backend from specific agent harnesses, enabling seamless switching between harnesses like Codex and Claude Code.",
+            "The Runner component supports isolated workspaces, unified event streaming, and turn checkpoints.",
+            "The implementation includes built-in integrations for MCP servers, browsers, databases, GitHub, and media."
+          ]
         },
         {
           "title": "A Full Walkthrough on Multimodal Jev",
           "category": "JEV",
-          "summary": "",
-          "takeaways": []
+          "summary": "Jev has introduced multimodal capabilities, enabling the tool to process visual inputs. A comprehensive walkthrough video demonstrates how Jev functions, including handling single and multiple images as well as running parallel questions. The presentation also reviews caveats and potential failure modes associated with the system, complemented by documentation on decision models.",
+          "takeaways": [
+            "Jev has expanded capabilities to support multimodal tasks and image analysis.",
+            "The walkthrough demonstrates handling single and multiple image inputs as well as parallel querying.",
+            "The demonstration highlights critical usage caveats and 'danger zone headers'.",
+            "Jev operates as a decision model, with introductory educational material provided for new users."
+          ]
         },
         {
           "title": "A tricky LLM interview question:",
           "category": "LLMOps",
-          "summary": "",
-          "takeaways": []
+          "summary": "Moving an LLM to a faster GPU often yields minimal latency improvements during token generation because token-by-token decoding consists of many short operations where CPU launch overhead leaves the GPU idle. CUDA Graphs resolve this bottleneck by capturing the entire operation sequence once and replaying it through a single launch, eliminating intermediate CPU submission delays. While prefill workloads are typically compute-bound and less affected by launch latency, decoding benefits substantially from graph execution. However, CUDA Graphs require fixed execution structures and memory addresses, prompting inference engines like vLLM and TensorRT-LLM to pre-capture graphs for select batch sizes at the expense of memory and startup time.",
+          "takeaways": [
+            "Faster GPUs do not always decrease token generation time because short kernels can finish faster than the CPU can submit subsequent operations.",
+            "Token-by-token decoding repeatedly executes sequences of small kernels, making CPU launch overhead a major contributor to latency.",
+            "CUDA Graphs capture repeated execution sequences and launch them as a single unit, removing CPU dispatch overhead and eliminating idle gaps on the GPU timeline.",
+            "Prefill operations benefit less from CUDA Graphs because larger prompt workloads produce longer-running kernels that already saturate the GPU.",
+            "Capturing CUDA Graphs demands fixed batch sizes and memory layouts, forcing serving engines to capture multiple sizes at the cost of additional GPU memory and startup delay.",
+            "Serving frameworks such as vLLM and TensorRT-LLM use multi-size graph capture combined with padding or eager execution for unsupported batch sizes."
+          ]
         }
       ],
-      "summary": "And this one is built for Agent harnesses: UHP (Unified Harness Protocol) is a standardized interface for running agent tasks across any agent harness, regardless of which one you use. HarnessRouter is its open-source server implementation. Here’s the GitHub repo → Here’s how it works: • Your product backend sends a task + harness_id to HarnessRouter. • HarnessRouter routes it to whichever configu",
-      "summarised": false,
+      "summary": "Unified Harness Protocol (UHP) introduces a standardized interface designed to run agent tasks across diverse agent harnesses. HarnessRouter acts as an open-source server implementation of UHP, managing communication between product backends and configured harnesses. The system relies on three core components: Gateway, Runner, and built-in tools like MCP servers and browsers. This setup enables interchangeable agent infrastructure, allowing users to swap harnesses like Codex and Claude Code or compare their outputs without rewriting product code. Jev has introduced multimodal capabilities, enabling the tool to process visual inputs. A comprehensive walkthrough video demonstrates how Jev functions, including handling single and multiple images as well as running parallel questions. The presentation also reviews caveats and potential failure modes associated with the system, complemented by documentation on decision models. Moving an LLM to a faster GPU often yields minimal latency improvements during token generation because token-by-token decoding consists of many short operations where CPU launch overhead leaves the GPU idle. CUDA Graphs resolve this bottleneck by capturing the entire operation sequence once and replaying it through a single launch, eliminating intermediate CPU submission delays. While prefill workloads are typically compute-bound and less affected by launch latency, decoding benefits substantially from graph execution. However, CUDA Graphs require fixed execution structures and memory addresses, prompting inference engines like vLLM and TensorRT-LLM to pre-capture graphs for select batch sizes at the expense of memory and startup time.",
+      "summarised": true,
       "headings": [
         "After MCP, A2A, & AG-UI, there’s another agent protocol:",
         "A tricky LLM interview question:"
       ],
       "zh": {
-        "summary": "而這個則是專為 Agent harness 所打造：UHP (Unified Harness Protocol) 是一個標準化介面，無論你使用哪種 Agent harness，都能跨任何 harness 執行 agent 任務。HarnessRouter 是它的開源伺服器實作。這是 GitHub repo → 它的運作方式如下：• 你的產品 backend 將 task + harness_id 發送給 HarnessRouter。• HarnessRouter 將其路由至任何 configu",
+        "summary": "Unified Harness Protocol (UHP) 引入了標準化介面，旨在跨不同的 agent harness 執行 agent 任務。HarnessRouter 作為 UHP 的開源伺服器實作，負責管理產品後端與已設定 harness 之間的通訊。該系統依賴三個核心元件：Gateway、Runner 以及 MCP 伺服器與瀏覽器等內建工具。此架構實現了可互換的 agent 基礎設施，讓使用者無需重寫產品程式碼即可替換 Codex 和 Claude Code 等 harness，或比較它們的輸出結果。Jev 推出了多模態功能，使該工具能夠處理視覺輸入。一段詳細的操作示範影片展示了 Jev 的運作方式，包括處理單張與多張圖片，以及平行執行提問。該簡報也回顧了與系統相關的注意事項與潛在 failure modes，並附有關於 decision models 的說明文件。將 LLM 移至更快的 GPU 上，在 token generation 期間通常只能帶來微乎其微的延遲改善，因為逐 token decoding 是由許多簡短運算組成，其中 CPU launch overhead 會導致 GPU 處於閒置狀態。CUDA Graphs 透過一次 capture 整個運算序列，並透過單次 launch 進行重放來解決此瓶頸，消除了中間的 CPU submission 延遲。雖然 prefill 工作負載通常是 compute-bound，且較少受到 launch latency 的影響，但 decoding 則能從 graph execution 中大幅獲益。然而，CUDA Graphs 需要固定的執行結構與記憶體位址，促使 vLLM 和 TensorRT-LLM 等推論引擎以犧牲記憶體和啟動時間為代價，針對特定 batch sizes 預先 capture graph。",
         "headings": [
           "繼 MCP、A2A 與 AG-UI 之後，又出現了另一個 agent protocol：",
           "一個棘手的 LLM 面試問題："
@@ -92,18 +111,37 @@
         "sections": [
           {
             "title": "繼 MCP、A2A 與 AG-UI 之後，又出現了另一個 agent protocol：",
-            "summary": "",
-            "takeaways": []
+            "summary": "Unified Harness Protocol (UHP) 引入了標準化介面，旨在跨不同的 agent harness 執行 agent 任務。HarnessRouter 作為 UHP 的開源伺服器實作，負責管理產品後端與已設定 harness 之間的通訊。該系統依賴三個核心元件：Gateway、Runner 以及 MCP 伺服器與瀏覽器等內建工具。此架構實現了可互換的 agent 基礎設施，讓使用者無需重寫產品程式碼即可替換 Codex 和 Claude Code 等 harness，或比較它們的輸出結果。",
+            "takeaways": [
+              "Unified Harness Protocol (UHP) 提供了一個標準化介面，用於跨不同的 agent harness 執行 agent 任務。",
+              "HarnessRouter 是 UHP 規格的開源伺服器實作。",
+              "該架構由三個核心元件組成：Gateway、Runner 以及內建工具。",
+              "HarnessRouter 將產品後端與特定的 agent harness 解耦，實現了在 Codex 和 Claude Code 等 harness 之間無縫切換。",
+              "Runner 元件支援隔離的 workspace、統一的 event streaming 以及 turn checkpoints。",
+              "此實作包含針對 MCP 伺服器、瀏覽器、資料庫、GitHub 和媒體的內建整合。"
+            ]
           },
           {
             "title": "Multimodal Jev 的完整詳解",
-            "summary": "",
-            "takeaways": []
+            "summary": "Jev 推出了多模態功能，使該工具能夠處理視覺輸入。一段詳細的操作示範影片展示了 Jev 的運作方式，包括處理單張與多張圖片，以及平行執行提問。該簡報也回顧了與系統相關的注意事項與潛在 failure modes，並附有關於 decision models 的說明文件。",
+            "takeaways": [
+              "Jev 擴展了功能，以支援多模態任務與影像分析。",
+              "該操作示範展示了處理單張與多張圖片輸入，以及平行查詢的能力。",
+              "該示範強調了關鍵的使用注意事項與「danger zone headers」。",
+              "Jev 作為 decision model 運作，並為新使用者提供了入門教學材料。"
+            ]
           },
           {
             "title": "一個棘手的 LLM 面試問題：",
-            "summary": "",
-            "takeaways": []
+            "summary": "將 LLM 移至更快的 GPU 上，在 token generation 期間通常只能帶來微乎其微的延遲改善，因為逐 token decoding 是由許多簡短運算組成，其中 CPU launch overhead 會導致 GPU 處於閒置狀態。CUDA Graphs 透過一次 capture 整個運算序列，並透過單次 launch 進行重放來解決此瓶頸，消除了中間的 CPU submission 延遲。雖然 prefill 工作負載通常是 compute-bound，且較少受到 launch latency 的影響，但 decoding 則能從 graph execution 中大幅獲益。然而，CUDA Graphs 需要固定的執行結構與記憶體位址，促使 vLLM 和 TensorRT-LLM 等推論引擎以犧牲記憶體和啟動時間為代價，針對特定 batch sizes 預先 capture graph。",
+            "takeaways": [
+              "更快的 GPU 並不一定會減少 token generation 時間，因為短 kernel 的執行速度可能比 CPU 提交後續運算的速度還要快。",
+              "逐 token decoding 會反覆執行一系列小型 kernel，使得 CPU launch overhead 成為延遲的主要成因。",
+              "CUDA Graphs 會 capture 重複執行的序列，並將其作為單一單元 launch，從而消除 CPU dispatch overhead 並掃除 GPU timeline 上的閒置空隙。",
+              "Prefill 運算從 CUDA Graphs 獲得的助益較少，因為較大的 prompt 工作負載會產生執行時間較長的 kernel，而這些 kernel 已經能讓 GPU 達到飽和狀態。",
+              "Capture CUDA Graphs 需要固定的 batch sizes 和記憶體 layout，這迫使 serving engines 必須以額外的 GPU 記憶體和啟動延遲為代價，預先 capture 多種尺寸。",
+              "vLLM 和 TensorRT-LLM 等 serving 框架採用多尺寸的 graph capture，並針對不支援的 batch sizes 結合 padding 或 eager execution。"
+            ]
           }
         ]
       }
