@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-17T10:03:43Z",
+  "updatedAt": "2026-10-17T13:30:18Z",
   "sources": [
     {
       "key": "gmail:bytebytego",
@@ -170,8 +170,8 @@
           "Claude 補齊其模型家族陣容",
           "Mistral 的主權訴求",
           "透過 Data Points 掌握更多 AI 新知！",
-          "專為 Local AI 打造的電腦",
-          "Data Mixing，告別憑空瞎猜",
+          "為 Local AI 打造的電腦",
+          "資料混合，告別盲測",
           "與 Andrew Ng 一同工作"
         ],
         "sections": [
@@ -271,31 +271,52 @@
         {
           "title": "Run Jev inside an Open Agent Harness",
           "category": "OPEN-SOURCE",
-          "summary": "",
-          "takeaways": []
+          "summary": "AI agents frequently waste tokens on basic selection tasks like matching requests to predefined lists. By combining TrueFoundry's TrueForge agent harness, TypeSafe AI's Jev decision model, and Daytona's execution sandbox, researchers built a client follow-up agent that matched Claude Opus's accuracy on 40 requests at a 150x lower decision cost. Jev produces structured selections with calibrated confidence scores without text generation, routing low-confidence decisions back to Opus to catch errors. TrueForge further reduces token usage via lazy tool loading, file offloading, and script-based data processing, matching Claude Managed Agents' task success on DevRev's Enterprise Bench with roughly one-third of the tokens.",
+          "takeaways": [
+            "Using Jev for matching decisions matched Claude Opus's accuracy while reducing decision costs by 150x across 40 test requests.",
+            "Jev is a decision model by TypeSafe AI that outputs structured choices and calibrated confidence scores without generating freeform text.",
+            "Routing low-confidence Jev predictions back to Opus for review intercepted 5 incorrect matches during testing.",
+            "The client follow-up agent architecture utilized TrueForge as the harness, Jev for decisions, and Daytona as a code execution sandbox.",
+            "TrueForge minimizes token context by loading tool definitions on demand, writing large outputs to files, and executing data tasks via scripts.",
+            "On DevRev's Enterprise Bench, TrueForge achieved comparable task completion to Claude Managed Agents while using approximately one-third of the tokens.",
+            "TrueForge is open source under an MIT license and runs locally via a single command."
+          ]
         },
         {
           "title": "How to turn an LLM into a decision model?",
           "category": "JEV",
-          "summary": "",
-          "takeaways": []
+          "summary": "This section explains how to convert a standard generative language model into a decision model that scores predefined choices directly instead of generating text token by token. The process involves freezing the base model backbone, attaching LoRA adapters, and replacing the language model head with a decision head that outputs scores per choice. Probabilities are computed via softmax, and the network is trained using cross-entropy loss followed by confidence calibration on held-out data. Demonstrating this approach, a JEV-style decision model built on Qwen3.5 0.8B improved accuracy from 37% to 65% in 60 training steps using 4GB of VRAM in 10 minutes.",
+          "takeaways": [
+            "Decision models score predefined options directly via a decision head rather than generating text token by token.",
+            "The adaptation process freezes the LLM backbone, adds LoRA components, and replaces the LM head with a decision head.",
+            "Scores are converted into probability distributions for each distinct question using softmax.",
+            "During training, only the decision head and LoRA parameters are updated via cross-entropy loss.",
+            "A JEV-style decision model based on Qwen3.5 0.8B increased accuracy from 37% to 65% after 60 steps in 10 minutes on 4GB of VRAM.",
+            "At inference time, a single forward pass scores all choices across multiple decisions simultaneously."
+          ]
         },
         {
           "title": "The 8-layer engineering behind a production AI system",
           "category": "AI ENGINEERING",
-          "summary": "",
-          "takeaways": []
+          "summary": "Building production AI systems depends far more on the surrounding engineering stack than on the base model itself. The author outlines an eight-layer framework covering model foundations, inference and serving, context engineering, agent harnesses, retrieval and memory, adaptation and training, evaluation and observability, and safety and security. Most hidden costs occur at the inference layer due to disparities between compute-bound prefill and memory-bound decode stages. Stacking multiple optimization techniques across these layers can reduce inference costs by 5x to 8x compared to naive baselines.",
+          "takeaways": [
+            "Production AI systems consist of eight core engineering layers: model foundations, inference and serving, context engineering, agent harnesses, retrieval and memory, adaptation, evaluation, and safety.",
+            "Inference costs differ drastically between the compute-bound prefill phase and the memory-bound decode phase, with GPU utilization dropping sharply from 92% to 28% on an H100 running Llama 70B.",
+            "Stacking multiple optimizations—such as quantization, PagedAttention, speculative decoding, and prefix caching—can yield a 5x to 8x cost reduction compared to naive FP16 inference.",
+            "Context engineering addresses output degradation issues like context rot and the 'lost in the middle' effect using budgeting, offloading, and compaction.",
+            "Model Context Protocol (MCP) acts as an emerging standard interface connecting models to external tools and data sources, eliminating custom N-by-M integrations."
+          ]
         }
       ],
-      "summary": "Agents burn a lot of tokens on decisions that are really just picking one option from a short list, like matching a client request to the right GitHub issue. So we built a weekly client follow-up agent that does exactly that. We tested it on 40 requests, and it was as accurate as letting Opus make every match, at 150x lower decision cost. Here’s the tech stack we used: • TrueForge as the agent har",
-      "summarised": false,
+      "summary": "AI agents frequently waste tokens on basic selection tasks like matching requests to predefined lists. By combining TrueFoundry's TrueForge agent harness, TypeSafe AI's Jev decision model, and Daytona's execution sandbox, researchers built a client follow-up agent that matched Claude Opus's accuracy on 40 requests at a 150x lower decision cost. Jev produces structured selections with calibrated confidence scores without text generation, routing low-confidence decisions back to Opus to catch errors. TrueForge further reduces token usage via lazy tool loading, file offloading, and script-based data processing, matching Claude Managed Agents' task success on DevRev's Enterprise Bench with roughly one-third of the tokens. This section explains how to convert a standard generative language model into a decision model that scores predefined choices directly instead of generating text token by token. The process involves freezing the base model backbone, attaching LoRA adapters, and replacing the language model head with a decision head that outputs scores per choice. Probabilities are computed via softmax, and the network is trained using cross-entropy loss followed by confidence calibration on held-out data. Demonstrating this approach, a JEV-style decision model built on Qwen3.5 0.8B improved accuracy from 37% to 65% in 60 training steps using 4GB of VRAM in 10 minutes. Building production AI systems depends far more on the surrounding engineering stack than on the base model itself. The author outlines an eight-layer framework covering model foundations, inference and serving, context engineering, agent harnesses, retrieval and memory, adaptation and training, evaluation and observability, and safety and security. Most hidden costs occur at the inference layer due to disparities between compute-bound prefill and memory-bound decode stages. Stacking multiple optimization techniques across these layers can reduce inference costs by 5x to 8x compared to naive baselines.",
+      "summarised": true,
       "headings": [
         "Run Jev inside an Open Agent Harness",
         "How to turn an LLM into a decision model?",
         "The 8-layer engineering behind a production AI system"
       ],
       "zh": {
-        "summary": "Agents 常把大量 tokens 消耗在其實只是從簡短選項清單中挑選一個的決策上，例如將客戶需求與正確的 GitHub issue 進行匹配。因此我們打造了一個專門處理這件事的每週客戶追蹤 agent。我們針對 40 個請求進行了測試，其準確度與讓 Opus 進行每次匹配完全相同，但決策成本降低了 150 倍。以下是我們使用的 tech stack：• TrueForge 作為 agent har",
+        "summary": "AI agents 經常在基礎選擇任務（例如將 requests 比對到預先定義的清單）上浪費 tokens。透過結合 TrueFoundry 的 TrueForge agent harness、TypeSafe AI 的 Jev decision model 以及 Daytona 的 execution sandbox，研究人員打造了一個客戶追蹤 agent，在 40 個 requests 上達到了與 Claude Opus 相同的 accuracy，且 decision cost 降低了 150 倍。Jev 在無需 text generation 的情況下產生帶有 calibrated confidence scores 的 structured selections，並將 low-confidence 的決策 routing 回 Opus 以捕捉錯誤。TrueForge 透過 lazy tool loading、file offloading 與 script-based data processing 進一步減少 token 用量，在 DevRev 的 Enterprise Bench 上以大約三分之一的 tokens 達成了與 Claude Managed Agents 相當的 task success。本節說明如何將標準的 generative language model 轉換為 decision model，直接為預先定義的選項評分，而不是逐 token 生成文本。該流程包含 freeze base model backbone、掛載 LoRA adapters，並將 language model head 替換為可針對每個選項輸出 scores 的 decision head。Probabilities 透過 softmax 計算，網路使用 cross-entropy loss 進行訓練，隨後在 held-out data 上進行 confidence calibration。為了驗證此方法，一個以 Qwen3.5 0.8B 構建的 JEV-style decision model 在 60 個 training steps 內、使用 4GB VRAM 花費 10 分鐘，便將 accuracy 從 37% 提升至 65%。打造 production AI systems 對周圍 engineering stack 的依賴程度遠高於 base model 本身。作者概述了一個涵蓋 model foundations、inference and serving、context engineering、agent harnesses、retrieval and memory、adaptation and training、evaluation and observability，以及 safety and security 的八層架構。由於 compute-bound prefill 與 memory-bound decode 階段之間的差異，大部分隱藏成本都發生在 inference layer。跨這些層次疊加多種 optimization techniques，相較於 naive baselines 可將 inference costs 降低 5 到 8 倍。",
         "headings": [
           "在 Open Agent Harness 內執行 Jev",
           "如何將 LLM 轉變成 decision model？",
@@ -304,18 +325,39 @@
         "sections": [
           {
             "title": "在 Open Agent Harness 內執行 Jev",
-            "summary": "",
-            "takeaways": []
+            "summary": "AI agents 經常在基礎選擇任務（例如將 requests 比對到預先定義的清單）上浪費 tokens。透過結合 TrueFoundry 的 TrueForge agent harness、TypeSafe AI 的 Jev decision model 以及 Daytona 的 execution sandbox，研究人員打造了一個客戶追蹤 agent，在 40 個 requests 上達到了與 Claude Opus 相同的 accuracy，且 decision cost 降低了 150 倍。Jev 在無需 text generation 的情況下產生帶有 calibrated confidence scores 的 structured selections，並將 low-confidence 的決策 routing 回 Opus 以捕捉錯誤。TrueForge 透過 lazy tool loading、file offloading 與 script-based data processing 進一步減少 token 用量，在 DevRev 的 Enterprise Bench 上以大約三分之一的 tokens 達成了與 Claude Managed Agents 相當的 task success。",
+            "takeaways": [
+              "使用 Jev 進行比對決策達到了與 Claude Opus 相當的 accuracy，同時在 40 個 test requests 中將 decision costs 降低了 150 倍。",
+              "Jev 是 TypeSafe AI 開發的 decision model，能在不生成 freeform text 的情況下輸出 structured choices 與 calibrated confidence scores。",
+              "在測試期間，將 low-confidence 的 Jev predictions routing 回 Opus 進行審查，成功攔截了 5 個不正確的比對。",
+              "該客戶追蹤 agent 的架構採用 TrueForge 作為 harness、Jev 負責決策，並使用 Daytona 作為 code execution sandbox。",
+              "TrueForge 透過 on demand 載入 tool definitions、將大量輸出寫入檔案，以及透過 scripts 執行資料任務，將 token context 降至最低。",
+              "在 DevRev 的 Enterprise Bench 上，TrueForge 僅使用約三分之一的 tokens，就達成了與 Claude Managed Agents 相當的 task completion。",
+              "TrueForge 以 MIT license 開源，可透過單一指令在 local 執行。"
+            ]
           },
           {
             "title": "如何將 LLM 轉變成 decision model？",
-            "summary": "",
-            "takeaways": []
+            "summary": "本節說明如何將標準的 generative language model 轉換為 decision model，直接為預先定義的選項評分，而不是逐 token 生成文本。該流程包含 freeze base model backbone、掛載 LoRA adapters，並將 language model head 替換為可針對每個選項輸出 scores 的 decision head。Probabilities 透過 softmax 計算，網路使用 cross-entropy loss 進行訓練，隨後在 held-out data 上進行 confidence calibration。為了驗證此方法，一個以 Qwen3.5 0.8B 構建的 JEV-style decision model 在 60 個 training steps 內、使用 4GB VRAM 花費 10 分鐘，便將 accuracy 從 37% 提升至 65%。",
+            "takeaways": [
+              "Decision models 透過 decision head 直接為預定義選項評分，而非逐 token 生成文字。",
+              "Adaptation 流程會 freeze LLM backbone、加入 LoRA 組件，並將 LM head 替換為 decision head。",
+              "Scores 會透過 softmax 轉換為每個獨立問題的 probability distributions。",
+              "在訓練期間，僅透過 cross-entropy loss 更新 decision head 和 LoRA parameters。",
+              "基於 Qwen3.5 0.8B 的 JEV-style decision model 在 4GB VRAM 上花費 10 分鐘進行 60 steps 後，accuracy 從 37% 提升至 65%。",
+              "在 inference 階段，單次 forward pass 即可同時為多個決策中的所有選項評分。"
+            ]
           },
           {
             "title": "Production AI 系統背後的 8 層工程架構",
-            "summary": "",
-            "takeaways": []
+            "summary": "打造 production AI systems 對周圍 engineering stack 的依賴程度遠高於 base model 本身。作者概述了一個涵蓋 model foundations、inference and serving、context engineering、agent harnesses、retrieval and memory、adaptation and training、evaluation and observability，以及 safety and security 的八層架構。由於 compute-bound prefill 與 memory-bound decode 階段之間的差異，大部分隱藏成本都發生在 inference layer。跨這些層次疊加多種 optimization techniques，相較於 naive baselines 可將 inference costs 降低 5 到 8 倍。",
+            "takeaways": [
+              "Production AI systems 包含八個核心 engineering layers：model foundations、inference and serving、context engineering、agent harnesses、retrieval and memory、adaptation、evaluation 以及 safety。",
+              "Compute-bound prefill 階段與 memory-bound decode 階段之間的 inference costs 差異極大，在運行 Llama 70B 的 H100 上，GPU utilization 從 92% 急劇下降至 28%。",
+              "疊加多項 optimizations（例如 quantization、PagedAttention、speculative decoding 與 prefix caching）相較於 naive FP16 inference 可帶來 5 到 8 倍的成本降幅。",
+              "Context engineering 透過 budgeting、offloading 與 compaction 來解決如 context rot 和「lost in the middle」效應等 output degradation 問題。",
+              "Model Context Protocol (MCP) 作為新興的標準介面，負責連接 models 與外部 tools 及 data sources，消除了自訂的 N-by-M integrations。"
+            ]
           }
         ]
       }
