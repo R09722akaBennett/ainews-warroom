@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-20T10:07:06Z",
+  "updatedAt": "2026-10-20T13:30:40Z",
   "sources": [
     {
       "key": "gmail:bytebytego",
@@ -211,9 +211,9 @@
           "Genie 如何獲取所需的 Knowledge",
           "Genie 如何尋找特定資訊",
           "Genie 如何處理使用者提問",
-          "典型的 Genie Workflow 是什麼樣子",
-          "Genie 如何確保回答正確",
-          "如果 Genie 無法回答某些問題該怎麼辦"
+          "典型的 Genie 工作流程長什麼樣子",
+          "Genie 如何確保回答的正確性",
+          "如果 Genie 無法回答問題該怎麼辦"
         ],
         "sections": [
           {
@@ -443,9 +443,9 @@
         "headings": [
           "正在悄悄讓你損失數百萬的隱形受眾",
           "Project 1",
-          "Module 5: Deploying Machine Learning Models",
+          "Module 5：Deploying Machine Learning Models",
           "近期活動",
-          "Podcast Recording: 打造你真正能信賴的 AI Evaluations",
+          "Podcast 錄音：Building AI Evaluations You Can Actually Trust",
           "來自 Alexey on Data：我們還需要 Kubernetes 嗎？"
         ],
         "sections": [
@@ -535,30 +535,48 @@
         {
           "title": "This inference engine runs LLMs 4x faster than llama.cpp:",
           "category": "OPEN-SOURCE",
-          "summary": "",
-          "takeaways": []
+          "summary": "In a local inference benchmark running Qwen3.5 9B on a base M5 MacBook Pro, the Uzu engine achieved 92.1 tokens per second, substantially outpacing both llama.cpp (22.0 tokens/s) and MLX (25.1 tokens/s). Traditional decoding on this hardware is physically bottlenecked by memory bandwidth to roughly 29 tokens per second, but Uzu bypasses this constraint using Apple Silicon-optimized speculative decoding. By drafting up to 16 positions, assembling coherent sequences with Weaver, and verifying them in a tree structure, Uzu averages 7.5 output tokens per full-model pass. The open-source engine also utilizes custom quantized checkpoints and accelerated int8 Metal kernels on M5 chips.",
+          "takeaways": [
+            "Uzu reached 92.1 tokens/s running Qwen3.5 9B on an Apple M5 MacBook Pro, compared to 22.0 tokens/s for llama.cpp and 25.1 tokens/s for MLX.",
+            "Standard decoding on the base M5 is constrained by its 153 GB/s memory bandwidth to a theoretical limit of roughly 29 tokens/s for a 5.2 GB model weight stream.",
+            "Uzu averages 7.5 output tokens per verification pass by using speculative decoding rather than the single token generated per pass in standard decoding.",
+            "The engine drafts up to 16 token positions, uses Weaver to arrange candidate tokens into sequences, and verifies them as a tree.",
+            "Uzu is open-source, provides bindings for Rust, Swift, Python, and TypeScript, and leverages M5 Metal kernels for accelerated int8 matrix execution."
+          ]
         },
         {
           "title": "Agents 2.0 is here!",
           "category": "TOGETHER WITH SWITCH",
-          "summary": "",
-          "takeaways": []
+          "summary": "Major AI labs including Anthropic, OpenAI, and xAI are actively building AI coworkers, but their proprietary solutions tie memory, runtime, and orchestration to a single vendor. To overcome vendor lock-in across diverse agent workflows, the open-source project Switch provides a self-hostable coordination layer. Switch enables human-in-the-loop workflows and multi-agent collaboration across tools like Claude Code, Codex, and local systems through chat platforms such as Slack, Teams, and Mattermost.",
+          "takeaways": [
+            "Proprietary AI coworker offerings create vendor lock-in by binding models, runtimes, memory, and orchestration to a single company's stack.",
+            "Switch is an open-source, self-hostable coordination layer designed to connect humans and heterogeneous agents across providers in a single workspace.",
+            "Switch connects multi-agent collaboration into popular communication platforms including Slack, Teams, Discord, Telegram, and Mattermost.",
+            "Switch uses a Manager agent to dynamically spin up rooms, delegate tasks to specialized agent roles, and cross-reference context across concurrent incident investigations.",
+            "Switch sessions can be inspected and monitored in real time using Switch Console and run locally using Docker."
+          ]
         },
         {
           "title": "Continuous batching in LLMs, explained visually:",
           "category": "LLMOps",
-          "summary": "",
-          "takeaways": []
+          "summary": "Continuous batching optimizes LLM inference by dynamically scheduling requests at each iteration boundary rather than keeping a static batch fixed until the longest generation finishes. In contrast to static batching, which wastes GPU memory bandwidth on empty slots when sequences finish early, continuous batching immediately replaces completed requests with queued ones. Benchmarks conducted by Anyscale on OPT-13B show that higher output length variance dramatically degrades static batching, while continuous batching systems like vLLM achieve up to 23x the throughput of naive serving. Major LLM serving frameworks including vLLM, SGLang, TGI, and TensorRT-LLM now support this approach by default.",
+          "takeaways": [
+            "Under static batching, early-finishing requests hold their batch slots until the longest request completes, wasting GPU memory bandwidth on reading model weights for empty slots.",
+            "Continuous batching reschedules requests after every single forward pass, immediately ejecting finished requests and slotting in new queued requests.",
+            "Output length variance is the primary driver of performance differences between static and continuous batching.",
+            "An Anyscale benchmark of OPT-13B on an A100 showed vLLM reaching 23x the throughput of naive Hugging Face serving when output lengths varied.",
+            "Continuous batching is implemented by default in vLLM, SGLang, TGI, and TensorRT-LLM, with NVIDIA calling the mechanism in-flight batching."
+          ]
         }
       ],
-      "summary": "We ran Qwen3.5 9B on a base M5 MacBook Pro using three local inference engines, one at a time. • llama.cpp reached 22.0 tokens/s • MLX reached 25.1 tokens/s • Uzu reached 92.1 tokens/s The video shows all three runs side by side. The first two results do not mean llama.cpp or MLX are poorly optimized. Both are approaching a physical limit of ordinary local decoding. Generating each new token norma",
-      "summarised": false,
+      "summary": "In a local inference benchmark running Qwen3.5 9B on a base M5 MacBook Pro, the Uzu engine achieved 92.1 tokens per second, substantially outpacing both llama.cpp (22.0 tokens/s) and MLX (25.1 tokens/s). Traditional decoding on this hardware is physically bottlenecked by memory bandwidth to roughly 29 tokens per second, but Uzu bypasses this constraint using Apple Silicon-optimized speculative decoding. By drafting up to 16 positions, assembling coherent sequences with Weaver, and verifying them in a tree structure, Uzu averages 7.5 output tokens per full-model pass. The open-source engine also utilizes custom quantized checkpoints and accelerated int8 Metal kernels on M5 chips. Major AI labs including Anthropic, OpenAI, and xAI are actively building AI coworkers, but their proprietary solutions tie memory, runtime, and orchestration to a single vendor. To overcome vendor lock-in across diverse agent workflows, the open-source project Switch provides a self-hostable coordination layer. Switch enables human-in-the-loop workflows and multi-agent collaboration across tools like Claude Code, Codex, and local systems through chat platforms such as Slack, Teams, and Mattermost. Continuous batching optimizes LLM inference by dynamically scheduling requests at each iteration boundary rather than keeping a static batch fixed until the longest generation finishes. In contrast to static batching, which wastes GPU memory bandwidth on empty slots when sequences finish early, continuous batching immediately replaces completed requests with queued ones. Benchmarks conducted by Anyscale on OPT-13B show that higher output length variance dramatically degrades static batching, while continuous batching systems like vLLM achieve up to 23x the throughput of naive serving. Major LLM serving frameworks including vLLM, SGLang, TGI, and TensorRT-LLM now support this approach by default.",
+      "summarised": true,
       "headings": [
         "This inference engine runs LLMs 4x faster than llama.cpp:",
         "Continuous batching in LLMs, explained visually:"
       ],
       "zh": {
-        "summary": "我們在基礎款 M5 MacBook Pro 上使用三款 local inference engines 依序執行 Qwen3.5 9B。• llama.cpp 達到 22.0 tokens/s • MLX 達到 25.1 tokens/s • Uzu 達到 92.1 tokens/s 影片並排展示了這三種執行情況。前兩個結果並不代表 llama.cpp 或 MLX 最佳化做得不好，兩者都已接近一般 local decoding 的物理極限。生成每個新的 token 通常",
+        "summary": "在基礎款 M5 MacBook Pro 上執行 Qwen3.5 9B 的本地 inference benchmark 中，Uzu engine 達到每秒 92.1 tokens，大幅超越 llama.cpp（22.0 tokens/s）與 MLX（25.1 tokens/s）。在該硬體上的傳統 decoding 在物理上受限於 memory bandwidth，瓶頸大約在每秒 29 tokens，但 Uzu 透過針對 Apple Silicon 最佳化的 speculative decoding 繞過了這項限制。藉由 draft 最多 16 個位置、使用 Weaver 組裝連貫的 sequences，並以 tree structure 進行驗證，Uzu 平均每次 full-model pass 能產出 7.5 個 output tokens。這款開源 engine 還採用了自訂的 quantized checkpoints 以及在 M5 晶片上加速的 int8 Metal kernels。包括 Anthropic、OpenAI 和 xAI 在內的主要 AI labs 正在積極打造 AI coworkers，但其 proprietary solutions 將 memory、runtime 與 orchestration 綁定至單一 vendor。為了克服不同 agent workflows 之間的 vendor lock-in，開源專案 Switch 提供了一個可 self-host 的 coordination layer。Switch 能透過 Slack、Teams 和 Mattermost 等通訊平台，跨 Claude Code、Codex 及本地系統等工具，實現 human-in-the-loop workflows 與 multi-agent 協作。Continuous batching 透過在每個 iteration boundary 動態排程 requests 來最佳化 LLM inference，而非將 static batch 固定直到最長的 generation 結束。相較於 static batching 會在 sequences 提前結束時將 GPU memory bandwidth 浪費在空 slots 上，continuous batching 會立即以排隊中的 requests 取代已完成的 requests。Anyscale 在 OPT-13B 上的 benchmarks 顯示，較高的 output length variance 會大幅降低 static batching 的效能，而像 vLLM 這類 continuous batching 系統的 throughput 最高可達 naive serving 的 23 倍。包括 vLLM、SGLang、TGI 和 TensorRT-LLM 在內的主要 LLM serving frameworks 目前均預設支援此方法。",
         "headings": [
           "這款 inference engine 執行 LLMs 的速度比 llama.cpp 快 4 倍：",
           "以視覺化方式解說 LLMs 中的 Continuous batching："
@@ -566,18 +584,36 @@
         "sections": [
           {
             "title": "這款 inference engine 執行 LLMs 的速度比 llama.cpp 快 4 倍：",
-            "summary": "",
-            "takeaways": []
+            "summary": "在基礎款 M5 MacBook Pro 上執行 Qwen3.5 9B 的本地 inference benchmark 中，Uzu engine 達到每秒 92.1 tokens，大幅領先 llama.cpp（22.0 tokens/s）與 MLX（25.1 tokens/s）。在該硬體上的傳統 decoding 在物理上受限於 memory bandwidth，瓶頸大約在每秒 29 tokens，但 Uzu 透過針對 Apple Silicon 最佳化的 speculative decoding 繞過了這項限制。透過 draft 最多 16 個位置、利用 Weaver 組裝連貫的 sequences，並以 tree structure 進行驗證，Uzu 平均每次 full-model pass 可產出 7.5 個 output tokens。該開源 engine 還利用了自訂的 quantized checkpoints 以及 M5 晶片上加速的 int8 Metal kernels。",
+            "takeaways": [
+              "在 Apple M5 MacBook Pro 上執行 Qwen3.5 9B 時，Uzu 達到 92.1 tokens/s，相較之下 llama.cpp 為 22.0 tokens/s，MLX 則為 25.1 tokens/s。",
+              "基礎款 M5 上的 standard decoding 受限於其 153 GB/s 的 memory bandwidth，在 5.2 GB model weight stream 下的理論極限約為 29 tokens/s。",
+              "Uzu 採用 speculative decoding，而非 standard decoding 中每次 pass 僅生成單一 token 的方式，平均每次 verification pass 可產出 7.5 個 output tokens。",
+              "該 engine 最多可 draft 16 個 token 位置，使用 Weaver 將 candidate tokens 組織成 sequences，並以 tree 的形式進行驗證。",
+              "Uzu 為開源專案，提供 Rust、Swift、Python 和 TypeScript 的 bindings，並利用 M5 Metal kernels 進行加速的 int8 matrix execution。"
+            ]
           },
           {
             "title": "Agents 2.0 來了！",
-            "summary": "",
-            "takeaways": []
+            "summary": "包括 Anthropic、OpenAI 和 xAI 在內的主要 AI labs 正在積極打造 AI coworkers，但其 proprietary solutions 將 memory、runtime 與 orchestration 綁定至單一 vendor。為了克服不同 agent workflows 之間的 vendor lock-in，開源專案 Switch 提供了一個可 self-host 的 coordination layer。Switch 能透過 Slack、Teams 和 Mattermost 等通訊平台，跨 Claude Code、Codex 及本地系統等工具，實現 human-in-the-loop workflows 與 multi-agent 協作。",
+            "takeaways": [
+              "Proprietary AI coworker 產品將 models、runtimes、memory 與 orchestration 綁定至單一公司的技術棧，因而造成 vendor lock-in。",
+              "Switch 是一個開源且可 self-host 的 coordination layer，旨在單一 workspace 中連結人類以及來自不同 provider 的 heterogeneous agents。",
+              "Switch 將 multi-agent 協作整合至常見的通訊平台，包括 Slack、Teams、Discord、Telegram 和 Mattermost。",
+              "Switch 使用 Manager agent 來動態建立 rooms、將任務指派給專業的 agent roles，並在多個並行的 incident investigations 之間交叉比對 context。",
+              "Switch sessions 可以使用 Switch Console 進行即時檢視與監控，並可透過 Docker 在本地端執行。"
+            ]
           },
           {
             "title": "以視覺化方式解說 LLMs 中的 Continuous batching：",
-            "summary": "",
-            "takeaways": []
+            "summary": "Continuous batching 透過在每個 iteration boundary 動態排程 requests 來最佳化 LLM inference，而非將 static batch 固定直到最長的 generation 結束。相較於 static batching 會在 sequences 提前結束時將 GPU memory bandwidth 浪費在空 slots 上，continuous batching 會立即以排隊中的 requests 取代已完成的 requests。Anyscale 在 OPT-13B 上進行的 benchmarks 顯示，較高的 output length variance 會大幅降低 static batching 的效能，而像 vLLM 這類 continuous batching 系統的 throughput 最高可達 naive serving 的 23 倍。包括 vLLM、SGLang、TGI 和 TensorRT-LLM 在內的主要 LLM serving frameworks 目前均預設支援此做法。",
+            "takeaways": [
+              "在 static batching 下，提早結束的 requests 會持續佔用其 batch slots 直到最長的 request 完成，導致在為空 slots 讀取 model weights 時浪費了 GPU memory bandwidth。",
+              "Continuous batching 在每次單一 forward pass 後重新排程 requests，立即剔除已完成的 requests 並放入新的排隊 requests。",
+              "Output length variance 是造成 static batching 與 continuous batching 效能差異的主要關鍵因素。",
+              "Anyscale 在 A100 上針對 OPT-13B 進行的 benchmark 顯示，當 output lengths 存在差異時，vLLM 的 throughput 可達 naive Hugging Face serving 的 23 倍。",
+              "Continuous batching 在 vLLM、SGLang、TGI 和 TensorRT-LLM 中皆已預設實作，NVIDIA 則將此機制稱為 in-flight batching。"
+            ]
           }
         ]
       }
