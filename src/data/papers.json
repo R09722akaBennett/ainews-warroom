@@ -1,12 +1,12 @@
 {
-  "updatedAt": "2026-10-20T13:30:42Z",
+  "updatedAt": "2026-10-21T10:06:14Z",
   "hot": [
     {
       "rank": 1,
       "arxivId": "2610.26825",
       "title": "MemT-1.0: Towards Memory-Native Evolution",
-      "summary": "MemT-1.0 gives a language model an evolving, fixed-size memory state that it updates between turns and reads during later responses, rather than supplying the full conversation history again. Its token-level updates use a stable GDN-2 mechanism, while Mixture-of-Storage expands memory capacity. On 11 memory benchmarks, Flash scores 50.6 on the aggregate, above parametric-memory baselines, but textual-memory systems score higher overall.",
-      "date": "19 Oct 2026",
+      "summary": "MemT-1.0 gives models a compact persistent state, updated token by token and read alongside ordinary attention. It extends Metis with token-level updates and Mixture-of-Storage. Across 11 benchmarks, Flash and Nano ranked first and second among parametric-memory methods, averaging 50.6 and 47.0. On harness-triggered SWE-bench Verified, Nano averaged 69.73% success, comparable to textual experience, not evidence of autonomous learning.",
+      "date": "20 Oct 2026",
       "authors": [
         "Zhiyu Li",
         "Zeyu Zhang",
@@ -14,8 +14,8 @@
         "Yiwei Bu",
         "Chenyang Xi"
       ],
-      "votes": 3,
-      "visits": 68,
+      "votes": 38,
+      "visits": 707,
       "ghStars": 78,
       "categories": [
         "agentic-frameworks",
@@ -27,74 +27,120 @@
     },
     {
       "rank": 2,
-      "arxivId": "2610.koi-heterogeneous-llm-inference-planning",
-      "title": "Koi: Evidence-Guided, Self-Calibrating Planning for Multi-Cloud, Heterogeneous LLM Inference Fleets",
-      "summary": "Koi jointly plans inference deployments across jobs sharing cluster capacity, rather than ranking them separately. Language models propose candidates; deterministic tools predict outcomes, check constraints, and select feasible plans. Telemetry updates scoped hypotheses in a graph. In a three-hour 104-GPU benchmark, Koi achieved 17.79% higher goodput than OpenEvolve and 20% lower cost per SLO-token; this comparison does not establish global optimality.",
-      "date": "19 Oct 2026",
+      "arxivId": "2610.26863",
+      "title": "Text-to-Image Generative Modeling Without Language Pretraining",
+      "summary": "Halcyon trains a text-to-image model from scratch on paired image-caption examples, jointly modeling caption and image tokens without a web-scale text-pretrained generator. On GPIC at 256×256 after one epoch, Halcyon-1.6B reaches 35.28 gFD versus 40.97 for JiT-T2I-XXL/8++, using 275× less total pretraining compute; controlled tests find no benefit from text-only pretraining in evaluated settings.",
+      "date": "20 Oct 2026",
       "authors": [
-        "Mankeerat Sidhu",
-        "Gangmuk Lim",
-        "Hetarth Chopra",
-        "Maximillian Eisenberg",
-        "Quan Hao Ng"
+        "Keshigeyan Chandrasegaran",
+        "Yue Zhao",
+        "Armin W. Thomas",
+        "Ehsan Adeli",
+        "Jiajun Wu"
       ],
-      "votes": 3,
-      "visits": 56,
+      "votes": 7,
+      "visits": 151,
       "ghStars": 0,
       "categories": [
-        "cs.AI",
-        "cs.AR",
-        "cs.DC"
+        "cs.CV",
+        "cs.LG",
+        "generative-models"
       ],
-      "url": "https://arxiv.org/abs/2610.koi-heterogeneous-llm-inference-planning",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.koi-heterogeneous-llm-inference-planning"
+      "url": "https://arxiv.org/abs/2610.26863",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.26863"
     },
     {
       "rank": 3,
-      "arxivId": "2610.26625",
-      "title": "EgoXperience: Learning World-Grounded Egocentric Representations from Human Experience",
-      "summary": "EgoX jointly reconstructs camera motion, scene depth, hands, and rigid objects from monocular video in a shared metric frame. It trains these predictions together using aligned annotations and predicted cameras to place hand and object geometry in the world frame. On held-out EgoX-Bench, it reports 113.24 mm W-MPJPE versus 328.81 mm for WiLoR + SLAM, and assumes rigid objects.",
-      "date": "19 Oct 2026",
+      "arxivId": "2610.28594",
+      "title": "Learning the 4D World through Point Trajectory Forecasting",
+      "summary": "VPM forecasts multi-view video and persistent 3D point trajectories together, using selected points to link motion across frames and camera views. Its trajectory supervision improves both video fidelity and 3D-motion metrics over a same-budget video-only model. On VP-WorldBench’s simulated Robot split, FVD falls from 78.52 to 67.35 and δavg³ᴰ rises from 43.62 to 50.05; VPM assumes calibrated cameras and annotated points.",
+      "date": "20 Oct 2026",
       "authors": [
-        "Xinhao Ji",
-        "Hui En Pang",
-        "Hao Li",
-        "Kairui Hu",
-        "Jiner Wang"
+        "Byungwoo Jeon",
+        "Sunghwan Hong",
+        "Dohyeon Kim",
+        "Jonghoon Lee",
+        "Jungwoo Park"
       ],
       "votes": 0,
-      "visits": 20,
-      "ghStars": 0,
+      "visits": 46,
+      "ghStars": 4,
       "categories": [
-        "cs.CV"
+        "cs.CV",
+        "generative-models",
+        "multi-modal-learning"
       ],
-      "url": "https://arxiv.org/abs/2610.26625",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.26625"
+      "url": "https://arxiv.org/abs/2610.28594",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.28594"
     },
     {
       "rank": 4,
-      "arxivId": "2610.25690",
-      "title": "ScaleNav: Scalable Internet Video Pretraining for Language-Conditioned Local Navigation",
-      "summary": "ScaleNav enables robots to navigate to initially visible objects by learning visual approach dynamics from action-free Internet videos, then aligning them with executable actions using labeled simulation data. Its shared model predicts action chunks for closed-loop execution. It reaches 94.9% success on HabitatGS-LN and 83.3% success across 60 real-robot trials in three indoor environments, but broader robustness is untested.",
-      "date": "19 Oct 2026",
+      "arxivId": "2610.28480",
+      "title": "SuperMimic: Scaling Humanoid Whole-Body Control with One Differentiable World Model",
+      "summary": "SuperMimic trains a humanoid controller to track reference motions by learning shared dynamics in a differentiable world model and improving its policy through imagined rollouts. On the 129,514-motion BONES-SEED training benchmark, it exceeds SONIC’s released-checkpoint normalized return after 3 hours on one H100, with 25 failures versus 179 under differing failure criteria; the comparison is not hardware- or data-matched.",
+      "date": "20 Oct 2026",
       "authors": [
-        "Yihui Yang",
-        "Yuanhong Yu",
-        "Jiawei Wang",
-        "Zhongrui Yu",
-        "Jia Shi"
+        "Qiayuan Liao",
+        "Yiyang Shao",
+        "Junfeng Long",
+        "Kevin Zakka",
+        "Roberto Horowitz"
       ],
-      "votes": 0,
-      "visits": 58,
+      "votes": 3,
+      "visits": 44,
       "ghStars": 0,
       "categories": [
         "cs.RO"
       ],
-      "url": "https://arxiv.org/abs/2610.25690",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.25690"
+      "url": "https://arxiv.org/abs/2610.28480",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.28480"
     },
     {
       "rank": 5,
+      "arxivId": "2610.26770",
+      "title": "HarnessPro: Recursive Harness Self-Improvement with Pareto Optimization for Performance-Cost Trade-offs",
+      "summary": "HarnessPro evolves agent harnesses by analyzing execution traces to identify failures and redundant work. It uses generated tests to compare candidates and selects Lite, Medium, and Heavy options balancing pass rate and billed cost. With GPT-5.5 and Codex, it averages a 2.0-point pass-rate gain and 26.1% lower per-task cost than RHO across three benchmarks, unweighted benchmark-level differences excluding evolution overhead.",
+      "date": "20 Oct 2026",
+      "authors": [
+        "Zhuoshi Pan",
+        "ZhiYuan Feng",
+        "Yukuo Cen",
+        "Honglin Lin",
+        "Junru Lu"
+      ],
+      "votes": 9,
+      "visits": 185,
+      "ghStars": 0,
+      "categories": [
+        "agentic-frameworks",
+        "agents",
+        "cs.CL"
+      ],
+      "url": "https://arxiv.org/abs/2610.26770",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.26770"
+    },
+    {
+      "rank": 6,
+      "arxivId": "2610.reward-misspecification-degrades-cot-monitorability",
+      "title": "Reward Misspecification Degrades Chain-of-Thought Monitorability",
+      "summary": "The authors show that reinforcement learning with a misspecified output reward can produce reward-hacking behavior while chain-of-thought (CoT) remains poorly monitorable. Across three tasks and three base models, a strong monitor’s final-checkpoint intervention and reward-intent g-mean² scores averaged 0.13 and 0.17. Training with inferred reward descriptions raised these scores by 0.24 and 0.42, but did not consistently reduce hacking.",
+      "date": "20 Oct 2026",
+      "authors": [
+        "Tianyi Lorena Yan",
+        "John Hewitt"
+      ],
+      "votes": 19,
+      "visits": 999,
+      "ghStars": 0,
+      "categories": [
+        "cs.AI",
+        "cs.CL"
+      ],
+      "url": "https://arxiv.org/abs/2610.reward-misspecification-degrades-cot-monitorability",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.reward-misspecification-degrades-cot-monitorability"
+    },
+    {
+      "rank": 7,
       "arxivId": "2610.26855",
       "title": "Ropedia W0: Scaling Loco-Manipulation World Models across Embodiments with Human Experience",
       "summary": "Ropedia W0 predicts future egocentric video from an initial image, text, camera poses, and image-aligned skeletons, using human and robot video. On 400 evaluation windows across eight embodiments, its A14B model reaches 21.98 dB PSNR, versus 19.02 for Cosmos3-Nano. Ablations show 21.65 without camera-ray conditioning and 18.17 without skeletons; the interface models visual motion, not contact or object dynamics.",
@@ -106,8 +152,8 @@
         "Hui En Pang",
         "Jiarui Xu"
       ],
-      "votes": 0,
-      "visits": 14,
+      "votes": 8,
+      "visits": 163,
       "ghStars": 0,
       "categories": [
         "cs.CV",
@@ -118,104 +164,11 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.26855"
     },
     {
-      "rank": 6,
-      "arxivId": "2610.23653",
-      "title": "A Language-Informed Loss for Visual Generation",
-      "summary": "LILIE trains an invertible transform to preserve information useful for predicting captions from corrupted image features, then uses distances in that learned space as a generator training loss. Unlike a lossy tokenizer, it retains image information and leaves generation in pixel space. On 256×256 GPIC images, Pixel+LILIE lowers gFD from 66.84 to 53.01 versus pixel-only training in the JiT-T2I-g evaluation setup.",
-      "date": "16 Oct 2026",
-      "authors": [
-        "Suchir Agarwal",
-        "Keshigeyan Chandrasegaran",
-        "Ziyu Chen",
-        "Kyle Sargent",
-        "Juan Carlos Niebles"
-      ],
-      "votes": 10,
-      "visits": 293,
-      "ghStars": 0,
-      "categories": [
-        "cs.CV",
-        "cs.LG"
-      ],
-      "url": "https://arxiv.org/abs/2610.23653",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.23653"
-    },
-    {
-      "rank": 7,
-      "arxivId": "2610.26663",
-      "title": "RoboValue: A Fine-Grained Sim-and-Real Benchmark for Unified Evaluation of Robotic Value Models",
-      "summary": "RoboValue benchmarks whether robotic value models’ scores reflect task instructions and execution history, rather than only progress or success. It tests task understanding, progress, recovery, and consistency across valid subtask orders in simulation and real-world tasks. In tea-set examples, CSVC was −40.98 for Robo-Dopamine 2.0-8B Preview and 2.30 for RoboMeter; these different evaluation tracks are not a head-to-head comparison.",
-      "date": "19 Oct 2026",
-      "authors": [
-        "Shengbang Liu",
-        "Zhengye Du",
-        "Zhilong Wan",
-        "Honghao Su",
-        "Chenxiang Xia"
-      ],
-      "votes": 2,
-      "visits": 27,
-      "ghStars": 0,
-      "categories": [
-        "cs.RO"
-      ],
-      "url": "https://arxiv.org/abs/2610.26663",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.26663"
-    },
-    {
       "rank": 8,
-      "arxivId": "2610.26549",
-      "title": "Holi-World: Building Holistic World Intelligence from Human-Ego Experience",
-      "summary": "Holi-World connects persistent 3D room structure with object identities, tracks, and interaction histories to generate training questions from egocentric video. Its pipeline builds static scene records and dynamic object tracks linked to supporting observations. Fine-tuned HoliWorld-VL-4B reaches 78.02% Token F1 versus 16.35% for Qwen3.5-4B on HoliWorld-Bench, within data from about 100 scenes and 444 videos.",
-      "date": "19 Oct 2026",
-      "authors": [
-        "Hao Li",
-        "Xiyuan Zheng",
-        "Yuanyuan Gao",
-        "Yalun Dai",
-        "Xinhao Ji"
-      ],
-      "votes": 0,
-      "visits": 14,
-      "ghStars": 2,
-      "categories": [
-        "cs.CV",
-        "data-curation",
-        "multi-modal-learning"
-      ],
-      "url": "https://arxiv.org/abs/2610.26549",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.26549"
-    },
-    {
-      "rank": 9,
-      "arxivId": "2610.26770",
-      "title": "HarnessPro: Recursive Harness Self-Improvement with Pareto Optimization for Performance-Cost Trade-offs",
-      "summary": "HarnessPro learns agent harnesses from execution traces, identifying failures and redundant work. It uses synthesized tests to evaluate candidates, then retains lite, medium, and heavy versions for different performance-cost priorities. On Terminal-Bench 2, GPT-5.5 with Codex, HarnessPro-Heavy reaches an 80.8% mean pass rate at $0.72, versus RHO’s 76.3% at $1.09, showing a better measured trade-off in this benchmark.",
-      "date": "19 Oct 2026",
-      "authors": [
-        "Zhuoshi Pan",
-        "ZhiYuan Feng",
-        "Yukuo Cen",
-        "Honglin Lin",
-        "Junru Lu"
-      ],
-      "votes": 0,
-      "visits": 12,
-      "ghStars": 0,
-      "categories": [
-        "agentic-frameworks",
-        "agents",
-        "cs.CL"
-      ],
-      "url": "https://arxiv.org/abs/2610.26770",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.26770"
-    },
-    {
-      "rank": 10,
       "arxivId": "2610.26854",
       "title": "Physical Words: A Vocabulary for Structuring Latent Reasoning in Robot Manipulation",
-      "summary": "PhysWord predicts future action words paired with hidden representations of visual dynamics and optional tactile contact, then uses those predictions to condition action generation. In an extended paper-picking task, it succeeds in 70.0% of episodes, versus 36.7% for a variant without word supervision. On LIBERO-Long, it averages 99.6% across ten tasks, versus 98.4% for UniWAM; this is not a measure of all long-horizon tasks.",
-      "date": "19 Oct 2026",
+      "summary": "PhysWord predicts contextual action labels and future visual and, when available, tactile latent representations, then uses the predictions to condition action generation. On an extended A4 paper task requiring three pick-and-place cycles after training on one, it succeeds in 70.0% of trials, versus 36.7% for a version without action-word supervision, showing the benefit in this configuration.",
+      "date": "20 Oct 2026",
       "authors": [
         "Jiaming Liu",
         "Xinghao Zhu",
@@ -223,8 +176,8 @@
         "Shanghang Zhang",
         "Yinxi Wang"
       ],
-      "votes": 0,
-      "visits": 12,
+      "votes": 6,
+      "visits": 148,
       "ghStars": 0,
       "categories": [
         "cs.RO"
@@ -233,139 +186,53 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.26854"
     },
     {
-      "rank": 11,
-      "arxivId": "2610.26863",
-      "title": "Text-to-Image Generative Modeling Without Language Pretraining",
-      "summary": "Halcyon trains a text-image generator from scratch by predicting text and image tokens jointly from image-caption pairs, rather than pretraining a separate language model on web-scale text. On GPIC Test-50K at 256×256, Halcyon-1.6B achieves 35.28 gFD versus 40.97 for JiT-T2I-XXL/8++, with 275× less total pretraining compute. gFD measures image-distribution similarity, not prompt adherence; results are limited to GPIC and 256×256.",
-      "date": "19 Oct 2026",
-      "authors": [
-        "Keshigeyan Chandrasegaran",
-        "Yue Zhao",
-        "Armin W. Thomas",
-        "Ehsan Adeli",
-        "Jiajun Wu"
-      ],
-      "votes": 0,
-      "visits": 4,
-      "ghStars": 0,
-      "categories": [
-        "cs.CV",
-        "cs.LG",
-        "generative-models"
-      ],
-      "url": "https://arxiv.org/abs/2610.26863",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.26863"
-    },
-    {
-      "rank": 12,
-      "arxivId": "2610.26531",
-      "title": "ReAnchor: Reusing Rejected Verifier States for Diffusion Drafting",
-      "summary": "ReAnchor improves speculative decoding with block-diffusion drafters by reusing verifier hidden states from rejected suffixes as conditioning for additional native-length draft blocks. It matches their starting tokens to the baseline draft and has the target verify every continuation. At temperature T=0, it raises acceptance length 15.2% and speed 13.4% across four models and eight benchmarks, though gains vary by setting.",
-      "date": "19 Oct 2026",
-      "authors": [
-        "Sanghyun Lee",
-        "Wonjin Nam",
-        "Seungho Jang",
-        "Jaeho Lee",
-        "Jiho Park"
-      ],
-      "votes": 0,
-      "visits": 20,
-      "ghStars": 0,
-      "categories": [
-        "cs.CL",
-        "efficient-transformers",
-        "generative-models"
-      ],
-      "url": "https://arxiv.org/abs/2610.26531",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.26531"
-    },
-    {
-      "rank": 13,
-      "arxivId": "2610.reward-misspecification-degrades-cot-monitorability",
-      "title": "Reward Misspecification Degrades Chain-of-Thought Monitorability",
-      "summary": "The authors show that output-reward reinforcement learning can produce reward hacking that a chain-of-thought monitor misses, without optimizing against it. They compare models trained on true and misspecified rewards across three tasks and three models. Reward-description training raises intervention and reward-intent g-mean² scores from 0.13 and 0.17 to 0.37 and 0.59, while hack rate falls from 0.87 to 0.79; results are limited to the testbed.",
+      "rank": 9,
+      "arxivId": "2610.28578",
+      "title": "Sage-A1.5: From Long-Horizon Execution to Scientific Exploration with Capability Composition",
+      "summary": "Sage-A1.5 trains an agent to organize long-horizon research by delegating parallel investigations and reviewing evidence, assumptions, and stalled searches before changing its plan. In a same-teacher BrowseComp comparison, verification mode scored 85.5 accuracy versus 81.0 in normal mode; paired attempts also used fewer output tokens and turns. The training remains centered on search and research synthesis, not validated physical experiments.",
       "date": "20 Oct 2026",
       "authors": [
-        "Tianyi Lorena Yan",
-        "John Hewitt"
-      ],
-      "votes": 0,
-      "visits": 15,
-      "ghStars": 0,
-      "categories": [
-        "cs.AI",
-        "cs.CL"
-      ],
-      "url": "https://arxiv.org/abs/2610.reward-misspecification-degrades-cot-monitorability",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.reward-misspecification-degrades-cot-monitorability"
-    },
-    {
-      "rank": 14,
-      "arxivId": "2610.23839",
-      "title": "DiscoveryRSI: Recursively Learning to Discover Valuable Hypotheses",
-      "summary": "DiscoveryRSI records evidence, revisions, decisions, and contributions across hypothesis development, then uses histories to train agent actions and revise research workflows. Its hypotheses pair an evidence-grounded claim with an investigation plan, interpretation criteria, and alternatives. Across four life-science domains, automated weighted quality rose from 4.86 to 5.39 after two rounds; this measures proposal quality, not truth or completed discovery.",
-      "date": "16 Oct 2026",
-      "authors": [
-        "Jianyuan Zhong",
-        "Chenwei Wu",
-        "Zhaochen Yu",
-        "Xixian Jiang",
-        "Xuewei Li"
-      ],
-      "votes": 14,
-      "visits": 374,
-      "ghStars": 0,
-      "categories": [
-        "cs.CL"
-      ],
-      "url": "https://arxiv.org/abs/2610.23839",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.23839"
-    },
-    {
-      "rank": 15,
-      "arxivId": "2610.26811",
-      "title": "State World Models: Execute the Rules, Generate the Pixels",
-      "summary": "Stateful Harness tests whether a frozen video model can render outcomes governed by hidden state and executable rules. It settles actions against an explicit state ledger, compiles the result into visual instructions, and uses the renderer to depict it. On 50 counterfactual pairs, MiniMax-H3 reaches 92% PAIRFOLLOW and 90% PAIRSTRICT, evidence limited to short, controlled trials.",
-      "date": "19 Oct 2026",
-      "authors": [
-        "Chan Yan Ki",
-        "Yanran Zhang",
-        "Wenzhao Zheng",
-        "Xiaofeng Wang",
-        "Zheng Zhu"
+        "Wenjie Lou",
+        "Tianshuo Peng",
+        "Shiyang Feng",
+        "Shengji Tang",
+        "Runmin Ma"
       ],
       "votes": 1,
-      "visits": 14,
+      "visits": 43,
+      "ghStars": 571,
+      "categories": [
+        "agentic-frameworks",
+        "agents",
+        "cs.AI"
+      ],
+      "url": "https://arxiv.org/abs/2610.28578",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.28578"
+    },
+    {
+      "rank": 10,
+      "arxivId": "2610.26625",
+      "title": "EgoXperience: Learning World-Grounded Egocentric Representations from Human Experience",
+      "summary": "EgoX jointly reconstructs camera motion, scene depth, hands, and rigid objects from monocular video in a shared metric frame. It trains these predictions together using aligned annotations and predicted cameras to place hand and object geometry in the world frame. On held-out EgoX-Bench, it reports 113.24 mm W-MPJPE versus 328.81 mm for WiLoR + SLAM, and assumes rigid objects.",
+      "date": "19 Oct 2026",
+      "authors": [
+        "Xinhao Ji",
+        "Hui En Pang",
+        "Hao Li",
+        "Kairui Hu",
+        "Jiner Wang"
+      ],
+      "votes": 10,
+      "visits": 133,
       "ghStars": 0,
       "categories": [
         "cs.CV"
       ],
-      "url": "https://arxiv.org/abs/2610.26811",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.26811"
+      "url": "https://arxiv.org/abs/2610.26625",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.26625"
     },
     {
-      "rank": 16,
-      "arxivId": "2610.26617",
-      "title": "Statistical decision theory in thermodynamics",
-      "summary": "The authors develop bounds on worst-case loss for decisions about stochastic processes. They use Le Cam's two-point method to relate loss to distinguishability between two candidate processes, connecting it to dynamical activity when they share an initial distribution. For classification, the lower bound reaches one-half as summed initial activity vanishes, but does not establish actual classifier accuracy.",
-      "date": "19 Oct 2026",
-      "authors": [
-        "Yoshihiko Hasegawa"
-      ],
-      "votes": 0,
-      "visits": 34,
-      "ghStars": 0,
-      "categories": [
-        "cond-mat.stat-mech",
-        "Mathematics",
-        "math.ST"
-      ],
-      "url": "https://arxiv.org/abs/2610.26617",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.26617"
-    },
-    {
-      "rank": 17,
+      "rank": 11,
       "arxivId": "2610.25632",
       "title": "SteerAct: Unlocking Action Models through Few-Shot Temporal Steering",
       "summary": "SteerAct adapts a frozen robot action model using outcome-labeled successful and failed rollouts, without updating its weights during steering. A pretrained sparse autoencoder (SAE) exposes feature activity, whose temporal patterns select one feature offline and determine online when and how to intervene. On RoboTwin 2.0 with π₀.₅, mean success reaches 77.7%, versus 69.0% for Base, but gains are not universal.",
@@ -377,8 +244,8 @@
         "Yuhan Wang",
         "Wenlong Huang"
       ],
-      "votes": 1,
-      "visits": 7,
+      "votes": 6,
+      "visits": 106,
       "ghStars": 0,
       "categories": [
         "cs.RO"
@@ -387,69 +254,211 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.25632"
     },
     {
-      "rank": 18,
-      "arxivId": "2610.26765",
-      "title": "HandsOn: A Large-Scale Simulation Benchmark for Generalizable Dexterous Manipulation",
-      "summary": "HandsOn introduces a benchmark and data platform for evaluating dexterous manipulation beyond grasping. It provides 18,000 simulated human-demonstration trajectories and tests learned policies on 50 demonstrated tasks and 16 evaluation-only transfer tasks. The best trained checkpoint, OpenWAM, achieves 29.1% task-macro success on Core-50 but 0.4% on Transfer-16, showing a sharp transfer boundary under this protocol.",
+      "rank": 12,
+      "arxivId": "2610.26754",
+      "title": "TokenGate: Adapting LLMs for Fast and Memory-Efficient Prefill with Learned Token Pruning",
+      "summary": "TokenGate reduces long-prompt prefill work by learning which tokens to retain after an intermediate layer, then sending only those tokens through the remaining layers; importance-weighted attention lets task-loss gradients train its discrete selector. On 2WikiMultihopQA with Qwen3-1.7B, it reaches 95% of full-context accuracy with 3.0× faster TTFT and 2.7× less peak prefill memory, in batch-one prefill tests on one A100.",
       "date": "19 Oct 2026",
       "authors": [
-        "Tianwei Luo",
-        "Yiming He",
-        "Hongjin Wu",
-        "Ting Pan",
-        "Debin Ren"
+        "Liana Patel",
+        "Rishabh Ranjan",
+        "Ion Stoica",
+        "Matei Zaharia",
+        "Carlos Guestrin"
+      ],
+      "votes": 2,
+      "visits": 56,
+      "ghStars": 0,
+      "categories": [
+        "cs.AI",
+        "cs.CL"
+      ],
+      "url": "https://arxiv.org/abs/2610.26754",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.26754"
+    },
+    {
+      "rank": 13,
+      "arxivId": "2610.26834",
+      "title": "Kronecker Delta Rule for Long Context Linear Attention",
+      "summary": "KronLSTM compresses long token histories into fixed-size memory and updates the scalar strength of a key–value association rather than rewriting a value vector. Its gated write separates forgetting, erasing, and writing. In extended-context RULER retrieval, it reaches 41.8% accuracy on S3 at 16k, versus 7.4% for GDN-2; results favor it on natural-text retrieval, but not every task or context length.",
+      "date": "19 Oct 2026",
+      "authors": [
+        "Anamaria-Roberta Hartl",
+        "Levente Zólyomi",
+        "Michael List",
+        "Günter Klambauer",
+        "Sebastian Böck"
+      ],
+      "votes": 8,
+      "visits": 146,
+      "ghStars": 0,
+      "categories": [
+        "cs.AI",
+        "cs.LG",
+        "efficient-transformers"
+      ],
+      "url": "https://arxiv.org/abs/2610.26834",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.26834"
+    },
+    {
+      "rank": 14,
+      "arxivId": "2610.28630",
+      "title": "SolarRenderer: Few-Step Generative Reference Rendering",
+      "summary": "SolarRenderer turns structural videos from engines, simulators, or agents into video, using a pretrained video model to add appearance while following scene layout, motion, and camera. It frame-aligns references and adapts a four-step model with structure-guided training. Across 208 cases, it ties LynnReal-Omni at 1441 Elo and scores 1338 versus 1241 on structure; the benchmark has no ground-truth videos.",
+      "date": "20 Oct 2026",
+      "authors": [
+        "Guian Fang",
+        "Shengju Qian",
+        "Dongyue Lu",
+        "Junchao Huang",
+        "Lutao Jiang"
+      ],
+      "votes": 1,
+      "visits": 35,
+      "ghStars": 158,
+      "categories": [
+        "cs.CV",
+        "fine-tuning",
+        "generative-models"
+      ],
+      "url": "https://arxiv.org/abs/2610.28630",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.28630"
+    },
+    {
+      "rank": 15,
+      "arxivId": "2610.28259",
+      "title": "Large Multimodal Models for Direct Robot Control: GPT-6 as a Beginning",
+      "summary": "GPT-GEAR lets GPT-6 Astra control a robot directly, without a separately trained action policy. It receives observations and robot-state feedback, proposes movements, and can revise later actions; demonstrations can provide contextual guidance. On LIBERO-GeoMotion, success rises from 4 of 36 scene variants (11.1%) without demonstrations to 18 of 36 (50.0%) with them, but package storage remains unsolved at 0%.",
+      "date": "20 Oct 2026",
+      "authors": [
+        "Youwei Zhou",
+        "Bohan Hou",
+        "Yankai Fu",
+        "Yaoxu Lyu",
+        "Yifan Ye"
       ],
       "votes": 0,
-      "visits": 10,
+      "visits": 24,
       "ghStars": 0,
       "categories": [
         "cs.RO"
       ],
-      "url": "https://arxiv.org/abs/2610.26765",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.26765"
+      "url": "https://arxiv.org/abs/2610.28259",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.28259"
+    },
+    {
+      "rank": 16,
+      "arxivId": "2610.26549",
+      "title": "Holi-World: Building Holistic World Intelligence from Human-Ego Experience",
+      "summary": "Holi-World connects persistent 3D room structure with object identities, tracks, and interaction histories to generate training questions from egocentric video. Its pipeline builds static scene records and dynamic object tracks linked to supporting observations. Fine-tuned HoliWorld-VL-4B reaches 78.02% Token F1 versus 16.35% for Qwen3.5-4B on HoliWorld-Bench, within data from about 100 scenes and 444 videos.",
+      "date": "19 Oct 2026",
+      "authors": [
+        "Hao Li",
+        "Xiyuan Zheng",
+        "Yuanyuan Gao",
+        "Yalun Dai",
+        "Xinhao Ji"
+      ],
+      "votes": 7,
+      "visits": 80,
+      "ghStars": 2,
+      "categories": [
+        "cs.CV",
+        "data-curation",
+        "multi-modal-learning"
+      ],
+      "url": "https://arxiv.org/abs/2610.26549",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.26549"
+    },
+    {
+      "rank": 17,
+      "arxivId": "2610.26663",
+      "title": "RoboValue: A Fine-Grained Sim-and-Real Benchmark for Unified Evaluation of Robotic Value Models",
+      "summary": "RoboValue benchmarks whether robotic value models’ scores reflect task instructions and execution history, rather than only progress or success. It tests task understanding, progress, recovery, and consistency across valid subtask orders in simulation and real-world tasks. In tea-set examples, CSVC was −40.98 for Robo-Dopamine 2.0-8B Preview and 2.30 for RoboMeter; these different evaluation tracks are not a head-to-head comparison.",
+      "date": "19 Oct 2026",
+      "authors": [
+        "Shengbang Liu",
+        "Zhengye Du",
+        "Zhilong Wan",
+        "Honghao Su",
+        "Chenxiang Xia"
+      ],
+      "votes": 10,
+      "visits": 124,
+      "ghStars": 0,
+      "categories": [
+        "cs.RO"
+      ],
+      "url": "https://arxiv.org/abs/2610.26663",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.26663"
+    },
+    {
+      "rank": 18,
+      "arxivId": "2610.26845",
+      "title": "Train An Imaginative Agent",
+      "summary": "Agima uses one multimodal model to propose actions, predict resulting images, and feed predictions back as observations. On an 8×8 Pacman test with four food items, it succeeds in 54% of episodes versus 22% for linear rollout, at K = infinity, with no intermediate real observations. Evidence is limited to four benchmark environments.",
+      "date": "19 Oct 2026",
+      "authors": [
+        "Jiaxin Ge",
+        "Junyi Zhang",
+        "Tianning Chai",
+        "Hanjun Yoo",
+        "Chenyang Wang"
+      ],
+      "votes": 3,
+      "visits": 66,
+      "ghStars": 0,
+      "categories": [
+        "cs.AI"
+      ],
+      "url": "https://arxiv.org/abs/2610.26845",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.26845"
     },
     {
       "rank": 19,
-      "arxivId": "2610.25684",
-      "title": "A Unifying View of Distributionally Robust Optimization for Probability Smoothing via Maximum Entropy",
-      "summary": "OT-DRO smooths finite-sample probability estimates using an optimal-transport cost matrix, so category relationships guide probability assigned to unseen categories. Under stated conditions, the authors show that distributionally robust smoothing is maximum-entropy within its ambiguity set. In synthetic tests with 100 categories and 100 draws, OT-DRO lowers mean KL divergence versus 2-DRO in structured data but raises it in unstructured data.",
+      "arxivId": "2610.26811",
+      "title": "State World Models: Execute the Rules, Generate the Pixels",
+      "summary": "Stateful Harness tests whether a frozen video model can render outcomes governed by hidden state and executable rules. It settles actions against an explicit state ledger, compiles the result into visual instructions, and uses the renderer to depict it. On 50 counterfactual pairs, MiniMax-H3 reaches 92% PAIRFOLLOW and 90% PAIRSTRICT, evidence limited to short, controlled trials.",
       "date": "19 Oct 2026",
       "authors": [
-        "Kota Kurihara",
-        "Yuya Yamakawa",
-        "Yoichi Izunaga"
+        "Chan Yan Ki",
+        "Yanran Zhang",
+        "Wenzhao Zheng",
+        "Xiaofeng Wang",
+        "Zheng Zhu"
       ],
-      "votes": 0,
-      "visits": 51,
+      "votes": 9,
+      "visits": 99,
       "ghStars": 0,
       "categories": [
-        "Mathematics",
-        "math.OC"
+        "cs.CV"
       ],
-      "url": "https://arxiv.org/abs/2610.25684",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.25684"
+      "url": "https://arxiv.org/abs/2610.26811",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.26811"
     },
     {
       "rank": 20,
-      "arxivId": "2610.26584",
-      "title": "HAF-VLA: Hierarchical Action Flow Framework for Humanoid Vision-Language-Action Control",
-      "summary": "HAF-VLA generates humanoid actions in three stages: locomotion and gaze, waist posture, then arm-and-hand manipulation, with later stages refining earlier plans. Across six real-robot tasks, its average normalized score is 68.3%, versus 53.3% for π0.5; it is best or tied-best on every task. These partial-progress scores average 10 rollouts, not full-task success rates.",
-      "date": "19 Oct 2026",
+      "arxivId": "2610.28354",
+      "title": "S-Agent 2.0: Spatial Reasoning with a General Coding Agent",
+      "summary": "S-Agent 2.0 grounds spatial answers by combining tool measurements with model-perceived entities in a persistent scene and returning readouts that state their reference frame. On ReVSI, Qwen3.8-27B with the general coding agent scores 82.3 with the toolkit, versus 61.8 without it, a 20.5-point gain. Gains shrink with stronger backbones, and absolute-distance questions remain an exception.",
+      "date": "20 Oct 2026",
       "authors": [
-        "Langzhe Gu",
-        "Chengkai Hou",
-        "Meng Li",
-        "Xinhua Wang",
-        "Xinyuan Lv"
+        "Rui Gong",
+        "Ruoyu Wang",
+        "Yalun Dai",
+        "Hao Li",
+        "Sidi Yang"
       ],
       "votes": 0,
-      "visits": 6,
+      "visits": 15,
       "ghStars": 0,
       "categories": [
-        "cs.RO"
+        "agentic-frameworks",
+        "agents",
+        "cs.AI"
       ],
-      "url": "https://arxiv.org/abs/2610.26584",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.26584"
+      "url": "https://arxiv.org/abs/2610.28354",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.28354"
     }
   ],
   "likes": [
@@ -466,8 +475,8 @@
         "Eric Ryan Chan",
         "Justin Johnson"
       ],
-      "votes": 149,
-      "visits": 2582,
+      "votes": 167,
+      "visits": 2762,
       "ghStars": 0,
       "categories": [
         "cs.CV",
@@ -487,8 +496,8 @@
         "Nick Cammarata",
         "Goodfire"
       ],
-      "votes": 144,
-      "visits": 5119,
+      "votes": 153,
+      "visits": 5376,
       "ghStars": 0,
       "categories": [
         "mechanistic-interpretability",
@@ -511,8 +520,8 @@
         "Sitan Chen",
         "Bohyung Han"
       ],
-      "votes": 124,
-      "visits": 1652,
+      "votes": 134,
+      "visits": 1776,
       "ghStars": 0,
       "categories": [
         "cs.LG",
@@ -524,54 +533,6 @@
     },
     {
       "rank": 4,
-      "arxivId": "2610.18861",
-      "title": "Hybrid Reasoning Agents",
-      "summary": "HybridAgent lets a tool-using language-model agent reason in continuous hidden states and use text for tool calls and answers. HybridLink aligns hidden states with the model’s input-embedding space, while retained attention-cache entries carry context across turns. At 14B parameters, it scores 49.5 average on WebWalker versus ARPO’s 40.5, within evaluations of Qwen3-Base models on 11 benchmarks.",
-      "date": "13 Oct 2026",
-      "authors": [
-        "Jiaru Zou",
-        "Yunzhe Qi",
-        "Sirui Chen",
-        "Federico Bianchi",
-        "Shang Zhu"
-      ],
-      "votes": 118,
-      "visits": 2856,
-      "ghStars": 284,
-      "categories": [
-        "agentic-frameworks",
-        "agents",
-        "chain-of-thought"
-      ],
-      "url": "https://arxiv.org/abs/2610.18861",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.18861"
-    },
-    {
-      "rank": 5,
-      "arxivId": "2610.18615",
-      "title": "VideoJev: System One Model for Video Understanding and Interaction",
-      "summary": "VideoJev scores candidate time intervals to locate events and candidate answers for video questions, reusing one video prefix across queries through cached or joint inference. It reports 65.3 mean temporal intersection-over-union, versus 58.6 for its 4B backbone, and a four-benchmark QA mean of 74.3, near 74.9 for Qwen3.5-4B Thinking; evaluations cover grounding and multiple-choice QA, not agent workflows.",
-      "date": "13 Oct 2026",
-      "authors": [
-        "Yuhan Zhu",
-        "Xiangyu Zeng",
-        "Qingyi Si",
-        "Chenxu Yang",
-        "Yifei Li"
-      ],
-      "votes": 110,
-      "visits": 1373,
-      "ghStars": 190,
-      "categories": [
-        "agentic-frameworks",
-        "agents",
-        "cs.CV"
-      ],
-      "url": "https://arxiv.org/abs/2610.18615",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.18615"
-    },
-    {
-      "rank": 6,
       "arxivId": "2610.21306",
       "title": "VLA-$Δ$: Learning Physical State Transition for Vision-Language-Action Models",
       "summary": "VLA-Δ trains a vision-language-action model to represent changes in task progress, object motion, spatial relations, and contact, then uses that representation to generate actions. Its transition targets supervise training but are not decoded at deployment. It reports 98.40% on LIBERO and a 5.5-percentage-point advantage over π₀.₅ across five real-robot tasks, without leading every task.",
@@ -583,8 +544,8 @@
         "Miao Pan",
         "Yi Pan"
       ],
-      "votes": 94,
-      "visits": 370,
+      "votes": 102,
+      "visits": 417,
       "ghStars": 21,
       "categories": [
         "cs.CV",
@@ -595,7 +556,7 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.21306"
     },
     {
-      "rank": 7,
+      "rank": 5,
       "arxivId": "2610.20442",
       "title": "Towards Agentic Robots: Model, Data, Environment, and Harness",
       "summary": "The authors survey agentic robots as systems that use goals, observations, capabilities, and execution feedback to choose actions, gather information, revise plans, or recover. They organize prior work into four domains and seventeen overlapping categories. An external RoboDojo evaluation reports 22.48% average success across 42 simulation tasks, versus 19.34% for trained DM0.5; this comparison does not isolate feedback’s effect.",
@@ -607,8 +568,8 @@
         "Jiaxu Wang",
         "Xinlei Yu"
       ],
-      "votes": 79,
-      "visits": 845,
+      "votes": 88,
+      "visits": 903,
       "ghStars": 0,
       "categories": [
         "cs.RO"
@@ -617,7 +578,7 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.20442"
     },
     {
-      "rank": 8,
+      "rank": 6,
       "arxivId": "2610.20401",
       "title": "Training Language Models to Fail Gracefully",
       "summary": "GracefulRL trains models to favor success over safe fallback and fallback over error, while preserving a learning signal for success. It optimizes a combination of the log probability of success and the log probability of avoiding error, without labels or an inference-time verifier. On AIME, Qwen3-4B-Base reduced errors by 88.8% with a 3.1-point success decrease, in tested settings.",
@@ -629,8 +590,8 @@
         "Fahim Tajwar",
         "Abitha Thankaraj"
       ],
-      "votes": 59,
-      "visits": 1775,
+      "votes": 65,
+      "visits": 1923,
       "ghStars": 5,
       "categories": [
         "agents",
@@ -641,7 +602,29 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.20401"
     },
     {
-      "rank": 9,
+      "rank": 7,
+      "arxivId": "2610.22192",
+      "title": "Terminal-RSI: Recursive Self-Improving Terminal Agents via Recursive Self-Rewrite and Policy-Refine",
+      "summary": "Terminal-RSI trains terminal agents through alternating cycles of verified self-rewriting and policy refinement. It preserves successful demonstrations to update the actor, then uses execution feedback to refine the policy while carrying a learned value critic across phases. Across four Terminal-Bench suites, the equal-weight Mean@3 rises from 20.68% to 50.58%; on LHTB, strict completions rise from 0/46 to 5/46.",
+      "date": "15 Oct 2026",
+      "authors": [
+        "Junyao Yang",
+        "Zongxia Li",
+        "Yucheng Shi",
+        "Zhongzhi Li",
+        "Ruhan Wang"
+      ],
+      "votes": 63,
+      "visits": 754,
+      "ghStars": 0,
+      "categories": [
+        "cs.AI"
+      ],
+      "url": "https://arxiv.org/abs/2610.22192",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.22192"
+    },
+    {
+      "rank": 8,
       "arxivId": "2610.22364",
       "title": "T2-z: Test-Time Optimization of Environment Latents for Robotic World Models",
       "summary": "T2-Z adapts an action-conditioned world model to hidden environmental variation by optimizing a compact latent from observed interaction trajectories, without labels for hidden factors. The trained model stays frozen during test-time adaptation. Across four real-world tasks, average tracked-state prediction error fell from 19.30 to 10.85 pixels and action success rose from 26.47% to 70.80%; these are task averages, not guarantees.",
@@ -653,8 +636,8 @@
         "Yunfan Jiang",
         "Wenlong Huang"
       ],
-      "votes": 53,
-      "visits": 563,
+      "votes": 63,
+      "visits": 612,
       "ghStars": 0,
       "categories": [
         "cs.AI",
@@ -663,6 +646,30 @@
       ],
       "url": "https://arxiv.org/abs/2610.22364",
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.22364"
+    },
+    {
+      "rank": 9,
+      "arxivId": "2610.23121",
+      "title": "Scene-Designer: Learning Design Intelligence for Agentic 3D Scene Generation",
+      "summary": "Scene-Designer improves 3D room generation by learning to construct and critique scenes, then using a Critic to rank alternative edits and assess whether edits improve their parent scene. In the evaluation, interaction-orientation errors requiring five or more corrective moves fall from 40% to 7%. On 55 constructed four-scene rankings, its Critic reaches 76% exact accuracy, not general human design judgment.",
+      "date": "16 Oct 2026",
+      "authors": [
+        "Xuanyu Liu",
+        "Hongyan Feng",
+        "Miao Pan",
+        "Sunlai Chen",
+        "Lizhou Liang"
+      ],
+      "votes": 62,
+      "visits": 92,
+      "ghStars": 0,
+      "categories": [
+        "agentic-frameworks",
+        "agents",
+        "cs.CV"
+      ],
+      "url": "https://arxiv.org/abs/2610.23121",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.23121"
     },
     {
       "rank": 10,
@@ -677,8 +684,8 @@
         "Jialin Zhang",
         "Yilin Chen"
       ],
-      "votes": 51,
-      "visits": 628,
+      "votes": 59,
+      "visits": 678,
       "ghStars": 0,
       "categories": [
         "agentic-frameworks",
@@ -690,28 +697,6 @@
     },
     {
       "rank": 11,
-      "arxivId": "2610.22192",
-      "title": "Terminal-RSI: Recursive Self-Improving Terminal Agents via Recursive Self-Rewrite and Policy-Refine",
-      "summary": "Terminal-RSI trains terminal agents through alternating cycles of verified self-rewriting and policy refinement. It preserves successful demonstrations to update the actor, then uses execution feedback to refine the policy while carrying a learned value critic across phases. Across four Terminal-Bench suites, the equal-weight Mean@3 rises from 20.68% to 50.58%; on LHTB, strict completions rise from 0/46 to 5/46.",
-      "date": "15 Oct 2026",
-      "authors": [
-        "Junyao Yang",
-        "Zongxia Li",
-        "Yucheng Shi",
-        "Zhongzhi Li",
-        "Ruhan Wang"
-      ],
-      "votes": 51,
-      "visits": 661,
-      "ghStars": 0,
-      "categories": [
-        "cs.AI"
-      ],
-      "url": "https://arxiv.org/abs/2610.22192",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.22192"
-    },
-    {
-      "rank": 12,
       "arxivId": "2610.22319",
       "title": "A team of Gemini 4 Argon agents beats Minecraft",
       "summary": "Four Gemini 4 Argon agents completed Minecraft’s survival-mode path to the Ender Dragon in one randomly generated world on Easy difficulty. They wrote programs through Mineflayer, using structured game information and coordinating through chat and shared notes. The run took 27 hours and 14 minutes, with 2,783 programs and 605 deaths; it shows one completion, not reliability across runs.",
@@ -721,8 +706,8 @@
         "Satinder Singh",
         "Roberta Raileanu"
       ],
-      "votes": 48,
-      "visits": 411,
+      "votes": 53,
+      "visits": 434,
       "ghStars": 0,
       "categories": [
         "agentic-frameworks",
@@ -733,7 +718,7 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.22319"
     },
     {
-      "rank": 13,
+      "rank": 12,
       "arxivId": "2610.22194",
       "title": "AutoSFT: An Agentic System for Automated Data Research in Supervised Fine-Tuning",
       "summary": "AutoSFT helps an agent improve supervised fine-tuning by changing training data through a structured research loop. A meta-agent selects recipes, while separate execution and analysis agents handle training and propose data changes; synthesis adds verified examples. On Qwen3-1.7B-Base, analysis reaches 67.10 on IFEval versus 60.60 within 30 rounds, in single searches per configuration.",
@@ -745,8 +730,8 @@
         "Shaoxuan Li",
         "Huiyu Xiao"
       ],
-      "votes": 45,
-      "visits": 360,
+      "votes": 52,
+      "visits": 404,
       "ghStars": 0,
       "categories": [
         "cs.AI",
@@ -756,74 +741,7 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.22194"
     },
     {
-      "rank": 14,
-      "arxivId": "2610.18773",
-      "title": "Jeva: System One Models from First Principles",
-      "summary": "Jeva makes typed decisions over requests and reusable candidate sets, including choices, Boolean judgments, and numeric scores. It encodes options separately, then lets each request representation read the full set before scoring, while caching option computations. On MLDR, hybrid caching reduced median latency from 2,102.0 ms to 75.1 ms for novel sets, with no decision changes in tested cache conditions.",
-      "date": "18 Oct 2026",
-      "authors": [
-        "Qi Li",
-        "Xinchao Wang"
-      ],
-      "votes": 45,
-      "visits": 373,
-      "ghStars": 0,
-      "categories": [
-        "cs.AI",
-        "inference-optimization",
-        "ml-systems"
-      ],
-      "url": "https://arxiv.org/abs/2610.18773",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.18773"
-    },
-    {
-      "rank": 15,
-      "arxivId": "2610.19789",
-      "title": "More Methods, Better Agents? A Reality Check on Self-Distillation in Agentic Reinforcement Learning",
-      "summary": "The authors benchmark ten self-distillation methods against GRPO across four tasks and Qwen3.5 models at 2B, 4B, and 9B, using a shared evaluation protocol. Across twelve task-model settings, PCSD has the highest equal-weight mean, 54.26 versus GRPO’s 49.68, but leads no individual setting, winning six, trailing five, and tying one; results are limited to this benchmark.",
-      "date": "14 Oct 2026",
-      "authors": [
-        "Linhao Zhong",
-        "Bozhen Fang",
-        "Xuehao Wang",
-        "Duochao Shi",
-        "Zekai Luo"
-      ],
-      "votes": 43,
-      "visits": 316,
-      "ghStars": 0,
-      "categories": [
-        "agentic-frameworks",
-        "agents",
-        "cs.CL"
-      ],
-      "url": "https://arxiv.org/abs/2610.19789",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.19789"
-    },
-    {
-      "rank": 16,
-      "arxivId": "2610.18867",
-      "title": "EmbodiedEvo: Self-Evolving Coding Agent For Physical Intelligence",
-      "summary": "EmbodiedEvo lets a robot coding agent preserve experience from one scene as executable Skills and diagnostic Lessons, then transfer them to a fresh agent in another scene. In matched RoboDojo-Sim development tests, Astra/xhigh success rose from 8.50% to 30.17%. Yet full evaluation Precision success was 13.25%, showing that inherited procedures do not ensure successful contact control.",
-      "date": "14 Oct 2026",
-      "authors": [
-        "Wenyi Li",
-        "Yizhe Chi",
-        "Youjie Zheng",
-        "Chunyu Liu",
-        "Xiaoqiu Wang"
-      ],
-      "votes": 40,
-      "visits": 433,
-      "ghStars": 0,
-      "categories": [
-        "cs.RO"
-      ],
-      "url": "https://arxiv.org/abs/2610.18867",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.18867"
-    },
-    {
-      "rank": 17,
+      "rank": 13,
       "arxivId": "2610.22273",
       "title": "Librarian Agents: Training LLMs to Curate Long-Context Workspaces that Anticipate Future Queries",
       "summary": "Librarian Agents prepares a reusable hierarchical workspace of synthetic files linked to source documents, then uses a separate agent to answer later questions. The builder is trained with reinforcement learning using downstream answer quality. On BrowseComp-Plus, it improves accuracy over baselines by an average of 33 percentage points across two fixed answering models; this result measures answer accuracy, not cost.",
@@ -835,8 +753,8 @@
         "Roshen Sanjay Nair",
         "Aviral Kumar"
       ],
-      "votes": 40,
-      "visits": 305,
+      "votes": 51,
+      "visits": 363,
       "ghStars": 0,
       "categories": [
         "agentic-frameworks",
@@ -847,7 +765,7 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.22273"
     },
     {
-      "rank": 18,
+      "rank": 14,
       "arxivId": "2610.20571",
       "title": "Any Time, Any Space: A World-State-Centric Framework for Agentic Video Generation",
       "summary": "ATAS addresses screenplay-to-video continuity by storing static scene geometry and time-indexed event evidence for later shots. Validation separates film inclusion from memory updates. ATAS reports 15.968 PSNR_C on spatial revisit, versus ViewCrafter’s 15.255, and leads three event-recapture axes but trails ReCA on action-and-state preservation; event tests use no synchronized target video.",
@@ -859,8 +777,8 @@
         "Akide Liu",
         "Zeyu Zhang"
       ],
-      "votes": 39,
-      "visits": 368,
+      "votes": 44,
+      "visits": 397,
       "ghStars": 292,
       "categories": [
         "agentic-frameworks",
@@ -871,7 +789,79 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.20571"
     },
     {
-      "rank": 19,
+      "rank": 15,
+      "arxivId": "2610.23181",
+      "title": "Tree-Aware Posterior Distillation for Long-Horizon Agentic Reinforcement Learning",
+      "summary": "TreeOPSD trains long-horizon agents by branching continuations from shared histories, backing up verifier rewards into turn-level credits, and converting credits into bounded targets for policy updates. On Deep Research, it reaches a 21.20 exact-match average, versus 17.59 for TreePO, which uses the trees and credits but fixed-credit updates. This comparison covers the reported setup, not general convergence guarantees.",
+      "date": "16 Oct 2026",
+      "authors": [
+        "Heming Zou",
+        "Qi Wang",
+        "Yixiu Mao",
+        "Yun Qu",
+        "Yuyi Guo"
+      ],
+      "votes": 42,
+      "visits": 172,
+      "ghStars": 0,
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.LG"
+      ],
+      "url": "https://arxiv.org/abs/2610.23181",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.23181"
+    },
+    {
+      "rank": 16,
+      "arxivId": "2610.20341",
+      "title": "InfiniSplat v2: Analyzing and Improving Feed-Forward 3DGS from Any Views",
+      "summary": "InfiniSplat v2 improves feed-forward novel-view rendering by keeping geometry-derived Gaussian centers fixed while learning opacity, shape, and color. Its training aligns cameras and emphasizes larger-angle target views, allowing attributes to improve renderings without moving points. Across six datasets, pose-conditioned mean LPIPS is 0.2472 and DISTS is 0.1163; severe errors in predicted geometry remain uncorrected.",
+      "date": "14 Oct 2026",
+      "authors": [
+        "Yongzhen Hu",
+        "Hao Yu",
+        "Jiawei Wang",
+        "Xianming Zeng",
+        "Jianyun Xu"
+      ],
+      "votes": 42,
+      "visits": 291,
+      "ghStars": 0,
+      "categories": [
+        "cs.CV",
+        "image-generation",
+        "neural-rendering"
+      ],
+      "url": "https://arxiv.org/abs/2610.20341",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.20341"
+    },
+    {
+      "rank": 17,
+      "arxivId": "2610.22471",
+      "title": "Has GPT-6-Astra Achieved Embodied Intelligence?",
+      "summary": "GPT-6-Astra evaluates a general-purpose model on robot tasks by preparing a frozen knowledge package from demonstrations and acting with feedback. On RoboDojo, with in-context learning, it reaches 27.6% success at the standard 1× action-step budget and 81.9% at up to 10×. These benchmark results do not establish reliable or efficient real-world operation.",
+      "date": "19 Oct 2026",
+      "authors": [
+        "SenseNova",
+        "Joint Research Team",
+        "Zhongang Cai",
+        "Ziang Cao",
+        "Tailai Chen"
+      ],
+      "votes": 41,
+      "visits": 616,
+      "ghStars": 0,
+      "categories": [
+        "agentic-frameworks",
+        "agents",
+        "cs.CV"
+      ],
+      "url": "https://arxiv.org/abs/2610.22471",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.22471"
+    },
+    {
+      "rank": 18,
       "arxivId": "2610.20588",
       "title": "Your Transformer Is Secretly Elastic",
       "summary": "The method lets one pretrained encoder serve different compute budgets by ranking its MLP neurons and attention heads, then removing lower-ranked units without retraining or updating model weights. At 50% FLOP sparsity, DINOv3 ViT-H+/16 retains 84.4% ImageNet-1k linear-probing accuracy, down 0.8 percentage points, while removing 427 million parameters. Deep pruning remains difficult for evaluated decoder-based text embedders.",
@@ -882,8 +872,8 @@
         "Gertjan J. Burghouts",
         "Cees G.M. Snoek"
       ],
-      "votes": 37,
-      "visits": 236,
+      "votes": 40,
+      "visits": 246,
       "ghStars": 0,
       "categories": [
         "cs.AI",
@@ -893,28 +883,52 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.20588"
     },
     {
+      "rank": 19,
+      "arxivId": "2610.26825",
+      "title": "MemT-1.0: Towards Memory-Native Evolution",
+      "summary": "MemT-1.0 gives models a compact persistent state, updated token by token and read alongside ordinary attention. It extends Metis with token-level updates and Mixture-of-Storage. Across 11 benchmarks, Flash and Nano ranked first and second among parametric-memory methods, averaging 50.6 and 47.0. On harness-triggered SWE-bench Verified, Nano averaged 69.73% success, comparable to textual experience, not evidence of autonomous learning.",
+      "date": "20 Oct 2026",
+      "authors": [
+        "Zhiyu Li",
+        "Zeyu Zhang",
+        "Linyun Liu",
+        "Yiwei Bu",
+        "Chenyang Xi"
+      ],
+      "votes": 38,
+      "visits": 707,
+      "ghStars": 78,
+      "categories": [
+        "agentic-frameworks",
+        "agents",
+        "continual-learning"
+      ],
+      "url": "https://arxiv.org/abs/2610.26825",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.26825"
+    },
+    {
       "rank": 20,
-      "arxivId": "2610.18835",
-      "title": "RoboSimStudio: An Interactive Toolkit for Human and Agent Rapid Real2Sim of Robot Manipulation Tasks",
-      "summary": "RoboSimStudio provides an interactive simulation workflow for robot manipulation, where humans and coding agents can inspect and edit solvers, contact models, and material parameters. In a smartphone-video-based sponge-wiping pilot, its simulation feedback supported policy improvement from 0% to 100% reported simulated wiped-area progress by iteration 14. The policy completed a real wipe, but another rollout failed after a bar support moved.",
+      "arxivId": "2610.19975",
+      "title": "LatentLoop: Scaling Looped MoE Models with Asymmetric Compute Allocation",
+      "summary": "LatentLoop reallocates computation in looped MoE models by compressing the sequence for the first visit, writing its update back to full resolution, and processing the full sequence on the second visit. Across 15 matched configurations, it has lower validation negative log-likelihood than baselines. Fitted curves predict 19.0% and 7.9% less training computation at equal loss, within the observed allocation range.",
       "date": "14 Oct 2026",
       "authors": [
-        "Kaiyuan Chen",
-        "Shuangyu Xie",
-        "Uksang Yoo",
-        "Xinyue Zhu",
-        "Cael Magner"
+        "Zefeng He",
+        "Yunkai Chai",
+        "Xiaoyang Chen",
+        "Tong Zhu",
+        "Zongliang Wu"
       ],
-      "votes": 37,
-      "visits": 292,
-      "ghStars": 0,
+      "votes": 38,
+      "visits": 189,
+      "ghStars": 12,
       "categories": [
-        "cs.AI",
-        "cs.GR",
-        "cs.LG"
+        "cs.LG",
+        "efficient-transformers",
+        "lightweight-models"
       ],
-      "url": "https://arxiv.org/abs/2610.18835",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.18835"
+      "url": "https://arxiv.org/abs/2610.19975",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2610.19975"
     }
   ]
 }
