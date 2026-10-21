@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-21T10:05:29Z",
+  "updatedAt": "2026-10-21T13:30:21Z",
   "sources": [
     {
       "key": "gmail:bytebytego",
@@ -162,10 +162,10 @@
           "什麼是 Native Mobile Development",
           "為什麼 Shopify 選擇了 React Native",
           "2025 年發生了什麼變化",
-          "Shopify 的 Migration 方法",
+          "Shopify 的 Migration 策略",
           "Shopify 如何執行 Migration",
           "Agent Feedback Loop",
-          "Migration 結果"
+          "遷移結果"
         ],
         "sections": [
           {
@@ -260,25 +260,37 @@
         {
           "title": "The next step after Karpathy’s agentic engineering",
           "category": "HANDS-ON",
-          "summary": "",
-          "takeaways": []
+          "summary": "This article demonstrates how to build production-grade, resumable AI agents using Google's Agents CLI, ADK, and Agent Runtime. When long-running agent workflows require human approval, traditional in-memory processes risk losing state, leading to repeated executions or inconsistent retrieval evidence upon restart. By leveraging ADK's suspension capabilities, persistent session stores (such as SQLite locally or Agent Runtime in the cloud), and idempotency keys, agents can safely pause, terminate runtime processes, and resume later without duplicating side effects.",
+          "takeaways": [
+            "Google's Agents CLI provides skills for Claude Code to handle ADK scaffolding, testing, and deployment to Agent Runtime.",
+            "Long-running agents require durable execution state and preserved invocations rather than just chat transcripts to avoid inconsistent re-retrieval and duplicated actions.",
+            "A human-in-the-loop workflow can pause execution at a tool call, completely exit Python processes, and resume later using saved session and invocation IDs.",
+            "Idempotency keys derived from answers and citation IDs prevent duplicate execution during retries or multiple approval events.",
+            "Deploying to Agent Runtime replaces local SQLite storage with managed cloud session persistence and assigns an identity via Agent Identity."
+          ]
         }
       ],
-      "summary": "Imagine a RAG agent that retrieves four policy documents and drafts a cited customer reply. The answer is ready, but the final tool call needs human approval. By the time approval arrives (which could take a few hours), the Python process would be gone, and the container may be gone with it too. Re-running the request looks harmless, but it creates a new operation. In fact, a fresh retrieval can c",
-      "summarised": false,
+      "summary": "This article demonstrates how to build production-grade, resumable AI agents using Google's Agents CLI, ADK, and Agent Runtime. When long-running agent workflows require human approval, traditional in-memory processes risk losing state, leading to repeated executions or inconsistent retrieval evidence upon restart. By leveraging ADK's suspension capabilities, persistent session stores (such as SQLite locally or Agent Runtime in the cloud), and idempotency keys, agents can safely pause, terminate runtime processes, and resume later without duplicating side effects.",
+      "summarised": true,
       "headings": [
         "The next step after Karpathy’s agentic engineering"
       ],
       "zh": {
-        "summary": "試想一個 RAG agent 檢索了四份政策文件並草擬了一份附有引用的客戶回覆。答案已經準備就緒，但最後的 tool call 需要人工核准。等到核准送達時（可能需要幾小時），Python process 早已結束，container 可能也隨之一併銷毀。重新執行請求看似無害，但它會建立一個新的 operation。事實上，重新檢索可能會 c",
+        "summary": "本文示範如何使用 Google 的 Agents CLI、ADK 與 Agent Runtime 打造 production-grade、resumable 的 AI agent。當 long-running 的 agent workflow 需要 human approval 時，傳統的 in-memory process 面臨遺失 state 的風險，導致重啟時出現重複執行或不一致的 retrieval evidence。透過運用 ADK 的 suspension 功能、persistent session store（如本機的 SQLite 或雲端的 Agent Runtime）以及 idempotency key，agent 可以安全地暫停、終止 runtime process，並在稍後恢復執行，而不會產生重複的 side effect。",
         "headings": [
           "Karpathy 的 agentic engineering 之後的下一步"
         ],
         "sections": [
           {
             "title": "Karpathy 的 agentic engineering 之後的下一步",
-            "summary": "",
-            "takeaways": []
+            "summary": "本文示範如何使用 Google 的 Agents CLI、ADK 與 Agent Runtime 打造 production-grade、resumable 的 AI agent。當 long-running 的 agent workflow 需要 human approval 時，傳統的 in-memory process 面臨遺失 state 的風險，導致重啟時出現重複執行或不一致的 retrieval evidence。透過運用 ADK 的 suspension 功能、persistent session store（如本機的 SQLite 或雲端的 Agent Runtime）以及 idempotency key，agent 可以安全地暫停、終止 runtime process，並在稍後恢復執行，而不會產生重複的 side effect。",
+            "takeaways": [
+              "Google 的 Agents CLI 為 Claude Code 提供了 skill，以處理 ADK scaffolding、testing 以及部署至 Agent Runtime 的工作。",
+              "Long-running agent 需要 durable execution state 和保留下來的 invocation，而非僅僅是 chat transcript，以避免不一致的 re-retrieval 與重複的 action。",
+              "Human-in-the-loop workflow 可以在 tool call 時暫停執行、完全退出 Python process，並在稍後使用儲存的 session 和 invocation ID 恢復執行。",
+              "由 answer 和 citation ID 衍生出的 idempotency key，能在 retry 或多次 approval event 期間防止重複執行。",
+              "部署至 Agent Runtime 會以託管的雲端 session persistence 取代本機的 SQLite storage，並透過 Agent Identity 指派 identity。"
+            ]
           }
         ]
       }
