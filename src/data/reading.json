@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-22T10:08:35Z",
+  "updatedAt": "2026-10-22T13:30:25Z",
   "sources": [
     {
       "key": "gmail:bytebytego",
@@ -505,14 +505,14 @@
       "zh": {
         "summary": "與大型語言模型（LLM）的互動會根據處理的 input 和 output token 數量產生費用成本。雖然 output token 通常具有較高的單 token 單價，但 input token 會因為附加在每個 query 上的 system prompt、過去的對話歷史紀錄以及龐大的上下文參考資料而累積可觀的成本。許多應用程式會反覆傳輸相同的靜態背景文件，或是處理具有相似答案的重複性使用者提問。為了將不必要的開銷降到最低，應用程式可以利用 prompt caching 來重複使用已處理的 input，並透過 semantic caching 來重複使用先前產生的答案。文字生成 transformer 模型以兩個不同的階段運作：input 處理（prefill）與 token 生成（decoding）。在 prefill 階段，模型會產生稱為 key-value (KV) states 的中間數值表示，這些數值通常儲存在 KV cache 中。Prompt caching 延伸了這項機制，透過比對共用相同 prefix 的不同 input request 開頭。藉由儲存並重複使用此共用 prefix 的 KV states，系統能避免在不同 request 之間進行多餘的重複計算。Prompt caching 要求將共用的固定內容放在 request 最開頭的 prefix 位置。因為 causal language models 完全僅根據先前的 context 計算 token representation，所以 prompt 前方的 token 無法向前預覽後續變化的內容。在共用內容之前引入任何動態元素（例如變化的問題、timestamp 或 request ID），都會改變 token representation 並導致無法重複使用 cache。有效的 prompt caching 需要文字完全一致（exact match），在用字、文件順序或 request 配置上都不能有任何改變。",
         "headings": [
-          "為什麼 LLM Request 會產生成本",
-          "Prompt Caching：重複使用模型的 Input 處理",
-          "在 Prompt Caching 中該將共用內容放在何處",
-          "Prompt Caching 所帶來的成本節省",
+          "為什麼 LLM Request 會產生費用",
+          "Prompt Caching：重複使用模型的 Input Processing",
+          "在 Prompt Caching 中應該將共用內容放在哪裡",
+          "Prompt Caching 帶來的成本節省",
           "Semantic Caching：重複使用先前的回答",
-          "Semantic Caching 的難處",
-          "為什麼我們不能只依賴檢查問題",
-          "何時該讓 Cache 失效（Invalidate）"
+          "Semantic Caching 的難題",
+          "為什麼我們不能僅依賴檢查問題",
+          "何時該使 Cache 失效"
         ],
         "sections": [
           {
@@ -641,38 +641,62 @@
         {
           "title": "An open-source alternative to Claude (32k+ stars)!",
           "category": "OPEN-SOURCE",
-          "summary": "",
-          "takeaways": []
+          "summary": "Onyx is an open-source, self-hostable AI chat platform designed as an alternative to Claude that supports various LLMs, including GPT, Gemini, and Llama. It provides agent workflows, a code interpreter, MCP support, and retrieval-augmented generation (RAG) across more than 40 data connectors. Unlike Claude's runtime querying via MCP, Onyx indexes data directly to enable faster and more reliable search. The software is released under the MIT license and can be deployed using Docker.",
+          "takeaways": [
+            "Onyx is a self-hostable, MIT-licensed AI chat platform compatible with proprietary and open-weight LLMs like Claude, GPT, Gemini, and Llama.",
+            "The platform features RAG indexing across 40+ connectors including Slack, Google Drive, Confluence, Jira, and GitHub.",
+            "Onyx's deep research system ranked #1 on DeepResearchBench, outperforming proprietary alternatives.",
+            "Onyx indexes team data directly rather than querying tools at runtime like Claude's MCP connectors.",
+            "The platform includes a built-in code interpreter and can be deployed via Docker."
+          ]
         },
         {
           "title": "Give Claude Code, Codex, and Cursor a self-improving shared memory",
           "category": "HANDS-ON",
-          "summary": "",
-          "takeaways": []
+          "summary": "Coding agents like Cursor, Claude Code, and Codex typically operate in silos without sharing learned skills, context, or corrections across harnesses. To solve this, Asymptote Labs developed Beacon, an open-source shared memory layer that normalizes activity across more than 20 coding agents using OpenTelemetry, hooks, and local session files. Beacon creates structured, searchable traces of coding sessions, allowing developers to switch agents seamlessly without losing context. Furthermore, Beacon identifies repeated patterns to generate reusable skills and includes security rules to detect sensitive credential leaks across different agents.",
+          "takeaways": [
+            "Beacon is an open-source memory layer created by Asymptote Labs that supports over 20 coding agents, including Claude Code, Cursor, and Codex.",
+            "Activity is normalized into a unified structured trace using OpenTelemetry, hooks, and local session files.",
+            "Developers can switch coding agents without restarting by retrieving the relevant context from previous sessions across harnesses.",
+            "Beacon identifies repeated workflows across sessions and turns them into reusable skills, while pruning rarely used skills.",
+            "The tool includes cross-agent security detection rules that can identify credential leaks and risky outbound network requests."
+          ]
         }
       ],
-      "summary": "Onyx is a self-hostable AI chat platform that works with any LLM, like Claude, GPT, Gemini, Llama, or any open-weight model you want. Here’s what it ships with: • Agents that chain multiple tools in sequence • RAG with full indexing across 40+ connectors (Slack, Drive, Confluence, Jira, GitHub, email, call transcripts) • Deep research ranked #1 on DeepResearchBench, above every proprietary alterna",
-      "summarised": false,
+      "summary": "Onyx is an open-source, self-hostable AI chat platform designed as an alternative to Claude that supports various LLMs, including GPT, Gemini, and Llama. It provides agent workflows, a code interpreter, MCP support, and retrieval-augmented generation (RAG) across more than 40 data connectors. Unlike Claude's runtime querying via MCP, Onyx indexes data directly to enable faster and more reliable search. The software is released under the MIT license and can be deployed using Docker. Coding agents like Cursor, Claude Code, and Codex typically operate in silos without sharing learned skills, context, or corrections across harnesses. To solve this, Asymptote Labs developed Beacon, an open-source shared memory layer that normalizes activity across more than 20 coding agents using OpenTelemetry, hooks, and local session files. Beacon creates structured, searchable traces of coding sessions, allowing developers to switch agents seamlessly without losing context. Furthermore, Beacon identifies repeated patterns to generate reusable skills and includes security rules to detect sensitive credential leaks across different agents.",
+      "summarised": true,
       "headings": [
         "An open-source alternative to Claude (32k+ stars)!",
         "Give Claude Code, Codex, and Cursor a self-improving shared memory"
       ],
       "zh": {
-        "summary": "Onyx 是一個可 self-host 的 AI 聊天平台，支援任何 LLM，例如 Claude、GPT、Gemini、Llama 或任何你想要的 open-weight 模型。它內建的功能包括：• 循序串接多個 tools 的 Agents • 支援跨 40+ 種 connectors（Slack、Drive、Confluence、Jira、GitHub、email、通話逐字稿）進行完整索引的 RAG • 在 DeepResearchBench 排名第一的 Deep research，超越所有 proprietary alterna",
+        "summary": "Onyx 是一款開源、可自託管（self-hostable）的 AI chat 平台，定位為 Claude 的替代方案，支援包括 GPT、Gemini 與 Llama 在內的多種 LLM。它提供 agent workflows、code interpreter、MCP 支援，以及跨 40 多個 data connectors 的 retrieval-augmented generation（RAG）。不同於 Claude 透過 MCP 進行 runtime querying，Onyx 直接為資料建立索引，實現更快且更可靠的搜尋。該軟體基於 MIT license 發布，並可使用 Docker 部署。像 Cursor、Claude Code 與 Codex 這類 coding agents 通常各自獨立運作（operate in silos），無法跨 harnesses 共享習得的 skills、context 或修正。為了解決這個問題，Asymptote Labs 開發了 Beacon，這是一個開源的 shared memory layer，透過 OpenTelemetry、hooks 與本機 session 檔案來正規化（normalizes）超過 20 種 coding agents 的活動。Beacon 能建立結構化、可搜尋的 coding session traces，讓開發者在無縫切換 agent 時不會遺失 context。此外，Beacon 還能識別重複的 patterns 來產生可重複使用的 skills，並包含跨不同 agent 偵測敏感憑證洩漏的 security rules。",
         "headings": [
-          "Claude 的開源替代方案（32k+ stars）！",
-          "為 Claude Code、Codex 與 Cursor 提供自我改進的共享記憶體（shared memory）"
+          "Claude 的 open-source 替代方案（32k+ stars）！",
+          "為 Claude Code、Codex 與 Cursor 提供具自我改進能力的 shared memory"
         ],
         "sections": [
           {
             "title": "Claude 的 open-source 替代方案（32k+ stars）！",
-            "summary": "",
-            "takeaways": []
+            "summary": "Onyx 是一款開源、可自託管（self-hostable）的 AI chat 平台，定位為 Claude 的替代方案，支援包括 GPT、Gemini 與 Llama 在內的多種 LLM。它提供 agent workflows、code interpreter、MCP 支援，以及跨 40 多個 data connectors 的 retrieval-augmented generation（RAG）。不同於 Claude 透過 MCP 進行 runtime querying，Onyx 直接為資料建立索引，以實現更快且更可靠的搜尋。該軟體基於 MIT license 發布，並可使用 Docker 部署。",
+            "takeaways": [
+              "Onyx 是一款可自託管（self-hostable）、採用 MIT license 的 AI chat 平台，相容於 Claude、GPT、Gemini 與 Llama 等 proprietary 以及 open-weight LLMs。",
+              "該平台具備跨 40 多個 connectors 的 RAG 索引功能，支援包含 Slack、Google Drive、Confluence、Jira 與 GitHub 等服務。",
+              "Onyx 的 deep research 系統在 DeepResearchBench 上排名第一，表現優於其他 proprietary 替代方案。",
+              "Onyx 直接對團隊資料建立索引，而不是像 Claude 的 MCP connectors 那樣在 runtime 查詢 tools。",
+              "該平台內建 code interpreter，並可透過 Docker 進行部署。"
+            ]
           },
           {
             "title": "為 Claude Code、Codex 與 Cursor 提供具自我改進能力的 shared memory",
-            "summary": "",
-            "takeaways": []
+            "summary": "像 Cursor、Claude Code 與 Codex 這類 coding agents 通常各自獨立運作（operate in silos），無法跨 harnesses 共享習得的 skills、context 或修正。為了解決這個問題，Asymptote Labs 開發了 Beacon，這是一個開源的 shared memory layer，透過 OpenTelemetry、hooks 與本機 session 檔案來正規化（normalizes）超過 20 種 coding agents 的活動。Beacon 能建立結構化、可搜尋的 coding session traces，讓開發者在無縫切換 agent 時不會遺失 context。此外，Beacon 還能識別重複的 patterns 來產生可重複使用的 skills，並包含跨不同 agent 偵測敏感憑證洩漏的 security rules。",
+            "takeaways": [
+              "Beacon 是由 Asymptote Labs 開發的開源 memory layer，支援超過 20 種 coding agents，包括 Claude Code、Cursor 與 Codex。",
+              "各項活動會透過 OpenTelemetry、hooks 與本機 session 檔案被正規化為統一的結構化 trace。",
+              "開發者可以跨 harnesses 檢索先前 sessions 的相關 context，無須重頭來過即可切換 coding agents。",
+              "Beacon 能識別跨 sessions 的重複 workflows 並將其轉化為可重複使用的 skills，同時修剪（pruning）極少使用的 skills。",
+              "該工具包含跨 agent 的 security detection rules，可識別憑證洩漏與高風險的 outbound 網路請求。"
+            ]
           }
         ]
       }
@@ -808,9 +832,9 @@
           "Panel 討論：走出炒作，邁向工程現實",
           "打造更安全的 Agentic 未來",
           "Agentic AI Summit 2027 早鳥票現已開賣",
-          "1. NVIDIA 將 Agentic AI 從雲端推向地端裝置",
-          "2. Google 展示能將影片轉換為機器人技能的 AI",
-          "3. 隨著 AI 融資隱憂加劇，CoreWeave 債券殖利率逼近 15%"
+          "1. NVIDIA 將 Agentic AI 從雲端推向本機裝置",
+          "2. Google 展示將影片轉換為機器人技能的 AI",
+          "3. 隨著 AI 融資隱憂加劇，CoreWeave 的債券殖利率逼近 15%"
         ],
         "sections": [
           {
