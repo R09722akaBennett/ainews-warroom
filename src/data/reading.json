@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-23T10:13:45Z",
+  "updatedAt": "2026-10-23T13:30:31Z",
   "sources": [
     {
       "key": "gmail:bytebytego",
@@ -123,36 +123,60 @@
         {
           "title": "vLLM still hasn’t solved this:",
           "category": "OPEN-SOURCE",
-          "summary": "",
-          "takeaways": []
+          "summary": "While vLLM requires separate server instances and routing layers to run different models or inference tasks, the SIE system supports serving multiple distinct models concurrently on a single GPU. In a benchmark test, SIE ran an embedder, reranker, entity extractor, and generator simultaneously, completing 2,700 requests with 32 in-flight requests and zero failures. The system achieves this multi-model efficiency through dynamic loading, compute-aware batching, shared GPU memory, and opportunistic model eviction.",
+          "takeaways": [
+            "vLLM requires separate server instances and endpoints for each model and task, necessitating an additional routing layer for multi-stage pipelines.",
+            "SIE served an embedder, reranker, entity extractor, and generator concurrently on a single GPU.",
+            "The test setup processed 2,700 requests with 32 requests in flight with zero failures.",
+            "SIE optimizes single-GPU utilization by dynamically loading models on demand, retaining active models, and evicting inactive ones when memory is needed.",
+            "The underlying architecture relies on dynamic loading, shared GPU memory, and compute-aware batching across diverse workloads such as OCR, embedding, and generation."
+          ]
         },
         {
           "title": "Build a Jev-powered Agentic RAG",
           "category": "HANDS-ON",
-          "summary": "",
-          "takeaways": []
+          "summary": "Agentic RAG systems often struggle to determine when retrieved evidence is insufficient and how to act upon that determination. This walkthrough illustrates building a multi-company support desk using InsForge for backend services, EmbeddingGemma 2 for multimodal retrieval, and Liquid AI's d1-3B open-weight decision model to assess answerability and relevance. By deploying these models on Lightning AI Studio and using Claude Code for setup, the system generates answers via Claude Haiku 5.5 when evidence is sufficient, or automatically escalates to human agents who can resolve issues and feed answers back into the knowledge base.",
+          "takeaways": [
+            "Decision models like Jev and Liquid AI's d1 family evaluate retrieved evidence and return structured judgments (such as relevance or answerability) rather than generating free-form text.",
+            "EmbeddingGemma 2 provides multimodal embeddings by projecting text and images into a shared 768-dimensional space, supporting cross-modal search across text chunks and full-page PNGs.",
+            "The multimodal decision model d1-3B along with EmbeddingGemma 2 fit together onto a single NVIDIA L4 GPU utilizing around 7.2 GB of GPU memory.",
+            "When retrieved candidates fail score thresholds after a retry, the pipeline automatically creates a support ticket in InsForge for human review rather than generating an ungrounded LLM response.",
+            "Human responses can be saved back into the knowledge base, improving future retrieval and answerability for similar queries."
+          ]
         }
       ],
-      "summary": "We served an embedder, reranker, entity extractor, and generator concurrently on just one GPU through a single inference server. The server processed 2,700 requests with 32 requests in flight and zero failures. vLLM supports several inference tasks, but each server instance still runs one model and one task. This pipeline would require separate instances, task-specific endpoints, and another layer",
-      "summarised": false,
+      "summary": "While vLLM requires separate server instances and routing layers to run different models or inference tasks, the SIE system supports serving multiple distinct models concurrently on a single GPU. In a benchmark test, SIE ran an embedder, reranker, entity extractor, and generator simultaneously, completing 2,700 requests with 32 in-flight requests and zero failures. The system achieves this multi-model efficiency through dynamic loading, compute-aware batching, shared GPU memory, and opportunistic model eviction. Agentic RAG systems often struggle to determine when retrieved evidence is insufficient and how to act upon that determination. This walkthrough illustrates building a multi-company support desk using InsForge for backend services, EmbeddingGemma 2 for multimodal retrieval, and Liquid AI's d1-3B open-weight decision model to assess answerability and relevance. By deploying these models on Lightning AI Studio and using Claude Code for setup, the system generates answers via Claude Haiku 5.5 when evidence is sufficient, or automatically escalates to human agents who can resolve issues and feed answers back into the knowledge base.",
+      "summarised": true,
       "headings": [
         "vLLM still hasn’t solved this:"
       ],
       "zh": {
-        "summary": "我們透過單一 inference server，在僅僅一張 GPU 上同時運行了 embedder、reranker、entity extractor 與 generator。該 server 處理了 2,700 個 requests，在 32 個 in-flight requests 下達成了零失敗（zero failures）。vLLM 雖然支援多種 inference tasks，但每個 server instance 仍然只能運行一個 model 和一個 task。這樣的 pipeline 將需要獨立的 instances、task-specific endpoints 以及額外的層級",
+        "summary": "雖然 vLLM 需要獨立的 server instances 與 routing layers 才能執行不同的 models 或 inference tasks，但 SIE 系統支援在單一 GPU 上同時 serving 多個不同的 models。在 benchmark 測試中，SIE 同時運行了 embedder、reranker、entity extractor 與 generator，在 32 個 in-flight requests 下完成了 2,700 個 requests，且保持零失敗率。該系統透過 dynamic loading、compute-aware batching、shared GPU memory 以及 opportunistic model eviction 實現了這種 multi-model efficiency。Agentic RAG 系統通常難以判斷檢索到的 evidence 何時不足，以及如何根據該判斷採取行動。本教學示範了如何建立一個 multi-company support desk，使用 InsForge 提供 backend services、EmbeddingGemma 2 進行 multimodal retrieval，並使用 Liquid AI 的 d1-3B open-weight decision model 來評估 answerability 與 relevance。透過將這些 models 部署在 Lightning AI Studio 並使用 Claude Code 進行設定，系統會在 evidence 充足時透過 Claude Haiku 5.5 生成答案，或在不足時自動 escalate 給真人 agent 處理問題，並將解答回填至 knowledge base 中。",
         "headings": [
           "vLLM 至今尚未解決這個問題："
         ],
         "sections": [
           {
             "title": "vLLM 至今尚未解決這個問題：",
-            "summary": "",
-            "takeaways": []
+            "summary": "雖然 vLLM 需要獨立的 server instances 與 routing layers 才能執行不同的 models 或 inference tasks，但 SIE 系統支援在單一 GPU 上同時 serving 多個不同的 models。在 benchmark 測試中，SIE 同時運行了 embedder、reranker、entity extractor 與 generator，在 32 個 in-flight requests 下完成了 2,700 個 requests，且保持零失敗率。該系統透過 dynamic loading、compute-aware batching、shared GPU memory 以及 opportunistic model eviction 實現了這種 multi-model efficiency。",
+            "takeaways": [
+              "vLLM 需要為每個 model 與 task 配置獨立的 server instances 與 endpoints，因此 multi-stage pipelines 必須額外增加 routing layer。",
+              "SIE 在單一 GPU 上同時 serving 了 embedder、reranker、entity extractor 與 generator。",
+              "此測試設定在 32 個 in-flight requests 的情況下處理了 2,700 個 requests，且零失敗。",
+              "SIE 透過按需 dynamic loading models、保留 active models，並在需要 memory 時 evict 不活躍的 models，藉此最佳化單一 GPU 的 utilization。",
+              "其底層架構仰賴 dynamic loading、shared GPU memory，以及跨 OCR、embedding 與 generation 等多樣 workloads 的 compute-aware batching。"
+            ]
           },
           {
             "title": "打造由 Jev 驅動的 Agentic RAG",
-            "summary": "",
-            "takeaways": []
+            "summary": "Agentic RAG 系統通常難以判斷檢索到的 evidence 何時不足，以及如何根據該判斷採取行動。本教學示範了如何建立一個 multi-company support desk，使用 InsForge 提供 backend services、EmbeddingGemma 2 進行 multimodal retrieval，並使用 Liquid AI 的 d1-3B open-weight decision model 來評估 answerability 與 relevance。透過將這些 models 部署在 Lightning AI Studio 並使用 Claude Code 進行設定，系統會在 evidence 充足時透過 Claude Haiku 5.5 生成答案，或在不足時自動 escalate 給真人 agent 處理問題，並將解答回填至 knowledge base 中。",
+            "takeaways": [
+              "像 Jev 與 Liquid AI 的 d1 系列等 decision models 會評估檢索到的 evidence，並回傳結構化的判斷（例如 relevance 或 answerability），而非生成 free-form text。",
+              "EmbeddingGemma 2 透過將文字與圖像投影到共享的 768 維度空間來提供 multimodal embeddings，支援跨 text chunks 與整頁 PNG 檔案的 cross-modal search。",
+              "multimodal decision model d1-3B 與 EmbeddingGemma 2 能同時裝載在單一 NVIDIA L4 GPU 上，僅耗用約 7.2 GB 的 GPU memory。",
+              "當檢索到的 candidates 在 retry 後仍未達到 score thresholds 時，pipeline 會自動在 InsForge 中建立 support ticket 供真人審查，而不是生成 ungrounded 的 LLM 回應。",
+              "真人的回覆可以存回 knowledge base 中，提升未來針對類似 queries 的 retrieval 與 answerability。"
+            ]
           }
         ]
       }
