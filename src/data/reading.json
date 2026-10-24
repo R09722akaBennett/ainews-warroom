@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-24T10:04:55Z",
+  "updatedAt": "2026-10-24T13:30:36Z",
   "sources": [
     {
       "key": "gmail:bytebytego",
@@ -159,9 +159,9 @@
         "headings": [
           "來自 [DEEPLEARNING.AI 的訊息",
           "Meta 釋出 Wonder，開源 Spark",
-          "青少年版 ChatGPT 的成績單出爐",
+          "ChatGPT for Teens 收到成績單",
           "Nvidia 積極爭取新合作夥伴",
-          "單一 Decoder 將小模型的輸出轉化為行動",
+          "單一 Decoder 將小模型輸出轉化為行動",
           "與 Andrew Ng 一同工作"
         ],
         "sections": [
@@ -256,31 +256,50 @@
         {
           "title": "Agents are repeating software’s dumbest mistake",
           "category": "AGENTS",
-          "summary": "",
-          "takeaways": []
+          "summary": "The competitive advantage in building AI agents will not come from the underlying model, but from capturing full-stack user trajectories and continually learning from user interactions. By observing where users intervene, what they do manually, and what they repeatedly request, an agent can continuously update its skills, evaluations, and datasets. CopilotKit has introduced CLiF, a self-hostable continual learning platform that leverages the AG-UI protocol to capture both agent traces and user actions. Teams building user-facing agents are advised to begin collecting full-stack trajectory data early to establish a sustainable moat.",
+          "takeaways": [
+            "A sustainable moat in AI agent development relies on capturing full-stack user trajectories rather than relying on underlying base models.",
+            "Continuous learning allows agents to improve weekly by converting user intervention points and repeated requests into new skills, evaluations, and fine-tuning datasets.",
+            "CLiF is a learning platform integrated into CopilotKit designed to record both agent execution traces and user interactions.",
+            "The AG-UI protocol operates between the agent and the UI, enabling the generation of exportable full-stack trajectories and fine-tuned models from real sessions.",
+            "CLiF provides self-hostable continual learning infrastructure for developers deploying user-facing agents."
+          ]
         },
         {
           "title": "6 KV cache quantization approaches, explained visually:",
           "category": "LLMOps",
-          "summary": "",
-          "takeaways": []
+          "summary": "Quantizing model weights does not automatically reduce the memory footprint of the KV cache, which grows with sequence length and concurrency. To compress KV cache memory, practitioners apply techniques such as FP8 precision, INT8/INT4 integer representation, fine-grained grouping, mixed-precision high-precision buffers, and outlier management. Methods like KIVI customize grouping rules independently for keys and values to reach 2-bit representations, while KVQuant separates outlier values into sparse storage. While KV cache quantization enables larger context windows and higher batch sizes, its impact on decoding latency and accuracy must be balanced against the overhead of metadata and dequantization.",
+          "takeaways": [
+            "Weight quantization does not shrink the KV cache; KV cache precision must be reduced independently.",
+            "Moving KV cache from 16-bit to 8-bit cuts raw data size by half, though metadata like scales and buffers reduce net savings.",
+            "INT8 offers 256 levels whereas INT4 provides only 16, which increases rounding error and can degrade attention distinction.",
+            "KIVI applies per-channel grouping across token blocks for keys and per-token grouping for values, targeting 2-bit KV storage without fine-tuning.",
+            "Mixed-precision approaches retain recent tokens in a high-precision buffer to prevent quantization errors on recent context while compressing older tokens.",
+            "KVQuant isolates outlier values into sparse storage with positional tracking, allowing the remaining values to fit a narrower quantization range."
+          ]
         },
         {
           "title": "The evolution of the retrieval layer",
           "category": "RAG",
-          "summary": "",
-          "takeaways": []
+          "summary": "Retrieval-augmented generation (RAG) is shifting from application-specific, static pipelines into standing, shared retrieval layers exposed as tools for agents. Leading AI providers like Google and Anthropic treat retrieval as an on-demand API rather than a rigid, one-off initial step. Traditional naive RAG architectures suffer from data staleness and duplicate engineering across multiple applications. In contrast, an independent retrieval layer continuously syncs data changes and supports iterative, tool-based querying by autonomous agents and applications alike.",
+          "takeaways": [
+            "Anthropic's Model Context Protocol (MCP) and Google's RAG Engine expose retrieval as an on-demand tool callable by AI agents.",
+            "Naive RAG architectures break at scale due to data staleness and duplication of retrieval logic across apps.",
+            "A standing retrieval layer decouples ingestion from querying, operating as an independent system beneath applications.",
+            "Continuous ingestion uses content hashing and change detection to re-embed only modified data rather than entire corpora.",
+            "Agents consume retrieval iteratively as a tool in a reasoning loop rather than as a fixed, one-time pipeline step."
+          ]
         }
       ],
-      "summary": "The real moat in 2027 won’t be anything to do with the agent. Instead, it’ll be by capturing full-stack trajectories. Imagine two teams ship the same agent, on the same model, on the same day. Your competitor ships it and moves on. But you ship agents that learn from every session: where users stepped in, what they did by hand, what they keep asking for. Every week it picks up a few new skills, ev",
-      "summarised": false,
+      "summary": "The competitive advantage in building AI agents will not come from the underlying model, but from capturing full-stack user trajectories and continually learning from user interactions. By observing where users intervene, what they do manually, and what they repeatedly request, an agent can continuously update its skills, evaluations, and datasets. CopilotKit has introduced CLiF, a self-hostable continual learning platform that leverages the AG-UI protocol to capture both agent traces and user actions. Teams building user-facing agents are advised to begin collecting full-stack trajectory data early to establish a sustainable moat. Quantizing model weights does not automatically reduce the memory footprint of the KV cache, which grows with sequence length and concurrency. To compress KV cache memory, practitioners apply techniques such as FP8 precision, INT8/INT4 integer representation, fine-grained grouping, mixed-precision high-precision buffers, and outlier management. Methods like KIVI customize grouping rules independently for keys and values to reach 2-bit representations, while KVQuant separates outlier values into sparse storage. While KV cache quantization enables larger context windows and higher batch sizes, its impact on decoding latency and accuracy must be balanced against the overhead of metadata and dequantization. Retrieval-augmented generation (RAG) is shifting from application-specific, static pipelines into standing, shared retrieval layers exposed as tools for agents. Leading AI providers like Google and Anthropic treat retrieval as an on-demand API rather than a rigid, one-off initial step. Traditional naive RAG architectures suffer from data staleness and duplicate engineering across multiple applications. In contrast, an independent retrieval layer continuously syncs data changes and supports iterative, tool-based querying by autonomous agents and applications alike.",
+      "summarised": true,
       "headings": [
         "Agents are repeating software’s dumbest mistake",
         "6 KV cache quantization approaches, explained visually:",
         "The evolution of the retrieval layer"
       ],
       "zh": {
-        "summary": "2027 年真正的護城河將與 agent 本身毫無關係，而是取決於捕捉 full-stack trajectories。想像有兩個團隊在同一天、基於同一個 model ship 了相同的 agent。你的競爭對手 ship 之後就直接轉向下一個專案；但你 ship 的 agents 卻能從每個 session 中學習：使用者在何處介入、手動做了什麼、一直要求什麼。每週它都會習得幾項新技能，ev",
+        "summary": "打造 AI agents 的競爭優勢不會來自底層的 model，而是來自於捕捉全端 user trajectories，並持續從 user interactions 中學習。透過觀察使用者在何處介入、手動執行了什麼，以及反覆要求什麼，agent 可以持續更新其 skills、evaluations 與 datasets。CopilotKit 推出了 CLiF，這是一個可 self-host 的 continual learning 平台，它利用 AG-UI protocol 來同時捕捉 agent traces 和 user actions。建議打造 user-facing agents 的團隊儘早開始收集全端 trajectory 資料，以建立可持續的護城河。對 model weights 進行 quantization 並不會自動縮減 KV cache 的 memory footprint，而 KV cache 會隨著 sequence length 和 concurrency 而增長。為了壓縮 KV cache 記憶體，開發人員採用了 FP8 precision、INT8/INT4 integer representation、fine-grained grouping、mixed-precision high-precision buffers 以及 outlier management 等技術。像 KIVI 這類方法會為 keys 和 values 獨立自訂 grouping 規則以達到 2-bit representations，而 KVQuant 則將 outlier values 分離至 sparse storage 中。雖然 KV cache quantization 能支援更大的 context windows 和更高的 batch sizes，但仍必須在對 decoding latency 與 accuracy 的影響，以及 metadata 和 dequantization 的 overhead 之間取得平衡。Retrieval-augmented generation (RAG) 正在從特定應用程式的 static pipelines，轉變為作為 tools 開放給 agents 使用的常設、shared retrieval layers。像 Google 和 Anthropic 這樣的領先 AI 提供商將 retrieval 視為 on-demand API，而非死板且單次執行的初始步驟。傳統的 naive RAG 架構面臨 data staleness 以及跨多個 applications 重複工程的問題。相較之下，獨立的 retrieval layer 能持續同步 data 變更，並支援 autonomous agents 以及應用程式進行 iterative、基於 tool 的查詢。",
         "headings": [
           "Agents 正在重蹈軟體界最愚蠢的錯誤",
           "6 種 KV cache quantization 方法圖解：",
@@ -289,18 +308,37 @@
         "sections": [
           {
             "title": "Agents 正在重蹈軟體界最愚蠢的錯誤",
-            "summary": "",
-            "takeaways": []
+            "summary": "打造 AI agents 的競爭優勢不會來自底層的 model，而是來自於捕捉全端 user trajectories，並持續從 user interactions 中學習。透過觀察使用者在何處介入、手動執行了什麼，以及反覆要求什麼，agent 可以持續更新其 skills、evaluations 與 datasets。CopilotKit 推出了 CLiF，這是一個可 self-host 的 continual learning 平台，它利用 AG-UI protocol 來同時捕捉 agent traces 和 user actions。建議打造 user-facing agents 的團隊儘早開始收集全端 trajectory 資料，以建立可持續的護城河。",
+            "takeaways": [
+              "AI agent 開發中可持續的護城河取決於捕捉全端 user trajectories，而不是依賴底層的 base models。",
+              "Continuous learning 讓 agents 能夠每週持續改進，將使用者的介入點與重複的請求轉換為新的 skills、evaluations 以及 fine-tuning datasets。",
+              "CLiF 是整合進 CopilotKit 的 learning 平台，專為記錄 agent execution traces 與 user interactions 而設計。",
+              "AG-UI protocol 運作於 agent 與 UI 之間，能夠從真實 session 中生成可匯出的全端 trajectories 與 fine-tuned models。",
+              "CLiF 為部署 user-facing agents 的開發者提供可 self-host 的 continual learning 基礎設施。"
+            ]
           },
           {
             "title": "6 種 KV cache quantization 方法圖解：",
-            "summary": "",
-            "takeaways": []
+            "summary": "對 model weights 進行 quantization 並不會自動縮減 KV cache 的 memory footprint，而 KV cache 會隨著 sequence length 和 concurrency 而增長。為了壓縮 KV cache 記憶體，開發人員採用了 FP8 precision、INT8/INT4 integer representation、fine-grained grouping、mixed-precision high-precision buffers 以及 outlier management 等技術。像 KIVI 這類方法會為 keys 和 values 獨立自訂 grouping 規則以達到 2-bit representations，而 KVQuant 則將 outlier values 分離至 sparse storage 中。雖然 KV cache quantization 能支援更大的 context windows 和更高的 batch sizes，但仍必須在對 decoding latency 與 accuracy 的影響，以及 metadata 和 dequantization 的 overhead 之間取得平衡。",
+            "takeaways": [
+              "Weight quantization 不會縮減 KV cache；KV cache precision 必須獨立降低。",
+              "將 KV cache 從 16-bit 轉移到 8-bit 可將原始 data size 減半，但像 scales 和 buffers 等 metadata 會減少淨節省的空間。",
+              "INT8 提供 256 個 levels，而 INT4 僅提供 16 個，這會增加 rounding error 並可能降低 attention distinction。",
+              "KIVI 針對 keys 跨 token blocks 應用 per-channel grouping，並針對 values 採用 per-token grouping，目標是在不進行 fine-tuning 的情況下實現 2-bit KV 儲存。",
+              "Mixed-precision 方法將近期的 tokens 保留在 high-precision buffer 中，以防止近期 context 出現 quantization errors，同時壓縮較舊的 tokens。",
+              "KVQuant 透過 positional tracking 將 outlier values 隔離至 sparse storage 中，讓其餘 values 能對應到更窄的 quantization 範圍。"
+            ]
           },
           {
             "title": "retrieval layer 的演進",
-            "summary": "",
-            "takeaways": []
+            "summary": "Retrieval-augmented generation (RAG) 正在從特定應用程式的 static pipelines，轉變為作為 tools 開放給 agents 使用的常設、shared retrieval layers。像 Google 和 Anthropic 這樣的領先 AI 提供商將 retrieval 視為 on-demand API，而非死板且單次執行的初始步驟。傳統的 naive RAG 架構面臨 data staleness 以及跨多個 applications 重複工程的問題。相較之下，獨立的 retrieval layer 能持續同步 data 變更，並支援 autonomous agents 以及應用程式進行 iterative、基於 tool 的查詢。",
+            "takeaways": [
+              "Anthropic 的 Model Context Protocol (MCP) 與 Google 的 RAG Engine 將 retrieval 作為可由 AI agents 呼叫的 on-demand tool 開放出來。",
+              "Naive RAG 架構在規模化時會因為 data staleness 以及跨 apps 重複的 retrieval logic 而崩潰。",
+              "常設的 retrieval layer 將 ingestion 與 querying 解耦，作為底層獨立系統在 applications 之下運作。",
+              "Continuous ingestion 使用 content hashing 與 change detection，僅對修改過的 data 重新進行 embedding，而非處理整個 corpora。",
+              "Agents 在 reasoning loop 中將 retrieval 作為 tool 進行 iterative 調用，而不是作為固定、單次執行的 pipeline 步驟。"
+            ]
           }
         ]
       }
