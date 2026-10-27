@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-27T10:06:17Z",
+  "updatedAt": "2026-10-27T13:30:31Z",
   "sources": [
     {
       "key": "gmail:bytebytego",
@@ -61,24 +61,35 @@
         {
           "title": "A voice agent that gets the details right",
           "category": "VOICE AI",
-          "summary": "",
-          "takeaways": []
+          "summary": "Speech accuracy across both speech-to-text and text-to-speech layers is vital for LLM voice agents handling precise information like dosages and reference codes. Deepgram's Flux TTS addresses the outbound speech layer, focusing on retaining precision with technical and alphanumeric strings. In evaluation tests, Flux TTS achieved a 3.4% word error rate on complex terms such as drug names and tracking numbers. A practical test simulating a veterinary prescription refill demonstrated accurate retention of dynamic details such as changing collection times and prescription numbers.",
+          "takeaways": [
+            "Accurate speech-to-text and text-to-speech are both required to prevent information loss in voice agents.",
+            "Deepgram's Flux TTS manages outbound text-to-speech with a focus on retaining complex alphanumeric and technical details.",
+            "Flux TTS achieved a 3.4% word error rate in benchmark tests covering drug names, tracking numbers, and technical strings.",
+            "A simulated prescription refill test showed the system maintained accuracy when handling dynamically changing appointment details."
+          ]
         },
         {
           "title": "Why temperature 0 isn't deterministic in LLM inference",
           "category": "LLM INFERENCE",
-          "summary": "",
-          "takeaways": []
+          "summary": "Even at temperature 0, LLM inference can produce non-deterministic outputs across runs due to floating-point addition being non-associative. When dynamic batch sizes vary on an inference server, GPU kernels split operations like matmuls and attention differently, altering the summation order and resulting in subtle logit variations. In near-tie situations, a different token is selected via argmax, leading to complete divergence due to autoregressive generation. Inference engines like vLLM and SGLang have addressed this by introducing batch-invariant execution modes at the cost of a performance slowdown.",
+          "takeaways": [
+            "Temperature 0 disables sampling but cannot prevent logit variations caused by floating-point non-associativity across billions of GPU operations.",
+            "Dynamic batch sizes cause GPU kernels to partition workloads (such as split-K and split-KV) differently, changing the order of additions.",
+            "A minor logit variation at a near-tie token flips the argmax decision, which autoregressively compounds into entirely different completions.",
+            "Thinking Machines achieved full determinism by fixing split sizes and standardizing reduction orders regardless of batch size.",
+            "vLLM and SGLang now provide batch-invariant deterministic modes, though SGLang reports an average slowdown of roughly 34.35%."
+          ]
         }
       ],
-      "summary": "Speech accuracy matters on both sides of an LLM. Speech-to-text must preserve what the caller says, while text-to-speech must preserve the response the LLM generates. That becomes especially important with medication names, dosages, appointment times, and alphanumeric reference codes. Deepgram's Flux TTS handles the outbound speech layer. It recorded a 3.4% word error rate in an evaluation contain",
-      "summarised": false,
+      "summary": "Speech accuracy across both speech-to-text and text-to-speech layers is vital for LLM voice agents handling precise information like dosages and reference codes. Deepgram's Flux TTS addresses the outbound speech layer, focusing on retaining precision with technical and alphanumeric strings. In evaluation tests, Flux TTS achieved a 3.4% word error rate on complex terms such as drug names and tracking numbers. A practical test simulating a veterinary prescription refill demonstrated accurate retention of dynamic details such as changing collection times and prescription numbers. Even at temperature 0, LLM inference can produce non-deterministic outputs across runs due to floating-point addition being non-associative. When dynamic batch sizes vary on an inference server, GPU kernels split operations like matmuls and attention differently, altering the summation order and resulting in subtle logit variations. In near-tie situations, a different token is selected via argmax, leading to complete divergence due to autoregressive generation. Inference engines like vLLM and SGLang have addressed this by introducing batch-invariant execution modes at the cost of a performance slowdown.",
+      "summarised": true,
       "headings": [
         "A voice agent that gets the details right",
         "Why temperature 0 isn't deterministic in LLM inference"
       ],
       "zh": {
-        "summary": "在 LLM 的兩端，語音準確度都至關重要。Speech-to-text 必須如實保留通話者所說的內容，而 text-to-speech 則必須完整傳達 LLM 生成的回應。這在涉及藥品名稱、劑量、預約時間以及英數混合的參考代碼時尤為關鍵。Deepgram 的 Flux TTS 負責處理 outbound speech layer。在一項評測中，它錄得 3.4% 的 word error rate，該評測包含",
+        "summary": "在處理劑量和參考代碼等精準資訊時，LLM voice agents 在 speech-to-text 與 text-to-speech 兩層的語音準確度至關重要。Deepgram 的 Flux TTS 著手解決 outbound speech 層的問題，專注於保留技術名詞與 alphanumeric 字串的精確度。在評測中，Flux TTS 在藥品名稱和追蹤號碼等複雜術語上達到了 3.4% 的 word error rate。一項模擬獸醫處方補充的實際測試顯示，它能精確保留動態細節，例如變動的領取時間和處方編號。即使在 temperature 0 下，由於 floating-point addition 具有 non-associative 特性，LLM inference 在多次執行間仍可能產生 non-deterministic 的輸出。當 inference server 上的 dynamic batch sizes 發生變化時，GPU kernels 會以不同方式分割 matmuls 和 attention 等運算，從而改變 summation 順序並導致微小的 logit 差異。在分數接近的情況下，argmax 會選出不同的 token，進而因 autoregressive generation 而導致完全分歧的結果。像 vLLM 和 SGLang 這樣的 inference engines 已經透過引入 batch-invariant execution modes 來解決此問題，但代價是效能會有所降低。",
         "headings": [
           "精準掌握細節的 voice agent",
           "為什麼在 LLM inference 中 temperature 0 並非 deterministic"
@@ -86,13 +97,24 @@
         "sections": [
           {
             "title": "精準掌握細節的 voice agent",
-            "summary": "",
-            "takeaways": []
+            "summary": "在處理劑量和參考代碼等精準資訊時，LLM voice agents 在 speech-to-text 與 text-to-speech 兩層的語音準確度至關重要。Deepgram 的 Flux TTS 著手解決 outbound speech 層的問題，專注於保留技術名詞與 alphanumeric 字串的精確度。在評測中，Flux TTS 在藥品名稱和追蹤號碼等複雜術語上達到了 3.4% 的 word error rate。一項模擬獸醫處方補充的實際測試顯示，它能精確保留動態細節，例如變動的領取時間和處方編號。",
+            "takeaways": [
+              "精確的 speech-to-text 與 text-to-speech 都是防止 voice agents 遺漏資訊的必備要件。",
+              "Deepgram 的 Flux TTS 負責處理 outbound text-to-speech，重點在於保留複雜的 alphanumeric 與技術細節。",
+              "Flux TTS 在涵蓋藥品名稱、追蹤號碼與技術字串的 benchmark 測試中，達到了 3.4% 的 word error rate。",
+              "一項模擬處方補充的測試顯示，該系統在處理動態變化的預約細節時仍能維持準確度。"
+            ]
           },
           {
             "title": "為什麼在 LLM inference 中 temperature 0 並非 deterministic",
-            "summary": "",
-            "takeaways": []
+            "summary": "即使在 temperature 0 下，由於 floating-point addition 具有 non-associative 特性，LLM inference 在多次執行間仍可能產生 non-deterministic 的輸出。當 inference server 上的 dynamic batch sizes 發生變化時，GPU kernels 會以不同方式分割 matmuls 和 attention 等運算，從而改變 summation 順序並導致微小的 logit 差異。在分數接近的情況下，argmax 會選出不同的 token，進而因 autoregressive generation 而導致完全分歧的結果。像 vLLM 和 SGLang 這樣的 inference engines 已經透過引入 batch-invariant execution modes 來解決此問題，但代價是效能會有所降低。",
+            "takeaways": [
+              "Temperature 0 會停用 sampling，但無法防止數十億次 GPU 運算中因 floating-point non-associativity 所導致的 logit 差異。",
+              "Dynamic batch sizes 會導致 GPU kernels 以不同方式劃分 workloads（例如 split-K 與 split-KV），進而改變加法運算的順序。",
+              "在分數極為接近的 token 上，微小的 logit 差異就會反轉 argmax 的決策，並透過 autoregressive 的過程複合放大，產生截然不同的 completions。",
+              "Thinking Machines 透過固定 split sizes 並在不論 batch size 大小的情況下標準化 reduction orders，實現了完全的 determinism。",
+              "vLLM 與 SGLang 現在都提供了 batch-invariant 的 deterministic modes，不過 SGLang 回報平均會有約 34.35% 的效能降低。"
+            ]
           }
         ]
       }
@@ -257,13 +279,13 @@
         "summary": "使用單一 large prompt 來建構 AI agent 是一種常見的 naive design，它將 business rules、tool descriptions 與 context 混雜在一起，期望模型能遵守它們。這種做法期望語言模型能同時強制執行規則、檢索身分資訊、整合資料並約束行為。在實務上，隨著 instruction 數量增加，模型會顯得力不從心；例如，Salesforce 的 Agentforce 初版在超過 8 條 instruction 後，instruction adherence 就開始劣化。像 IFScale 這樣的研究基準印證了這項限制，顯示模型僅將 instruction 視為文字而非 hard constraints，因此在 prompt engineering 之外需要外部架構支援。Salesforce 透過將任務從 large language model prompts 卸載到其四層 platform stack 的專屬系統中，來提升系統可靠度。該架構包含 data layer (Data 360)、application layer (Customer 360)、agent layer (Agentforce) 以及 surface layer。專門的系統負責處理獨立任務，例如 Agent Script 強制執行商業邏輯，而 Agent Context Engine 則在資料送達模型前進行過濾。此設計將例行運作交給 deterministic 系統，讓模型只處理需要 reasoning 的任務。Agent Script 是 Salesforce 開發的開源、類似 Python 的 domain-specific language，用於在 LLM prompts 之外強制執行 deterministic agent 行為。透過將 agent 定義編譯為由 Atlas Reasoning Engine 執行的 Agent Graph，系統透過像 before_reasoning 和 after_reasoning 這樣的結構化區塊來保證規則的執行。這種架構將資料庫查詢等 deterministic 任務與語言模型的 reasoning 分離，大幅提升可靠度並避開 prompt instruction 的上限限制。",
         "headings": [
           "Naive design：單一 large prompt",
-          "Agentforce 的建構方式",
-          "1. 透過 Agent Script 實現 deterministic instructions",
-          "2. 透過 Data 360 建立 unified profiles",
-          "3. 透過 Agent Context Engine 獲取 relevant context",
+          "Agentforce 的構建方式",
+          "1. 透過 Agent Script 實現 Deterministic instructions",
+          "2. 透過 Data 360 打造 Unified profile",
+          "3. 透過 Agent Context Engine 獲取相關 context",
           "4. 透過 Agent Identity 進行權限管理",
-          "Agent 的運行環境",
-          "下一步"
+          "Agent 在何處運行",
+          "未來展望"
         ],
         "sections": [
           {
@@ -472,10 +494,10 @@
           "使用 Airflow 打造可規模化擴展的 event-driven workflows",
           "全新免費課程：2026 Cohort 開放報名",
           "Project 1",
-          "Module 6：Decision Trees 與 Ensemble Learning",
+          "Module 6: Decision Trees and Ensemble Learning",
           "近期活動",
           "Podcast 錄音：Building AI Evaluations You Can Actually Trust",
-          "來自 Alexey on Data：Agentic Engineering 的趨勢"
+          "來自 Alexey on Data：Trends in Agentic Engineering"
         ],
         "sections": [
           {
