@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-28T10:05:20Z",
+  "updatedAt": "2026-10-28T13:30:25Z",
   "sources": [
     {
       "key": "gmail:bytebytego",
@@ -61,31 +61,51 @@
         {
           "title": "This inference engine runs LLMs 4x faster than llama.cpp:",
           "category": "LLM INFERENCE",
-          "summary": "",
-          "takeaways": []
+          "summary": "A benchmark of the Qwen3.5 9B model on an M5 MacBook Pro shows the uzu inference engine achieving 92.1 tokens per second, significantly outperforming llama.cpp and MLX. Traditional single-token decoding is constrained by memory bandwidth, resulting in a theoretical hardware ceiling of approximately 29 tokens per second on an M5 chip. uzu circumvents this limit using a speculative decoding approach involving the DFlash drafter and the Weaver adapter to generate candidate token trees verified by the base model in a single pass. Developed by Mirai Labs, uzu is an open-source inference engine written in Rust with Metal kernels and language bindings across Swift, Python, TypeScript, and Rust.",
+          "takeaways": [
+            "Running Qwen3.5 9B on an M5 MacBook Pro reached 92.1 tokens/s with uzu, compared to 22.0 tokens/s on llama.cpp and 25.1 tokens/s on MLX.",
+            "Standard autoregressive decoding is bound by memory bandwidth, capping base M5 generation at roughly 29 tokens/s for a 5.2 GB 4-bit 9B model.",
+            "uzu bypasses the memory bandwidth bottleneck by producing an average of 7.5 tokens per model pass instead of just one.",
+            "The system uses DFlash to propose up to 16 tokens, the 56.7M-parameter Weaver adapter to build candidate trees, and the main model to verify the tree in a single pass.",
+            "uzu is developed by Mirai Labs as an open-source engine written in Rust with Metal kernels, supporting Swift, Python, TypeScript, and Rust bindings."
+          ]
         },
         {
           "title": "Which OCR solution works best for your documents?",
           "category": "OCR",
-          "summary": "",
-          "takeaways": []
+          "summary": "Average benchmark scores for OCR tools often obscure critical failure modes on specific document types. A 150-page evaluation of DeepSeek-OCR, PaddleOCR-VL, and Datalab Surya using fine-grained pass/fail unit tests showed that performance varies widely across tables, handwriting, and forms. While Surya achieved the highest overall score, DeepSeek-OCR outperformed it on tables, and PaddleOCR-VL completely failed on filled tax form fields. To provide transparent, fine-grained evaluations across 92 languages and multiple document categories, Datalab released the open-source evaluation suite OmniParse Bench.",
+          "takeaways": [
+            "Overall benchmark averages can be misleading because OCR parsers perform drastically differently across specific document types like tables, handwriting, and forms.",
+            "On a 150-page test, Datalab Surya scored highest overall (88.2), followed by DeepSeek-OCR (77.5) and PaddleOCR-VL (73.4).",
+            "DeepSeek-OCR achieved the highest score on dense tables (87.2), outperforming Datalab (78.9) and PaddleOCR-VL (78.0).",
+            "On handwritten notes, Datalab passed 5 of 6 tests, while DeepSeek-OCR and PaddleOCR-VL passed zero.",
+            "PaddleOCR-VL completely failed to capture filled values on a 1040 tax form, returning only the document title.",
+            "OmniParse Bench is an open-source evaluation suite containing 16,288 unit tests across 2,937 pages in 92 languages to evaluate OCR across text, tables, and layout."
+          ]
         },
         {
           "title": "The No. 1 deep researcher beats Claude and ChatGPT with a trick neither uses.",
           "category": "AI AGENTS",
-          "summary": "",
-          "takeaways": []
+          "summary": "Onyx has achieved the top rank on DeepResearch Bench using a counterintuitive architectural design that strips search access entirely from its central orchestrator agent. Unlike approaches by OpenAI, Anthropic, and Google where orchestrators perform queries directly, Onyx forces its coordinator to focus strictly on query decomposition and task briefing. The system relies on a two-level, three-phase pipeline to prevent information distortion and premature answers. Dedicated worker agents handle web and enterprise document retrieval, followed by a deterministic deduplication and citation-mapping phase.",
+          "takeaways": [
+            "Onyx holds the No. 1 ranking on DeepResearch Bench using an open-source architecture.",
+            "The orchestrator agent in Onyx is intentionally deprived of search access and web capabilities to prevent it from prematurely answering queries with shallow results.",
+            "OpenAI trains a single model for long sequential tool-calling chains, whereas Anthropic, Google, and Onyx utilize an orchestrator-researcher pattern.",
+            "Onyx limits its multi-agent hierarchy to two levels to minimize information distortion from repeated summarization.",
+            "The Onyx pipeline functions in three phases: decomposing queries into up to 6 directions, dispatching 3 research agents for up to 8 sub-cycles, and running a deterministic renumbering and deduplicating step.",
+            "Research agents in Onyx can search internal enterprise tools like Confluence and Slack with document-level permissions alongside external search."
+          ]
         }
       ],
-      "summary": "We ran Qwen3.5 9B on a base M5 MacBook Pro with three local inference engines, one at a time. • llama.cpp reached 22.0 tokens/s • MLX reached 25.1 tokens/s • uzu reached 92.1 tokens/s The video shows all three runs side by side. The first two numbers don’t mean llama.cpp or MLX are badly built. Both sit right under a hard limit of local decoding. Every new token needs one full pass through the mod",
-      "summarised": false,
+      "summary": "A benchmark of the Qwen3.5 9B model on an M5 MacBook Pro shows the uzu inference engine achieving 92.1 tokens per second, significantly outperforming llama.cpp and MLX. Traditional single-token decoding is constrained by memory bandwidth, resulting in a theoretical hardware ceiling of approximately 29 tokens per second on an M5 chip. uzu circumvents this limit using a speculative decoding approach involving the DFlash drafter and the Weaver adapter to generate candidate token trees verified by the base model in a single pass. Developed by Mirai Labs, uzu is an open-source inference engine written in Rust with Metal kernels and language bindings across Swift, Python, TypeScript, and Rust. Average benchmark scores for OCR tools often obscure critical failure modes on specific document types. A 150-page evaluation of DeepSeek-OCR, PaddleOCR-VL, and Datalab Surya using fine-grained pass/fail unit tests showed that performance varies widely across tables, handwriting, and forms. While Surya achieved the highest overall score, DeepSeek-OCR outperformed it on tables, and PaddleOCR-VL completely failed on filled tax form fields. To provide transparent, fine-grained evaluations across 92 languages and multiple document categories, Datalab released the open-source evaluation suite OmniParse Bench. Onyx has achieved the top rank on DeepResearch Bench using a counterintuitive architectural design that strips search access entirely from its central orchestrator agent. Unlike approaches by OpenAI, Anthropic, and Google where orchestrators perform queries directly, Onyx forces its coordinator to focus strictly on query decomposition and task briefing. The system relies on a two-level, three-phase pipeline to prevent information distortion and premature answers. Dedicated worker agents handle web and enterprise document retrieval, followed by a deterministic deduplication and citation-mapping phase.",
+      "summarised": true,
       "headings": [
         "This inference engine runs LLMs 4x faster than llama.cpp:",
         "Which OCR solution works best for your documents?",
         "The No. 1 deep researcher beats Claude and ChatGPT with a trick neither uses."
       ],
       "zh": {
-        "summary": "我們在基礎款 M5 MacBook Pro 上使用三種 local inference engines 分別測試了 Qwen3.5 9B。• llama.cpp 達到 22.0 tokens/s • MLX 達到 25.1 tokens/s • uzu 達到 92.1 tokens/s。影片並排展示了這三次 run。前兩個數字並不代表 llama.cpp 或 MLX 做得不好，兩者都正好卡在 local decoding 的 hard limit 之下。每個新的 token 都需要對 mod 進行一次完整的 pass",
+        "summary": "在 M5 MacBook Pro 上針對 Qwen3.5 9B 模型的 benchmark 顯示，uzu inference engine 達到了 92.1 tokens per second，大幅超越 llama.cpp 與 MLX。傳統的 single-token decoding 受限於 memory bandwidth，導致在 M5 晶片上的理論硬體上限約為 29 tokens per second。uzu 透過 speculative decoding 方法規避了此限制，結合 DFlash drafter 與 Weaver adapter 來生成 candidate token trees，並由 base model 在 single pass 中完成驗證。由 Mirai Labs 開發的 uzu 是一款以 Rust 編寫並具備 Metal kernels 的開源 inference engine，並提供 Swift、Python、TypeScript 與 Rust 的 language bindings。OCR 工具的平均 benchmark 分數往往會掩蓋特定文件類型上的關鍵 failure modes。一份針對 DeepSeek-OCR、PaddleOCR-VL 與 Datalab Surya 的 150 頁評測中，使用細粒度的 pass/fail unit tests 顯示各工具在 tables、handwriting 和 forms 上的表現差異極大。雖然 Surya 取得了最高的總分，但 DeepSeek-OCR 在 tables 上的表現更勝一籌，而 PaddleOCR-VL 則在已填寫的稅務表單欄位上完全 failed。為了針對 92 種語言與多種文件類別提供透明且細粒度的評測，Datalab 開源了評測套件 OmniParse Bench。Onyx 採用了反直覺的架構設計，在 DeepResearch Bench 上奪得第一，該設計完全剝奪了其中央 orchestrator agent 的搜尋權限。不同於 OpenAI、Anthropic 和 Google 讓 orchestrator 直接執行 queries 的做法，Onyx 強制其 coordinator 嚴格專注於 query decomposition 與 task briefing。該系統依賴 two-level、three-phase 的 pipeline 來防止資訊失真與過早產生解答。專門的 worker agents 負責處理 web 與企業文件的 retrieval，隨後進入 deterministic 的 deduplication 與 citation-mapping 階段。",
         "headings": [
           "這款 inference engine 執行 LLMs 的速度比 llama.cpp 快 4 倍：",
           "哪種 OCR solution 最適合你的文件？",
@@ -94,18 +114,38 @@
         "sections": [
           {
             "title": "這款 inference engine 執行 LLMs 的速度比 llama.cpp 快 4 倍：",
-            "summary": "",
-            "takeaways": []
+            "summary": "在 M5 MacBook Pro 上針對 Qwen3.5 9B 模型的 benchmark 顯示，uzu inference engine 達到了 92.1 tokens per second，大幅超越 llama.cpp 與 MLX。傳統的 single-token decoding 受限於 memory bandwidth，導致在 M5 晶片上的理論硬體上限約為 29 tokens per second。uzu 透過 speculative decoding 方法規避了此限制，結合 DFlash drafter 與 Weaver adapter 來生成 candidate token trees，並由 base model 在 single pass 中完成驗證。由 Mirai Labs 開發的 uzu 是一款以 Rust 編寫並具備 Metal kernels 的開源 inference engine，並提供 Swift、Python、TypeScript 與 Rust 的 language bindings。",
+            "takeaways": [
+              "在 M5 MacBook Pro 上執行 Qwen3.5 9B，使用 uzu 達到 92.1 tokens/s，相較之下 llama.cpp 為 22.0 tokens/s，MLX 為 25.1 tokens/s。",
+              "標準的 autoregressive decoding 受限於 memory bandwidth，使得 5.2 GB 4-bit 9B 模型在基礎 M5 上的 generation 速度上限約為 29 tokens/s。",
+              "uzu 透過在每個 model pass 平均產出 7.5 個 tokens（而非僅 1 個），成功繞過了 memory bandwidth bottleneck。",
+              "該系統使用 DFlash 提議最多 16 個 tokens，透過 56.7M-parameter 的 Weaver adapter 建立 candidate trees，並由 main model 在 single pass 中驗證該 tree。",
+              "uzu 由 Mirai Labs 開發，是一款以 Rust 編寫並具備 Metal kernels 的開源 engine，支援 Swift、Python、TypeScript 與 Rust 的 bindings。"
+            ]
           },
           {
             "title": "哪種 OCR solution 最適合你的文件？",
-            "summary": "",
-            "takeaways": []
+            "summary": "OCR 工具的平均 benchmark 分數往往會掩蓋特定文件類型上的關鍵 failure modes。一份針對 DeepSeek-OCR、PaddleOCR-VL 與 Datalab Surya 的 150 頁評測中，使用細粒度的 pass/fail unit tests 顯示各工具在 tables、handwriting 和 forms 上的表現差異極大。雖然 Surya 取得了最高的總分，但 DeepSeek-OCR 在 tables 上的表現更勝一籌，而 PaddleOCR-VL 則在已填寫的稅務表單欄位上完全 failed。為了針對 92 種語言與多種文件類別提供透明且細粒度的評測，Datalab 開源了評測套件 OmniParse Bench。",
+            "takeaways": [
+              "整體的 benchmark 平均值可能會產生誤導，因為 OCR parsers 在特定文件類型（如 tables、handwriting 和 forms）上的表現有著天壤之別。",
+              "在 150 頁的測試中，Datalab Surya 的總分最高（88.2），其次是 DeepSeek-OCR（77.5）與 PaddleOCR-VL（73.4）。",
+              "DeepSeek-OCR 在 dense tables 上獲得最高分（87.2），超越了 Datalab（78.9）與 PaddleOCR-VL（78.0）。",
+              "在手寫筆記（handwritten notes）上，Datalab 通過了 6 項測試中的 5 項，而 DeepSeek-OCR 與 PaddleOCR-VL 則通過了 0 項。",
+              "PaddleOCR-VL 完全未能辨識出 1040 稅務表單上填寫的數值，僅回傳了文件標題。",
+              "OmniParse Bench 是一套開源評測套件，包含橫跨 92 種語言、2,937 頁中的 16,288 個 unit tests，用以評估 OCR 在 text、tables 與 layout 上的表現。"
+            ]
           },
           {
             "title": "排名第一的 deep researcher 用了一個 Claude 和 ChatGPT 都沒使用的技巧擊敗了它們。",
-            "summary": "",
-            "takeaways": []
+            "summary": "Onyx 採用了反直覺的架構設計，在 DeepResearch Bench 上奪得第一，該設計完全剝奪了其中央 orchestrator agent 的搜尋權限。不同於 OpenAI、Anthropic 和 Google 讓 orchestrator 直接執行 queries 的做法，Onyx 強制其 coordinator 嚴格專注於 query decomposition 與 task briefing。該系統依賴 two-level、three-phase 的 pipeline 來防止資訊失真與過早產生解答。專門的 worker agents 負責處理 web 與企業文件的 retrieval，隨後進入 deterministic 的 deduplication 與 citation-mapping 階段。",
+            "takeaways": [
+              "Onyx 憑藉其開源架構，在 DeepResearch Bench 上名列第一。",
+              "Onyx 中的 orchestrator agent 被刻意剝奪了搜尋權限與 web capabilities，以防止其用膚淺的結果過早回答 queries。",
+              "OpenAI 訓練單一模型來執行長序列的 tool-calling chains，而 Anthropic、Google 與 Onyx 則採用 orchestrator-researcher pattern。",
+              "Onyx 將其 multi-agent hierarchy 限制在兩層（two levels），以盡可能減少因重複 summarization 造成的資訊失真。",
+              "Onyx 的 pipeline 運作分為三個階段（three phases）：將 queries 分解為最多 6 個方向、派遣 3 個 research agents 進行最多 8 個 sub-cycles，以及執行 deterministic 的 renumbering 與 deduplicating 步驟。",
+              "Onyx 中的 research agents 能夠在具備文件級權限（document-level permissions）的情況下搜尋 Confluence 和 Slack 等內部企業工具，同時兼顧外部搜尋。"
+            ]
           }
         ]
       }
@@ -217,10 +257,10 @@
         "headings": [
           "在手機上執行 LLM 的挑戰",
           "Apple 如何降低 Weights 的儲存成本",
-          "Apple 如何加快重複運算的速度",
-          "Adapters 如何協助各功能共享 Foundation",
+          "Apple 如何加快重複運算的處理速度",
+          "Adapters 如何協助各項功能共享基底模型",
           "Apple 如何最佳化執行模型的硬體",
-          "系統如何決定何時使用 Cloud",
+          "系統如何決定何時使用雲端",
           "結論"
         ],
         "sections": [
