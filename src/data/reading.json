@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-31T10:04:15Z",
+  "updatedAt": "2026-10-31T13:30:45Z",
   "sources": [
     {
       "key": "gmail:bytebytego",
@@ -170,8 +170,8 @@
           "Agent 的黎明",
           "AI 反噬餵養它的手",
           "來自 [DEEPLEARNING.AI 的訊息",
-          "AI 偵測器發現了惡魔的蹤跡",
-          "領導者將模型嚴密隔離",
+          "AI Detectors 揪出魔鬼之作",
+          "產業領袖將模型封存",
           "與 Andrew Ng 一同工作"
         ],
         "sections": [
@@ -273,30 +273,50 @@
         {
           "title": "Speculative decoding, now 2.6x faster on a MacBook:",
           "category": "LLM INFERENCE",
-          "summary": "",
-          "takeaways": []
+          "summary": "Mirai demonstrated that running speculative decoding with DFlash and Weaver inside their Apple Silicon inference engine, Uzu, achieves 92.1 tokens per second on an M5 MacBook Pro with Qwen3.5 9B. This represents a 4x improvement over baseline decoding and a 2.6x speedup over standard speculative decoding. Weaver addresses the token-mismatch limitation of parallel drafters like DFlash by using a 56.7M parameter Transformer layer to build dependency-aware candidate trees verified in a single pass. Mirai has open-sourced this speculative decoding stack in Uzu for Apple Silicon devices.",
+          "takeaways": [
+            "Qwen3.5 9B generated 92.1 tokens/s using DFlash + Weaver in Uzu on an M5 MacBook Pro, compared to 22.0 tokens/s without speculative decoding and 34.7 tokens/s with regular speculative decoding.",
+            "DFlash generates token guesses in parallel across positions, but individual positions do not condition on preceding choices.",
+            "Weaver is a 56.7M parameter, single-layer Transformer adapter that builds a tree of candidate tokens sequentially from DFlash's top predictions.",
+            "Using Weaver on the MacBook Pro enabled the 9B model to produce an average of 7.5 tokens per verification pass instead of 1.",
+            "On an Nvidia B200 GPU, the Weaver paper reports a 4.08x speedup over standard decoding across chat, math, and code benchmarks.",
+            "Mirai open-sourced this inference stack within Uzu, an inference engine tailored for Apple Silicon."
+          ]
         },
         {
           "title": "RAG vs. Vectorless RAG, clearly explained!",
           "category": "RAG",
-          "summary": "",
-          "takeaways": []
+          "summary": "Standard vector-based RAG struggles with structured, long-form documents like annual reports because similarity search often confuses structurally identical templates across different years and fails on cross-references. Vectorless RAG replaces embeddings and vector databases with an LLM-driven table of contents (ToC) tree index, enabling reasoning over document structure similar to how a human analyst navigates a report. While vectorless approaches like PageIndex improve retrieval accuracy on structured documents, they introduce higher index-building times, increased latency, and greater query costs compared to standard vector retrieval.",
+          "takeaways": [
+            "Standard vector RAG often fails on recurring structured reports (e.g., annual 10-K filings) because chunks from different years match the query topic equally well.",
+            "Cross-references (such as 'see Appendix G') cause standard vector search to miss target data since the referenced tables do not match query phrasing.",
+            "Anthropic's contextual retrieval with a reranker reduced top-20 retrieval failures from 5.7% to 1.9%, but still fundamentally relies on text similarity.",
+            "Vectorless RAG uses document layout to construct a ToC tree index containing section titles, page ranges, and summaries instead of chunking text.",
+            "In a PageIndex benchmark over NVIDIA annual reports (FY2022–FY2026), tree retrieval answered 100% of 63 questions correctly at ~$110 per 1,000 queries, while top-10 vector search peaked at 76.2% accuracy at ~$15 per 1,000 queries.",
+            "Building a ToC tree index is resource-intensive, requiring 2 to 5 minutes of LLM calls per document, making vector search preferable for short, unstructured texts like support tickets."
+          ]
         },
         {
           "title": "Make RAG systems 32x Memory Efficient!",
           "category": "HANDS-ON",
-          "summary": "",
-          "takeaways": []
+          "summary": "Binary Quantization (BQ) is an embedding compression technique that converts float32 vectors into binary vectors, achieving a roughly 32x reduction in memory and storage. Major systems like Perplexity, Azure Search, and HubSpot use this method to enhance retrieval efficiency. In a demonstration setup, LlamaIndex handles orchestration, Milvus acts as the binary vector database using Hamming distance, and Kimi-K2 hosted on Groq performs response generation. Evaluating the pipeline over the 36M+ vector PubMed dataset demonstrated retrieval speeds under 30ms and end-to-end response generation in less than one second.",
+          "takeaways": [
+            "Binary Quantization compresses standard float32 embeddings into binary vectors, achieving a 32x reduction in memory and storage.",
+            "Hamming distance is used as the search metric to compare binary vectors during retrieval.",
+            "The demonstration stack uses LlamaIndex for orchestration, Milvus as the vector database, and Kimi-K2 hosted via Groq for fast inference.",
+            "Testing the setup on the PubMed dataset with over 36 million vectors yielded sub-30ms retrieval times and sub-second generation times.",
+            "Industry systems utilizing binary quantization include Perplexity search indexes, Azure search pipelines, and HubSpot AI assistants."
+          ]
         }
       ],
-      "summary": "We ran Qwen3.5 9B on an M5 MacBook Pro with the same prompt, three ways: • No speculative decoding: 22.0 tokens/s, done in 42.2s • Regular speculative decoding: 34.7 tokens/s, done in 30.4s • DFlash + Weaver in Uzu : 92.1 tokens/s, done in 11.0s That is about 4x faster than plain decoding and 2.6x faster than regular speculative decoding. The video shows all three runs side by side. Speculative de",
-      "summarised": false,
+      "summary": "Mirai demonstrated that running speculative decoding with DFlash and Weaver inside their Apple Silicon inference engine, Uzu, achieves 92.1 tokens per second on an M5 MacBook Pro with Qwen3.5 9B. This represents a 4x improvement over baseline decoding and a 2.6x speedup over standard speculative decoding. Weaver addresses the token-mismatch limitation of parallel drafters like DFlash by using a 56.7M parameter Transformer layer to build dependency-aware candidate trees verified in a single pass. Mirai has open-sourced this speculative decoding stack in Uzu for Apple Silicon devices. Standard vector-based RAG struggles with structured, long-form documents like annual reports because similarity search often confuses structurally identical templates across different years and fails on cross-references. Vectorless RAG replaces embeddings and vector databases with an LLM-driven table of contents (ToC) tree index, enabling reasoning over document structure similar to how a human analyst navigates a report. While vectorless approaches like PageIndex improve retrieval accuracy on structured documents, they introduce higher index-building times, increased latency, and greater query costs compared to standard vector retrieval. Binary Quantization (BQ) is an embedding compression technique that converts float32 vectors into binary vectors, achieving a roughly 32x reduction in memory and storage. Major systems like Perplexity, Azure Search, and HubSpot use this method to enhance retrieval efficiency. In a demonstration setup, LlamaIndex handles orchestration, Milvus acts as the binary vector database using Hamming distance, and Kimi-K2 hosted on Groq performs response generation. Evaluating the pipeline over the 36M+ vector PubMed dataset demonstrated retrieval speeds under 30ms and end-to-end response generation in less than one second.",
+      "summarised": true,
       "headings": [
         "Speculative decoding, now 2.6x faster on a MacBook:",
         "Make RAG systems 32x Memory Efficient!"
       ],
       "zh": {
-        "summary": "我們在 M5 MacBook Pro 上使用相同的 prompt，以三種方式執行 Qwen3.5 9B：• 無 speculative decoding：22.0 tokens/s，42.2s 完成 • 一般 speculative decoding：34.7 tokens/s，30.4s 完成 • 在 Uzu 中使用 DFlash + Weaver：92.1 tokens/s，11.0s 完成。這比 plain decoding 快了約 4 倍，比一般的 speculative decoding 快了 2.6 倍。影片並列展示了這三種執行過程。Speculative de",
+        "summary": "Mirai 展示了在其專為 Apple Silicon 打造的 inference engine「Uzu」中，結合 DFlash 與 Weaver 執行 speculative decoding，在搭載 Qwen3.5 9B 的 M5 MacBook Pro 上達到了每秒 92.1 tokens（92.1 tokens per second）。這相較於 baseline decoding 提升了 4 倍，且比 standard speculative decoding 快了 2.6 倍。Weaver 透過一個 56.7M 參數的 Transformer layer 構建 dependency-aware candidate trees，並在 single pass 中完成驗證，解決了像 DFlash 這類 parallel drafters 的 token-mismatch 限制。Mirai 已在 Uzu 中針對 Apple Silicon 裝置開源了這套 speculative decoding stack。傳統的 vector-based RAG 在處理結構化的長篇文件（如年度報告）時表現不佳，因為 similarity search 經常會混淆不同年份中結構相同的模板，且無法有效處理 cross-references。Vectorless RAG 以 LLM 驅動的 table of contents (ToC) tree index 取代 embeddings 與 vector databases，使其能夠像人類分析師閱讀報告一樣對文件結構進行 reasoning。雖然像 PageIndex 這類 vectorless 方法能提高結構化文件的 retrieval accuracy，但與標準的 vector retrieval 相比，它們會帶來更長的 index-building 時間、更高的 latency 以及更高的 query 成本。Binary Quantization (BQ) 是一種 embedding compression 技術，將 float32 vectors 轉換為 binary vectors，從而在 memory 與 storage 上實現約 32 倍的縮減。Perplexity、Azure Search 和 HubSpot 等主流系統皆採用此方法來提升 retrieval efficiency。在一個示範架構中，LlamaIndex 負責 orchestration，Milvus 作為使用 Hamming distance 的 binary vector database，並由託管於 Groq 上的 Kimi-K2 執行 response generation。在超過 36M+ vectors 的 PubMed dataset 上評估此 pipeline，展示了低於 30ms 的 retrieval 速度，以及不到一秒的 end-to-end response generation。",
         "headings": [
           "Speculative decoding，現在在 MacBook 上快了 2.6 倍：",
           "讓 RAG 系統的記憶體效率提升 32 倍！"
@@ -304,18 +324,38 @@
         "sections": [
           {
             "title": "Speculative decoding，現在在 MacBook 上快了 2.6 倍：",
-            "summary": "",
-            "takeaways": []
+            "summary": "Mirai 展示了在其專為 Apple Silicon 打造的 inference engine「Uzu」中，結合 DFlash 與 Weaver 執行 speculative decoding，在搭載 Qwen3.5 9B 的 M5 MacBook Pro 上達到了每秒 92.1 tokens（92.1 tokens per second）。這相較於 baseline decoding 提升了 4 倍，且比 standard speculative decoding 快了 2.6 倍。Weaver 透過一個 56.7M 參數的 Transformer layer 構建 dependency-aware candidate trees，並在 single pass 中完成驗證，解決了像 DFlash 這類 parallel drafters 的 token-mismatch 限制。Mirai 已在 Uzu 中針對 Apple Silicon 裝置開源了這套 speculative decoding stack。",
+            "takeaways": [
+              "在 M5 MacBook Pro 上，Qwen3.5 9B 透過 Uzu 中的 DFlash + Weaver 達到 92.1 tokens/s，相較之下，未使用 speculative decoding 時為 22.0 tokens/s，而使用常規 speculative decoding 則為 34.7 tokens/s。",
+              "DFlash 會跨位置平行生成 token 預測，但各個位置並不會以先前的選擇為條件（condition on preceding choices）。",
+              "Weaver 是一個 56.7M 參數的單層 Transformer adapter，它會依序從 DFlash 的 top predictions 中構建 candidate tokens 樹狀結構（tree of candidate tokens）。",
+              "在 MacBook Pro 上使用 Weaver 讓這款 9B 模型在每個 verification pass 中平均產出 7.5 個 tokens，而非原本的 1 個。",
+              "在 Nvidia B200 GPU 上，Weaver 論文指出其在 chat、math 和 code benchmarks 方面相較於 standard decoding 實現了 4.08 倍的 speedup。",
+              "Mirai 已在 Uzu 中開源了這套 inference stack，Uzu 是一款專為 Apple Silicon 量身打造的 inference engine。"
+            ]
           },
           {
             "title": "RAG vs. Vectorless RAG，清楚解析！",
-            "summary": "",
-            "takeaways": []
+            "summary": "傳統的 vector-based RAG 在處理結構化的長篇文件（如年度報告）時表現不佳，因為 similarity search 經常會混淆不同年份中結構相同的模板，且無法有效處理 cross-references。Vectorless RAG 以 LLM 驅動的 table of contents (ToC) tree index 取代 embeddings 與 vector databases，使其能夠像人類分析師閱讀報告一樣對文件結構進行 reasoning。雖然像 PageIndex 這類 vectorless 方法能提高結構化文件的 retrieval accuracy，但與標準的 vector retrieval 相比，它們會帶來更長的 index-building 時間、更高的 latency 以及更高的 query 成本。",
+            "takeaways": [
+              "標準的 vector RAG 經常在週期性出現的結構化報告（例如年度 10-K 文件）上失敗，因為來自不同年份的 chunks 對 query topic 的匹配程度可能完全相同。",
+              "Cross-references（例如「見 Appendix G」）會導致標準 vector search 遺漏目標資料，因為被引用的表格內容與 query 的語句措辭並不匹配。",
+              "Anthropic 的 contextual retrieval 搭配 reranker 將 top-20 的 retrieval 失敗率從 5.7% 降低至 1.9%，但在本質上仍依賴 text similarity。",
+              "Vectorless RAG 利用文件排版（document layout）構建包含 section titles、page ranges 與 summaries 的 ToC tree index，而非對文字進行 chunking。",
+              "在一項針對 NVIDIA 年度報告（FY2022–FY2026）的 PageIndex benchmark 中，tree retrieval 以每 1,000 次 queries 約 110 美元的成本達到了 63 道問題 100% 的正確率，而 top-10 vector search 的最高 accuracy 僅有 76.2%，成本約為每 1,000 次 queries 15 美元。",
+              "建立 ToC tree index 相當耗費資源，每份文件需要 2 到 5 分鐘的 LLM calls，因此對於像 support tickets 這類簡短、非結構化的文字，vector search 仍然是更合適的選擇。"
+            ]
           },
           {
             "title": "讓 RAG 系統的記憶體效率提升 32 倍！",
-            "summary": "",
-            "takeaways": []
+            "summary": "Binary Quantization (BQ) 是一種 embedding compression 技術，將 float32 vectors 轉換為 binary vectors，從而在 memory 與 storage 上實現約 32 倍的縮減。Perplexity、Azure Search 和 HubSpot 等主流系統皆採用此方法來提升 retrieval efficiency。在一個示範架構中，LlamaIndex 負責 orchestration，Milvus 作為使用 Hamming distance 的 binary vector database，並由託管於 Groq 上的 Kimi-K2 執行 response generation。在超過 36M+ vectors 的 PubMed dataset 上評估此 pipeline，展示了低於 30ms 的 retrieval 速度，以及不到一秒的 end-to-end response generation。",
+            "takeaways": [
+              "Binary Quantization 將標準的 float32 embeddings 壓縮為 binary vectors，在 memory 與 storage 上實現了 32 倍的縮減。",
+              "在 retrieval 過程中，Hamming distance 被用作比對 binary vectors 的 search metric。",
+              "該示範 stack 使用 LlamaIndex 進行 orchestration、以 Milvus 作為 vector database，並透過 Groq 託管的 Kimi-K2 進行快速 inference。",
+              "在擁有超過 3,600 萬個 vectors 的 PubMed dataset 上測試該架構，實現了低於 30ms 的 retrieval 時間與不到一秒的 generation 時間。",
+              "採用 binary quantization 的業界系統包括 Perplexity 搜尋索引（search indexes）、Azure search pipelines 以及 HubSpot AI assistants。"
+            ]
           }
         ]
       }
