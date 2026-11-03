@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-03T10:04:54Z",
+  "updatedAt": "2026-11-03T13:30:43Z",
   "sources": [
     {
       "key": "gmail:bytebytego",
@@ -166,7 +166,7 @@
           "Data engineering 正在發生什麼事？ (Nov 18)",
           "全新免費課程：2026 Cohort 開放報名",
           "Project 1",
-          "期中專案",
+          "期中專題",
           "近期活動",
           "Podcast 錄音：Decoding the Open Lakehouse",
           "來自 Alexey on Data：Trends in Agentic Engineering"
@@ -380,9 +380,9 @@
           "Transformer 模型如何消耗資源",
           "Nvidia 的 Nemotron 如何降低成本",
           "Nemotron 如何使用 Mamba 與 MoE",
-          "Nvidia 如何訓練他們的模型",
+          "Nvidia 如何訓練其模型",
           "Nvidia 如何使用 Multi-Token Prediction",
-          "Nvidia 如何使用低精度數值降低儲存空間",
+          "Nvidia 如何利用低精度數值降低儲存需求",
           "結論"
         ],
         "sections": [
@@ -487,31 +487,49 @@
         {
           "title": "Your AI coding agents should get smarter every time you use them",
           "category": "AI AGENTS",
-          "summary": "",
-          "takeaways": []
+          "summary": "AI coding agents typically do not retain knowledge across sessions, repeating past mistakes and failing to transfer context between different tools. Beacon, developed by Asymptote Labs, is an open-source memory layer designed to capture execution traces across over 20 agent harnesses, converting past problem-solving into reusable skills. It operates locally or via Beacon Cloud, which adds hourly analytics to generate findings around security risks, reusable skills, and behavioral inefficiencies. Additionally, feature capabilities like beacon handoff allow engineers to seamlessly transfer session context across different coding agents and teams.",
+          "takeaways": [
+            "AI coding agents typically lose session context, repeating identical mistakes in subsequent sessions and across different tools.",
+            "Beacon is an open-source memory layer created by Asymptote Labs that records execution traces to make knowledge reusable across agent harnesses.",
+            "The tool supports cross-agent compatibility with over 20 harnesses, including Claude Code, Cursor, Codex, OpenCode, and Cline.",
+            "Beacon Cloud provides hourly reviews of agent activity, categorizing findings into security risks, reusable skills, and behavioral patterns.",
+            "The beacon handoff feature enables users to switch agents or transfer work across team members without re-explaining the codebase or retracing failed steps."
+          ]
         },
         {
           "title": "12 optimizers for training neural networks",
           "category": "DEEP LEARNING",
-          "summary": "",
-          "takeaways": []
+          "summary": "Selecting an optimizer involves balancing the number of training steps against per-step memory and compute overheads. Common optimization techniques vary by their gradient history, state memory requirements, and coordinate transformation methods. While AdamW remains a strong standard baseline for models like transformers, alternatives like Adafactor and Lion reduce memory footprints, while matrix-based methods like Shampoo, SOAP, and Muon alter parameter geometry. Evaluating optimizers requires tracking wall-clock time, memory consumption, and learning-rate sensitivity under standardized training constraints.",
+          "takeaways": [
+            "An optimizer that requires fewer steps can still yield a longer total training time if its per-step compute overhead is significantly higher.",
+            "Standard Adam maintains two FP32 state buffers that consume roughly 8 GB of memory for a one-billion-parameter model prior to sharding or compression.",
+            "Adafactor cuts second-moment memory from O(nm) to O(n+m) via row and column factorization, while Lion eliminates the second-moment buffer entirely by applying the sign operation to blended momentum.",
+            "Matrix optimizers like Shampoo, SOAP, and Muon capture directional relationships across parameter dimensions rather than just scaling coordinates elementwise.",
+            "Muon uses Newton-Schulz iterations to orthogonalize matrix momentum updates and is usually combined with another optimizer for embeddings and vector parameters."
+          ]
         },
         {
           "title": "6 steps to build an ML model",
           "category": "MLOps",
-          "summary": "",
-          "takeaways": []
+          "summary": "Building and deploying a machine learning model into production involves six comprehensive steps, of which model training and algorithm selection represent only a small fraction of the effort. The process begins with problem formulation and KPI definition, followed by extensive data preparation, algorithm and framework selection, iterative model training, and rigorous evaluation including bias testing. The final stage requires containerization, cloud deployment, and continuous monitoring to guard against data drift. The broader pipeline heavily relies on engineering, infrastructure, and MLOps practices rather than just algorithm design.",
+          "takeaways": [
+            "Model building encompasses six distinct steps: problem definition, data preparation, algorithm selection, training, evaluation, and deployment with monitoring.",
+            "Algorithm selection and training typically account for only about 15% of the total effort required to take a model to production.",
+            "Data preparation is the most time-consuming stage, requiring cleaning, feature engineering, and proper train/validation/test splitting.",
+            "Evaluation requires problem-relevant metrics (e.g., accuracy, precision, recall, F1, AUC) along with fairness and bias testing across segments.",
+            "Post-deployment maintenance demands continuous monitoring to catch data drift and degradation over time."
+          ]
         }
       ],
-      "summary": "AI coding agents write good code now, but they still don’t learn from experience. Say you spend 30 minutes helping Claude Code debug a tricky issue. It explores your codebase, tries several approaches, hits dead ends, and eventually finds the fix. Tomorrow you start a new session, and the agent makes the exact same mistakes. Switch to Codex or Cursor and it gets worse. They have no idea what your ",
-      "summarised": false,
+      "summary": "AI coding agents typically do not retain knowledge across sessions, repeating past mistakes and failing to transfer context between different tools. Beacon, developed by Asymptote Labs, is an open-source memory layer designed to capture execution traces across over 20 agent harnesses, converting past problem-solving into reusable skills. It operates locally or via Beacon Cloud, which adds hourly analytics to generate findings around security risks, reusable skills, and behavioral inefficiencies. Additionally, feature capabilities like beacon handoff allow engineers to seamlessly transfer session context across different coding agents and teams. Selecting an optimizer involves balancing the number of training steps against per-step memory and compute overheads. Common optimization techniques vary by their gradient history, state memory requirements, and coordinate transformation methods. While AdamW remains a strong standard baseline for models like transformers, alternatives like Adafactor and Lion reduce memory footprints, while matrix-based methods like Shampoo, SOAP, and Muon alter parameter geometry. Evaluating optimizers requires tracking wall-clock time, memory consumption, and learning-rate sensitivity under standardized training constraints. Building and deploying a machine learning model into production involves six comprehensive steps, of which model training and algorithm selection represent only a small fraction of the effort. The process begins with problem formulation and KPI definition, followed by extensive data preparation, algorithm and framework selection, iterative model training, and rigorous evaluation including bias testing. The final stage requires containerization, cloud deployment, and continuous monitoring to guard against data drift. The broader pipeline heavily relies on engineering, infrastructure, and MLOps practices rather than just algorithm design.",
+      "summarised": true,
       "headings": [
         "Your AI coding agents should get smarter every time you use them",
         "12 optimizers for training neural networks",
         "6 steps to build an ML model"
       ],
       "zh": {
-        "summary": "現在的 AI coding agents 寫得出一手好 code，但它們依然無法從經驗中學習。假設你花了 30 分鐘協助 Claude Code 排除一個棘手的 bug。它瀏覽了你的 codebase、嘗試了幾種方法、碰壁後最終找到了解法。到了明天，你開啟一個新的 session，該 agent 卻犯了完全一模一樣的錯誤。換成 Codex 或 Cursor 甚至更糟。它們完全不知道你的 ",
+        "summary": "AI coding agents 通常不會跨 session 保留知識，因而重複過去的錯誤，且無法在不同工具之間轉移 context。由 Asymptote Labs 開發的 Beacon 是一個開源 memory layer，旨在擷取超過 20 種 agent harness 的 execution traces，將過去的問題解決過程轉化為可重用的 skills。它可在本機端運作或透過 Beacon Cloud 運行，後者提供每小時分析，針對 security risks、reusable skills 和 behavioral inefficiencies 產出 findings。此外，像 beacon handoff 等功能讓工程師能夠在不同的 coding agents 與團隊之間無縫轉移 session context。選擇 optimizer 需要在 training steps 的數量與每一步（per-step）的 memory 和 compute overheads 之間取得平衡。常見的 optimization techniques 因其 gradient history、state memory 需求以及 coordinate transformation 方法而有所不同。雖然 AdamW 仍然是 transformers 等模型的強大標準 baseline，但 Adafactor 和 Lion 等替代方案可降低 memory footprints，而像 Shampoo、SOAP 和 Muon 這類基於矩陣（matrix-based）的方法則會改變 parameter geometry。評估 optimizer 需要在標準化的訓練約束條件下，追蹤 wall-clock time、memory consumption 以及 learning-rate sensitivity。建置並將 machine learning 模型部署到 production 包含六個完整的步驟，其中模型訓練與演算法選擇僅佔工作量的一小部分。整個流程始於 problem formulation 與 KPI 定義，接著是大量的 data preparation、演算法與 framework 選擇、迭代式的 model training，以及包含 bias testing 在內的嚴謹 evaluation。最後階段則需要 containerization、cloud deployment，以及持續性的 monitoring 來防範 data drift。整體 pipeline 高度依賴 engineering、infrastructure 和 MLOps 實踐，而非單純的演算法設計。",
         "headings": [
           "你的 AI coding agents 應該要在每次使用時變得更聰明",
           "用於訓練神經網路的 12 種 optimizers",
@@ -520,18 +538,36 @@
         "sections": [
           {
             "title": "你的 AI coding agents 應該要在每次使用時變得更聰明",
-            "summary": "",
-            "takeaways": []
+            "summary": "AI coding agents 通常不會跨 session 保留知識，因而重複過去的錯誤，且無法在不同工具之間轉移 context。由 Asymptote Labs 開發的 Beacon 是一個開源 memory layer，旨在擷取超過 20 種 agent harness 的 execution traces，將過去的問題解決過程轉化為可重用的 skills。它可在本機端運作或透過 Beacon Cloud 運行，後者提供每小時分析，針對 security risks、reusable skills 和 behavioral inefficiencies 產出 findings。此外，像 beacon handoff 等功能讓工程師能夠在不同的 coding agents 與團隊之間無縫轉移 session context。",
+            "takeaways": [
+              "AI coding agents 通常會遺失 session context，在後續的 session 以及不同工具間重複犯下相同的錯誤。",
+              "Beacon 是由 Asymptote Labs 開發的開源 memory layer，可記錄 execution traces，讓知識能夠跨 agent harnesses 重複使用。",
+              "該工具支援跨 agent 相容性，涵蓋超過 20 種 harnesses，包含 Claude Code、Cursor、Codex、OpenCode 和 Cline。",
+              "Beacon Cloud 提供 agent 活動的每小時審查，將 findings 分類為 security risks、reusable skills 和 behavioral patterns。",
+              "beacon handoff 功能讓使用者無需重新解釋 codebase 或重複經歷失敗的步驟，即可切換 agents 或在團隊成員之間交接工作。"
+            ]
           },
           {
             "title": "用於訓練神經網路的 12 種 optimizers",
-            "summary": "",
-            "takeaways": []
+            "summary": "選擇 optimizer 需要在 training steps 的數量與每一步（per-step）的 memory 和 compute overheads 之間取得平衡。常見的 optimization techniques 因其 gradient history、state memory 需求以及 coordinate transformation 方法而有所不同。雖然 AdamW 仍然是 transformers 等模型的強大標準 baseline，但 Adafactor 和 Lion 等替代方案可降低 memory footprints，而像 Shampoo、SOAP 和 Muon 這類基於矩陣（matrix-based）的方法則會改變 parameter geometry。評估 optimizer 需要在標準化的訓練約束條件下，追蹤 wall-clock time、memory consumption 以及 learning-rate sensitivity。",
+            "takeaways": [
+              "若 optimizer 的 per-step compute overhead 明顯較高，即使所需的 step 數較少，整體的總訓練時間仍可能更長。",
+              "標準的 Adam 會維護兩個 FP32 state buffers，在進行 sharding 或 compression 之前，針對 10 億參數（one-billion-parameter）的模型大約會消耗 8 GB 的 memory。",
+              "Adafactor 透過 row 和 column factorization 將 second-moment memory 從 O(nm) 降至 O(n+m)，而 Lion 則透過對 blended momentum 套用 sign 操作，完全省去了 second-moment buffer。",
+              "像 Shampoo、SOAP 和 Muon 這類 matrix optimizers 能捕捉跨 parameter dimensions 的方向關係，而不只是對 coordinates 進行 elementwise 的 scaling。",
+              "Muon 使用 Newton-Schulz iterations 來正交化（orthogonalize）矩陣 momentum 更新，通常會與另一種 optimizer 搭配使用，以處理 embeddings 和 vector parameters。"
+            ]
           },
           {
             "title": "建構 ML 模型的 6 個步驟",
-            "summary": "",
-            "takeaways": []
+            "summary": "建置並將 machine learning 模型部署到 production 包含六個完整的步驟，其中模型訓練與演算法選擇僅佔工作量的一小部分。整個流程始於 problem formulation 與 KPI 定義，接著是大量的 data preparation、演算法與 framework 選擇、迭代式的 model training，以及包含 bias testing 在內的嚴謹 evaluation。最後階段則需要 containerization、cloud deployment，以及持續性的 monitoring 來防範 data drift。整體 pipeline 高度依賴 engineering、infrastructure 和 MLOps 實踐，而非單純的演算法設計。",
+            "takeaways": [
+              "模型建置包含六個明確的步驟：problem definition、data preparation、algorithm selection、training、evaluation 以及包含 monitoring 的 deployment。",
+              "演算法選擇與 training 通常僅佔將模型推向 production 所需總工作量的 15% 左右。",
+              "Data preparation 是最耗時的階段，需要進行資料清洗、feature engineering 以及適當的 train/validation/test splitting。",
+              "Evaluation 需要與問題相關的 metrics（例如 accuracy、precision、recall、F1、AUC），以及跨不同族群（segments）的 fairness 與 bias testing。",
+              "部署後的維護需要持續進行 monitoring，以即時發現隨時間發生的 data drift 與效能衰退（degradation）。"
+            ]
           }
         ]
       }
