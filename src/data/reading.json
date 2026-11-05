@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-05T10:08:06Z",
+  "updatedAt": "2026-11-05T13:30:06Z",
   "sources": [
     {
       "key": "gmail:bytebytego",
@@ -260,8 +260,8 @@
           "Agentic AI Summit 2027 早鳥票現已開賣",
           "1. Google Gemini 4 Carbon 刷新 AI Cybersecurity 新紀錄",
           "2. Open-Weight AI 僅花費 $1,000 即可打造可運行的 Firefox Exploits",
-          "3. Marvell 將以 $115 Billion 收購 Lumentum，敲定 AI Connectivity 巨額交易",
-          "4. Anthropic 的 IPO 申請文件揭露高達 $895 Billion 的長期 AI Compute 承諾",
+          "3. Marvell 將以 1,150 億美元收購 Lumentum，達成 AI 傳輸互連收購案",
+          "4. Anthropic 提交 IPO 申請，揭露高達 8,950 億美元的長期 AI 算力承諾",
           "5. Intel 的 AI 需求激增，但供應鏈瓶頸為其成長前景蒙上陰影"
         ],
         "sections": [
@@ -454,12 +454,12 @@
         "summary": "版本控制系統（source control system）會追蹤程式碼隨時間的修改歷程，讓多位開發者能協同合作並復原特定版本。其基本概念包括用於儲存版本資訊的 repositories、代表特定版本快照的 commits，以及用於管理平行開發路線的 branches。在獨立 branches 上開發的變更會透過 merge 流程進行整併，通常會合流至 main branch。此外，像 continuous integration (CI) 與 coding agents 等自動化系統，也仰賴 source control workspaces 來執行編譯、測試與其他自動化檢查。Anthropic 的絕大部分程式碼都管理在單一 monorepo 中，這對其 source control 基礎設施帶來了嚴峻的擴展挑戰。每天 merge 的變更從 2026 年 5 月的約 2,500 次暴增至 9 月的逾 30,000 次，repository 的歷史紀錄也接近 100 GB。由於每天大約有 2,500 萬次 CI checkouts，光是下載壓縮後的 working copies 這種基本操作，每天就可能產生高達 600 PB 的網路流量。因此，Anthropic 必須在兩大關鍵基礎設施需求之間取得平衡：快速接收 ingest 變更，以及有效率地將程式碼分發給下游消費者。Git 的架構透過獨立自主的 clones 來優先確保本地端獨立性，這為 Anthropic 的 automated agent 工作負載帶來了過度的傳輸、儲存與維護開銷。雖然 Anthropic 最初利用 Git 的 shallow clones、sparse checkouts、repository seeds 以及數百個內部 mirrors 來緩解這些問題，但隨著 merge 頻率增加，維持 mirrors 同步與管理過期的 seeds 變得無法負擔。由於其 automated jobs 本身就依賴網路基礎設施，Anthropic 意識到 client 端其實無需具備完全獨立性。因此，他們採用 Scion 全面重構架構，轉向以 authoritative shared repository 為核心的設計。",
         "headings": [
           "Source Control 的運作原理",
-          "Anthropic 面臨的 Source Control 難題",
+          "Anthropic 在 Source Control 上遇到的問題",
           "為什麼 Git 無法解決這個問題",
           "Scion 的運作原理",
           "Scion 如何處理變更",
           "Scion 如何快取資料",
-          "Anthropic 如何擴展 Scion",
+          "Anthropic 如何 Scale Scion",
           "結論"
         ],
         "sections": [
