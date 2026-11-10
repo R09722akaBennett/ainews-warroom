@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-10T10:07:37Z",
+  "updatedAt": "2026-11-10T13:30:33Z",
   "sources": [
     {
       "key": "gmail:bytebytego",
@@ -170,7 +170,7 @@
           "期中專題",
           "Q&A、Launch Stream 與 Module 1",
           "近期活動",
-          "工作坊錄影：Build a Media Agent: CPU Agent, GPU Models as Tools",
+          "Workshop 錄影：Build a Media Agent: CPU Agent, GPU Models as Tools",
           "來自 Alexey on Data：Dark Software Factories"
         ],
         "sections": [
@@ -271,30 +271,47 @@
         {
           "title": "Agents can now do the one thing it always asked you for",
           "category": "DATABASES",
-          "summary": "",
-          "takeaways": []
+          "summary": "AI coding agents typically stall during development when database configuration requires human intervention such as creating accounts and copying connection strings. MongoDB has introduced Atlas Ephemeral Clusters to allow agents to automatically provision live databases via an API call in under a minute without needing an existing account or API key. Unclaimed clusters automatically pause after two days and delete after seven, while a human can claim the cluster to convert it into a permanent free instance without losing data or connection parameters.",
+          "takeaways": [
+            "MongoDB introduced Atlas Ephemeral Clusters, currently released in public preview.",
+            "Coding agents can provision a live database in under a minute using an API call without an account or API key.",
+            "Unclaimed ephemeral clusters automatically pause after two days and are deleted after seven days.",
+            "Humans can claim an ephemeral cluster to convert it into a permanent free cluster while preserving data and connection strings."
+          ]
         },
         {
           "title": "Pages in Grok Bot, clearly explained:",
           "category": "AGENTS",
-          "summary": "",
-          "takeaways": []
+          "summary": "Grok Bot Pages offers a dedicated, living dashboard format for bot outputs to prevent agent work from being lost in chat threads. Unlike static slide decks or PDFs, Pages are interactive interfaces that support text, tables, charts, filters, and switches. Bots can continuously update an existing Page through automated routines, allowing a single URL to display current information. Pages serve as an accessible publishing surface that complements bot workflows rather than replacing the bots themselves.",
+          "takeaways": [
+            "Pages function as living, interactive dashboards created by bots rather than static PDFs or slides.",
+            "Pages can contain dynamic elements including tables, charts, text, filters, and switches.",
+            "Bots can edit existing pages automatically through routines, maintaining persistent links to up-to-date data.",
+            "Pages provide a persistent publishing surface for bot work to avoid digging through chat histories.",
+            "A masterclass by Akshay outlines the organizational structure of a 14-bot team using Grok Bot."
+          ]
         },
         {
           "title": "Chat with video using EmbeddingGemma 2 (100% local)",
           "category": "RAG",
-          "summary": "",
-          "takeaways": []
+          "summary": "EmbeddingGemma 2 from Google DeepMind enables entirely local video search by mapping text, images, video, and audio into a shared vector space. In a local test on an Apple M3 Pro CPU, indexing a 60-second video took 29 seconds, while text-based frame retrieval averaged 25 milliseconds per query. Although Unsloth offers a lightweight 4-bit GGUF checkpoint for text embeddings, video retrieval continues to require the vision encoder pipeline. To address growing retrieval index sizes over time, binary quantization can be used to achieve a 32x reduction in vector storage compared to float32 embeddings.",
+          "takeaways": [
+            "EmbeddingGemma 2 is a multimodal embedding model with about 740M parameters featuring modular text, vision, and audio encoders.",
+            "A 60-second video was indexed locally on an Apple M3 Pro CPU in 29 seconds, generating 180 KiB of frame vectors.",
+            "Subsequent text query searches against the indexed frames averaged 25 ms across nine queries without sending data off-device.",
+            "Unsloth offers a 176 MB 4-bit GGUF checkpoint for text embeddings, but multimodal video search requires the vision encoder.",
+            "Applying binary quantization to vector indexes reduces the raw vector payload by 32x compared to 32-bit floating point representations."
+          ]
         }
       ],
-      "summary": "When you ask a coding agent to build an app, it writes the schema, the routes, and the data layer in a few minutes. Then it needs a database, and everything stops since someone has to open a browser, create an account, set up a user, and paste the connection string back into the session. Every one of those steps was built for a human, so the agent just sits there waiting for you. MongoDB just solv",
-      "summarised": false,
+      "summary": "AI coding agents typically stall during development when database configuration requires human intervention such as creating accounts and copying connection strings. MongoDB has introduced Atlas Ephemeral Clusters to allow agents to automatically provision live databases via an API call in under a minute without needing an existing account or API key. Unclaimed clusters automatically pause after two days and delete after seven, while a human can claim the cluster to convert it into a permanent free instance without losing data or connection parameters. Grok Bot Pages offers a dedicated, living dashboard format for bot outputs to prevent agent work from being lost in chat threads. Unlike static slide decks or PDFs, Pages are interactive interfaces that support text, tables, charts, filters, and switches. Bots can continuously update an existing Page through automated routines, allowing a single URL to display current information. Pages serve as an accessible publishing surface that complements bot workflows rather than replacing the bots themselves. EmbeddingGemma 2 from Google DeepMind enables entirely local video search by mapping text, images, video, and audio into a shared vector space. In a local test on an Apple M3 Pro CPU, indexing a 60-second video took 29 seconds, while text-based frame retrieval averaged 25 milliseconds per query. Although Unsloth offers a lightweight 4-bit GGUF checkpoint for text embeddings, video retrieval continues to require the vision encoder pipeline. To address growing retrieval index sizes over time, binary quantization can be used to achieve a 32x reduction in vector storage compared to float32 embeddings.",
+      "summarised": true,
       "headings": [
         "Agents can now do the one thing it always asked you for",
         "Chat with video using EmbeddingGemma 2 (100% local)"
       ],
       "zh": {
-        "summary": "當你要求 coding agent 建立一個 app 時，它能在幾分鐘內寫好 schema、routes 和 data layer。接著它需要一個資料庫，一切就停滯了，因為必須有人開啟瀏覽器、建立帳號、設定使用者，並將 connection string 貼回 session。這些步驟每一步都是為人類設計的，因此 agent 只能在那裡等著你。MongoDB 剛剛解決",
+        "summary": "AI coding agent 在開發過程中，通常會因為資料庫設定需要人工介入（例如建立帳號與複製 connection string）而停滯。MongoDB 推出了 Atlas Ephemeral Clusters，讓 agent 能在一分鐘內透過 API call 自動 provision 運行中的資料庫，完全不需要既有帳號或 API key。未被領取的 cluster 會在兩天後自動暫停，並在七天後刪除；而人類使用者可以 claim 該 cluster，將其轉為永久的免費 instance，且不會遺失任何資料或連線參數。Grok Bot Pages 為 bot 輸出提供了一種專屬的動態 dashboard 形式，避免 agent 的工作成果淹沒在對話串中。不同於靜態的簡報或 PDF，Pages 是支援文字、表格、圖表、篩選器和開關（switches）的互動式介面。Bot 可以透過自動化 routine 持續更新現有的 Page，讓單一 URL 隨時展示最新資訊。Pages 作為一個易於存取的發布媒介，旨在補足 bot 的工作流程，而非取代 bot 本身。來自 Google DeepMind 的 EmbeddingGemma 2 透過將文字、影像、影片和音訊映射到同一個向量空間中，實現了完全本地端的影片搜尋。在 Apple M3 Pro CPU 的本地端測試中，建立 60 秒影片的索引耗時 29 秒，而基於文字的 frame 檢索平均每次 query 僅需 25 毫秒。雖然 Unsloth 為文字 embedding 提供了輕量級的 4-bit GGUF checkpoint，但影片檢索仍需要 vision encoder pipeline。為了解決檢索索引隨時間增長的問題，可以使用 binary quantization，相比 float32 embedding 能減少 32 倍的向量儲存空間。",
         "headings": [
           "Agent 現在可以做到過去一直要求你做的那件事了",
           "使用 EmbeddingGemma 2 與影片對話（100% local）"
@@ -302,18 +319,35 @@
         "sections": [
           {
             "title": "Agent 現在可以做到過去一直要求你做的那件事了",
-            "summary": "",
-            "takeaways": []
+            "summary": "AI coding agent 在開發過程中，通常會因為資料庫設定需要人工介入（例如建立帳號與複製 connection string）而停滯。MongoDB 推出了 Atlas Ephemeral Clusters，讓 agent 能在一分鐘內透過 API call 自動 provision 運行中的資料庫，完全不需要既有帳號或 API key。未被領取的 cluster 會在兩天後自動暫停，並在七天後刪除；而人類使用者可以 claim 該 cluster，將其轉為永久的免費 instance，且不會遺失任何資料或連線參數。",
+            "takeaways": [
+              "MongoDB 推出了 Atlas Ephemeral Clusters，目前以 public preview 形式釋出。",
+              "Coding agent 可以在一分鐘內使用 API call provision 運行中的資料庫，無需帳號或 API key。",
+              "未被 claim 的 ephemeral cluster 會在兩天後自動暫停，並在七天後刪除。",
+              "人類使用者可以 claim ephemeral cluster，將其轉換為永久的免費 cluster，同時保留資料與 connection string。"
+            ]
           },
           {
             "title": "Grok Bot 中的 Pages 功能詳細解析：",
-            "summary": "",
-            "takeaways": []
+            "summary": "Grok Bot Pages 為 bot 輸出提供了一種專屬的動態 dashboard 形式，避免 agent 的工作成果淹沒在對話串中。不同於靜態的簡報或 PDF，Pages 是支援文字、表格、圖表、篩選器和開關的互動式介面。Bot 可以透過自動化 routine 持續更新現有的 Page，讓單一 URL 隨時展示最新資訊。Pages 作為一個易於存取的發布媒介，旨在補足 bot 的工作流程，而非取代 bot 本身。",
+            "takeaways": [
+              "Pages 的運作方式是作為由 bot 建立的動態互動式 dashboard，而非靜態的 PDF 或投影片。",
+              "Pages 可以包含動態元素，包括表格、圖表、文字、篩選器與開關。",
+              "Bot 可以透過 routine 自動編輯既有的 page，維持指向最新資料的永久連結。",
+              "Pages 為 bot 的工作成果提供了一個持久的發布媒介，避免需要在對話紀錄中翻找。",
+              "Akshay 的 masterclass 概述了使用 Grok Bot 組建 14 個 bot 團隊的組織架構。"
+            ]
           },
           {
             "title": "使用 EmbeddingGemma 2 與影片對話（100% local）",
-            "summary": "",
-            "takeaways": []
+            "summary": "來自 Google DeepMind 的 EmbeddingGemma 2 透過將文字、影像、影片和音訊映射到同一個向量空間中，實現了完全本地端的影片搜尋。在 Apple M3 Pro CPU 的本地端測試中，建立 60 秒影片的索引耗時 29 秒，而基於文字的 frame 檢索平均每次 query 僅需 25 毫秒。雖然 Unsloth 為文字 embedding 提供了輕量級的 4-bit GGUF checkpoint，但影片檢索仍需要 vision encoder pipeline。為了解決檢索索引隨時間增長的問題，可以使用 binary quantization，相比 float32 embedding 能減少 32 倍的向量儲存空間。",
+            "takeaways": [
+              "EmbeddingGemma 2 是一款約 740M 參數的多模態 embedding 模型，具備模組化的文字、視覺與音訊 encoder。",
+              "一段 60 秒的影片在 Apple M3 Pro CPU 上本地建立索引耗時 29 秒，產生了 180 KiB 的 frame vector。",
+              "隨後針對已索引 frame 進行的文字 query 搜尋，在 9 次 query 中平均耗時 25 ms，且無需將資料傳送至裝置外。",
+              "Unsloth 為文字 embedding 提供了一個 176 MB 的 4-bit GGUF checkpoint，但多模態影片搜尋仍需要 vision encoder。",
+              "對向量索引套用 binary quantization，相較於 32-bit 浮點數表示法，可將原始向量 payload 減少 32 倍。"
+            ]
           }
         ]
       }
@@ -463,11 +497,11 @@
           "什麼是 AI Code Reviewer？",
           "如何打造 AI Code Reviewer",
           "方向 1：使用 vendor 的 reviewer",
-          "方向 2：使用現成的 off-the-shelf model 搭配自訂規則",
-          "方向 3：打造自訂的 multi-agent review 系統",
+          "方向 2：使用 off-the-shelf model 搭配你的規則",
+          "方向 3：打造客製化 multi-agent review 系統",
           "如何評估 AI Code Reviewer",
-          "release 前的 Eval",
-          "production 環境中的 Eval"
+          "Release 前的 Eval",
+          "Production 環境中的 Eval"
         ],
         "sections": [
           {
