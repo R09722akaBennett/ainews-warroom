@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-12T10:07:13Z",
+  "updatedAt": "2026-11-12T13:30:40Z",
   "sources": [
     {
       "key": "gmail:bytebytego",
@@ -123,7 +123,7 @@
           "1 - Agent 現已發起 40% 的 PR：軟體開發的瓶頸正在轉移",
           "2 - GitHub Universe：Copilot 現在負責挑選模型，Enterprise 轉向 pay-per-use",
           "3 - Anthropic 的 S-1：首度經審計的 AI 編程價值剖析",
-          "4 - PHP2Shell 弱點"
+          "4 - PHP2Shell 漏洞"
         ],
         "sections": [
           {
@@ -380,12 +380,12 @@
         "headings": [
           "CyberBinGym：AI Agent 能將 Binary Patch 轉化為真實的 Exploit 嗎？",
           "從 CyberGym 和 ExploitGym 到 CyberBinGym",
-          "測試設定",
-          "兩項成功指標",
+          "評估設定",
+          "兩項衡量成功的指標",
           "結果",
-          "Patch 本身透露了多少資訊？",
-          "標準防禦措施是否仍然有效？",
-          "為何這至關重要"
+          "Patch 本身洩漏了多少資訊？",
+          "標準防禦措施是否依然有效？",
+          "為什麼這至關重要"
         ],
         "sections": [
           {
@@ -565,24 +565,37 @@
         {
           "title": "Benchmark the harness, not just the model",
           "category": "OPEN-SOURCE",
-          "summary": "",
-          "takeaways": []
+          "summary": "AI model performance in production depends heavily on the execution harness, which can alter cost, runtime, and results. To evaluate these factors together, developers have open-sourced Harness Arena within the HarnessRouter project to benchmark harness and model pairings under identical task conditions. The system compares execution time and credits only among configurations that successfully pass evaluation criteria. With support for over 25 harnesses via the Unified Harness Protocol (UHP), the tool allows teams to select agent runtimes based on empirical task-specific performance rather than generic model leaderboards alone.",
+          "takeaways": [
+            "Harness Arena is an open-source benchmarking tool inside the HarnessRouter project that evaluates model and harness combinations under identical conditions.",
+            "Metrics measured across runs include total cost, execution time, task success rate, and produced artifacts.",
+            "Cost and execution time are evaluated strictly among configurations that successfully pass the task checks.",
+            "In a benchmark test, Hermes paired with GPT-5.2 succeeded in 5/5 runs using 0.47 credits, whereas Claude Code paired with Opus 4.8 succeeded in 3/5 runs using 223 credits (a ~474x credit difference).",
+            "HarnessRouter acts as a plug-and-play layer supporting more than 25 harnesses—including Hermes, Claude Code, Codex, and DeepSeek Harness—via the Unified Harness Protocol (UHP)."
+          ]
         },
         {
           "title": "Find production agent failures before users do",
           "category": "AI AGENTS",
-          "summary": "",
-          "takeaways": []
+          "summary": "PlurAI Simulation provides a testing and evaluation framework designed to catch AI agent failures prior to deployment. The system reconstructs an agent's environment, tools, and code to test it against simulated users targeting edge cases. It automatically evaluates the agent's actions, surfaces failures along with verifiable fixes, and can turn production incidents into repeatable regression tests. The tool is distributed as a plugin compatible with coding assistants such as Claude Code and Codex.",
+          "takeaways": [
+            "PlurAI Simulation rebuilds an AI agent, its tools, and its operating environment directly from source code to test against real-world scenarios.",
+            "The platform uses simulated users to drive agents into domain-specific edge cases before deployment.",
+            "The evaluation system verifies agent actions against expected behaviors, such as confirming identity before executing refunds.",
+            "Each identified failure is accompanied by the specific run that exposed it and a suggested, verifiable fix.",
+            "Production failures can be converted into reusable simulation tests to run against future agent iterations.",
+            "The system is offered as a single plugin compatible with coding assistants such as Claude Code and Codex."
+          ]
         }
       ],
-      "summary": "We benchmark models all the time. In production, that model runs inside a harness, and the harness can change the result, the cost, and the runtime. Devs just open-sourced Harness Arena , inside the HarnessRouter project. It runs one task across several harness and model combinations, side by side. Every config gets the same prompt, files, tools, skills, and evaluation checks. Arena then returns: ",
-      "summarised": false,
+      "summary": "AI model performance in production depends heavily on the execution harness, which can alter cost, runtime, and results. To evaluate these factors together, developers have open-sourced Harness Arena within the HarnessRouter project to benchmark harness and model pairings under identical task conditions. The system compares execution time and credits only among configurations that successfully pass evaluation criteria. With support for over 25 harnesses via the Unified Harness Protocol (UHP), the tool allows teams to select agent runtimes based on empirical task-specific performance rather than generic model leaderboards alone. PlurAI Simulation provides a testing and evaluation framework designed to catch AI agent failures prior to deployment. The system reconstructs an agent's environment, tools, and code to test it against simulated users targeting edge cases. It automatically evaluates the agent's actions, surfaces failures along with verifiable fixes, and can turn production incidents into repeatable regression tests. The tool is distributed as a plugin compatible with coding assistants such as Claude Code and Codex.",
+      "summarised": true,
       "headings": [
         "Benchmark the harness, not just the model",
         "Find production agent failures before users do"
       ],
       "zh": {
-        "summary": "我們時常對 model 進行 benchmark。在 production 環境中，該 model 會在 harness 內運行，而 harness 可能會改變輸出結果、成本與 runtime。開發團隊剛開源了 HarnessRouter 專案旗下的 Harness Arena。它能並行（side by side）在多種 harness 與 model 組合上執行同一項任務。每個 config 都會獲得相同的 prompt、檔案、tools、skills 和 evaluation checks。接著 Arena 會回傳：",
+        "summary": "AI 模型在正式環境（production）中的效能表現高度取決於 execution harness，它會改變成本、執行時間以及產出結果。為了綜合評估這些因素，開發者在 HarnessRouter 專案中開源了 Harness Arena，用以在完全相同的任務條件下對 harness 與模型的搭配進行基準測試（benchmark）。該系統僅針對成功通過評估標準的配置比較其執行時間與 credits。透過 Unified Harness Protocol (UHP)，該工具支援超過 25 種 harness，讓團隊能夠依據特定任務的實證效能來挑選 agent runtime，而非僅依賴通用的模型排行榜（leaderboard）。PlurAI Simulation 提供了一個測試與評估框架，旨在於部署前捕捉 AI agent 的 failure。該系統會重建 agent 的環境、tools 與程式碼，針對邊界案例（edge cases）透過模擬使用者進行測試。它能自動評估 agent 的行為、揭露 failure 並提供可驗證的修復方案，且能將 production 事件轉化為可重複執行的迴歸測試（regression tests）。該工具以 plugin 形式發布，相容於 Claude Code 與 Codex 等 coding assistants。",
         "headings": [
           "Benchmark harness，而不僅僅是 model",
           "在使用者發現之前，搶先找出 production agent 的 failures"
@@ -590,13 +603,26 @@
         "sections": [
           {
             "title": "Benchmark harness，而不僅僅是 model",
-            "summary": "",
-            "takeaways": []
+            "summary": "AI 模型在正式環境（production）中的效能表現高度取決於 execution harness，它會改變成本、執行時間以及產出結果。為了綜合評估這些因素，開發者在 HarnessRouter 專案中開源了 Harness Arena，用以在完全相同的任務條件下對 harness 與模型的搭配進行基準測試（benchmark）。該系統僅針對成功通過評估標準的配置比較其執行時間與 credits。透過 Unified Harness Protocol (UHP)，該工具支援超過 25 種 harness，讓團隊能夠依據特定任務的實證效能來挑選 agent runtime，而非僅依賴通用的模型排行榜（leaderboard）。",
+            "takeaways": [
+              "Harness Arena 是 HarnessRouter 專案內的一個開源基準測試工具，用於在相同條件下評估模型與 harness 的組合。",
+              "跨 runs 衡量的指標包括總成本、執行時間、任務成功率以及產出的 artifacts。",
+              "成本與執行時間僅嚴格針對成功通過任務檢查的配置進行評估。",
+              "在一項基準測試中，Hermes 搭配 GPT-5.2 在 5/5 次 runs 中皆成功，消耗 0.47 credits；而 Claude Code 搭配 Opus 4.8 則在 3/5 次 runs 中成功，消耗 223 credits（差距約 474 倍 credits）。",
+              "HarnessRouter 作為隨插即用（plug-and-play）層，透過 Unified Harness Protocol (UHP) 支援超過 25 種 harness——包括 Hermes、Claude Code、Codex 與 DeepSeek Harness。"
+            ]
           },
           {
             "title": "在使用者發現之前，搶先找出 production agent 的 failures",
-            "summary": "",
-            "takeaways": []
+            "summary": "PlurAI Simulation 提供了一個測試與評估框架，旨在於部署前捕捉 AI agent 的 failure。該系統會重建 agent 的環境、tools 與程式碼，針對邊界案例（edge cases）透過模擬使用者進行測試。它能自動評估 agent 的行為、揭露 failure 並提供可驗證的修復方案，且能將 production 事件轉化為可重複執行的迴歸測試（regression tests）。該工具以 plugin 形式發布，相容於 Claude Code 與 Codex 等 coding assistants。",
+            "takeaways": [
+              "PlurAI Simulation 直接從原始碼重建 AI agent、其 tools 及其運作環境，以針對真實世界情境進行測試。",
+              "該平台在部署前使用模擬使用者引導 agent 進入特定領域的邊界案例（edge cases）。",
+              "該評估系統會根據預期行為驗證 agent 的動作，例如在執行退款前確認身分。",
+              "每個識別出的 failure 都會附帶暴露該問題的特定 run，以及建議且可驗證的修復方案。",
+              "Production 中的 failure 可以轉換為可重複使用的模擬測試，以針對未來的 agent 迭代進行測試。",
+              "該系統以單一 plugin 形式提供，相容於 Claude Code 和 Codex 等 coding assistants。"
+            ]
           }
         ]
       }
@@ -611,31 +637,50 @@
         {
           "title": "Build voice agents that hear the details",
           "category": "SPEECH AI",
-          "summary": "",
-          "takeaways": []
+          "summary": "Speechmatics has launched Linden, a speech-to-text model tailored specifically for voice agent applications. The system focuses on improving accuracy for challenging audio, including background noise, strong accents, non-native speakers, and alphanumeric sequences. It provides real-time transcription across more than 55 languages, returning final transcripts in approximately 250 milliseconds after a ForceEndOfUtterance signal. Linden integrates natively with voice platforms like LiveKit, Pipecat, and Jambonz, with pricing beginning at $0.30 per hour.",
+          "takeaways": [
+            "Speechmatics Linden is a speech-to-text model built specifically to minimize errors in voice agents from accents, background noise, and alphanumeric strings.",
+            "It provides real-time transcription across more than 55 languages with roughly 250 ms latency after a ForceEndOfUtterance signal.",
+            "The platform supports custom dictionaries for domain-specific terminology, names, and industry vocabulary.",
+            "Native integrations are available for LiveKit, Pipecat, Jambonz, and the Speechmatics API.",
+            "Linden 1 pricing starts at $0.30 per hour for new users and scales down to $0.16 per hour with volume discounts, supported by a $100 sign-up credit."
+          ]
         },
         {
           "title": "16 policy optimization methods for LLM training",
           "category": "LLM TRAINING",
-          "summary": "",
-          "takeaways": []
+          "summary": "Reinforcement learning methods for LLMs can fundamentally be categorized across two design choices: how baseline rewards are estimated and how off-policy importance ratios are clipped. While traditional PPO relies on an expensive and often inaccurate token-level critic, newer methods like ReMax, VinePPO, and GRPO cut GPU memory and training overhead by replacing or eliminating the value network entirely. Subsequent variants refine these approaches further by adjusting advantage normalization, sequence-level clipping, and smooth gating to improve stability, especially in Mixture-of-Experts architectures.",
+          "takeaways": [
+            "Removing PPO's value model, as done by ReMax, reduced GPU memory requirements by approximately 46% on a 7B model.",
+            "VinePPO replaces the value network with intermediate Monte Carlo rollouts, outperforming PPO on MATH and GSM8K in up to 3x less wall-clock time.",
+            "GRPO eliminates the critic by calculating advantages via group-level reward normalization, and it served as the training foundation for DeepSeek-R1.",
+            "DAPO introduces Clip-Higher, Dynamic Sampling, token-level loss, and overlong reward shaping, reaching a score of 50 on AIME 2024 with Qwen2.5-32B.",
+            "Sequence-level ratio clipping in GSPO and smooth temperature gating in SAPO improve training stability in Mixture-of-Experts models like Qwen3 and Qwen3-VL."
+          ]
         },
         {
           "title": "How hybrid LLMs shrink the KV cache",
           "category": "LLM ARCHITECTURE",
-          "summary": "",
-          "takeaways": []
+          "summary": "Hybrid LLMs reduce KV cache memory footprints by combining a small number of traditional attention layers with linear-attention or state-space layers like Mamba. Because pure linear or recurrent models suffer from lossy state representation and struggle with in-context learning, retaining a subset of attention layers ensures exact token recall while keeping the remaining memory footprint constant. Major AI labs have adopted varied hybrid ratios: Qwen pairs Gated DeltaNet with attention, Jamba and Granite incorporate Mamba variants, and MiniMax-M1 utilizes lightning attention. These architectural hybridizations significantly decrease RAM usage, reduce FLOP requirements, and accelerate inference throughput across long-context sequences.",
+          "takeaways": [
+            "Hybrid LLMs interleave recurrent or linear-attention layers with standard attention layers to prevent the KV cache from growing linearly across all layers.",
+            "A pure linear model struggles with in-context learning and precise token recall, necessitating the retention of some traditional attention layers.",
+            "In Qwen3.5-35B-A3B, 10 gated attention layers result in a 5 GiB KV cache at 262K tokens, compared to 20 GiB if all 40 layers used attention.",
+            "Jamba uses 1 attention layer per 7 Mamba layers, achieving a 4GB KV cache at 256K tokens compared to 32GB for Mixtral.",
+            "MiniMax-M1 uses 1 softmax attention block per 7 lightning attention blocks, requiring roughly 25% of DeepSeek R1's FLOPs at a 100K generation length.",
+            "NVIDIA's Nemotron-H contains approximately 8% attention layers, delivering up to 3x faster inference than comparably sized standard Transformers."
+          ]
         }
       ],
-      "summary": "Speechmatics Linden is a speech-to-text model built specifically for voice agents. It focuses on the inputs that tend to cause expensive mistakes: strong accents, background noise, non-native speech, names, and alphanumeric strings such as booking references. • Real-time transcription across 55+ languages • Final transcripts in roughly 250 ms after a ForceEndOfUtterance signal • Custom dictionarie",
-      "summarised": false,
+      "summary": "Speechmatics has launched Linden, a speech-to-text model tailored specifically for voice agent applications. The system focuses on improving accuracy for challenging audio, including background noise, strong accents, non-native speakers, and alphanumeric sequences. It provides real-time transcription across more than 55 languages, returning final transcripts in approximately 250 milliseconds after a ForceEndOfUtterance signal. Linden integrates natively with voice platforms like LiveKit, Pipecat, and Jambonz, with pricing beginning at $0.30 per hour. Reinforcement learning methods for LLMs can fundamentally be categorized across two design choices: how baseline rewards are estimated and how off-policy importance ratios are clipped. While traditional PPO relies on an expensive and often inaccurate token-level critic, newer methods like ReMax, VinePPO, and GRPO cut GPU memory and training overhead by replacing or eliminating the value network entirely. Subsequent variants refine these approaches further by adjusting advantage normalization, sequence-level clipping, and smooth gating to improve stability, especially in Mixture-of-Experts architectures. Hybrid LLMs reduce KV cache memory footprints by combining a small number of traditional attention layers with linear-attention or state-space layers like Mamba. Because pure linear or recurrent models suffer from lossy state representation and struggle with in-context learning, retaining a subset of attention layers ensures exact token recall while keeping the remaining memory footprint constant. Major AI labs have adopted varied hybrid ratios: Qwen pairs Gated DeltaNet with attention, Jamba and Granite incorporate Mamba variants, and MiniMax-M1 utilizes lightning attention. These architectural hybridizations significantly decrease RAM usage, reduce FLOP requirements, and accelerate inference throughput across long-context sequences.",
+      "summarised": true,
       "headings": [
         "Build voice agents that hear the details",
         "16 policy optimization methods for LLM training",
         "How hybrid LLMs shrink the KV cache"
       ],
       "zh": {
-        "summary": "Speechmatics Linden 是一款專為 voice agents 打造的 speech-to-text 模型。它專注於往往會導致嚴重代價錯誤的輸入內容：濃重口音、背景雜音、非母語語音、姓名，以及像訂位代號這類的英數組合字串。• 支援 55+ 種語言的即時轉錄 • 收到 ForceEndOfUtterance 訊號後約 250 ms 即可產出最終逐字稿 • Custom dictionarie",
+        "summary": "Speechmatics 推出了 Linden，這是一款專為語音 agent 應用打造的 speech-to-text 模型。該系統專注於提升高難度音訊的準確度，包括背景噪音、強烈口音、非母語人士以及英數混合序列（alphanumeric sequences）。它提供跨 55 種以上語言的即時轉錄，在收到 ForceEndOfUtterance 訊號後約 250 毫秒即可返回最終轉錄文字。Linden 原生整合了 LiveKit、Pipecat 和 Jambonz 等語音平台，價格從每小時 $0.30 美元起。針對 LLM 的強化學習（Reinforcement learning）方法基本上可依兩項設計抉擇進行分類：baseline reward 如何估算，以及 off-policy importance ratio 如何進行 clip。傳統的 PPO 依賴昂貴且往往不夠精準的 token-level critic，而 ReMax、VinePPO 和 GRPO 等新方法則透過替換或完全移除 value network 來降低 GPU 記憶體與訓練開銷。後續的變體進一步微調這些方法，藉由調整 advantage normalization、sequence-level clipping 與 smooth gating 來提升穩定性，特別是在 Mixture-of-Experts 架構中。Hybrid LLMs 透過將少量的傳統 attention layers 與 linear-attention 或類似 Mamba 的 state-space layers 相結合，來降低 KV cache 的記憶體佔用。由於純 linear 或 recurrent 模型存在有損狀態表示（lossy state representation）問題且難以進行 in-context learning，因此保留一部分 attention layers 能確保精確的 token recall，同時維持其餘記憶體佔用為常數。各大 AI 實驗室已採用不同的 hybrid 比例：Qwen 將 Gated DeltaNet 與 attention 配對，Jamba 和 Granite 整合了 Mamba 變體，而 MiniMax-M1 則採用 lightning attention。這些架構上的混合顯著降低了 RAM 使用量、減少了 FLOP 需求，並加速了長文本序列（long-context sequences）的推論吞吐量（throughput）。",
         "headings": [
           "打造能聽清細節的 voice agents",
           "16 種用於 LLM training 的 policy optimization 方法",
@@ -644,18 +689,37 @@
         "sections": [
           {
             "title": "打造能聽清細節的 voice agents",
-            "summary": "",
-            "takeaways": []
+            "summary": "Speechmatics 推出了 Linden，這是一款專為語音 agent 應用打造的 speech-to-text 模型。該系統專注於提升高難度音訊的準確度，包括背景噪音、強烈口音、非母語人士以及英數混合序列（alphanumeric sequences）。它提供跨 55 種以上語言的即時轉錄，在收到 ForceEndOfUtterance 訊號後約 250 毫秒即可返回最終轉錄文字。Linden 原生整合了 LiveKit、Pipecat 和 Jambonz 等語音平台，價格從每小時 $0.30 美元起。",
+            "takeaways": [
+              "Speechmatics Linden 是一款專為將語音 agent 因口音、背景噪音和英數混合字串所產生的錯誤降至最低而打造的 speech-to-text 模型。",
+              "它提供跨 55 種以上語言的即時轉錄，在 ForceEndOfUtterance 訊號後約有 250 ms 的延遲。",
+              "該平台支援自訂字典，適用於特定領域術語、人名與產業詞彙。",
+              "提供對 LiveKit、Pipecat、Jambonz 以及 Speechmatics API 的原生整合。",
+              "Linden 1 的定價為新使用者每小時 $0.30 美元起，透過用量折扣可降至每小時 $0.16 美元，並提供 $100 美元的註冊抵用金。"
+            ]
           },
           {
             "title": "16 種用於 LLM training 的 policy optimization 方法",
-            "summary": "",
-            "takeaways": []
+            "summary": "針對 LLM 的強化學習（Reinforcement learning）方法基本上可依兩項設計抉擇進行分類：baseline reward 如何估算，以及 off-policy importance ratio 如何進行 clip。傳統的 PPO 依賴昂貴且往往不夠精準的 token-level critic，而 ReMax、VinePPO 和 GRPO 等新方法則透過替換或完全移除 value network 來降低 GPU 記憶體與訓練開銷。後續的變體進一步微調這些方法，藉由調整 advantage normalization、sequence-level clipping 與 smooth gating 來提升穩定性，特別是在 Mixture-of-Experts 架構中。",
+            "takeaways": [
+              "如同 ReMax 所做，移除 PPO 的 value model 可在 7B 模型上減少約 46% 的 GPU 記憶體需求。",
+              "VinePPO 以中間的 Monte Carlo rollouts 取代 value network，在 MATH 和 GSM8K 上的表現超越 PPO，且 wall-clock time 最多縮短達 3 倍。",
+              "GRPO 透過 group-level reward normalization 計算 advantages 來省去 critic，它也是 DeepSeek-R1 的訓練基石。",
+              "DAPO 引入了 Clip-Higher、Dynamic Sampling、token-level loss 以及 overlong reward shaping，在 Qwen2.5-32B 上於 AIME 2024 達到了 50 分的成績。",
+              "GSPO 中的 Sequence-level ratio clipping 以及 SAPO 中的 smooth temperature gating，提升了 Qwen3 和 Qwen3-VL 等 Mixture-of-Experts 模型的 training stability。"
+            ]
           },
           {
             "title": "Hybrid LLM 如何縮小 KV cache",
-            "summary": "",
-            "takeaways": []
+            "summary": "Hybrid LLMs 透過將少數傳統 attention layers 與 linear-attention 或如 Mamba 等 state-space layers 結合，來降低 KV cache 的 memory footprints。由於純 linear 或 recurrent 模型受限於 lossy state representation 且難以勝任 in-context learning，因此保留一部分 attention layers 能確保精確的 token recall，同時讓其餘部分的 memory footprint 維持常數。主要 AI labs 採用了不同的 hybrid ratios：Qwen 將 Gated DeltaNet 與 attention 搭配，Jamba 與 Granite 整合了 Mamba variants，而 MiniMax-M1 則採用 lightning attention。這些架構上的 hybrid 設計顯著降低了 RAM 使用量、減少 FLOP requirements，並加速了 long-context sequences 的 inference throughput。",
+            "takeaways": [
+              "Hybrid LLMs 將 recurrent 或 linear-attention layers 與標準 attention layers 交錯配置，以避免 KV cache 在所有 layers 中呈線性增長。",
+              "純 linear 模型難以處理 in-context learning 與精確的 token recall，因此必須保留部分傳統 attention layers。",
+              "在 Qwen3.5-35B-A3B 中，10 個 gated attention layers 在 262K tokens 時僅產生 5 GiB 的 KV cache，相較之下，若全部 40 個 layers 都採用 attention 則會需要 20 GiB。",
+              "Jamba 每 7 個 Mamba layers 配置 1 個 attention layer，在 256K tokens 下實現了 4GB 的 KV cache，而 Mixtral 則需要 32GB。",
+              "MiniMax-M1 每 7 個 lightning attention blocks 配置 1 個 softmax attention block，在 100K generation length 下僅需 DeepSeek R1 約 25% 的 FLOPs。",
+              "NVIDIA 的 Nemotron-H 包含約 8% 的 attention layers，其 inference 速度比同等規模的標準 Transformers 快上高達 3 倍。"
+            ]
           }
         ]
       }
