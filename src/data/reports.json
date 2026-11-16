@@ -1,5 +1,98 @@
 [
   {
+    "date": "2026-11-16",
+    "title": "AI 昨日重點（美國 11/15）",
+    "content": "## 今日頭條\n\n- **阿里巴巴推出旗艦級 Qwen4-Max 與 Qwen3.8-Max 模型**：阿里發布高達 2.4T 參數量的 MoE 旗艦模型 Qwen4-Max，支援長達 1M token 的 context window，並宣稱能在比前代減少最多約 50% token 消耗的情況下維持頂尖效能，全面向 OpenAI 和 Anthropic 等美國對手發起挑戰 (ref-5, ref-8)。\n- **美團推出 1.6 兆參數 Agent 模型，全程脫離 Nvidia 硬體訓練**：美團發表一款參數量達 1.6T 的 AI Agent 模型，最大亮點在於整個訓練過程完全未使用任何 Nvidia GPU，展現出中國大廠在國產晶片與非 Nvidia 算力集群上訓練超大規模 Agent 模型的落地能力 (ref-7)。\n- **MCP 與 Agent 應用爆發安全隱患，供應鏈防護成新戰場**：資安研究指出，單一受感染的 MCP（Model Context Protocol）伺服器即可誘導 AI Agent 濫用已被使用者信任的工具；同時 Amazon 亦揭露針對 LiteLLM、Dify 等知名 Agent 開發應用的攻擊行動，駭客鎖定竊取底層 API 金鑰，突顯 Agent 工具鏈架構的安全防禦迫在眉睫 (ref-6, ref-10)。\n\n## 工程與研究動態\n\n**MCP 與工具**\n- 資安研究證實，若系統中存在單一遭到入侵的 MCP 伺服器，即可透過上下文操縱誘騙 AI Agent 濫用其他受信任工具，這改變了過往僅依賴邊界認證的思維，要求開發者在 MCP 工具整合時必須實作更嚴格的跨工具存取控制與執行確認機制 (ref-6)。\n\n**開源與開發工具**\n- Amazon 揭露有鎖定 LiteLLM、Dify 等開源 Agent 框架與中介軟體的攻擊活動，駭客正積極探測配置弱點以竊取儲存的 API Key，這提醒工程團隊在自建 Agent 服務時必須將金鑰託管與網頁介面存取進行零信任隔離 (ref-10)。\n\n**其他**\n- 美國國會兩黨正加速凝聚共識以推動更嚴格的 AI 晶片出口管制措施，其中包括立法封鎖中國企業透過海外數據中心存取或租用高階 AI 晶片 (ref-11)。\n\n## 產業動態\n\n- [Freshworks alums raise $53M to take on Salesforce, HubSpot with AI-native CRM](https://techcrunch.com/2026/11/16/freshworks-alums-raise-53m-to-take-on-salesforce-hubspot-with-ai-native-crm/) — Freshworks 前主管創立的 AI 原生 CRM 新創 Dreamteam 完成 5,300 萬美元融資，已吸引全球 13 國逾百家客戶採用並挑戰既有龍頭 (ref-0)。\n- [Apple launches new app to study how people use AI for health](https://techcrunch.com/2026/11/15/apple-launches-new-app-to-study-how-people-use-ai-for-health/) — Apple 推出一款全新研究型 App，用於深入探討使用者如何藉由 AI 解答日常生活中的醫療與健康問題 (ref-1)。\n- [Indian chip startup Bharat Semi lands $24M seed round as it eyes global AI sensor market](https://techcrunch.com/2026/11/15/indian-chip-startup-bharat-semi-lands-24m-seed-round-as-it-eyes-global-ai-sensor-market/) — 印度晶片新創 Bharat Semi 完成 2,400 萬美元種子輪融資，專注 AI 感測器市場並已獲 General Atomics 等客戶採用 (ref-2)。\n- [Is bad news for Jensen Huang also bad news for the AI industry?](https://techcrunch.com/2026/11/15/is-bad-news-for-jensen-huang-also-bad-news-for-the-ai-industry/) — 分析指出全球 AI 經濟高度綁定 Nvidia，使得黃仁勳與公司面臨的任何風波皆可能直接波及整體產業 (ref-3)。\n- [SNL gathers all the tech tycoons for a lesson in dating and spycraft](https://techcrunch.com/2026/11/15/snl-gathers-all-the-tech-tycoons-for-a-lesson-in-dating-and-spycraft/) — 喜劇節目 Saturday Night Live 在最新一集中齊聚惡搞模仿各大科技巨頭的高管形象 (ref-4)。\n- AI Agent 管理平台 Kindo 完成由 Crosspoint 與 Forgepoint 領投的 3,000 萬美元融資，累計融資達 5,760 萬美元，並透露其 2026 年營收成長約 800% (ref-9)。\n\n## 值得追蹤\n\n- **非 Nvidia 大規模模型訓練可行性**：美團 1.6T Agent 模型的成功訓練證明中國在嚴苛出口管制下，使用國產替代晶片已能支援兆級參數訓練，後續需關注此類硬體堆疊的推理效能與生態擴展 (ref-7, ref-11)。\n- **MCP 與 Agent 工具鏈安全架構**：從提示詞注入（Prompt Injection）演變為針對 MCP 伺服器與中介代理（LiteLLM、Dify）的系統性攻擊，企業端 Agent 架構在 2026 年勢必全面導入權限最小化與執行沙盒機制 (ref-6, ref-10)。\n",
+    "newsItems": [
+      {
+        "url": "https://techcrunch.com/2026/11/16/freshworks-alums-raise-53m-to-take-on-salesforce-hubspot-with-ai-native-crm/",
+        "title": "Freshworks alums raise $53M to take on Salesforce, HubSpot with AI-native CRM",
+        "source": "TechCrunch"
+      },
+      {
+        "url": "https://techcrunch.com/2026/11/15/apple-launches-new-app-to-study-how-people-use-ai-for-health/",
+        "title": "Apple launches new app to study how people use AI for health",
+        "source": "TechCrunch"
+      },
+      {
+        "url": "https://techcrunch.com/2026/11/15/indian-chip-startup-bharat-semi-lands-24m-seed-round-as-it-eyes-global-ai-sensor-market/",
+        "title": "Indian chip startup Bharat Semi lands $24M seed round as it eyes global AI sensor market",
+        "source": "TechCrunch"
+      },
+      {
+        "url": "https://techcrunch.com/2026/11/15/is-bad-news-for-jensen-huang-also-bad-news-for-the-ai-industry/",
+        "title": "Is bad news for Jensen Huang also bad news for the AI industry?",
+        "source": "TechCrunch"
+      },
+      {
+        "url": "https://techcrunch.com/2026/11/15/snl-gathers-all-the-tech-tycoons-for-a-lesson-in-dating-and-spycraft/",
+        "title": "SNL gathers all the tech tycoons for a lesson in dating and spycraft",
+        "source": "TechCrunch"
+      },
+      {
+        "url": "https://www.techmeme.com/261115/p25#a261115p25",
+        "title": "Alibaba releases Qwen4-Max, its new flagship 2.4T-parameter MoE model with a 1M-token context window, saying it beats Qwen3.8-Max with up to ~50% fewer tokens (Qwen)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNNmkwanhHbjBxWlFHSTFMMTBsV05hWHM3NHRfTFYxZS1xVTVOTXh5aWRUTkxSNTJ2WEtyeU5aOUdKT1F0V0dBa3BUSUozcE9hcjYtWlFRWUtYaW4yb3BCbC0wWDhsWjNrbVJlOEM3X0FqRmU4dlNWb2FaNThQei1KbVZwVExuRTNaZFNiMEc0R05FcTNObHNLdGFhQm1PeHpWdGxGeEVONHhQeUlfaHlfcWZzZHNlYzRudmJpZVVMc3Rmdw?oc=5",
+        "title": "One compromised MCP server can trick an AI agent into misusing tools you already trust",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNdjlITVVaT1hjQUlZM3FGbWJ4eHEzT2ZtY0Z2UU1FaXg2dE5zUU9BNHpJcTZlM3hmNjhteUx4UlM3QmR0Qkx6dmpmMjg0Z0dFMElUX0VPRUNXVEdsMWZpOUlES2hldEEwa2M0Y1d6SWdmLTgtQ1RBUC14SVBRTzcyTHVJYXJ6Nmp3R1ItaDlETnZUSkRlWVF0SzM0YXQyNU9obi05aEdCMUZoQnVKZ1Bfdw?oc=5",
+        "title": "Meituan releases a 1.6-trillion-parameter agent model that never touched an Nvidia GPU",
+        "source": "Google News"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxPZFdKOG5tbVJQbG43cVFoU24zS2JzMF9hVlh6MFBRZDJ1bzQ4QnAtdFVlQ0pZNHVIOVdPaXUxaUVQeDltTEU4QnNLcGpLdmNhdkR6R3A4a0xRaFBUYU05NTlMUjVtMnJqdU5qS2NzcUlQZGViSVZDZExyUE91YTJEVHB2b3dtWGhiWmN2VFBzV3ZEUm5QcjdqTFpkdDZfTXhQaWpoYg?oc=5",
+        "title": "Alibaba unveils Qwen3.8-Max AI model, challenging US rivals Anthropic, OpenAI",
+        "source": "Google News"
+      },
+      {
+        "url": "https://www.techmeme.com/261115/p28#a261115p28",
+        "title": "AI agent management platform Kindo raised $30M led by Crosspoint and Forgepoint, taking its total funding to $57.6M, and says its revenue grew ~800% YoY in 2026 (Abhinaya Prabhu/Tech Funding News)",
+        "source": "TechMeme"
+      },
+      {
+        "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTFBOYlpIS0J3MVBzZnhFbjZtTmx1TlBnRE9BOGpwelVBSUJDQi1YU3ZTclJFUGgxV1FpcDdQQXlRTl9Tald1LVRZeVpkb282ZHBSX0tXemdCWlkzbkxWc1lZczlJTGxhTXFHclVJOHpEbG9hNUdILVYzU1NHeU4?oc=5",
+        "title": "Amazon Uncovers AI Agent Campaign Targeting LiteLLM, Dify, and Other Apps for API Keys",
+        "source": "Google News"
+      },
+      {
+        "url": "https://www.techmeme.com/261116/p2#a261116p2",
+        "title": "Tighter AI chip export rules are gaining bipartisan support in Congress, including a bill to block Chinese companies from accessing chips overseas (Financial Times)",
+        "source": "TechMeme"
+      }
+    ],
+    "rawCount": 12,
+    "createdAt": "2026-11-16T20:50:49",
+    "tokenUsage": {
+      "input": 5833,
+      "output": 4126,
+      "total": 9959
+    },
+    "origin": "wiki",
+    "tags": {
+      "companies": [
+        "dreamteam",
+        "freshworks",
+        "salesforce",
+        "hubspot",
+        "apple",
+        "bharat-semi",
+        "general-atomics",
+        "nvidia"
+      ],
+      "models": [],
+      "topics": []
+    },
+    "en": {
+      "title": "Yesterday's AI Highlights (US 11/15)",
+      "content": "## Top Stories\n\n- **Alibaba unveils flagship Qwen4-Max and Qwen3.8-Max models**: Alibaba released its flagship 2.4T-parameter MoE model, Qwen4-Max, featuring a context window of up to 1M tokens. It claims to maintain top-tier performance while cutting token consumption by up to ~50% compared to its predecessor, mounting a comprehensive challenge against US rivals such as OpenAI and Anthropic (ref-5, ref-8).\n- **Meituan introduces a 1.6-trillion-parameter Agent model trained entirely without Nvidia hardware**: Meituan unveiled an AI Agent model with 1.6T parameters, with its biggest highlight being that the entire training process completely avoided using any Nvidia GPUs. This demonstrates Chinese tech giants' capability to train ultra-large-scale Agent models on domestic chips and non-Nvidia compute clusters (ref-7).\n- **Security risks surge across MCP and Agent applications; supply chain defense becomes the new battleground**: Security research indicates that a single compromised MCP (Model Context Protocol) server can trick an AI Agent into abusing tools already trusted by the user. Meanwhile, Amazon revealed attack campaigns targeting popular Agent development frameworks and middleware like LiteLLM and Dify, where threat actors aim to steal underlying API keys, highlighting the urgent need for robust security defenses across the Agent toolchain architecture (ref-6, ref-10).\n\n## Engineering & Research Updates\n\n**MCP & Tooling**\n- Security research confirms that a single compromised MCP server in a system can manipulate context to trick an AI Agent into abusing other trusted tools. This challenges traditional perimeter-based authentication paradigms, requiring developers to implement stricter cross-tool access controls and execution confirmation mechanisms during MCP tool integration (ref-6).\n\n**Open Source & Developer Tools**\n- Amazon revealed attack campaigns targeting open-source Agent frameworks and middleware such as LiteLLM and Dify, where threat actors are actively probing configuration weaknesses to exfiltrate stored API keys. This serves as a reminder for engineering teams to enforce zero-trust isolation between secret management and web UI access when self-hosting Agent services (ref-10).\n\n**Other**\n- A bipartisan consensus is rapidly building in the US Congress to push for stricter AI chip export controls, including legislation to block Chinese companies from accessing or leasing advanced AI chips via overseas data centers (ref-11).\n\n## Industry Developments\n\n- [Freshworks alums raise $53M to take on Salesforce, HubSpot with AI-native CRM](https://techcrunch.com/2026/11/16/freshworks-alums-raise-53m-to-take-on-salesforce-hubspot-with-ai-native-crm/) — Dreamteam, an AI-native CRM startup founded by former Freshworks executives, raised $53M. It has attracted over 100 customers across 13 countries globally as it challenges established market leaders (ref-0).\n- [Apple launches new app to study how people use AI for health](https://techcrunch.com/2026/11/15/apple-launches-new-app-to-study-how-people-use-AI-for-health/) — Apple launched a new research app to investigate how people use AI to answer everyday medical and health questions (ref-1).\n- [Indian chip startup Bharat Semi lands $24M seed round as it eyes global AI sensor market](https://techcrunch.com/2026/11/15/indian-chip-startup-bharat-semi-lands-24m-seed-round-as-it-eyes-global-ai-sensor-market/) — Indian chip startup Bharat Semi raised a $24M seed round, focusing on the AI sensor market and already onboarding clients such as General Atomics (ref-2).\n- [Is bad news for Jensen Huang also bad news for the AI industry?](https://techcrunch.com/2026/11/15/is-bad-news-for-jensen-huang-also-bad-news-for-the-AI-industry/) — Analysis points out that the global AI economy is heavily tied to Nvidia, meaning any turmoil facing Jensen Huang or the company could directly impact the entire industry (ref-3).\n- [SNL gathers all the tech tycoons for a lesson in dating and spycraft](https://techcrunch.com/2026/11/15/snl-gathers-all-the-tech-tycoons-for-a-lesson-in-dating-and-spycraft/) — Comedy show Saturday Night Live gathered and spoofed tech tycoon caricatures in its latest episode (ref-4).\n- AI Agent management platform Kindo closed a $30M funding round led by Crosspoint and Forgepoint, bringing its total funding to $57.6M, and revealed ~800% revenue growth in 2026 (ref-9).\n\n## What to Watch\n\n- **Viability of non-Nvidia large-scale model training**: Meituan's successful training of a 1.6T Agent model demonstrates that under strict export controls, domestic alternative chips in China can support trillion-parameter scale training. Key areas to monitor going forward include the inference performance and ecosystem expansion of such hardware stacks (ref-7, ref-11).\n- **MCP and Agent toolchain security architecture**: As threats evolve from prompt injections to systematic attacks targeting MCP servers and intermediate proxies/frameworks (LiteLLM, Dify), enterprise Agent architectures in 2026 will inevitably have to adopt least-privilege principles and execution sandboxing across the board (ref-6, ref-10)."
+    }
+  },
+  {
     "date": "2026-11-15",
     "title": "AI 昨日重點（美國 11/14）",
     "content": "## 今日頭條\n\n- **Nvidia 執行長黃仁勳驟然下台引發科技界強震，馬斯克等產業領袖發起十萬人復職連署 (ref-0, ref-1)**：黃仁勳因個人關係牽涉疑似將晶片轉運至中國的企業而宣布卸任，內部更爆出資安主管早已於 8 月離職的防護漏洞。此事件迅速引發矽谷反彈，由 Elon Musk 等人帶頭的復職請願已吸引超過 11.5 萬人連署，顯示業界對失去這位 AI 算力關鍵掌舵者的極度焦慮 (ref-0, ref-1)。\n- **亞洲多國政府緊急應對黃仁勳卸任衝擊，嚴防 AI 晶片斷供與專案停滯 (ref-3)**：面對 Nvidia 突如其來的權力真空與出口管制調查風險，多個亞洲政府已緊急展開行動，要求確認既有的高階晶片供應承諾，並密切評估該事件對各國境內重大 AI 算力建設與政策項目的潛在衝擊 (ref-3)。\n- **TechCrunch 發布「AI 墓園」專題，盤點熱潮褪去下的失敗專案與商業化瓶頸 (ref-2)**：從多次延期難產的 Apple 智慧 Siri，到 OpenAI 推出過程受阻的「Super App」，名單揭示了生成式 AI 在走向消費端整合時面臨的工程可靠性挑戰，市場正從早期的盲目追捧轉向殘酷的落地檢驗期 (ref-2)。\n\n## 工程與研究動態\n\n**其他**\n- 紐約州正式成立獨立 AI 安全中心（AI Safety Center），將針對主流商業與開源模型進行外部獨立測試，改變過去仰賴模型開發商自我審查的模式，為公部門與關鍵產業導入 AI 建立標準化評估流程 (ref-4)。\n\n## 產業動態\n\n- [Where was Nvidia’s security team?](https://techcrunch.com/2026/11/14/where-was-nvidias-security-team/) — 在前執行長黃仁勳因涉及晶片外流疑雲下台後，外界揭露 Nvidia 資安長早在 8 月即悄悄離職，凸顯企業內部對非正式管道的情資外洩缺乏防範能力 (ref-0)。\n- [Elon Musk, other tech execs sign petition calling on Nvidia to reinstate Jensen Huang](https://techcrunch.com/2026/11/14/elon-musk-other-tech-execs-sign-petition-calling-on-nvidia-to-reinstate-jensen-huang/) — 馬斯克等多位科技高層發起請願呼籲 Nvidia 董事會讓黃仁勳復職，截至週六下午已累積逾 11.5 萬人連署 (ref-1)。\n- [The AI graveyard: a running list of projects and startups that didn’t make it](https://techcrunch.com/2026/11/14/the-ai-graveyard-a-running-list-of-projects-and-startups-that-didnt-make-it/) — 盤點市場上未能達到預期或關閉的專案與新創，包含遲遲未能問世的 Apple Siri AI 以及 OpenAI 遭遇波折的整合性應用嘗試 (ref-2)。\n- [Asian governments react to Nvidia CEO Jensen Huang’s exit](https://techcrunch.com/2026/11/14/asian-governments-react-to-nvidia-ceo-jensen-huangs-exit/) — 亞洲各國政府針對黃仁勳離職展開緊急行動，除了全力確保關鍵晶片配額不受影響外，也同步監控跨國調查對本土專案的後續干擾 (ref-3)。\n\n## 值得追蹤\n\n- **Nvidia 供應鏈穩定度與監管調查**：黃仁勳下台伴隨的晶片走私調查是否會擴大升級為美國商務部的次級制裁，將直接牽動亞洲算力基礎設施的部署期程 (ref-0, ref-3)。\n- **地方政府獨立 AI 審查機制**：紐約 AI 安全中心的運作模式若被其他州或國家採納，可能使第三方獨立安全測試成為未來企業級模型發布的強制合規門檻 (ref-4)。\n\n## 📌 今日建議深讀\n\n- **T1** [2611.10439](https://arxiv.org/abs/2611.10439) Who Remembers What? Multi-Granularity Memory Extraction for Multi-User, Multi-Agent Interaction  \n  → 這篇論文直擊 multi-agent架構與 production multi-tenant 系統中最棘手的 memory 共享與隱私洩漏權衡，對研究 LLM agents architecture 與 production memory system 非常有參考價值。\n- **T2** [2611.16728](https://arxiv.org/abs/2611.16728) EgoX: Egocentric Cross-Embodiment Manipulation with Embodiment Dreaming  \n  → 這篇論文針對 robotics 領域的 cross-embodiment manipulation 提出了結合 modular Transformer 與 embodiment dreaming 的預訓練架構，若您關注機器人具身策略與跨型態泛化非常值得抽空瀏覽。\n",
