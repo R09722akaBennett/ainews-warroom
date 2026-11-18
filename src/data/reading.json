@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-18T10:24:25Z",
+  "updatedAt": "2026-11-18T13:30:18Z",
   "sources": [
     {
       "key": "gmail:bytebytego",
@@ -146,9 +146,9 @@
           "語言模型如何以自身生成的字詞為基礎推進",
           "Reasoning Model 回覆前發生了什麼事？",
           "在難題上花費額外時間的優勢",
-          "如何教會模型使用額外步驟",
+          "如何教導模型使用額外步驟",
           "當模型已經做得足夠時",
-          "額外步驟如何讓正確答案變成錯誤答案"
+          "額外的步驟如何將正確答案變成錯誤答案"
         ],
         "sections": [
           {
@@ -229,36 +229,64 @@
         {
           "title": "The next AI inference architecture, clearly explained (4x faster than GPUs)",
           "category": "INFERENCE",
-          "summary": "",
-          "takeaways": []
+          "summary": "During single-request LLM decode, GPUs suffer from severe memory-bandwidth bottlenecks and kernel-boundary stalls as intermediate activations travel back and forth to High Bandwidth Memory (HBM). SambaNova's Reconfigurable Dataflow Unit (RDU), such as the SN40L, resolves this by spatially mapping decoder layers and passing activations directly through on-chip SRAM, while prefetching weights from HBM. Testing on large models like GLM-5.3 demonstrates roughly 4x the decode throughput of single-GPU ceilings, while disaggregated setups pairing NVIDIA chips for prefill with RDUs for decode show major end-to-end performance gains.",
+          "takeaways": [
+            "GPU decode operates around 300x below compute-bound limits because single-request generation is strictly bound by HBM memory bandwidth (~1 FLOP per byte read).",
+            "On GPUs, frameworks like vLLM and SGLang achieve at most 50% of an H100's bandwidth on Llama-3.2-1B due to kernel launch boundaries and activation roundtrips to HBM.",
+            "SambaNova's SN40L RDU uses on-chip SRAM to pipeline activations between operations without main memory round-trips, achieving 1,100 tokens/s on Llama 3.1 8B across 16 chips using single-kernel loops.",
+            "For the 753B MoE model GLM-5.3, SambaNova's Address Generation and Coalescing Unit (AGCU) streams inter-chip token communication, achieving 179 tokens/s decode on SambaNova Cloud.",
+            "A disaggregated inference architecture using NVIDIA B200 for prefill and SambaNova SN40 RDUs for decode achieved 2x the speed of a B200-only setup, as verified by Artificial Analysis."
+          ]
         },
         {
           "title": "Autoregressive LLMs vs. diffusion LLMs, clearly explained",
           "category": "DIFFUSION",
-          "summary": "",
-          "takeaways": []
+          "summary": "Autoregressive LLMs generate text strictly one token at a time using causal attention, allowing key-value (KV) representations of earlier tokens to be safely cached across decoding steps. In contrast, masked diffusion models predict multiple tokens simultaneously using bidirectional context and iteratively unmask or denoise sequences based on confidence scores. While diffusion allows fewer generation steps than total tokens, bidirectional attention alters past representations and complicates standard KV caching. Consequently, diffusion models present distinct engineering tradeoffs in step budgets, computational cost, and suitability for tasks like text or code infilling.",
+          "takeaways": [
+            "Autoregressive models extend sequences token by token using causal attention, enabling earlier KV states to be cached and reused.",
+            "Masked diffusion models predict candidate tokens for multiple masked positions concurrently using bidirectional context.",
+            "Diffusion models use confidence-based sampling to retain selected predictions while keeping remaining tokens masked for later steps.",
+            "Bidirectional attention complicates standard KV caching because representations can change when surrounding positions update.",
+            "Block diffusion architectures can enable KV caching across fully completed blocks of text.",
+            "Fewer generation steps in diffusion models do not guarantee lower latency, as each step processes multiple positions and incurs significant computation.",
+            "Bidirectional conditioning in diffusion LLMs natively supports filling gaps in text or code."
+          ]
         }
       ],
-      "summary": "Everything you need to understand why LLM decode waits on memory, and how a dataflow chip removes that wait. It covers the memory-bandwidth ceiling, kernel boundaries, the limits of kernel fusion, spatial mapping, memory tiers, disaggregated prefill and decode, and a hands-on speed test of GLM-5.3, a Mixture-of-Experts model on SambaNova Cloud. A GPU runs an LLM as a long chain of small programs c",
-      "summarised": false,
+      "summary": "During single-request LLM decode, GPUs suffer from severe memory-bandwidth bottlenecks and kernel-boundary stalls as intermediate activations travel back and forth to High Bandwidth Memory (HBM). SambaNova's Reconfigurable Dataflow Unit (RDU), such as the SN40L, resolves this by spatially mapping decoder layers and passing activations directly through on-chip SRAM, while prefetching weights from HBM. Testing on large models like GLM-5.3 demonstrates roughly 4x the decode throughput of single-GPU ceilings, while disaggregated setups pairing NVIDIA chips for prefill with RDUs for decode show major end-to-end performance gains. Autoregressive LLMs generate text strictly one token at a time using causal attention, allowing key-value (KV) representations of earlier tokens to be safely cached across decoding steps. In contrast, masked diffusion models predict multiple tokens simultaneously using bidirectional context and iteratively unmask or denoise sequences based on confidence scores. While diffusion allows fewer generation steps than total tokens, bidirectional attention alters past representations and complicates standard KV caching. Consequently, diffusion models present distinct engineering tradeoffs in step budgets, computational cost, and suitability for tasks like text or code infilling.",
+      "summarised": true,
       "headings": [
         "Autoregressive LLMs vs. diffusion LLMs, clearly explained"
       ],
       "zh": {
-        "summary": "這篇文章包含所有你需要的知識，讓你徹底理解為什麼 LLM decode 會受限於記憶體等待（waits on memory），以及 dataflow chip 如何消除這種等待。內容涵蓋 memory-bandwidth ceiling、kernel boundaries、kernel fusion 的極限、spatial mapping、memory tiers、disaggregated prefill and decode，以及在 SambaNova Cloud 上對 Mixture-of-Experts 模型 GLM-5.3 進行的實機速度測試。GPU 在執行 LLM 時就像跑一長串小型程式 c",
+        "summary": "在單一請求的 LLM decode 期間，由於中間 activations 頻繁往返於 High Bandwidth Memory (HBM)，GPU 會遭遇嚴重的 memory-bandwidth 瓶頸以及 kernel-boundary stalls。SambaNova 的 Reconfigurable Dataflow Unit (RDU)（例如 SN40L）透過在空間上映射 decoder layers，並直接經由 on-chip SRAM 傳遞 activations，同時從 HBM prefetch weights 來解決此問題。在像 GLM-5.3 這樣的大型模型上進行測試，展現出約為單 GPU 上限 4 倍的 decode throughput；而將 NVIDIA 晶片用於 prefill 並搭配 RDU 負責 decode 的 disaggregated 設定，則顯示出顯著的 end-to-end 效能提升。Autoregressive LLM 嚴格使用 causal attention 一次生成一個 token，讓早期 token 的 key-value (KV) representations 能夠在各 decoding steps 間安全地被 cache。相較之下，masked diffusion models 則利用 bidirectional context 同時預測多個 tokens，並根據 confidence scores 迭代地進行 unmask 或 denoise 序列。雖然 diffusion 允許 generation steps 數量少於總 token 數，但 bidirectional attention 會改變過去的 representations，使標準的 KV caching 變得複雜。因此，diffusion models 在 step budgets、計算成本以及對文字或程式碼 infilling 等任務的適用性方面，呈現出截然不同的工程權衡（tradeoffs）。",
         "headings": [
-          "Autoregressive LLM 與 diffusion LLM 的清楚解析"
+          "Autoregressive LLMs vs. diffusion LLMs 深入解析"
         ],
         "sections": [
           {
             "title": "下一代 AI inference architecture 深入解析（比 GPUs 快 4 倍）",
-            "summary": "",
-            "takeaways": []
+            "summary": "在單一請求的 LLM decode 期間，由於中間 activations 頻繁往返於 High Bandwidth Memory (HBM)，GPU 會遭遇嚴重的 memory-bandwidth 瓶頸以及 kernel-boundary stalls。SambaNova 的 Reconfigurable Dataflow Unit (RDU)（例如 SN40L）透過在空間上映射 decoder layers，並直接經由 on-chip SRAM 傳遞 activations，同時從 HBM prefetch weights 來解決此問題。在像 GLM-5.3 這樣的大型模型上進行測試，展現出約為單 GPU 上限 4 倍的 decode throughput；而將 NVIDIA 晶片用於 prefill 並搭配 RDU 負責 decode 的 disaggregated 設定，則顯示出顯著的 end-to-end 效能提升。",
+            "takeaways": [
+              "GPU decode 的運作效能大約比 compute-bound 上限低了 300 倍，因為單一請求生成嚴格受限於 HBM memory bandwidth（每讀取 1 byte 約僅 1 FLOP）。",
+              "在 GPU 上，像 vLLM 和 SGLang 這類 frameworks 在 Llama-3.2-1B 上最多只能達到 H100 bandwidth 的 50%，這是由於 kernel launch boundaries 以及 activation 來回 HBM 所致。",
+              "SambaNova 的 SN40L RDU 利用 on-chip SRAM 在運算之間 pipeline activations，無需往返 main memory，在 16 顆晶片上使用 single-kernel loops 於 Llama 3.1 8B 達成了 1,100 tokens/s。",
+              "針對 753B 的 MoE 模型 GLM-5.3，SambaNova 的 Address Generation and Coalescing Unit (AGCU) 以 streaming 方式處理晶片間的 token 通訊，在 SambaNova Cloud 上實現了 179 tokens/s 的 decode 速度。",
+              "經 Artificial Analysis 驗證，採用 NVIDIA B200 進行 prefill 並搭配 SambaNova SN40 RDU 進行 decode 的 disaggregated inference 架構，達到了純 B200 配置 2 倍的速度。"
+            ]
           },
           {
             "title": "Autoregressive LLMs vs. diffusion LLMs 深入解析",
-            "summary": "",
-            "takeaways": []
+            "summary": "Autoregressive LLM 嚴格使用 causal attention 一次生成一個 token，讓早期 token 的 key-value (KV) representations 能夠在各 decoding steps 間安全地被 cache。相較之下，masked diffusion models 則利用 bidirectional context 同時預測多個 tokens，並根據 confidence scores 迭代地進行 unmask 或 denoise 序列。雖然 diffusion 允許 generation steps 數量少於總 token 數，但 bidirectional attention 會改變過去的 representations，使標準的 KV caching 變得複雜。因此，diffusion models 在 step budgets、計算成本以及對文字或程式碼 infilling 等任務的適用性方面，呈現出截然不同的工程權衡（tradeoffs）。",
+            "takeaways": [
+              "Autoregressive models 使用 causal attention 逐個 token 延伸序列，使得早期的 KV states 能夠被 cache 並重複使用。",
+              "Masked diffusion models 利用 bidirectional context 同時為多個 masked positions 預測候選 tokens。",
+              "Diffusion models 使用基於 confidence 的 sampling 來保留選定的預測，同時將其餘 tokens 維持 masked 狀態以供後續 steps 處理。",
+              "Bidirectional attention 使標準的 KV caching 變得複雜，因為當周圍 positions 更新時，representations 可能會隨之改變。",
+              "Block diffusion 架構可以針對已完全生成的文字 blocks 啟用 KV caching。",
+              "在 diffusion models 中，較少的 generation steps 並不能保證更低的 latency，因為每個 step 都會處理多個 positions 並產生相當龐大的運算量。",
+              "Diffusion LLM 中的 bidirectional conditioning 原生支援文字或程式碼的填空（infilling）。"
+            ]
           }
         ]
       }
