@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-21T10:05:57Z",
+  "updatedAt": "2026-11-21T13:31:12Z",
   "sources": [
     {
       "key": "gmail:bytebytego",
@@ -61,30 +61,50 @@
         {
           "title": "Image-aware agent memory!",
           "category": "MEMORY",
-          "summary": "",
-          "takeaways": []
+          "summary": "Oracle has introduced image-native memory capabilities in Oracle AI Agent Memory to expand agent context beyond text. Images are stored alongside embedded text descriptions in Oracle AI Database, scoped to specific users, agents, or threads. Vector search runs across descriptions to retrieve metadata first, loading raw image bytes into context only when needed. This approach avoids the cost of repeatedly passing image tokens in subsequent conversation turns while preserving multimodal context.",
+          "takeaways": [
+            "Oracle AI Agent Memory allows agents to store images and retrieve them using plain text queries.",
+            "Image descriptions are embedded for vector search while raw image bytes are held in Oracle AI Database.",
+            "Search queries return descriptions and metadata first, keeping raw image data out of the prompt context until explicitly requested.",
+            "Conversational turns can preserve ordered combinations of text and image content.",
+            "Deferred loading of image bytes prevents paying for image tokens on every conversational turn."
+          ]
         },
         {
           "title": "k-means vs. e-means, clearly explained",
           "category": "CLUSTERING",
-          "summary": "",
-          "takeaways": []
+          "summary": "Meta FAIR introduced e-means, a clustering algorithm that updates centroids after processing small batches rather than waiting for full-pass epochs like Lloyd's k-means. By utilizing an exponential moving average with a cosine schedule alongside automated cluster revival and pre-tuned scaling laws, e-means matches the 25-epoch loss of standard k-means in roughly 1.4 to 2.6 epochs. Implemented in Faiss with PyTorch, Triton, and CuTe backends, it yields 10x to 45x GPU speedups on billion-scale embedding workloads.",
+          "takeaways": [
+            "e-means updates centroids iteratively after small batches using an exponential moving average following a cosine schedule.",
+            "e-means reaches the clustering loss achieved by Lloyd's k-means after 25 epochs in only 1.4 to 2.6 epochs.",
+            "On GPUs, e-means achieves 10x to 45x wall-clock speedups over state-of-the-art k-means baselines.",
+            "Dead or empty clusters are revived every 5 batches by splitting crowded donor clusters, which provided the largest ablation benefit.",
+            "Hyperparameters like batch size and schedules are derived from fixed scaling laws fitted across 75,000 optimization runs on the DEEP dataset.",
+            "The algorithm was demonstrated on DINO10B, clustering 10 billion embeddings into 16 million clusters in 2.5 epochs.",
+            "e-means is integrated into Faiss and supports GPU execution via PyTorch using Triton or CuTe assignment backends."
+          ]
         },
         {
           "title": "Why self-improving agent harnesses break when the model changes",
           "category": "AGENTS",
-          "summary": "",
-          "takeaways": []
+          "summary": "A Google research paper examines how recursive self-improvement (RSI) breaks down when an agent harness optimized for one model is transferred to another. When an agent harness evolved on Claude Opus was migrated to Gemini, it underperformed Gemini's baseline harness because the optimization history and reasoning behind previous edits were lost. To address this issue, Google introduced Self-Improvement Memory (SIM), a structured log for the optimizer tracking problems, proposed edits, rationale, and experimental outcomes across models. Benchmarks showed that utilizing SIM enabled roughly three times more performance improvement during cross-model transitions compared to standard optimization runs.",
+          "takeaways": [
+            "An agent harness evolved via recursive self-improvement on Claude Opus performed worse than Gemini's default harness when evaluated on Gemini across all tested domains.",
+            "Harness failure during model transfers occurs because the optimizer only inherits code changes without the context, reasoning, or historical failure traces that justified them.",
+            "Self-Improvement Memory (SIM) provides an optimizer-level log documenting recurring problems, attempted edits, underlying reasoning, predicted fixes, and actual test outcomes.",
+            "On Opus-to-Gemini workspace tasks, starting from a score of 68.41, optimization with SIM reached 84.75, compared to 73.42 without SIM.",
+            "SIM outperformed runs without it in 9 out of 10 independent coding benchmarks, achieving an average gain of 2.36 points."
+          ]
         }
       ],
-      "summary": "Agent memory has mostly been built around text, since that’s what agents read and write the most. Oracle just released image-native memory in Oracle AI Agent Memory , where your agent stores an image once and retrieves it later with a plain text query: Each image is saved with a short description and scoped to a user, an agent, or a thread. The description is embedded like any other memory, and th",
-      "summarised": false,
+      "summary": "Oracle has introduced image-native memory capabilities in Oracle AI Agent Memory to expand agent context beyond text. Images are stored alongside embedded text descriptions in Oracle AI Database, scoped to specific users, agents, or threads. Vector search runs across descriptions to retrieve metadata first, loading raw image bytes into context only when needed. This approach avoids the cost of repeatedly passing image tokens in subsequent conversation turns while preserving multimodal context. Meta FAIR introduced e-means, a clustering algorithm that updates centroids after processing small batches rather than waiting for full-pass epochs like Lloyd's k-means. By utilizing an exponential moving average with a cosine schedule alongside automated cluster revival and pre-tuned scaling laws, e-means matches the 25-epoch loss of standard k-means in roughly 1.4 to 2.6 epochs. Implemented in Faiss with PyTorch, Triton, and CuTe backends, it yields 10x to 45x GPU speedups on billion-scale embedding workloads. A Google research paper examines how recursive self-improvement (RSI) breaks down when an agent harness optimized for one model is transferred to another. When an agent harness evolved on Claude Opus was migrated to Gemini, it underperformed Gemini's baseline harness because the optimization history and reasoning behind previous edits were lost. To address this issue, Google introduced Self-Improvement Memory (SIM), a structured log for the optimizer tracking problems, proposed edits, rationale, and experimental outcomes across models. Benchmarks showed that utilizing SIM enabled roughly three times more performance improvement during cross-model transitions compared to standard optimization runs.",
+      "summarised": true,
       "headings": [
         "Image-aware agent memory!",
         "Why self-improving agent harnesses break when the model changes"
       ],
       "zh": {
-        "summary": "Agent memory 大多是圍繞著 text 構建的，因為這正是 agent 最常讀寫的內容。Oracle 剛在 Oracle AI Agent Memory 中推出了 image-native memory，讓你的 agent 只需儲存一次圖片，日後就能透過 plain text query 來檢索：每張圖片都會連同簡短描述一起儲存，並限定 scope 在特定 user、agent 或 thread。該 description 會像其他 memory 一樣被 embedding，且 th",
+        "summary": "Oracle 在 Oracle AI Agent Memory 中推出了原生影像記憶功能（image-native memory capabilities），將 agent 的 context 擴展到文字之外。影像與其 embedded 文字描述一同儲存在 Oracle AI Database 中，其 scope 限定於特定的 user、agent 或 thread。Vector search 會先針對描述進行搜尋以檢索 metadata，僅在需要時才將原始 image bytes 載入 context。這種做法避免了在後續對話輪次中重複傳送 image token 的成本，同時保留了 multimodal context。Meta FAIR 推出了 e-means，這是一種分群演算法（clustering algorithm），在處理 small batch 後便更新 centroid，而非像 Lloyd's k-means 那樣等待 full-pass epoch。透過結合採用 cosine schedule 的 exponential moving average、自動化 cluster revival 以及預先調校好的 scaling laws，e-means 大約只需 1.4 到 2.6 個 epoch 就能達到標準 k-means 跑 25 個 epoch 的 loss。它已在 Faiss 中實作，支援 PyTorch、Triton 和 CuTe backend，在十億級規模的 embedding 工作負載上帶來了 10x 到 45x 的 GPU 加速。一篇 Google 研究論文探討了當為某個模型最佳化的 agent harness 轉移到另一個模型時，recursive self-improvement (RSI) 會如何失效。當在 Claude Opus 上演化出的 agent harness 遷移到 Gemini 時，其表現不如 Gemini 的 baseline harness，原因在於過往修改背後的最佳化歷史與推理依據皆已遺失。為了解決這個問題，Google 提出了 Self-Improvement Memory (SIM)，這是一個供 optimizer 使用的結構化 log，用於跨模型追蹤問題、提議的修改、背後的 rationale 以及實驗結果。Benchmark 顯示，與標準最佳化執行相比，使用 SIM 在跨模型轉換期間實現了約三倍的效能提升。",
         "headings": [
           "Image-aware agent memory！",
           "為什麼當 model 改變時，self-improving agent harness 會失效"
@@ -92,18 +112,38 @@
         "sections": [
           {
             "title": "Image-aware agent memory！",
-            "summary": "",
-            "takeaways": []
+            "summary": "Oracle 在 Oracle AI Agent Memory 中推出了原生影像記憶功能（image-native memory capabilities），將 agent 的 context 擴展至文字之外。影像與其 embedded 文字描述一同儲存在 Oracle AI Database 中，其 scope 限定於特定的 user、agent 或 thread。Vector search 會先針對描述進行搜尋以檢索 metadata，僅在需要時才將原始 image bytes 載入 context。這種做法避免了在後續對話輪次中重複傳送 image token 的成本，同時保留了 multimodal context。",
+            "takeaways": [
+              "Oracle AI Agent Memory 允許 agent 儲存影像，並使用純文字 query 來檢索它們。",
+              "影像描述會被 embedded 用於 vector search，而原始 image bytes 則保存在 Oracle AI Database 中。",
+              "搜尋 query 會先返回描述與 metadata，在未被明確請求前，原始影像資料不會進入 prompt context。",
+              "對話輪次可保留文字與影像內容的順序組合。",
+              "延遲載入 image bytes 可避免在每個對話輪次中都為 image token 付費。"
+            ]
           },
           {
             "title": "k-means vs. e-means 詳解",
-            "summary": "",
-            "takeaways": []
+            "summary": "Meta FAIR 推出了 e-means，這是一種分群演算法（clustering algorithm），在處理 small batch 後便更新 centroid，而非像 Lloyd's k-means 那樣等待 full-pass epoch。透過結合採用 cosine schedule 的 exponential moving average、自動化 cluster revival 以及預先調校好的 scaling laws，e-means 大約只需 1.4 到 2.6 個 epoch 就能達到標準 k-means 跑 25 個 epoch 的 loss。它已在 Faiss 中實作，支援 PyTorch、Triton 和 CuTe backend，在十億級規模的 embedding 工作負載上帶來了 10x 到 45x 的 GPU 加速。",
+            "takeaways": [
+              "e-means 在處理 small batch 後以疊代方式更新 centroid，採用遵循 cosine schedule 的 exponential moving average。",
+              "e-means 僅需 1.4 到 2.6 個 epoch，就能達到 Lloyd's k-means 經過 25 個 epoch 所達成的 clustering loss。",
+              "在 GPU 上，e-means 相較於最先進的 k-means baseline 實現了 10x 到 45x 的 wall-clock 加速。",
+              "死亡或空的 cluster 每 5 個 batch 就會透過分割擁擠的 donor cluster 來重啟（revive），這在 ablation 實驗中帶來了最大的效益。",
+              "如 batch size 和 schedule 等超參數（hyperparameter），是從在 DEEP 資料集上進行 75,000 次最佳化執行所擬合出的固定 scaling laws 推導而來。",
+              "該演算法已在 DINO10B 上進行驗證，在 2.5 個 epoch 內將 100 億個 embedding 分群為 1,600 萬個 cluster。",
+              "e-means 已整合至 Faiss，並支援透過 PyTorch 使用 Triton 或 CuTe assignment backend 進行 GPU 執行。"
+            ]
           },
           {
             "title": "為什麼當 model 改變時，self-improving agent harness 會失效",
-            "summary": "",
-            "takeaways": []
+            "summary": "一篇 Google 研究論文探討了當為某個模型最佳化的 agent harness 轉移到另一個模型時，recursive self-improvement (RSI) 會如何失效。當在 Claude Opus 上演化出的 agent harness 遷移到 Gemini 時，其表現不如 Gemini 的 baseline harness，原因在於過往修改背後的最佳化歷史與推理依據皆已遺失。為了解決這個問題，Google 提出了 Self-Improvement Memory (SIM)，這是一個供 optimizer 使用的結構化 log，用於跨模型追蹤問題、提議的修改、背後的 rationale 以及實驗結果。Benchmark 顯示，與標準最佳化執行相比，使用 SIM 在跨模型轉換期間實現了約三倍的效能提升。",
+            "takeaways": [
+              "在所有測試領域中，於 Gemini 上進行評估時，透過 recursive self-improvement 在 Claude Opus 上演化出的 agent harness 表現皆遜於 Gemini 的預設 harness。",
+              "在模型轉移期間 harness 之所以失效，是因為 optimizer 僅繼承了程式碼變更，卻沒有繼承證明這些變更合理的 context、推理過程或歷史 failure trace。",
+              "Self-Improvement Memory (SIM) 提供了一個 optimizer 級別的 log，用於記錄重複出現的問題、嘗試過的修改、底層 reasoning、預測的修正方案以及實際的測試結果。",
+              "在 Opus-to-Gemini 的 workspace 任務中，從基準分數 68.41 開始，使用 SIM 進行最佳化達到了 84.75 分，而未使用 SIM 則僅為 73.42 分。",
+              "在 10 個獨立的 coding benchmark 中，SIM 在 9 個中勝過未使用它的執行，取得了平均 2.36 分的提升。"
+            ]
           }
         ]
       }
@@ -118,24 +158,36 @@
         {
           "title": "Insane upgrade for coding agents!",
           "category": "TOGETHER WITH DEEPNOTE",
-          "summary": "",
-          "takeaways": []
+          "summary": "Deepnote has updated its data apps infrastructure to allow AI coding agents including Claude, Claude Code, Codex, and ChatGPT to build and edit live data applications collaboratively. Unlike traditional agent-generated dashboards that rely on static HTML files and local database credentials, these apps are backed by Deepnote notebooks running sandboxed SQL and Python. This setup keeps database credentials secure while supporting OAuth-based user permissions, scheduled data refreshes, and version history. Team members can inspect the underlying code and logic while agents make modifications via plugins or the Model Context Protocol.",
+          "takeaways": [
+            "Deepnote data apps now support multi-agent collaboration with tools like Claude Code, Codex, Claude, and ChatGPT against live data.",
+            "Applications are backed by Deepnote notebooks executing sandboxed SQL and Python, separating backend logic and credentials from the user interface.",
+            "Supported OAuth integrations allow signed-in viewers to query data using their own permissions rather than embedded creator credentials.",
+            "Agents can build and modify Deepnote apps using either a Deepnote plugin or the Model Context Protocol (MCP).",
+            "Built-in version history enables users to review or roll back modifications made by AI agents."
+          ]
         },
         {
           "title": "Vibe coding has a blind spot",
           "category": "AGENTS",
-          "summary": "",
-          "takeaways": []
+          "summary": "AI-generated applications often fail to securely manage data access because individual coding agents implement inconsistent access controls directly inside application code. Real-world incidents, such as Moltbook exposing millions of credentials and widespread data leaks found by Red Access, highlight this systemic issue. Retool addresses this vulnerability with Data Access Enforcement (DAE), shifting access policies from the application level to the database connection layer. Enforcing policies centrally on the data platform ensures consistent row-level permissions across all apps, regardless of which AI tool wrote the code.",
+          "takeaways": [
+            "AI coding agents optimize for application functionality rather than cross-tool data access consistency, causing fragmented and vulnerable access checks.",
+            "Wiz reported that AI-built app Moltbook left its production database publicly exposed, leaking 1.5 million API keys and 35,000 email addresses.",
+            "Red Access discovered roughly 5,000 vibe-coded internal tools exposing sensitive corporate, medical, and banking data due to missing or decentralized access controls.",
+            "Retool's Data Access Enforcement (DAE) intercepts queries at the database connection layer (PostgreSQL resource) rather than relying on application code.",
+            "In a test with apps built by Claude Code, Codex, and Cursor, Retool centrally enforced row-level data access rules without modifying any application code."
+          ]
         }
       ],
-      "summary": "Claude Code, Codex, Claude and ChatGPT can now work on the same data app, with the team using it against live data. An agent-built dashboard often starts as something only its creator can run. The charts use a snapshot embedded in an HTML file. Database access depends on credentials configured locally. Sharing the file doesn’t give colleagues a working app connected to the warehouse. Deepnote rebu",
-      "summarised": false,
+      "summary": "Deepnote has updated its data apps infrastructure to allow AI coding agents including Claude, Claude Code, Codex, and ChatGPT to build and edit live data applications collaboratively. Unlike traditional agent-generated dashboards that rely on static HTML files and local database credentials, these apps are backed by Deepnote notebooks running sandboxed SQL and Python. This setup keeps database credentials secure while supporting OAuth-based user permissions, scheduled data refreshes, and version history. Team members can inspect the underlying code and logic while agents make modifications via plugins or the Model Context Protocol. AI-generated applications often fail to securely manage data access because individual coding agents implement inconsistent access controls directly inside application code. Real-world incidents, such as Moltbook exposing millions of credentials and widespread data leaks found by Red Access, highlight this systemic issue. Retool addresses this vulnerability with Data Access Enforcement (DAE), shifting access policies from the application level to the database connection layer. Enforcing policies centrally on the data platform ensures consistent row-level permissions across all apps, regardless of which AI tool wrote the code.",
+      "summarised": true,
       "headings": [
         "Insane upgrade for coding agents!",
         "Vibe coding has a blind spot"
       ],
       "zh": {
-        "summary": "Claude Code、Codex、Claude 和 ChatGPT 現在可以在同一個 data app 上協作，團隊還能直接對著 live data 使用它。由 agent 構建的 dashboard 通常一開始只有其創建者才能運行。圖表使用的是嵌入在 HTML 檔案中的 snapshot。Database access 則仰賴本機配置的 credentials。單純分享檔案並不能讓同事拿到一個連線到 warehouse 的可用 app。Deepnote rebu",
+        "summary": "Deepnote 更新了其 data apps 基礎架構，允許包括 Claude、Claude Code、Codex 與 ChatGPT 在內的 AI coding agent 協同建構與編輯即時資料應用程式。不同於依賴靜態 HTML 檔案與本地資料庫憑證的傳統 agent 生成 dashboard，這些應用程式是由在沙盒（sandboxed）中執行 SQL 與 Python 的 Deepnote notebook 作為後盾。此架構在保護資料庫憑證安全之餘，亦支援以 OAuth 為基礎的使用者權限、排程資料重新整理以及版本歷史記錄。團隊成員可以檢視底層程式碼與邏輯，同時 agent 能透過外掛程式（plugin）或 Model Context Protocol 進行修改。AI 生成的應用程式往往難以安全地管理資料存取，因為各個 coding agent 會直接在應用程式碼內實作不一致的存取控制。現實中的案例，例如 Moltbook 洩漏數百萬個憑證，以及 Red Access 發現的廣泛資料洩漏，皆突顯了這一系統性問題。Retool 透過 Data Access Enforcement (DAE) 來解決此弱點，將存取策略從應用程式層級轉移到資料庫連線層。在資料平台上集中強制執行策略，可確保所有應用程式具備一致的 row-level 權限，無論程式碼是由哪款 AI 工具所編寫。",
         "headings": [
           "Coding agent 的超狂升級！",
           "Vibe coding 的盲點"
@@ -143,13 +195,25 @@
         "sections": [
           {
             "title": "Coding agent 的超狂升級！",
-            "summary": "",
-            "takeaways": []
+            "summary": "Deepnote 更新了其 data apps 基礎架構，允許包括 Claude、Claude Code、Codex 與 ChatGPT 在內的 AI coding agent 協同建構與編輯即時資料應用程式。不同於依賴靜態 HTML 檔案與本地資料庫憑證的傳統 agent 生成 dashboard，這些應用程式是由在沙盒（sandboxed）中執行 SQL 與 Python 的 Deepnote notebook 作為後盾。此架構在保護資料庫憑證安全之餘，亦支援以 OAuth 為基礎的使用者權限、排程資料重新整理以及版本歷史記錄。團隊成員可以檢視底層程式碼與邏輯，同時 agent 能透過外掛程式（plugin）或 Model Context Protocol 進行修改。",
+            "takeaways": [
+              "Deepnote data apps 現已支援與 Claude Code、Codex、Claude 和 ChatGPT 等工具針對即時資料進行 multi-agent 協同合作。",
+              "應用程式由執行沙盒化（sandboxed）SQL 與 Python 的 Deepnote notebook 支援，將後端邏輯與憑證與使用者介面區隔開來。",
+              "支援的 OAuth 整合讓已登入的 viewer 能使用自己的權限查詢資料，而非使用內嵌的 creator credential。",
+              "Agent 可以使用 Deepnote plugin 或 Model Context Protocol (MCP) 來建構與修改 Deepnote app。",
+              "內建的 version history 讓使用者能夠檢視或 rollback 由 AI agent 所做的修改。"
+            ]
           },
           {
             "title": "Vibe coding 的盲點",
-            "summary": "",
-            "takeaways": []
+            "summary": "AI 生成的應用程式往往無法安全地管理 data access，因為各個 coding agent 會直接在 application code 內實作不一致的 access control。真實世界的事件（例如 Moltbook 洩漏數百萬筆 credential，以及 Red Access 發現的廣泛資料外洩事件）凸顯了這個系統性問題。Retool 透過 Data Access Enforcement (DAE) 來解決此漏洞，將 access policy 從 application level 轉移至 database connection layer。在資料平台上集中強制執行 policy，能確保所有 app 具備一致的 row-level 權限，無論程式碼是由哪一個 AI 工具所撰寫。",
+            "takeaways": [
+              "AI coding agent 通常是針對應用程式功能進行最佳化，而非跨工具的 data access 一致性，導致 access check 變得破碎且脆弱。",
+              "Wiz 報導指出，由 AI 打造的 app Moltbook 將其 production database 公開暴露在外，洩漏了 150 萬組 API key 與 35,000 個電子郵件地址。",
+              "Red Access 發現大約 5,000 個 vibe-coded 的內部工具，因為缺乏或去中心化的 access control，而暴露了敏感的企業、醫療與銀行資料。",
+              "Retool 的 Data Access Enforcement (DAE) 會在 database connection layer（PostgreSQL resource）攔截 query，而不是依賴 application code。",
+              "在針對由 Claude Code、Codex 與 Cursor 所建構的 app 測試中，Retool 在不修改任何 application code 的情況下，集中強制執行了 row-level data access 規則。"
+            ]
           }
         ]
       }
@@ -258,10 +322,10 @@
         "summary": "Andrew Ng 對 Jensen Huang 從 Nvidia 辭職一事發表看法，讚揚他將公司打造成 AI hardware powerhouse 的遠見。Huang 早期做出了關鍵押注，支援基於 GPU 的 neural network training，並向 Stanford 和 Google 的研究團隊提供資源。Ng 認為，Huang 的獨特貢獻反駁了企業界普遍認為「每個人都是可被取代」的觀點。DeepLearning.AI 宣布，AI Dev NYC 活動門票包含價值超過 $850 的 AI Dev Field Kit，內含來自 13 種不同工具的免費 credits、plans 與 trials。精選的參與工具包括 Oracle、Neo4j、Anchor Browser 與 Elastic。該活動預計於 11 月 30 日至 12 月 1 日在 Chelsea Piers 舉行。此外，The Batch 電子報的讀者還可享有門票專屬的 20 percent 折扣。在被揭露與據傳為中國國家安全部線人、且與新加坡 Megaspeed 有關聯的 Huang Le 存在關係後，Jensen Huang 辭去了 Nvidia CEO 一職。在醜聞發生及隨後的董事會調查後，Nvidia 任命 CFO Colette Kress 為 interim CEO，並任命 Harvey Jones 為 board chairman。這場領導層人事震盪引發了外界對 Nvidia 在遵守美國對中國 AI chips export controls 方面的嚴格檢驗，並對其在整個 AI ecosystem 繼續進行大規模 venture investments 提出了質疑。",
         "headings": [
           "來自 [DEEPLEARNING.AI 的訊息",
-          "Jensen Huang 辭去 Nvidia CEO 職務",
-          "Claude Fable 調降價格",
+          "Jensen Huang 辭去 Nvidia CEO 一職",
+          "Claude Fable 迎來降價",
           "AMD 的 World Model 正式登場",
-          "Adaptive Memory Management",
+          "自適應 Memory 管理",
           "與 Andrew Ng 一同工作"
         ],
         "sections": [
