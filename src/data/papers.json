@@ -1,95 +1,54 @@
 {
-  "updatedAt": "2026-11-24T13:30:12Z",
+  "updatedAt": "2026-11-25T10:05:19Z",
   "hot": [
     {
       "rank": 1,
-      "arxivId": "2611.harness-cg",
-      "title": "Language Model Harnesses Can Be Compositional Generalizers",
-      "summary": "The paper trains a recursive language model harness to handle long tasks by keeping context outside the prompt, using code to inspect it, and delegating smaller queries to model calls. On eight held-out long-context benchmarks, RLM-27B averages 58.5 versus 46.1 for Qwen3.8-27B in the same harness; this is a benchmark-score gain, not a compute or time result.",
-      "date": "20 Nov 2026",
+      "arxivId": "2611.30325",
+      "title": "Verifiable On-Policy Distillation",
+      "summary": "The authors introduce Verifiable On-Policy Distillation (VOPD) for mathematical reasoning, using teacher–verifier agreement within groups of sampled responses to scale teacher guidance across next-token choices. VOPD compares teacher preferences with verified outcomes through a reference-model log-probability shift. In tests of two Qwen3 configurations and eight math benchmarks, it averages 66.38, above OPD and ExOPD, using the student’s top 16 tokens.",
+      "date": "23 Nov 2026",
       "authors": [
-        "Alex L. Zhang",
-        "Souradip Chakraborty",
-        "Omar Khattab"
+        "Juntong Shi",
+        "Stefano Ermon",
+        "Jure Leskovec",
+        "Minkai Xu"
       ],
-      "votes": 458,
-      "visits": 9549,
-      "ghStars": 15,
+      "votes": 40,
+      "visits": 943,
+      "ghStars": 0,
       "categories": [
-        "cs.AI",
-        "cs.LG"
+        "chain-of-thought",
+        "cs.LG",
+        "fine-tuning"
       ],
-      "url": "https://arxiv.org/abs/2611.harness-cg",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.harness-cg"
+      "url": "https://arxiv.org/abs/2611.30325",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.30325"
     },
     {
       "rank": 2,
-      "arxivId": "2611.glm-5",
-      "title": "GLM-5.4: Toward Generalized Coding with Our First Loop Transformer",
-      "summary": "GLM-5.4 is Z.ai's first flagship model built on a Loop Transformer, which runs a weight-shared block of layers for multiple iterations to add reasoning depth without adding parameters. Rather than pre-training a looped model from scratch, Z.ai adapted the pre-trained GLM-5 base through continued training, looping 28 layers for two iterations at 750B scale. The post frames the model as the start of \"Generalized Coding\", where code generation extends to video, CAD, games, and 3D.",
-      "date": "23 Nov 2026",
+      "arxivId": "2611.sample-efficient-in-context-adaptation-sleep",
+      "title": "Sample-Efficient In-Context Adaptation via Sleep",
+      "summary": "Sleep lets Transformer models refine their key-value cache at chunk boundaries, using recurrent passes over context already read. Rather than add depth to every generated token, the model updates its attention memory periodically, then resumes ordinary decoding. On held-out code, 1.2B-parameter models matched baseline loss with 2.10× fewer context tokens at N=2 and 2.39× at N=4; this measures prefix length, not speed.",
+      "date": "24 Nov 2026",
       "authors": [
-        "Z.ai"
+        "Sangyun Lee",
+        "Zhang Enyan",
+        "Michael Xu",
+        "Hao Tang",
+        "Zinan Lin"
       ],
-      "votes": 112,
-      "visits": 14930,
+      "votes": 22,
+      "visits": 2204,
       "ghStars": 0,
       "categories": [
-        "code-generation",
-        "inference-efficiency",
-        "large-language-models"
+        "cs.CL",
+        "cs.LG"
       ],
-      "url": "https://arxiv.org/abs/2611.glm-5",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.glm-5"
+      "url": "https://arxiv.org/abs/2611.sample-efficient-in-context-adaptation-sleep",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.sample-efficient-in-context-adaptation-sleep"
     },
     {
       "rank": 3,
-      "arxivId": "2611.28298",
-      "title": "Language Model Harnesses can be Compositional Generalizers",
-      "summary": "The authors train an RLM harness using synthetic traces to improve transfer from shorter tasks to longer contexts. It keeps context outside the root prompt and uses programmatic calls to divide work among smaller inputs. In the same harness, fine-tuned Qwen3.8-27B reaches an eight-benchmark average of 58.5, versus 46.1 for the untrained model, with roughly half inference tokens; transfer is conditional.",
-      "date": "20 Nov 2026",
-      "authors": [
-        "Alex L. Zhang",
-        "Souradip Chakraborty",
-        "Omar Khattab"
-      ],
-      "votes": 6,
-      "visits": 214,
-      "ghStars": 15,
-      "categories": [
-        "agentic-frameworks",
-        "agents",
-        "cs.AI"
-      ],
-      "url": "https://arxiv.org/abs/2611.28298",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.28298"
-    },
-    {
-      "rank": 4,
-      "arxivId": "2611.31240",
-      "title": "Pruning Autonomous Driving VLAs: What to Preserve for Reasoning and Action",
-      "summary": "MoOP compresses Alpamayo-1.5-10B by pruning a vision-language model (VLM) for both Chain-of-Causation explanations and trajectory generation. It ranks units using cross-entropy and flow-matching objectives, retaining VLM units important to either, and selects action-expert MLP channels across denoising steps. With VLM-only pruning at 24.0% total parameter reduction, it scores 68.8% on LingoQA versus 37.0% for FM-only; the dense model scores 73.2%, a difference from MoOP that is not statistically significant.",
-      "date": "23 Nov 2026",
-      "authors": [
-        "Seongchan Kim",
-        "Soowon Son",
-        "Sangoh Kim",
-        "Hyunah Ko",
-        "Eunbeen Hong"
-      ],
-      "votes": 1,
-      "visits": 17,
-      "ghStars": 0,
-      "categories": [
-        "autonomous-vehicles",
-        "chain-of-thought",
-        "cs.CV"
-      ],
-      "url": "https://arxiv.org/abs/2611.31240",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.31240"
-    },
-    {
-      "rank": 5,
       "arxivId": "2611.30111",
       "title": "RoboThink: Let the Agent Think, Let the Policy Act",
       "summary": "RoboThink combines a robot policy with an agent that diagnoses problems while the policy acts. It uses task-instruction updates to change goals and learned motion feedback to correct actions. In LIBERO, success rises from 0.09 to 0.87 under constant drift and from 0.42 to 0.84 under random drift; tests are simulation-only, with feedback training on episode-constant drifts.",
@@ -101,8 +60,8 @@
         "Xingchen Zhao",
         "Zhenyu Zhang"
       ],
-      "votes": 0,
-      "visits": 10,
+      "votes": 15,
+      "visits": 431,
       "ghStars": 0,
       "categories": [
         "cs.AI",
@@ -112,53 +71,121 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.30111"
     },
     {
-      "rank": 6,
-      "arxivId": "2611.30813",
-      "title": "HIVE-Bench: Evaluating Patch-Level Visual Representations for Egocentric Robot Manipulation",
-      "summary": "HIVE-Bench compares 20 pretrained visual encoders for bimanual robot manipulation by feeding dense image-patch features to a shared action policy across RoboCasa and RoboTwin. On RoboCasa, mean-pooling DINOv2 patches reduced multi-task success from 32.28% to 9.94%. A shared policy retained 87.7% of matched single-task success with fewer total optimizer updates, while diagnostics did not reliably select the best encoder.",
+      "rank": 4,
+      "arxivId": "2611.31002",
+      "title": "RoboUniverse-10K: Toward the Scaling Era of Agentic Robotics via Real-to-Sim Environments",
+      "summary": "RoboUniverse-10K turns real manipulation videos into simulated robot-training tasks by having coding agents build scenes, controllers, and verifiers, with an independent agent checking environments. Its 10,807 environments include 10,307 training tasks and 500 held-out tasks. GPT-6.2 Astra reaches 85.8% success on the held-out set, while simulated scenes remain simplified and tasks mostly short-horizon.",
       "date": "23 Nov 2026",
       "authors": [
-        "Qiwei Liang",
-        "Zhengtu Liang",
-        "Minghao Lai",
-        "Yikeng Chen",
-        "Yiming Wang"
+        "Jinkun Liu",
+        "Yingze Wang",
+        "Situ Wang",
+        "Deyao Hong",
+        "Mingju Gao"
       ],
-      "votes": 4,
-      "visits": 37,
-      "ghStars": 4,
+      "votes": 14,
+      "visits": 383,
+      "ghStars": 0,
       "categories": [
-        "cs.CV",
-        "cs.RO"
+        "agentic-frameworks",
+        "agents",
+        "cs.CL"
       ],
-      "url": "https://arxiv.org/abs/2611.30813",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.30813"
+      "url": "https://arxiv.org/abs/2611.31002",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.31002"
+    },
+    {
+      "rank": 5,
+      "arxivId": "2611.32606",
+      "title": "Recursive Collective Intelligence: Emergence on an Equal-Budget Ladder in Multi-Agent LLM Systems",
+      "summary": "The authors test when multi-agent communication adds value beyond independent attempts at equal token cost. On HiddenBench, fact forwarding among four Qwen3.8-27B agents reaches 0.959 accuracy, 0.310 above compute-matched pass@n; the full-information agent scores 0.942. On held-out SplitBench tasks, recursive training improves the group’s margin from −0.253 at G0 to +0.159 at G2. These findings are limited to the tested settings.",
+      "date": "24 Nov 2026",
+      "authors": [
+        "Lixuan He",
+        "Shengqu Cai",
+        "Fang Wu",
+        "Shikang Zheng",
+        "Liwei Jiang"
+      ],
+      "votes": 3,
+      "visits": 32,
+      "ghStars": 0,
+      "categories": [
+        "cs.MA"
+      ],
+      "url": "https://arxiv.org/abs/2611.32606",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.32606"
+    },
+    {
+      "rank": 6,
+      "arxivId": "2611.31118",
+      "title": "TideSand: Performance-Accurate Sandbox Multiplexing for LLM Agents",
+      "summary": "TideSand schedules resource-intensive tool calls at execution time, deferring them until sufficient headroom is available, reclaiming memory from sandboxes waiting for inference, and rolling back calls after bursts. Across six model–workload pairs, it reports 3.8–10× higher throughput than strict reservation at similar fidelity, and 7–44% higher fidelity than overcommit at similar throughput. The evaluation was CPU-and-memory only.",
+      "date": "23 Nov 2026",
+      "authors": [
+        "Shulu Li",
+        "Hanchen Li",
+        "Xiaokun Chen",
+        "Qiuyang Mang",
+        "Hanfei Chen"
+      ],
+      "votes": 3,
+      "visits": 90,
+      "ghStars": 0,
+      "categories": [
+        "cs.OS"
+      ],
+      "url": "https://arxiv.org/abs/2611.31118",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.31118"
     },
     {
       "rank": 7,
-      "arxivId": "2611.30325",
-      "title": "Verifiable On-Policy Distillation",
-      "summary": "The authors introduce Verifiable On-Policy Distillation (VOPD) for mathematical reasoning, using teacher–verifier agreement within groups of sampled responses to scale teacher guidance across next-token choices. VOPD compares teacher preferences with verified outcomes through a reference-model log-probability shift. In tests of two Qwen3 configurations and eight math benchmarks, it averages 66.38, above OPD and ExOPD, using the student’s top 16 tokens.",
+      "arxivId": "2611.31154",
+      "title": "Attention Latent Feedback",
+      "summary": "ALF (Attention Latent Feedback) lets each sublayer use the previous token’s outputs at its own and deeper layers, alongside a projected summary of the previous final state. Across three tested MoE sizes, it lowers held-out loss versus standard residual and final-state feedback. On MoE-4.0B, the four-domain average accuracy rises from 45.1% to 47.0% under teacher-forced scoring, not open-ended generation.",
       "date": "23 Nov 2026",
       "authors": [
-        "Juntong Shi",
-        "Stefano Ermon",
-        "Jure Leskovec",
-        "Minkai Xu"
+        "Xuyuan Xiong",
+        "Siyu Chen",
+        "Mengzhao Chen",
+        "Yue Su",
+        "Zhuoran Yang"
       ],
-      "votes": 3,
-      "visits": 8,
+      "votes": 5,
+      "visits": 125,
       "ghStars": 0,
       "categories": [
-        "chain-of-thought",
-        "cs.LG",
-        "fine-tuning"
+        "cs.LG"
       ],
-      "url": "https://arxiv.org/abs/2611.30325",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.30325"
+      "url": "https://arxiv.org/abs/2611.31154",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.31154"
     },
     {
       "rank": 8,
+      "arxivId": "2611.31240",
+      "title": "Pruning Autonomous Driving VLAs: What to Preserve for Reasoning and Action",
+      "summary": "MoOP compresses Alpamayo-1.5-10B by pruning a vision-language model (VLM) for both Chain-of-Causation explanations and trajectory generation. It ranks units using cross-entropy and flow-matching objectives, retaining VLM units important to either, and selects action-expert MLP channels across denoising steps. With VLM-only pruning at 24.0% total parameter reduction, it scores 68.8% on LingoQA versus 37.0% for FM-only; the dense model scores 73.2%, a difference from MoOP that is not statistically significant.",
+      "date": "23 Nov 2026",
+      "authors": [
+        "Seongchan Kim",
+        "Soowon Son",
+        "Sangoh Kim",
+        "Hyunah Ko",
+        "Eunbeen Hong"
+      ],
+      "votes": 12,
+      "visits": 185,
+      "ghStars": 0,
+      "categories": [
+        "autonomous-vehicles",
+        "chain-of-thought",
+        "cs.CV"
+      ],
+      "url": "https://arxiv.org/abs/2611.31240",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.31240"
+    },
+    {
+      "rank": 9,
       "arxivId": "2611.30714",
       "title": "LiveAudio: From Bidirectional to Autoregressive Diffusion for Real-Time Streaming Video-to-Audio Generation",
       "summary": "LiveAudio streams video-to-audio by generating short blocks from video already played, using its own generated history and a bidirectional teacher. On VGGSound, DeSync falls from 0.544 after causal ODE distillation to 0.395 after asymmetric DMD, below the teacher’s 0.484. On one NVIDIA A100, it reports 143 ms time to first output and 0.79 real-time factor.",
@@ -170,8 +197,8 @@
         "Andong Wang",
         "Weibei Dou"
       ],
-      "votes": 2,
-      "visits": 7,
+      "votes": 7,
+      "visits": 112,
       "ghStars": 0,
       "categories": [
         "cs.CV",
@@ -182,29 +209,31 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.30714"
     },
     {
-      "rank": 9,
-      "arxivId": "2611.24778",
-      "title": "Counterfactual World Models: JEPAs That Reason About \"What If\"",
-      "summary": "The authors estimate what an alternative action would have done in the same event by adding the factual model’s predicted change between actions to the observed outcome. This reuses event-specific disturbance without paired counterfactual data or retraining. In simulated HandReach, physical counterfactual R-squared rises from 38.1% to 85.6% after physical readout correction; the result depends on structural conditions.",
-      "date": "18 Nov 2026",
+      "rank": 10,
+      "arxivId": "2611.30963",
+      "title": "Foresight Forcing: Learning Spatial Foresight for Robotic Manipulation",
+      "summary": "Foresight Forcing trains a robot policy to predict task-relevant spatial changes before generating actions. During training, a frozen 3D vision model supplies correspondence-aligned feature differences, which the policy learns to predict from current images, instructions, and robot state; deployment needs neither future observations nor the teacher. On LIBERO-Plus, it scores 84.5% overall across seven perturbation dimensions, but not every dimension.",
+      "date": "23 Nov 2026",
       "authors": [
-        "Randall Balestriero",
-        "Yann LeCun",
-        "Kerda Varaku"
+        "Mishuo Han",
+        "Zhixuan Liang",
+        "Zhaoyuan Wan",
+        "Wendi Chen",
+        "Jiarui Chen"
       ],
-      "votes": 417,
-      "visits": 7925,
+      "votes": 3,
+      "visits": 68,
       "ghStars": 0,
       "categories": [
-        "cs.AI",
         "cs.CV",
-        "cs.LG"
+        "cs.RO",
+        "multi-modal-learning"
       ],
-      "url": "https://arxiv.org/abs/2611.24778",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.24778"
+      "url": "https://arxiv.org/abs/2611.30963",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.30963"
     },
     {
-      "rank": 10,
+      "rank": 11,
       "arxivId": "2611.30017",
       "title": "OWE-Bench: A long-horizon benchmark for measuring real-world engineering",
       "summary": "OWE-Bench tests whether agents can judge how well work holds up beyond development examples. Agents use examples, then submit frozen artifacts for scoring on hidden cases; the benchmark compares those scores with development evidence. Across 21 tasks, hidden scores average 17.6 points lower, while models overestimate them by 21 points on average; this gap is not proof of overfitting.",
@@ -216,8 +245,8 @@
         "Bertie Vidgen",
         "Edward Hu"
       ],
-      "votes": 2,
-      "visits": 10,
+      "votes": 6,
+      "visits": 150,
       "ghStars": 9,
       "categories": [
         "agentic-frameworks",
@@ -228,176 +257,99 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.30017"
     },
     {
-      "rank": 11,
-      "arxivId": "2611.30637",
-      "title": "SWEEP-Bench: Do Embodied Policies Act on the Speed They See?",
-      "summary": "SWEEP-Bench tests whether robot policies adapt their actions to objects moving on a conveyor, evaluating 80 tasks at 13 constant belt speeds from 0.10 to 0.40 m/s. Six of eight fine-tuned models peak at intermediate speeds, while past frames substantially help only three. Supplying belt speed improves all four tested models, but does not establish adaptation to changing speeds.",
-      "date": "23 Nov 2026",
-      "authors": [
-        "Hiroaki Honda",
-        "Koya Sakamoto",
-        "Shu Morikuni",
-        "Yusuke Iwasawa",
-        "Taiki Miyanishi"
-      ],
-      "votes": 0,
-      "visits": 19,
-      "ghStars": 0,
-      "categories": [
-        "cs.CV",
-        "cs.LG",
-        "cs.RO"
-      ],
-      "url": "https://arxiv.org/abs/2611.30637",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.30637"
-    },
-    {
       "rank": 12,
-      "arxivId": "2611.claimed-riemann-hypothesis-proof",
-      "title": "A Claimed Proof of the Riemann Hypothesis",
-      "summary": "Levent Alpöge’s note describes a proposed route to the Riemann Hypothesis, using chained theta lifts to mimic multiplicity in Stepanov’s function-field method, which concerns a different setting. Alpöge reports Claude suggested a chain about √X long for a von Mangoldt sum of length X, and claims the approach extends to GRH; the note offers no readable proof or verification.",
+      "arxivId": "2611.28298",
+      "title": "Language Model Harnesses can be Compositional Generalizers",
+      "summary": "The authors train an RLM harness using synthetic traces to improve transfer from shorter tasks to longer contexts. It keeps context outside the root prompt and uses programmatic calls to divide work among smaller inputs. In the same harness, fine-tuned Qwen3.8-27B reaches an eight-benchmark average of 58.5, versus 46.1 for the untrained model, with roughly half inference tokens; transfer is conditional.",
       "date": "20 Nov 2026",
       "authors": [
-        "Levent Alpöge"
+        "Alex L. Zhang",
+        "Souradip Chakraborty",
+        "Omar Khattab"
       ],
-      "votes": 268,
-      "visits": 21860,
-      "ghStars": 0,
+      "votes": 42,
+      "visits": 1106,
+      "ghStars": 15,
       "categories": [
-        "Mathematics"
+        "agentic-frameworks",
+        "agents",
+        "cs.AI"
       ],
-      "url": "https://arxiv.org/abs/2611.claimed-riemann-hypothesis-proof",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.claimed-riemann-hypothesis-proof"
+      "url": "https://arxiv.org/abs/2611.28298",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.28298"
     },
     {
       "rank": 13,
-      "arxivId": "2611.society-ai-scientists",
-      "title": "A Society of AI Scientists",
-      "summary": "The authors study how agents develop research practices in a shared workspace, where 936 agents across 35 human-operated labs published studies and exchanged 9,500 messages over twelve weeks. Agents used public corrections, pre-run critique, and an agent-run journal. Executing reviewers’ major objections overturned 49.4% of tested headlines, but the observational deployment does not establish causation or independent scientific autonomy.",
-      "date": "21 Nov 2026",
+      "arxivId": "2611.30965",
+      "title": "Beyond Self-Consistency: Recursive Self-Improvement at Test Time",
+      "summary": "TT-RSI improves mathematical reasoning by feeding each attempt the previous solution and distilling successive refinements into model weights. Across five competition-math benchmarks and Qwen3 models from 1.7B to 8B parameters, it raises average accuracy 13.89 percentage points over Base and 4.79 points over TTPO plus Self-Consistency at equal generated-token budgets. Evaluation covers mathematics, not open-ended tasks.",
+      "date": "23 Nov 2026",
       "authors": [
-        "Rehaan Ahmad",
-        "Myles Anderson",
-        "Ao Qu",
-        "Mars Gao",
-        "Yubin Kim"
+        "Jianyu Wu",
+        "Yizhou Wang",
+        "Encheng Su",
+        "Jinouwen Zhang",
+        "Pengze Li"
       ],
-      "votes": 720,
-      "visits": 33586,
+      "votes": 1,
+      "visits": 76,
       "ghStars": 0,
       "categories": [
         "cs.AI",
-        "cs.CY"
+        "cs.CL",
+        "cs.LG"
       ],
-      "url": "https://arxiv.org/abs/2611.society-ai-scientists",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.society-ai-scientists"
+      "url": "https://arxiv.org/abs/2611.30965",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.30965"
     },
     {
       "rank": 14,
-      "arxivId": "2611.31076",
-      "title": "AlphaDefect: Expert-Level AI for Slay the Spire 2",
-      "summary": "AlphaDefect uses one learned policy per character for combat and noncombat decisions in Slay the Spire 2. It scores legal actions using player-visible information. Across six characters at Ascension 10, greedy win rates are 62–77%, rising to 68–80% with test-time search. For Ironclad, search increased wins by 5.2 percentage points on v0.113.1, while adding decision-time computation.",
+      "arxivId": "2611.31201",
+      "title": "Embo-Harness: Towards Understanding Frontier-Model-as-Policy Harness",
+      "summary": "Embo-Harness connects a frontier model’s visual reasoning and spatial target selection to robot actions through execution and feedback. It uses absolute end-effector targets, short action chunks, multi-view images, and tools such as VLA refinement. On RoboLab-120 without task-specific fine-tuning, it achieves 83.3% success, versus 57.1% for strongest baseline in the paper’s table; this is not a matched cost comparison.",
       "date": "23 Nov 2026",
       "authors": [
-        "Qiyue Chen",
-        "Taian Yu",
-        "Junpei Komiyama",
-        "Haobo Huang"
+        "Xiao-Ming Wu",
+        "Kang Liao",
+        "Yuexiao Ma",
+        "Taolin Zhang",
+        "Mingqian Zhou"
       ],
-      "votes": 0,
-      "visits": 10,
+      "votes": 6,
+      "visits": 87,
       "ghStars": 0,
       "categories": [
-        "agents",
-        "cs.AI",
-        "deep-reinforcement-learning"
+        "cs.RO"
       ],
-      "url": "https://arxiv.org/abs/2611.31076",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.31076"
+      "url": "https://arxiv.org/abs/2611.31201",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.31201"
     },
     {
       "rank": 15,
-      "arxivId": "2611.roboinf",
-      "title": "RoboInF: A Benchmark for Instruction Fidelity in Robotic Manipulation",
-      "summary": "RoboInF benchmarks whether manipulation policies follow instructions, not just reach task goals. It tests branches from the same scene and robot state, checking goals and constraints such as order and contact. For π₀.₅ post-trained on clear demonstrations, the eight-task average is 79.3% task success but 52.4% joint success, a 26.9-point gap; this is a simulation benchmark result, not evidence about real-world performance.",
+      "arxivId": "2611.32183",
+      "title": "ThinkMorph-SSL: Scaling Interleaved Multimodal Reasoning with Pretext Tasks",
+      "summary": "ThinkMorph-SSL first trains multimodal models on image-derived restoration traces, then continues with task-specific demonstrations that use intermediate images to answer questions. This two-stage recipe improves average accuracy by 11.33 percentage points over BAGEL think-4k across 12 benchmarks, with gains on all 12. Nine benchmarks lie outside the instruction-tuning task families, but this does not establish that their image sources were unseen.",
       "date": "24 Nov 2026",
       "authors": [
-        "Jiawei Guo",
-        "Yu Huang",
-        "Dijiang Dong",
-        "Yue Liu",
-        "Peiran Ren"
+        "Jiawei Gu",
+        "Linjie Li",
+        "Yiming Liu",
+        "Yunzhuo Hao",
+        "Huichen Wang"
       ],
-      "votes": 3,
-      "visits": 47,
+      "votes": 1,
+      "visits": 14,
       "ghStars": 0,
       "categories": [
         "cs.AI",
-        "cs.RO"
+        "cs.CL",
+        "cs.CV"
       ],
-      "url": "https://arxiv.org/abs/2611.roboinf",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.roboinf"
+      "url": "https://arxiv.org/abs/2611.32183",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.32183"
     },
     {
       "rank": 16,
-      "arxivId": "2611.perplexity-and-intelligence",
-      "title": "Perplexity and Intelligence",
-      "summary": "Perplexity-based tracking measures language models’ pretraining progress through next-token prediction loss, and the post argues that it can provide a durable comparison metric as downstream benchmarks change. OpenAI reports internal held-out-dataset log-perplexity values of about 0.99 for GPT-3.5, 0.91 for GPT-4, and below 0.8 for newer models, associating these stages with capabilities including",
-      "date": "20 Nov 2026",
-      "authors": [],
-      "votes": 50,
-      "visits": 950,
-      "ghStars": 0,
-      "categories": [
-        "ai-safety",
-        "compute-scaling",
-        "language-models"
-      ],
-      "url": "https://arxiv.org/abs/2611.perplexity-and-intelligence",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.perplexity-and-intelligence"
-    },
-    {
-      "rank": 17,
-      "arxivId": "2611.30013",
-      "title": "3AGameFactory-Motion: Agentic Rigging and Reliable Complex Motion Generation for Diverse 3D Assets",
-      "summary": "The authors introduce a framework for animating 3D assets from instructions by having an agent specify relevant parts, phases, and targets in a compact program that a deterministic executor converts into motion under kinematic constraints. On DivDynBench’s 850 cases with reference rigs, Claude-ops5.5 achieves 50.07/100 Overall versus 48.19 without the framework, supporting improvement on this benchmark, not guaranteed instruction following.",
-      "date": "23 Nov 2026",
-      "authors": [
-        "Bohan Zeng",
-        "Kaixin Zhu",
-        "Yifan Yang",
-        "Dongge Yu",
-        "Zihao Wu"
-      ],
-      "votes": 0,
-      "visits": 19,
-      "ghStars": 0,
-      "categories": [
-        "cs.CV"
-      ],
-      "url": "https://arxiv.org/abs/2611.30013",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.30013"
-    },
-    {
-      "rank": 18,
-      "arxivId": "2611.26450",
-      "title": "A CPU Inside an LLM: Zero-Gradient Compilation of Exact Circuits into Pretrained Weights",
-      "summary": "The authors graft a deterministic arithmetic circuit into pretrained model weights, enabling signed addition, subtraction, and multiplication without gradient updates, labeled examples, or runtime tool calls. Scale-robust circuit primitives and tokenizer-aligned emission let the language model resume after the answer. On Arith-1200, BF16 grafts reach 99.17% on Granite 4.2 3B and 100.00% on Qwen 3.5 4B, within the suite’s tested formats.",
-      "date": "19 Nov 2026",
-      "authors": [
-        "Tanmay Sah"
-      ],
-      "votes": 49,
-      "visits": 1081,
-      "ghStars": 0,
-      "categories": [
-        "cs.AI"
-      ],
-      "url": "https://arxiv.org/abs/2611.26450",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.26450"
-    },
-    {
-      "rank": 19,
       "arxivId": "2611.30916",
       "title": "TrialAgentBench: Evaluating AI Agents for Clinical-Trial Analysis and Long-Horizon Drug-Development Decisions",
       "summary": "TrialAgentBench evaluates whether agents can estimate clinical-trial treatment effects and make drug-development decisions in simulation. It hides simulated participants’ outcomes under treatment and control, testing analysis on new trials and valuing study-selection and stop-or-advance choices. On 84 TrialEval tasks, Opus 5.5’s mean error was 0.93 standard errors, versus 0.90 for process-aware analysis. On 128 TrialDev programmes, it reached 48% of oracle value; the comparison with the rule-based developer was uncertain, and simulation results do not establish readiness for real development.",
@@ -410,7 +362,7 @@
         "Lei Clifton"
       ],
       "votes": 0,
-      "visits": 2,
+      "visits": 57,
       "ghStars": 0,
       "categories": [
         "cs.AI",
@@ -420,54 +372,101 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.30916"
     },
     {
-      "rank": 20,
-      "arxivId": "2611.29338",
-      "title": "A Glimpse of Training VLMs as Foundation Models for Robotic Manipulation",
-      "summary": "nanoAstra trains a vision-language model to pair descriptions of task progress with executable robot actions. It segments demonstrations at decision points and generates parameterized movement commands through the model’s text interface. On RoboTwin 2.0’s randomized evaluation, trained only on real-world manipulation data, nanoAstra-9B achieved 17.8% success, above the strongest evaluated VLM baseline at 10.8%, a result limited to that benchmark setting.",
-      "date": "22 Nov 2026",
+      "rank": 17,
+      "arxivId": "2611.30771",
+      "title": "GameDojo: Benchmarking Real-Time Interactive Agents in Video Games",
+      "summary": "GameDojo reconstructs 120 boss encounters across 20 games as adjustable tests of real-time interactive skill. It evaluates agents through common controls, varied timing modes, and difficulty levels, and trains a model on controller-generated demonstrations. Fine-tuning improves paused progress, but evaluated models achieve zero wins at medium difficulty in real time; fidelity and transfer to original games remain untested.",
+      "date": "23 Nov 2026",
       "authors": [
-        "Meng-Hao Guo",
-        "Yi Zhang",
-        "Zhe-Han Mo",
-        "Han-Zheng Wang",
-        "Jia-Jun Wang"
+        "Kuan Zhang",
+        "Zhihao Yang",
+        "Yukun Chen",
+        "Xingyilang Yin",
+        "Mingyu Ouyang"
       ],
-      "votes": 0,
-      "visits": 42,
+      "votes": 4,
+      "visits": 115,
+      "ghStars": 3,
+      "categories": [
+        "cs.AI"
+      ],
+      "url": "https://arxiv.org/abs/2611.30771",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.30771"
+    },
+    {
+      "rank": 18,
+      "arxivId": "2611.31094",
+      "title": "Unlocking the Power of Loops in Pretrained LLMs with Loop Residuals",
+      "summary": "LoopRes lets pretrained language models reuse layers for additional computation by giving each reused layer access to recent intermediate results, with cues for their loop positions. On Qwen3-1.7B-Base, it scores 55.8 across seven math and code benchmarks at twice the compute per token of unlooped SFT, versus 43.2 for SFT; general-purpose performance remains untested.",
+      "date": "24 Nov 2026",
+      "authors": [
+        "Xuanlei Zhao",
+        "Hailun Xu",
+        "Kai Wang",
+        "Yang Luo",
+        "Yingxuan Ren"
+      ],
+      "votes": 4,
+      "visits": 95,
       "ghStars": 0,
       "categories": [
-        "cs.RO"
+        "cs.CL",
+        "cs.LG"
       ],
-      "url": "https://arxiv.org/abs/2611.29338",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.29338"
+      "url": "https://arxiv.org/abs/2611.31094",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.31094"
+    },
+    {
+      "rank": 19,
+      "arxivId": "2611.30597",
+      "title": "ViDiHand2: Unifying Video Diffusion Priors and Hand Geometry for 3D Hand Motion Reconstruction in the Wild",
+      "summary": "ViDiHand2 reconstructs metric 3D hand motion from egocentric video by fitting hand geometry to camera rays rather than regressing depth from appearance. It combines refined image-joint locations with a posed MANO hand model and confidence-gated fusion. On Gen-HumanEgo, it reduces MPJPE-abs-p from WiLoR’s 56.55 mm to 32.59 mm; the system requires camera intrinsics and runs offline.",
+      "date": "24 Nov 2026",
+      "authors": [
+        "Yuxi Wang",
+        "Yufei Liu",
+        "Chengkai Jin",
+        "Qingyue Chen",
+        "Wenqi Ouyang"
+      ],
+      "votes": 2,
+      "visits": 71,
+      "ghStars": 0,
+      "categories": [
+        "cs.CV",
+        "generative-models",
+        "geometric-deep-learning"
+      ],
+      "url": "https://arxiv.org/abs/2611.30597",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.30597"
+    },
+    {
+      "rank": 20,
+      "arxivId": "2611.31076",
+      "title": "AlphaDefect: Expert-Level AI for Slay the Spire 2",
+      "summary": "AlphaDefect uses one learned policy per character for combat and noncombat decisions in Slay the Spire 2. It scores legal actions using player-visible information. Across six characters at Ascension 10, greedy win rates are 62–77%, rising to 68–80% with test-time search. For Ironclad, search increased wins by 5.2 percentage points on v0.113.1, while adding decision-time computation.",
+      "date": "23 Nov 2026",
+      "authors": [
+        "Qiyue Chen",
+        "Taian Yu",
+        "Junpei Komiyama",
+        "Haobo Huang"
+      ],
+      "votes": 1,
+      "visits": 135,
+      "ghStars": 0,
+      "categories": [
+        "agents",
+        "cs.AI",
+        "deep-reinforcement-learning"
+      ],
+      "url": "https://arxiv.org/abs/2611.31076",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.31076"
     }
   ],
   "likes": [
     {
       "rank": 1,
-      "arxivId": "2611.society-ai-scientists",
-      "title": "A Society of AI Scientists",
-      "summary": "The authors study how agents develop research practices in a shared workspace, where 936 agents across 35 human-operated labs published studies and exchanged 9,500 messages over twelve weeks. Agents used public corrections, pre-run critique, and an agent-run journal. Executing reviewers’ major objections overturned 49.4% of tested headlines, but the observational deployment does not establish causation or independent scientific autonomy.",
-      "date": "21 Nov 2026",
-      "authors": [
-        "Rehaan Ahmad",
-        "Myles Anderson",
-        "Ao Qu",
-        "Mars Gao",
-        "Yubin Kim"
-      ],
-      "votes": 720,
-      "visits": 33586,
-      "ghStars": 0,
-      "categories": [
-        "cs.AI",
-        "cs.CY"
-      ],
-      "url": "https://arxiv.org/abs/2611.society-ai-scientists",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.society-ai-scientists"
-    },
-    {
-      "rank": 2,
       "arxivId": "2611.harness-cg",
       "title": "Language Model Harnesses Can Be Compositional Generalizers",
       "summary": "The paper trains a recursive language model harness to handle long tasks by keeping context outside the prompt, using code to inspect it, and delegating smaller queries to model calls. On eight held-out long-context benchmarks, RLM-27B averages 58.5 versus 46.1 for Qwen3.8-27B in the same harness; this is a benchmark-score gain, not a compute or time result.",
@@ -477,8 +476,8 @@
         "Souradip Chakraborty",
         "Omar Khattab"
       ],
-      "votes": 458,
-      "visits": 9549,
+      "votes": 547,
+      "visits": 38105,
       "ghStars": 15,
       "categories": [
         "cs.AI",
@@ -488,7 +487,7 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.harness-cg"
     },
     {
-      "rank": 3,
+      "rank": 2,
       "arxivId": "2611.24778",
       "title": "Counterfactual World Models: JEPAs That Reason About \"What If\"",
       "summary": "The authors estimate what an alternative action would have done in the same event by adding the factual model’s predicted change between actions to the observed outcome. This reuses event-specific disturbance without paired counterfactual data or retraining. In simulated HandReach, physical counterfactual R-squared rises from 38.1% to 85.6% after physical readout correction; the result depends on structural conditions.",
@@ -498,8 +497,8 @@
         "Yann LeCun",
         "Kerda Varaku"
       ],
-      "votes": 417,
-      "visits": 7925,
+      "votes": 496,
+      "visits": 9464,
       "ghStars": 0,
       "categories": [
         "cs.AI",
@@ -510,7 +509,7 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.24778"
     },
     {
-      "rank": 4,
+      "rank": 3,
       "arxivId": "2611.claimed-riemann-hypothesis-proof",
       "title": "A Claimed Proof of the Riemann Hypothesis",
       "summary": "Levent Alpöge’s note describes a proposed route to the Riemann Hypothesis, using chained theta lifts to mimic multiplicity in Stepanov’s function-field method, which concerns a different setting. Alpöge reports Claude suggested a chain about √X long for a von Mangoldt sum of length X, and claims the approach extends to GRH; the note offers no readable proof or verification.",
@@ -518,8 +517,8 @@
       "authors": [
         "Levent Alpöge"
       ],
-      "votes": 268,
-      "visits": 21860,
+      "votes": 340,
+      "visits": 24528,
       "ghStars": 0,
       "categories": [
         "Mathematics"
@@ -528,53 +527,7 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.claimed-riemann-hypothesis-proof"
     },
     {
-      "rank": 5,
-      "arxivId": "2611.jepa-latent-maps-content-geometry",
-      "title": "The Content–Geometry Tradeoff in World Models: When JEPA Learns Latent Maps",
-      "summary": "Slow SVReg extends sliced variance regularization with slow channels and a gated predictor that defaults to copying the current representation. It aims to smooth latent routes while preserving slowly changing task-relevant content. In first-person PointMaze Medium hard-goal planning, it reaches 92.9 ± 3.2% versus 75.3 ± 5.5% for SVReg without those additions, across six models; these success rates apply to that setting.",
-      "date": "18 Nov 2026",
-      "authors": [
-        "Mengye Ren",
-        "Ying Wang",
-        "Christopher Hoang",
-        "Yilun Kuang",
-        "Yann LeCun"
-      ],
-      "votes": 194,
-      "visits": 3179,
-      "ghStars": 0,
-      "categories": [
-        "representation-learning"
-      ],
-      "url": "https://arxiv.org/abs/2611.jepa-latent-maps-content-geometry",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.jepa-latent-maps-content-geometry"
-    },
-    {
-      "rank": 6,
-      "arxivId": "2611.23144",
-      "title": "$π^4$: A Foundation Model for 4D Scene Geometry and Motion",
-      "summary": "π⁴ reconstructs moving scenes from uncalibrated images or video, estimating geometry, camera poses, scale, and motion. It predicts image-space correspondences and lifts them onto reconstructed target-view geometry to place tracks in 3D. The paper reports the best overall average geometry rank (3.00) and competitive tracking results, but this rank does not establish superior metric-scale accuracy.",
-      "date": "17 Nov 2026",
-      "authors": [
-        "Yifan Wang",
-        "Weiguang Zhao",
-        "Ni Yang",
-        "Haoyu Guo",
-        "Junting Dong"
-      ],
-      "votes": 144,
-      "visits": 1494,
-      "ghStars": 467,
-      "categories": [
-        "cs.CV",
-        "geometric-deep-learning",
-        "image-segmentation"
-      ],
-      "url": "https://arxiv.org/abs/2611.23144",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.23144"
-    },
-    {
-      "rank": 7,
+      "rank": 4,
       "arxivId": "2611.glm-5",
       "title": "GLM-5.4: Toward Generalized Coding with Our First Loop Transformer",
       "summary": "GLM-5.4 is Z.ai's first flagship model built on a Loop Transformer, which runs a weight-shared block of layers for multiple iterations to add reasoning depth without adding parameters. Rather than pre-training a looped model from scratch, Z.ai adapted the pre-trained GLM-5 base through continued training, looping 28 layers for two iterations at 750B scale. The post frames the model as the start of \"Generalized Coding\", where code generation extends to video, CAD, games, and 3D.",
@@ -582,8 +535,8 @@
       "authors": [
         "Z.ai"
       ],
-      "votes": 112,
-      "visits": 14930,
+      "votes": 260,
+      "visits": 32270,
       "ghStars": 0,
       "categories": [
         "code-generation",
@@ -594,7 +547,7 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.glm-5"
     },
     {
-      "rank": 8,
+      "rank": 5,
       "arxivId": "2611.composable-soft-prompt-distillation",
       "title": "Composable Soft-Prompt Distillation of RL Experts: Toward Continual Post-Training",
       "summary": "CSPD turns reinforcement-learning specialists into independently trained soft prompts, keeping the pre-reinforcement-learning backbone frozen and concatenating selected prompts at inference. In a four-domain test with a Qwen3-4B student, the composed prompts raised the average score from 50.41 to 67.83, compared with 67.79 for MOPD. This result covers four tested domains, not broader scaling.",
@@ -606,8 +559,8 @@
         "Chengzhi Liu",
         "Yutong Yin"
       ],
-      "votes": 106,
-      "visits": 1559,
+      "votes": 120,
+      "visits": 1669,
       "ghStars": 0,
       "categories": [
         "cs.CL",
@@ -617,7 +570,7 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.composable-soft-prompt-distillation"
     },
     {
-      "rank": 9,
+      "rank": 6,
       "arxivId": "2611.feedback-shortcut-speculative-decoding",
       "title": "Feedback Shortcut: Speculative Decoding for Latent Feedback Transformers",
       "summary": "Feedback Shortcut enables speculative decoding for latent-feedback Transformers. It aligns multi-token prediction head states as feedback stand-ins, then recomputes pending positions during the next verification call. For a 780M model with three heads, one correction, and batch size 1, it reports 0.8287 BPB versus 0.8288 for exact decoding, and 2.75× throughput; this is single-GPU steady-state serving, not exact output equivalence.",
@@ -627,9 +580,9 @@
         "Xuezhe Ma",
         "Hector Liu"
       ],
-      "votes": 81,
-      "visits": 888,
-      "ghStars": 25,
+      "votes": 93,
+      "visits": 983,
+      "ghStars": 26,
       "categories": [
         "cs.CL",
         "cs.LG"
@@ -638,62 +591,32 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.feedback-shortcut-speculative-decoding"
     },
     {
-      "rank": 10,
-      "arxivId": "2611.23068",
-      "title": "The Resolution Hypothesis: Agent Evolution's Key Is Identifying Improvements",
-      "summary": "The paper examines whether noisy evaluations limit frozen-weight agent evolution. It measures both candidate quality and selectors’ ability to identify better artifacts, using skill pools and benchmark comparisons. On Terminal-Bench, a 100-skill pool exceeds an equal-quality null by 3.4 pp, while one-rollout selection is statistically indistinguishable from chance. The evidence concerns tested frozen-weight settings, not all self-improvement.",
-      "date": "17 Nov 2026",
+      "rank": 7,
+      "arxivId": "2611.26450",
+      "title": "A CPU Inside an LLM: Zero-Gradient Compilation of Exact Circuits into Pretrained Weights",
+      "summary": "The authors graft a deterministic arithmetic circuit into pretrained model weights, enabling signed addition, subtraction, and multiplication without gradient updates, labeled examples, or runtime tool calls. Scale-robust circuit primitives and tokenizer-aligned emission let the language model resume after the answer. On Arith-1200, BF16 grafts reach 99.17% on Granite 4.2 3B and 100.00% on Qwen 3.5 4B, within the suite’s tested formats.",
+      "date": "19 Nov 2026",
       "authors": [
-        "Yuanhao Zeng",
-        "Shaocheng Lan",
-        "Ao Lu",
-        "Kuang Yan",
-        "Heng Lin"
+        "Tanmay Sah"
       ],
-      "votes": 76,
-      "visits": 821,
+      "votes": 66,
+      "visits": 1573,
       "ghStars": 0,
       "categories": [
-        "agentic-frameworks",
-        "agents",
         "cs.AI"
       ],
-      "url": "https://arxiv.org/abs/2611.23068",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.23068"
+      "url": "https://arxiv.org/abs/2611.26450",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.26450"
     },
     {
-      "rank": 11,
-      "arxivId": "2611.23001",
-      "title": "NVIDIA Kumo Tabular: Pushing the Accuracy–Efficiency Frontier for Tabular Prediction",
-      "summary": "Kumo Tabular predicts labels from labeled rows using a pretrained encoder and transformer, without task-specific weight updates or hyperparameter search. Its encoder alternates column and row attention before compressing rows for in-context prediction. Kumo Tabular-L ranks first on primary metrics across eight benchmarks, but Elo intervals overlap top non-Kumo results, and performance is weaker on grouped splits and tables above 100K training rows.",
-      "date": "17 Nov 2026",
-      "authors": [
-        "Jingang Qu",
-        "Valter Hudovernik",
-        "Martin Jurkovič",
-        "Cedric Lorenz",
-        "David Holzmüller"
-      ],
-      "votes": 57,
-      "visits": 656,
-      "ghStars": 526,
-      "categories": [
-        "cs.LG",
-        "few-shot-learning",
-        "inference-optimization"
-      ],
-      "url": "https://arxiv.org/abs/2611.23001",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.23001"
-    },
-    {
-      "rank": 12,
+      "rank": 8,
       "arxivId": "2611.perplexity-and-intelligence",
       "title": "Perplexity and Intelligence",
       "summary": "Perplexity-based tracking measures language models’ pretraining progress through next-token prediction loss, and the post argues that it can provide a durable comparison metric as downstream benchmarks change. OpenAI reports internal held-out-dataset log-perplexity values of about 0.99 for GPT-3.5, 0.91 for GPT-4, and below 0.8 for newer models, associating these stages with capabilities including",
       "date": "20 Nov 2026",
       "authors": [],
-      "votes": 50,
-      "visits": 950,
+      "votes": 52,
+      "visits": 1120,
       "ghStars": 0,
       "categories": [
         "ai-safety",
@@ -704,47 +627,7 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.perplexity-and-intelligence"
     },
     {
-      "rank": 13,
-      "arxivId": "2611.26450",
-      "title": "A CPU Inside an LLM: Zero-Gradient Compilation of Exact Circuits into Pretrained Weights",
-      "summary": "The authors graft a deterministic arithmetic circuit into pretrained model weights, enabling signed addition, subtraction, and multiplication without gradient updates, labeled examples, or runtime tool calls. Scale-robust circuit primitives and tokenizer-aligned emission let the language model resume after the answer. On Arith-1200, BF16 grafts reach 99.17% on Granite 4.2 3B and 100.00% on Qwen 3.5 4B, within the suite’s tested formats.",
-      "date": "19 Nov 2026",
-      "authors": [
-        "Tanmay Sah"
-      ],
-      "votes": 49,
-      "visits": 1081,
-      "ghStars": 0,
-      "categories": [
-        "cs.AI"
-      ],
-      "url": "https://arxiv.org/abs/2611.26450",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.26450"
-    },
-    {
-      "rank": 14,
-      "arxivId": "2611.23219",
-      "title": "Do LLM Agents Still Need to Be Told How to Self-Improve?",
-      "summary": "The authors test whether language models can design their own learning procedures for puzzle play, using a frozen teacher to create games, observe a player, and revise its text context. Newer models improve on held-out PuzzleScript-t20, with Claude Opus 5 gaining +20%, and its context transfers to longer PuzzleScript, ARC-AGI-3, and MazeBench. The evidence is limited to puzzle settings.",
-      "date": "17 Nov 2026",
-      "authors": [
-        "Shobhita Sundaram",
-        "Cansu Sancaktar",
-        "Phillip Isola"
-      ],
-      "votes": 45,
-      "visits": 543,
-      "ghStars": 4,
-      "categories": [
-        "agentic-frameworks",
-        "agents",
-        "continual-learning"
-      ],
-      "url": "https://arxiv.org/abs/2611.23219",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.23219"
-    },
-    {
-      "rank": 15,
+      "rank": 9,
       "arxivId": "2611.26444",
       "title": "Mind2Act World: A Diagnostic Benchmark for Embodied Mind, Physical Action, and Mind-Action Composition in Robotic Manipulation",
       "summary": "Mind2Act World tests whether robots use memory, execution, and feedback across related simulated tabletop tasks. It separates memory-focused Mind tasks, action-focused Act tasks, and workflows where outcomes guide later decisions. GPT-6 Astra succeeds on 52.7% of Mind episodes, 39.0% of Act episodes, and 12.0% of Mind2Act episodes. These task-set rates do not isolate composition as the cause, and physical-robot transfer remains unmeasured.",
@@ -756,8 +639,8 @@
         "Junchao Lin",
         "Weichen Zhang"
       ],
-      "votes": 45,
-      "visits": 481,
+      "votes": 50,
+      "visits": 510,
       "ghStars": 45,
       "categories": [
         "agentic-frameworks",
@@ -768,7 +651,7 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.26444"
     },
     {
-      "rank": 16,
+      "rank": 10,
       "arxivId": "2611.26603",
       "title": "Depth Pro 2: Sharp and Temporally Consistent Metric Monocular Depth",
       "summary": "Depth Pro 2 estimates metric depth from images and video by processing frames jointly at native resolution with within-frame and cross-frame attention. In zero-shot comparisons, H+ ranks first for video metric-depth accuracy, boundary sharpness, and temporal consistency. On Sintel with predicted intrinsics, H+ reaches 41.4% δ1 versus 37.0% for UniDepthV2-L; rankings summarize separate measures, and results vary by model size.",
@@ -780,8 +663,8 @@
         "Lahav Lipson",
         "Wei Dong"
       ],
-      "votes": 41,
-      "visits": 444,
+      "votes": 46,
+      "visits": 523,
       "ghStars": 609,
       "categories": [
         "cs.CV",
@@ -792,10 +675,32 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.26603"
     },
     {
-      "rank": 17,
+      "rank": 11,
+      "arxivId": "2611.28298",
+      "title": "Language Model Harnesses can be Compositional Generalizers",
+      "summary": "The authors train an RLM harness using synthetic traces to improve transfer from shorter tasks to longer contexts. It keeps context outside the root prompt and uses programmatic calls to divide work among smaller inputs. In the same harness, fine-tuned Qwen3.8-27B reaches an eight-benchmark average of 58.5, versus 46.1 for the untrained model, with roughly half inference tokens; transfer is conditional.",
+      "date": "20 Nov 2026",
+      "authors": [
+        "Alex L. Zhang",
+        "Souradip Chakraborty",
+        "Omar Khattab"
+      ],
+      "votes": 42,
+      "visits": 1106,
+      "ghStars": 15,
+      "categories": [
+        "agentic-frameworks",
+        "agents",
+        "cs.AI"
+      ],
+      "url": "https://arxiv.org/abs/2611.28298",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.28298"
+    },
+    {
+      "rank": 12,
       "arxivId": "2611.frontier-models-authorship-attribution",
       "title": "Frontier Models Need Only One Text to Unmask Its Human or AI Author",
-      "summary": "Given a single text and a simple zero-shot prompt (no web access, tools, candidate lists, or writing samples), frontier models can answer “who wrote this?” at three increasingly specific levels: (1) whether an AI or human wrote it, (2) if an AI, which lab, and (3) if a human, often exactly who. The latest models (Claude Fable 5.2, GPT-6.1 Sol, Gemini 4 Carbon) match trained detectors like Pangram ",
+      "summary": "The authors test whether frontier models can identify human authors from one text and a zero-shot prompt without tools, candidate lists, or reference samples. On private ICML 2020 reviews, Claude Fable 5.2 correctly named reviewers for 55.4% of 15,136 reviews. Results vary with familiarity; private review authors’ other writing may still have been known to the model.",
       "date": "23 Nov 2026",
       "authors": [
         "Atrey Desai",
@@ -804,8 +709,8 @@
         "Minjoon Choi",
         "Jenna Russell"
       ],
-      "votes": 39,
-      "visits": 951,
+      "votes": 42,
+      "visits": 1048,
       "ghStars": 4,
       "categories": [
         "cs.AI",
@@ -816,76 +721,187 @@
       "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.frontier-models-authorship-attribution"
     },
     {
-      "rank": 18,
-      "arxivId": "2611.23034",
-      "title": "M3OPD-Reasoner: An Open Recipe for Post-Training Multimodal Reasoning with Multi-Teacher On-Policy Distillation",
-      "summary": "The authors train a vision-language model across image science and math, perception, and video by training domain specialists, distilling their guidance into a shared student on its own responses, then applying reward-based reinforcement learning. Across 21 benchmarks, it scores 75.2 avg@8 versus 74.4 for direct mixed training; the added reinforcement-learning stage raises it to 75.9, within this evaluation setup.",
-      "date": "18 Nov 2026",
+      "rank": 13,
+      "arxivId": "2611.30325",
+      "title": "Verifiable On-Policy Distillation",
+      "summary": "The authors introduce Verifiable On-Policy Distillation (VOPD) for mathematical reasoning, using teacher–verifier agreement within groups of sampled responses to scale teacher guidance across next-token choices. VOPD compares teacher preferences with verified outcomes through a reference-model log-probability shift. In tests of two Qwen3 configurations and eight math benchmarks, it averages 66.38, above OPD and ExOPD, using the student’s top 16 tokens.",
+      "date": "23 Nov 2026",
       "authors": [
-        "Nguyen Quang Trung",
-        "Hoang Phan",
-        "Shuo Sun",
-        "Longyin Zhang",
-        "AiTi Aw"
+        "Juntong Shi",
+        "Stefano Ermon",
+        "Jure Leskovec",
+        "Minkai Xu"
       ],
-      "votes": 32,
-      "visits": 320,
-      "ghStars": 5,
+      "votes": 40,
+      "visits": 943,
+      "ghStars": 0,
       "categories": [
-        "cs.CV",
-        "data-curation",
+        "chain-of-thought",
+        "cs.LG",
         "fine-tuning"
       ],
-      "url": "https://arxiv.org/abs/2611.23034",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.23034"
+      "url": "https://arxiv.org/abs/2611.30325",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.30325"
+    },
+    {
+      "rank": 14,
+      "arxivId": "2611.24738",
+      "title": "Jeveration: System One Models Now Generate",
+      "summary": "Jeveration generates images in one forward pass by predicting 128 discrete image codes together and decoding them. A shared random state is supplied to every code position to help coordinate choices. At 512 × 512, it reports 77.8 ms and a GenEval overall score of 0.74, versus 94.1 ms and 0.63 for four-step Show-o Turbo-512 in a same-resolution comparison.",
+      "date": "20 Nov 2026",
+      "authors": [
+        "Yuhe Liu",
+        "Qi Li",
+        "Shihua Zhang",
+        "Xinchao Wang"
+      ],
+      "votes": 32,
+      "visits": 435,
+      "ghStars": 0,
+      "categories": [
+        "cs.CV",
+        "efficient-transformers",
+        "generative-models"
+      ],
+      "url": "https://arxiv.org/abs/2611.24738",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.24738"
+    },
+    {
+      "rank": 15,
+      "arxivId": "2611.26629",
+      "title": "Posterior Matching Distillation",
+      "summary": "Posterior Matching Distillation (PMD) trains a stochastic few-step image generator to preserve multiple plausible clean images for the same noisy input. It matches exponentially weighted student predictions to shifted-input targets from a frozen teacher under Gaussian corruption. On four-step FLUX.2 [klein] 4B, PMD reaches Vendi 3.3708 versus 2.4104 for SMD, with FID 24.12 versus 24.58 for the base model.",
+      "date": "19 Nov 2026",
+      "authors": [
+        "Hidir Yesiltepe",
+        "Julius Berner",
+        "Arash Vahdat",
+        "Pinar Yanardag"
+      ],
+      "votes": 31,
+      "visits": 309,
+      "ghStars": 0,
+      "categories": [
+        "cs.CV"
+      ],
+      "url": "https://arxiv.org/abs/2611.26629",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.26629"
+    },
+    {
+      "rank": 16,
+      "arxivId": "2611.ghc",
+      "title": "GHC: Expanding Residual Interfaces in Hyper-Connections",
+      "summary": "Hyper-Connections expand residual capacity across parallel streams, yet restrict every branch to narrow read and write interfaces: each branch still reads a single stream mixture and writes scaled copies of one output vector to all streams. To lift this bottleneck, we propose Grouped Hyper-Connections (GHC). By partitioning each branch into parallel groups along attention heads or FFN channels, GH",
+      "date": "23 Nov 2026",
+      "authors": [
+        "Tianyu Li",
+        "Hongtao Zhang",
+        "Dongchen Han",
+        "Jingshu Liu",
+        "Bojun Wang"
+      ],
+      "votes": 26,
+      "visits": 268,
+      "ghStars": 0,
+      "categories": [
+        "cs.CL",
+        "cs.LG"
+      ],
+      "url": "https://arxiv.org/abs/2611.ghc",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.ghc"
+    },
+    {
+      "rank": 17,
+      "arxivId": "2611.25105",
+      "title": "MAWAM: A Multi-Agent World-Action Model for Coordinated Manipulation",
+      "summary": "MAWAM predicts each robot’s action chunk and future private camera views jointly, using cross-agent attention while preserving separate robot streams. Robots execute actions, observe the scene, and replan. Across three real-robot tasks, it averaged 67.8% success versus 48.9% for a MA-VLA reimplementation; it averaged 90.3% across eight simulated tasks. These results concern fixed teams of at most four agents.",
+      "date": "20 Nov 2026",
+      "authors": [
+        "Xianzhe Fan",
+        "Chi-Pin Huang",
+        "Fu-En Yang",
+        "Jing Wang",
+        "Yecheng Wu"
+      ],
+      "votes": 24,
+      "visits": 283,
+      "ghStars": 0,
+      "categories": [
+        "cs.AI",
+        "cs.CV",
+        "cs.RO"
+      ],
+      "url": "https://arxiv.org/abs/2611.25105",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.25105"
+    },
+    {
+      "rank": 18,
+      "arxivId": "2611.24926",
+      "title": "Grana: Compositional Reward Modeling for Long-Horizon Robot Manipulation",
+      "summary": "Grana predicts progress in long-horizon robot manipulation by selecting an unfinished subtask from user-supplied descriptions and estimating local progress from multiview observations. It combines that estimate with credit for earlier completed subtasks. On 50 held-out tasks, it achieves 0.180 RMSE versus 0.227 for RoboMeter without target-task labels or fine-tuning; this supports transfer, not universal performance.",
+      "date": "19 Nov 2026",
+      "authors": [
+        "Zi-ang Cao",
+        "Kaiyuan Zheng",
+        "Yinzhen Xu",
+        "Haonan Duan",
+        "Jiasheng Gu"
+      ],
+      "votes": 24,
+      "visits": 252,
+      "ghStars": 0,
+      "categories": [
+        "cs.RO"
+      ],
+      "url": "https://arxiv.org/abs/2611.24926",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.24926"
     },
     {
       "rank": 19,
-      "arxivId": "2611.22925",
-      "title": "Code World Model 2.0: Towards Infinite Controllable Video Generation",
-      "summary": "Invoker-Render uses structural proxy video to control scene layout, camera, and motion, while an appearance reference and language guide its appearance. Its causal model generates chunks in four denoising steps, trained through ProForcing’s progression from histories to self-generated histories. On 140 held-out sequences, it scored 1232.0 Overall Elo versus 1135.3 for SolarRenderer under Gemini-judged comparisons; this does not isolate ProForcing’s contribution.",
-      "date": "18 Nov 2026",
+      "arxivId": "2611.24917",
+      "title": "Unified Law for Visual Tasks (The Four Laws of Computer Vision)",
+      "summary": "The authors propose World Snapshot Models, which treat visual tasks as directed condition-to-target mappings through task-specific routes in a shared, frozen image generator. For structured outputs, Modality Tunneling Attention produced structured RGB-to-normal output at 250 optimizer updates, versus 4,750 for a matched Native Joint Attention baseline. The study evaluates 1,148 dense mappings, not every visual task or world attribute.",
+      "date": "19 Nov 2026",
       "authors": [
-        "Ruoyu Wang",
-        "Hao Zhong",
-        "Yanming Yang",
-        "Jiahao Tian",
-        "Lin Liu"
+        "Sen Fang",
+        "Yalin Feng",
+        "Yancheng Zhang",
+        "Yanxin Zhang",
+        "Zonglin Lyu"
       ],
-      "votes": 32,
-      "visits": 543,
-      "ghStars": 0,
+      "votes": 22,
+      "visits": 427,
+      "ghStars": 1,
       "categories": [
         "cs.CV",
         "generative-models",
         "image-generation"
       ],
-      "url": "https://arxiv.org/abs/2611.22925",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.22925"
+      "url": "https://arxiv.org/abs/2611.24917",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.24917"
     },
     {
       "rank": 20,
-      "arxivId": "2611.22962",
-      "title": "Hierarchical Diffusion Transformer for End-to-End Image Generation",
-      "summary": "HiT generates images directly from pixels by grouping image patches into learned, content-dependent summaries, processing them centrally, and restoring features to image positions. Skip connections retain detail. On ImageNet after 600 epochs, HiT-XL/16 reaches FID 1.48, versus JiT-H/16’s 1.86, at similar parameter counts. This supports learned hierarchy in this comparison, but does not establish hierarchy as the sole cause or wall-clock speed.",
-      "date": "17 Nov 2026",
+      "arxivId": "2611.sample-efficient-in-context-adaptation-sleep",
+      "title": "Sample-Efficient In-Context Adaptation via Sleep",
+      "summary": "Sleep lets Transformer models refine their key-value cache at chunk boundaries, using recurrent passes over context already read. Rather than add depth to every generated token, the model updates its attention memory periodically, then resumes ordinary decoding. On held-out code, 1.2B-parameter models matched baseline loss with 2.10× fewer context tokens at N=2 and 2.39× at N=4; this measures prefix length, not speed.",
+      "date": "24 Nov 2026",
       "authors": [
-        "Xiaoyu Wu",
-        "Yifei Wang",
-        "Weihang Guo",
-        "Chen Wei",
-        "Lydia E Kavraki"
+        "Sangyun Lee",
+        "Zhang Enyan",
+        "Michael Xu",
+        "Hao Tang",
+        "Zinan Lin"
       ],
-      "votes": 30,
-      "visits": 401,
-      "ghStars": 33,
+      "votes": 22,
+      "visits": 2204,
+      "ghStars": 0,
       "categories": [
-        "cs.AI",
-        "cs.CV",
+        "cs.CL",
         "cs.LG"
       ],
-      "url": "https://arxiv.org/abs/2611.22962",
-      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.22962"
+      "url": "https://arxiv.org/abs/2611.sample-efficient-in-context-adaptation-sleep",
+      "alphaxivUrl": "https://www.alphaxiv.org/abs/2611.sample-efficient-in-context-adaptation-sleep"
     }
   ]
 }
